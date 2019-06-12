@@ -1,0 +1,30 @@
+/**
+ * Light theme (default)
+ *
+ * Overrides default Foundation settings, found in style/admin/_settings.scss 
+ */
+
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+// Colors
+$body-background : #f2f2f2;
+$nav-main        : #222533;
+$nav-color       : scale-color($nav-main, $lightness:  50%);
+$nav-active      : scale-color($nav-main, $lightness: -33%);
+
+// Typography
+$body-font-family: Ubuntu, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+$header-font-family: $body-font-family;
+
+// Nav
+$nav-height: rem-calc(60px);
+$nav-width : rem-calc(300px);
+
+// Layout
+$padding: ($nav-height - 1) / 2;
+$grid-margin-gutters: (
+  small: $padding,
+  medium: $padding
+);
+$grid-padding-gutters: $grid-margin-gutters;
+$grid-container-padding: $grid-padding-gutters;

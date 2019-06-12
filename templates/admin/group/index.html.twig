@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Groepen' %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for group in groups %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen groepen.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Gebeurtenislog' %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tijd</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for event in log %}
+                <tr>
+                    <td>{{ event.time }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen gebeurtenissen.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

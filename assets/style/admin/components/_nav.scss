@@ -1,0 +1,250 @@
+#nav-state {
+	display: none;
+}
+
+.nav-toggle {
+	width         : auto;
+	height        : $nav-height;
+	padding       : ($nav-height - rem-calc(12)) / 2 $padding;
+	cursor        : pointer;
+    font-size     : rem-calc(12);
+    font-weight   : $global-weight-bold;
+    line-height   : 1;
+    text-transform: uppercase;
+    display       : block;
+
+	b {
+		width         : 14px;
+		height        : 2px;
+        vertical-align: middle;
+        margin-top    : -2px;
+        margin-right  : 5px;
+		background    : $dark-gray;
+		display       : inline-block;
+        position      : relative;
+        
+		&:before, &:after {
+			display   : block;
+			content   : "";
+			width     : 100%;
+			height    : 100%;
+			position  : absolute;
+			left      : 0;
+			top       : -4px;
+			background: inherit;
+        }
+        
+		&:after {
+			top: 4px;
+		}
+    }
+}
+
+.topbar {
+	height       : $nav-height;
+    width        : 100%;
+
+    h2, a, b {
+        line-height    : 1;
+		color          : $dark-gray;
+        text-decoration: none;
+    }
+
+    a, b {
+		&:hover, &:focus, &:active {
+			color: $black;
+		}
+    }
+
+    .nav-toggle {
+        position: relative;
+        top     : 0;
+        left    : 0;
+        float   : left;
+    }
+
+    .nav-site {
+        position  : absolute;
+        left      : 0;
+        width     : 100%;
+        height    : $nav-height;
+        padding   : $padding 0;
+        text-align: center;
+        z-index   : -1;
+
+        &, h2 {
+            font-size     : rem-calc(16);
+            display       : inline;
+            margin        : 0;
+            vertical-align: middle;
+        }
+
+        img {
+            width         : 25px;
+            display       : inline-block;
+            margin-right  : 5px;
+            vertical-align: middle;
+        }
+        
+        @include breakpoint(medium) {
+            float     : left;
+            position  : static;
+            width     : auto;
+            text-align: left;
+        }
+    }
+
+    .nav-profile {
+        display: none;
+        
+        @include breakpoint(medium) {
+            display     : block;
+            float       : right;
+
+            a {
+                padding     : $padding 0;
+                margin-right: $padding;
+                display     : inline-block;
+            }
+
+            .username {
+                font-weight: $global-weight-bold;
+            }
+        }
+    }
+}
+
+
+#nav-state:checked ~ nav {
+    transform       : translateX(0);
+}
+
+nav {
+	background                : $nav-main;
+	color                     : $nav-color;
+    height                    : 100vh;
+    position                  : fixed;
+    z-index                   : 97;
+    left                      : 0;
+    top                       : 0;
+    width                     : $nav-width;
+    transition                : transform ease .25s;
+    transform                 : translateX(-$nav-width);
+    overflow-y                : auto;
+    -webkit-overflow-scrolling: touch;
+
+    div, span, h2 {
+        padding        : $padding;
+    }
+
+    h2 {
+        display        : none;
+        color          : $white;
+        margin         : 0;
+    }
+
+    div, span {
+        display        : block;
+    }
+
+    a {
+        cursor         : pointer;
+        color          : $nav-color;
+
+        &:hover, &:active, &:focus {
+            color      : $white;
+        }
+    }
+
+    a, h2 {
+        font-size      : 1rem;
+    }
+
+    a, h2, span {
+        text-decoration: none;
+        line-height    : 1;
+    }
+
+    span {
+        font-size      : 0.8rem;
+        text-transform : uppercase;
+        color          : $white;
+        font-weight    : $global-weight-bold;
+        padding        : $padding 0 0;
+        margin         : 0 $padding;
+        border-bottom  : 1px solid $white;
+    }
+
+    .nav-toggle {
+        b {
+            background: $nav-color;
+        }
+
+        &:hover, &:active, &:focus, &.active {
+            color: $white;
+
+            b {
+                background: $white;
+            }
+        }
+    }
+
+    & > div {
+        &:hover, &:active, &:focus, &.active{
+            & > a {
+                color: $white;
+            }
+        }
+    }
+
+    div {
+        @include breakpoint(medium) {
+            &.mobile {
+                display: none;
+            }
+        }
+
+        div.sub {
+            display: none;
+        }
+
+        &.active {
+            background: $nav-active;
+
+            .sub {
+                margin-top : $padding / 2;
+                margin-left: $padding;
+                display    : block;
+                padding    : 0;
+
+                a {
+                    line-height: 1.5;
+                    font-size  : 0.85em;
+                    display    : block;
+                }
+            }
+        }
+    }
+}
+
+@include breakpoint(xlarge) {
+    body {
+        padding-left: $nav-width;
+    }
+
+    .nav-toggle {
+        display: none;
+    }
+
+	nav {
+        transform : translateX(0);
+
+        h2 {
+            display: block;
+        }
+    }
+
+    .topbar .nav-site {
+        display: none;
+    }
+}

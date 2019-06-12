@@ -1,0 +1,36 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Personen' %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>E-mail</th>
+                    <th>Type</th>
+                    <th>Aangemaakt</th>
+                    <th>Kan inloggen?</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for person in persons %}
+                <tr>
+                    <td>{{ person.canonical }}</td>
+                    <td>{{ person.email }}</td>
+                    <td>{{ person.type }}</td>
+                    <td>{{ person.createdAt|date("d/m/Y G:i") }}</td>
+                    <td>{{ person.auth is null ? 'Nee' : 'Ja' }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen personen.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

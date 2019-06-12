@@ -1,0 +1,22 @@
+{
+    "devDependencies": {
+        "@symfony/webpack-encore": "^0.27.0",
+        "autoprefixer": "^9.5.1",
+        "core-js": "^3.0.0",
+        "node-sass": "^4.11.0",
+        "postcss-loader": "^3.0.0",
+        "sass-loader": "7.0.1",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "Apache-2.0",
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "foundation-sites": "^6.5.3",
+        "jquery": "^3.4.0"
+    }
+}

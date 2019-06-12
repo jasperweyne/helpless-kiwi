@@ -1,0 +1,41 @@
+main, .bottom {
+    clear: both;
+    margin: 0 $padding;
+}
+
+.bottom, .container {
+	@include flex-grid-row();
+    flex-direction: column;
+}
+
+.section {
+    padding-top: $padding * 0.5;
+    padding-bottom: $padding;
+}
+
+.row, .bottom {
+    margin-bottom: $padding;
+}
+
+.holder {
+    @include flex-grid-row($behavior: nest collapse);
+}
+
+.bottom {
+    text-align: center;
+    font-size: 0;
+    ul {
+        margin: 0;
+    }
+    li {
+        list-style: none;
+        display: inline-block;
+        white-space: nowrap;
+        color: $dark-gray;
+        font-size: rem-calc(12);
+        &:not(:last-child):after {
+            content: '\2022';
+            padding: 0 5px;
+        }
+    }
+}
