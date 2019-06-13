@@ -83,6 +83,9 @@ class MenuDiscovery
             $class = $this->namespace.$namespace.'\\'.$file->getBasename('.php');
             $refl = new \ReflectionClass($class);
 
+            $classRoute = $this->annotationReader->getClassAnnotation($refl, 'Symfony\Component\Routing\Annotation\Route');
+            $routePrefix = $classRoute ? $classRoute->getName() : "";
+
             foreach ($refl->getMethods() as $method) {
                 $annotation = $this->annotationReader->getMethodAnnotation($method, 'App\Template\Annotation\MenuItem');
                 if (!$annotation) {
@@ -95,7 +98,7 @@ class MenuDiscovery
                         throw AnnotationException::semanticalError('An Symfony\Component\Routing\Annotation\Route annotation is required when using a App\Template\Annotation\MenuItem annotation');
                     }
 
-                    $annotation->setPath($route->getName());
+                    $annotation->setPath($routePrefix . $route->getName());
                 }
 
                 /* @var MenuItem $annotation */

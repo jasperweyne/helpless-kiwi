@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Mail controller.
  *
- * @Route("/admin/mail")
+ * @Route("/admin/mail", name="admin_mail_")
  */
 class MailController extends AbstractController
 {
@@ -18,7 +18,7 @@ class MailController extends AbstractController
      * Lists all mails.
      *
      * @MenuItem(title="Mails")
-     * @Route("/", name="admin_mail_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {

@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Event controller.
  *
- * @Route("/admin/event")
+ * @Route("/admin/event", name="admin_event_")
  */
 class EventController extends AbstractController
 {
@@ -18,7 +18,7 @@ class EventController extends AbstractController
      * Lists all events.
      *
      * @MenuItem(title="Gebeurtenislog")
-     * @Route("/", name="admin_event_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {

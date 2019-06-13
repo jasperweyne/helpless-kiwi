@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Claim controller.
  *
- * @Route("/admin/claim")
+ * @Route("/admin/claim", name="admin_claim_")
  */
 class ClaimController extends AbstractController
 {
@@ -18,7 +18,7 @@ class ClaimController extends AbstractController
      * Lists all claims.
      *
      * @MenuItem(title="Declaraties")
-     * @Route("/", name="admin_claim_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {

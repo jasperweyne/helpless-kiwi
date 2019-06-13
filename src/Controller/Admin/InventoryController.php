@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Inventory controller.
  *
- * @Route("/admin/inventory")
+ * @Route("/admin/inventory", name="admin_inventory_")
  */
 class InventoryController extends AbstractController
 {
@@ -18,7 +18,7 @@ class InventoryController extends AbstractController
      * Lists all items.
      *
      * @MenuItem(title="Inventaris")
-     * @Route("/", name="admin_inventory_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {

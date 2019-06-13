@@ -10,7 +10,7 @@ use App\Entity\Person\Person;
 /**
  * Person controller.
  *
- * @Route("/admin/person")
+ * @Route("/admin/person", name="admin_person_")
  */
 class PersonController extends AbstractController
 {
@@ -18,7 +18,7 @@ class PersonController extends AbstractController
      * Lists all Contact entities.
      *
      * @MenuItem(title="Personen")
-     * @Route("/", name="admin_person_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {

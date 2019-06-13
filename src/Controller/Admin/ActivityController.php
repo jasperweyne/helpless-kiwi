@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Activity controller.
  *
- * @Route("/admin/activity")
+ * @Route("/admin/activity", name="admin_activity_")
  */
 class ActivityController extends AbstractController
 {
@@ -18,7 +18,7 @@ class ActivityController extends AbstractController
      * Lists all activities.
      *
      * @MenuItem(title="Activiteiten")
-     * @Route("/", name="admin_activity_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {

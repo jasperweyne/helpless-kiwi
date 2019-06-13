@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Group controller.
  *
- * @Route("/admin/group")
+ * @Route("/admin/group", name="admin_group_")
  */
 class GroupController extends AbstractController
 {
@@ -18,7 +18,7 @@ class GroupController extends AbstractController
      * Lists all groups.
      *
      * @MenuItem(title="Groepen")
-     * @Route("/", name="admin_group_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {
