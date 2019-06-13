@@ -14,8 +14,10 @@ track of inventory and more. It has been written using the Symfony/Doctrine fram
 ## How to install
 Make sure php 7, composer, node.js and yarn are installed on your system.
 
-```composer install
-yarn install```
+```
+composer install
+yarn install
+```
 
 ## How to run in development
 Make sure a database is installed. MySQL is supported.
@@ -29,7 +31,7 @@ Then, insert the tables:
 ```php bin/console doctrine:schema:update --force```
 
 To add a user, manually add a row to both the tables 'reference' and 'auth'.
-Note that usernames are obfuscated, view ```/src/Security/AuthUserProvider.php'
+Note that usernames are obfuscated, view '/src/Security/AuthUserProvider.php'
 on how this works. To generate the password values, use:
 
 ```php bin/console security:encode-password```
@@ -45,5 +47,5 @@ Don't! It's not ready yet!
 
  - ```php bin/console cache:clear```: Always a good idea!
  - ```composer fix```: Fix PHP source code formatting
- - ```composer test```: run unit tests in /tests/
+ - ```composer test```: Run unit tests in /tests/
  - ```yarn watch```: Automagically generate javascript/stylesheets from assets while editting
