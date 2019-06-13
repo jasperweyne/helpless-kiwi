@@ -15,16 +15,44 @@ class Reference
 {
     /**
      * @ORM\Id()
-     * @ORM\Column(type="string", length=100)
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $created_at;
+    private $createdAt;
+
+    /**
+     * Get id.
+     *
+     * @return string
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param string $id
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * Get name.
@@ -33,7 +61,7 @@ class Reference
      */
     public function getName(): ?string
     {
-        return $this->id;
+        return $this->name;
     }
 
     /**
@@ -43,19 +71,19 @@ class Reference
      */
     public function setName(string $name): self
     {
-        $this->id = $id;
+        $this->name = $name;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }

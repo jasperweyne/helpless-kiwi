@@ -8,7 +8,7 @@ security:
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
-            id: user_provider_service
+            id: App\Security\AuthUserProvider
             
     firewalls:
         dev:

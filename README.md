@@ -30,11 +30,13 @@ Then, insert the tables:
 
 ```php bin/console doctrine:schema:update --force```
 
-To add a user, manually add a row to both the tables 'reference' and 'auth'.
-Note that usernames are obfuscated, view '/src/Security/AuthUserProvider.php'
-on how this works. To generate the password values, use:
+To add a user, first register a person with:
 
-```php bin/console security:encode-password```
+```php bin/console create-person [email] [name]```
+
+Then, add a login to that user with:
+
+```php bin/console set-auth [email]```
 
 To run the server, use:
 
