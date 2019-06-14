@@ -11,7 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Group extends Reference
 {
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
+     * @ORM\JoinColumn(name="parent", referencedColumnName="id")
      */
     private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Group\Group", mappedBy="parent")
+     */
+    private $children;
 }

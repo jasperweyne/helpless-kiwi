@@ -23,8 +23,8 @@ class Mail
     private $auth;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Reference")
-     * @ORM\JoinColumn(name="user", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="App\Entity\Reference")
+     * @ORM\JoinColumn(name="target", referencedColumnName="id")
      */
     private $target;
 

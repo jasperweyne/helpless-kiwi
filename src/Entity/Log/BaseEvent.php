@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="log")
  * @ORM\InheritanceType("SINGLE_TABLE")
  */
 class BaseEvent

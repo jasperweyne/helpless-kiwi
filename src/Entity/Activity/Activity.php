@@ -2,25 +2,14 @@
 
 namespace App\Entity\Activity;
 
+use App\Entity\Group\Group;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class Activity
+class Activity extends Group
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="guid")
-     */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $name;
-
     /**
      * @ORM\Column(type="string")
      */
@@ -52,9 +41,4 @@ class Activity
      * @ORM\Column(type="datetime")
      */
     private $end;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
 }
