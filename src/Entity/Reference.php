@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * A person, or multiple persons through a group.
  *
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  */
@@ -86,5 +87,13 @@ class Reference
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+    
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new \DateTime());
     }
 }

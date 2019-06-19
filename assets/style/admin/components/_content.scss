@@ -1,0 +1,24 @@
+main {
+    .top {
+        @include flex;
+
+        h3 {
+            @include xy-cell-base(auto);
+        }
+
+        .buttons {
+            @include flex-align-self(middle);
+
+            a {
+                margin-left: 0.5rem;
+                color: $dark-gray;
+                border-bottom: 1px solid $dark-gray;
+
+                &:hover, &:active {
+                    color: $black;
+                    border-bottom: 1px solid $black;
+                }
+            }
+        }
+    }
+}

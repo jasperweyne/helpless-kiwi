@@ -4,18 +4,28 @@
     {% set page_title = 'Activiteiten' %}
 {% endif %}
 
+{% block buttons %}
+<a href="{{ path("admin_activity_new") }} ">Nieuw</a>
+{% endblock %}
+
 {% block body %}
     <div class="table">
         <table>
             <thead>
                 <tr>
                     <th>Naam</th>
+                    <th>Datum</th>
+                    <th>Tijd</th>
+                    <th>Georganiseerd door</th>
                 </tr>
             </thead>
             <tbody>
             {% for activity in activities %}
                 <tr>
-                    <td>{{ activity.name }}</td>
+                    <td><a href="{{ path("admin_activity_show", { 'id': activity.id }) }}">{{ activity.name }}</a></td>
+                    <td>{{ activity.start|date('d-m-Y') }}</td>
+                    <td>{{ activity.start|date('H:i') }}</td>
+                    <td>{{ activity.author.name }}</td>
                 </tr>
             {% else %}
                 <tr>

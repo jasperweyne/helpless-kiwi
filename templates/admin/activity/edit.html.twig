@@ -1,0 +1,13 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set page_title = 'Bewerk activiteit' %}
+
+{% block body %}
+    <div class="form">
+        {{ form_start(edit_form) }}
+            {{ form_widget(edit_form) }}
+            <div class="button-group"><button type="submit">Opslaan</button> <a href="{{ path('admin_activity_show', { 'id': activity.id }) }}">Annuleren</a></div>
+        {{ form_end(edit_form) }}
+    </div>
+
+{% endblock %}

@@ -67,7 +67,13 @@
             <main>
                 {% block body_root %}
                 <div class="container row">
-                    <h3>{{ page_title }}</h3>
+                    <span class="top">
+                        <h3>{{ page_title }}</h3>
+                        <span class="buttons">
+                        {% block buttons %}
+                        {% endblock %}
+                        </span>
+                    </span>
                     <div class="card">
                     {% block body %}
                     {% endblock %}

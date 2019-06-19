@@ -1,0 +1,89 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Activiteit ' ~ activity.name %}
+
+    {% block buttons %}
+        <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Bewerken</a>
+        <a href="{{ path('admin_activity_delete', { 'id': activity.id }) }}">Verwijderen</a>
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+    <table>
+        <tbody>
+            <tr>
+                <th>Titel</th>
+                <td>{{ activity.name }}</td>
+            </tr>
+            <tr>
+                <th>Beschrijving</th>
+                <td>{{ activity.description }}</td>
+            </tr>
+            <tr>
+                <th>Georganiseerd door</th>
+                <td>{{ activity.author.name }}</td>
+            </tr>
+            {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
+                <tr>
+                    <th>Datum</th>
+                    <td>
+                        {{ activity.start|date('d-m-Y') }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Tijd</th>
+                    <td>
+                        {{ activity.start|date('H:i') }} - {{ activity.end|date('H:i') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <th>Begint</th>
+                    <td>
+                        {{ activity.start|date('d-m-Y - H:i') }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Eindigt</th>
+                    <td>
+                        {{ activity.end|date('d-m-Y - H:i') }}
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <th>Opties</th>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Prijs</th>
+                                <th>Deadline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for option in activity.priceOptions %}
+                            <tr>
+                                <td>{{ option.name }}</td>
+                                <td>{{ option.price }}</td>
+                                <td>{{ option.start|date('d-m-Y') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen opties.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th>Gemaakt op</th>
+                <td>{{ activity.createdAt|date('d-m-Y H:i') }}</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
