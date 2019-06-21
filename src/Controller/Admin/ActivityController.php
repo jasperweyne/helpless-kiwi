@@ -78,10 +78,10 @@ class ActivityController extends AbstractController
      */
     public function editAction(Request $request, Activity $activity)
     {
-        $editForm = $this->createForm('App\Form\Activity\ActivityType', $activity);
-        $editForm->handleRequest($request);
+        $form = $this->createForm('App\Form\Activity\ActivityType', $activity);
+        $form->handleRequest($request);
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
@@ -89,7 +89,7 @@ class ActivityController extends AbstractController
 
         return $this->render('admin/activity/edit.html.twig', [
             'activity' => $activity,
-            'edit_form' => $editForm->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
