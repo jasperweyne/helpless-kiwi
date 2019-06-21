@@ -350,4 +350,9 @@ class Auth implements UserInterface, EquatableInterface
 
         return $this->getUsername === $user->getUsername();
     }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
 }

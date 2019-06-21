@@ -2,6 +2,7 @@
 
 namespace App\Entity\Group;
 
+use App\Entity\Reference;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -49,6 +50,42 @@ class Relation
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCollection(): ?Group
+    {
+        return $this->collection;
+    }
+
+    public function setCollection(?Group $collection): self
+    {
+        $this->collection = $collection;
+
+        return $this;
+    }
+
+    public function getTarget(): ?Reference
+    {
+        return $this->target;
+    }
+
+    public function setTarget(?Reference $target): self
+    {
+        $this->target = $target;
 
         return $this;
     }

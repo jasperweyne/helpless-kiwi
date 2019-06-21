@@ -2,6 +2,7 @@
 
 namespace App\Entity\Person;
 
+use App\Entity\Location;
 use App\Entity\Reference;
 use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
@@ -193,5 +194,17 @@ class Person extends Reference
     public function getType(): ?string
     {
         return 'Lid'; // ToDo: combine with labels
+    }
+
+    public function getAddress(): ?Location
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Location $address): self
+    {
+        $this->address = $address;
+
+        return $this;
     }
 }

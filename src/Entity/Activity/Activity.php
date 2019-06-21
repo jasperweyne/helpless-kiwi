@@ -4,7 +4,10 @@ namespace App\Entity\Activity;
 
 use App\Entity\Activity\PriceOption;
 use App\Entity\Group\Group;
+use App\Entity\Location;
 use App\Entity\Reference;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,6 +46,16 @@ class Activity extends Group
      * @ORM\Column(type="datetime")
      */
     private $end;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $deadline;
+
+    public function __construct()
+    {
+        $this->priceOptions = new ArrayCollection();
+    }
 
 
     /**
@@ -151,6 +164,63 @@ class Activity extends Group
     public function setEnd(\DateTime $end): self
     {
         $this->end = $end;
+
+        return $this;
+    }
+
+    /**
+     * Get deadline.
+     *
+     * @return \DateTime
+     */
+    public function getDeadline(): ?\DateTime
+    {
+        return $this->deadline;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param \DateTime $deadline
+     */
+    public function setDeadline(\DateTime $deadline): self
+    {
+        $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function addPriceOption(PriceOption $priceOption): self
+    {
+        if (!$this->priceOptions->contains($priceOption)) {
+            $this->priceOptions[] = $priceOption;
+            $priceOption->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removePriceOption(PriceOption $priceOption): self
+    {
+        if ($this->priceOptions->contains($priceOption)) {
+            $this->priceOptions->removeElement($priceOption);
+            // set the owning side to null (unless already changed)
+            if ($priceOption->getActivity() === $this) {
+                $priceOption->setActivity(null);
+            }
+        }
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Entity\Inventory;
 
+use App\Entity\Location;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
