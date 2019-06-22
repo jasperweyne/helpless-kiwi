@@ -77,4 +77,36 @@ class EventService
     public function populateAll(array $entities) {
         return array_map($this->populate, $entities);
     }
+
+    public function findBy(?LoggableEntityInterface $entity = null, ?string $type = null, array $options = array()) {
+
+        if ($entity !== null) {
+            $options['objectId'] = $entity->getPrimairy();
+            $options['objectType'] = get_class($entity);
+        }
+
+        if ($type !== null) {
+            $options['discr'] = $type;
+        }
+
+        $found = $this->em->getRepository(EventEntity::class)->findBy($options);
+
+        return $this->populateAll($found);
+    }
+
+    public function findOneBy(?LoggableEntityInterface $entity = null, ?string $type = null, array $options = array()) {
+        
+        if ($entity !== null) {
+            $options['objectId'] = $entity->getPrimairy();
+            $options['objectType'] = get_class($entity);
+        }
+
+        if ($type !== null) {
+            $options['discr'] = $type;
+        }
+
+        $found = $this->em->getRepository(EventEntity::class)->findOneBy($options);
+
+        return $this->populate($found);
+    }
 }

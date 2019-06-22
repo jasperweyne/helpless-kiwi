@@ -78,11 +78,7 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $createdAt = $this->events->populate($em->getRepository(Event::class)->findOneBy([
-            'objectId' => $activity->getPrimairy(),
-            'objectType' => Activity::class,
-            'discr' => EntityNewEvent::class,
-        ]));
+        $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt->getTime(),
