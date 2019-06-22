@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
-use App\Entity\Log\BaseEvent;
+use App\Entity\Log\Event;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -24,7 +24,7 @@ class EventController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $log = $em->getRepository(BaseEvent::class)->findAll();
+        $log = $em->getRepository(Event::class)->findAll();
 
         return $this->render('admin/event/index.html.twig', [
             'log' => $log,

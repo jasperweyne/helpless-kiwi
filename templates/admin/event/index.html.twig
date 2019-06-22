@@ -15,7 +15,7 @@
             <tbody>
             {% for event in log %}
                 <tr>
-                    <td>{{ event.time }}</td>
+                    <td>{{ event.time|date('d-m-Y H:i') }}</td>
                 </tr>
             {% else %}
                 <tr>

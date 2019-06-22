@@ -7,6 +7,9 @@ use App\Entity\Activity\Activity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Log\EventService;
+use App\Log\EntityNewEvent;
+use App\Entity\Log\Event;
 
 /**
  * Activity controller.
@@ -15,6 +18,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class ActivityController extends AbstractController
 {
+    private $events;
+
+    public function __construct(EventService $events)
+    {
+        $this->events = $events;
+    }
+
     /**
      * Lists all activities.
      *
@@ -66,7 +76,16 @@ class ActivityController extends AbstractController
      */
     public function showAction(Activity $activity)
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $createdAt = $this->events->populate($em->getRepository(Event::class)->findOneBy([
+            'objectId' => $activity->getPrimairy(),
+            'objectType' => Activity::class,
+            'discr' => EntityNewEvent::class,
+        ]));
+
         return $this->render('admin/activity/show.html.twig', [
+            'createdAt' => $createdAt->getTime(),
             'activity' => $activity,
         ]);
     }

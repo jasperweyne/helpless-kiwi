@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
+use App\Log\LoggableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * A person, or multiple persons through a group.
  *
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  */
-class Reference
+class Reference implements LoggableEntityInterface
 {
     /**
      * @ORM\Id()
@@ -25,13 +25,6 @@ class Reference
      * @ORM\Column(type="string", length=100)
      */
     private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private $createdAt;
 
     /**
      * Get id.
@@ -77,23 +70,7 @@ class Reference
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-    
-    /**
-     * @ORM\PrePersist
-     */
-    public function onPrePersist()
-    {
-        $this->setCreatedAt(new \DateTime());
+    public function getPrimairy() {
+        return $this->getId();
     }
 }

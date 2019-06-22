@@ -39,3 +39,7 @@ services:
     App\Template\MenuDiscovery:
         class: App\Template\MenuDiscovery
         arguments: ["App\\Controller", "../src/Controller", "%kernel.root_dir%", "@annotation_reader"]
+
+    App\Log\DoctrineEventListener:
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
