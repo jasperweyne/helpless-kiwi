@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Log\EventService;
-use App\Log\EntityNewEvent;
+use App\Log\Doctrine\EntityNewEvent;
 use App\Entity\Log\Event;
 
 /**
@@ -58,6 +58,7 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($activity);
+            $em->persist($activity->getLocation());
             $em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);

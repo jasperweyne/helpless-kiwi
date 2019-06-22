@@ -44,22 +44,7 @@ abstract class AbstractEvent
         return $this;
     }
 
-    // todo: figure out a way with out these accessors
-    public function setTime($time) {
-        $this->time = $time;
-
-        return $this;
-    }
-
-    public function setAuth($auth) {
-        $this->auth = $auth;
-
-        return $this;
-    }
-
-    public function setEntityCb($entityCb) {
-        $this->entityCb = $entityCb;
-
-        return $this;
+    public function migrateMetadata(array $meta) {
+        return $meta;
     }
 }

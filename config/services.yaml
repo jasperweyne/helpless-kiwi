@@ -40,6 +40,6 @@ services:
         class: App\Template\MenuDiscovery
         arguments: ["App\\Controller", "../src/Controller", "%kernel.root_dir%", "@annotation_reader"]
 
-    App\Log\DoctrineEventListener:
+    App\Log\Doctrine\EntityEventListener:
         tags:
             - { name: doctrine.event_listener, event: postPersist }

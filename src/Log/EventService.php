@@ -3,6 +3,7 @@
 namespace App\Log;
 
 use App\Entity\Log\Event as EventEntity;
+use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -12,9 +13,12 @@ class EventService
 
     private $auth;
 
+    private $instantiator;
+
     public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage) {
         $this->em = $em;
         $this->auth = $tokenStorage->getToken()->getUser();
+        $this->instantiator = new Instantiator();
     }
 
     public function log(AbstractEvent $event) {
@@ -25,51 +29,56 @@ class EventService
     }
 
     public function hydrate(AbstractEvent $event) {
-        if ($event->getTime() !== null)
-            throw new \InvalidArgumentException("Events populated from database cannot be hydrated again");
-        
-        $discr = get_class($event);
+        $meta = array();
+        $rootProperties = self::getAllProperties(AbstractEvent::class);
+        foreach (self::getAllProperties(get_class($event)) as $name => $property) {
+            if (in_array($property, $rootProperties))
+                continue;
+            
+            $meta[$name] = $property->getValue($event);
+        }
 
-        $entity = $event->getEntity();
-        $event->setEntity(null);
-
-        $meta = serialize($event);
-
-        $event = new EventEntity();
-        $event
-            ->setTime(new \DateTime)
-            ->setDiscr($discr)
+        $entity = new EventEntity();
+        $entity
+            ->setTime(new \DateTime())
+            ->setDiscr(get_class($event))
             ->setAuth($this->auth)
-            ->setMeta($meta)
+            ->setMeta(serialize($meta))
         ;
 
-        if ($entity !== null) {
-            $event
-                ->setObjectId($entity->getPrimairy())
-                ->setObjectType(get_class($entity))
+        $object = $event->getEntity();
+        if ($object !== null) {
+            $entity
+                ->setObjectId($object->getPrimairy())
+                ->setObjectType(get_class($object))
             ;
         }
 
-        return $event;
+        return $entity;
     }
 
     public function populate(EventEntity $entity) {
 
-        $event = unserialize($entity->getMeta());
+        $reflFields = self::getAllProperties($entity->getDiscr());
         
         $objectType = $entity->getObjectType();
         $objectId   = $entity->getObjectId();
-        $em = $this->em;
+        $em         = $this->em;
 
         $objectClosure = function () use ($em, $objectType, $objectId) {
             return $em->find($objectType, $objectId);
         };
+        
+        $event = $this->instantiator->instantiate($entity->getDiscr());
 
-        $event
-            ->setTime($entity->getTime())
-            ->setAuth($entity->getAuth())
-            ->setEntityCb($objectClosure)
-        ;
+        $reflFields['time']->setValue($event, $entity->getTime());
+        $reflFields['auth']->setValue($event, $entity->getAuth());
+        $reflFields['entityCb']->setValue($event, $objectClosure);
+
+        $meta = unserialize($entity->getMeta());
+        foreach ($event->migrateMetadata($meta) as $field => $value) {
+            $reflFields[$field]->setValue($event, $value);
+        }
 
         return $event;
     }
@@ -78,14 +87,14 @@ class EventService
         return array_map($this->populate, $entities);
     }
 
-    public function findBy(?LoggableEntityInterface $entity = null, ?string $type = null, array $options = array()) {
+    public function findBy(?LoggableEntityInterface $entity = null, string $type = '', array $options = array()) {
 
         if ($entity !== null) {
             $options['objectId'] = $entity->getPrimairy();
             $options['objectType'] = get_class($entity);
         }
 
-        if ($type !== null) {
+        if ($type !== '') {
             $options['discr'] = $type;
         }
 
@@ -94,19 +103,34 @@ class EventService
         return $this->populateAll($found);
     }
 
-    public function findOneBy(?LoggableEntityInterface $entity = null, ?string $type = null, array $options = array()) {
+    public function findOneBy(?LoggableEntityInterface $entity = null, string $type = '', array $options = array()) {
         
         if ($entity !== null) {
             $options['objectId'] = $entity->getPrimairy();
             $options['objectType'] = get_class($entity);
         }
 
-        if ($type !== null) {
+        if ($type !== '') {
             $options['discr'] = $type;
         }
 
         $found = $this->em->getRepository(EventEntity::class)->findOneBy($options);
 
         return $this->populate($found);
+    }
+
+    public static function getAllProperties(string $class) {
+        $reflFields = array();
+        try {
+            $reflClass = new \ReflectionClass($class);
+            do {
+                foreach ($reflClass->getProperties() as $property) {
+                    $property->setAccessible(true);
+                    $reflFields[$property->getName()] = $property;
+                }
+            } while ($reflClass = $reflClass->getParentClass());
+        } catch (\ReflectionException $e) { }
+
+        return $reflFields;
     }
 }

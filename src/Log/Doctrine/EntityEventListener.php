@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Log;
+namespace App\Log\Doctrine;
 
-use App\Log\EntityNewEvent;
+use App\Log\Doctrine\EntityNewEvent;
 use App\Log\LoggableEntityInterface;
+use App\Log\EventService;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
-class DoctrineEventListener
+class EntityEventListener
 {
     private $eventService;
 

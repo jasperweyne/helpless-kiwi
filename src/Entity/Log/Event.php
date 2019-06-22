@@ -46,13 +46,13 @@ class Event
     private $objectType;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Security\Auth")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\Auth")
      * @ORM\JoinColumn(name="auth", referencedColumnName="person")
      */
     private $auth;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     private $meta;
 
