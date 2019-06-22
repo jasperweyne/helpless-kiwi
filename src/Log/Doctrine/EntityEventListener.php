@@ -24,10 +24,6 @@ class EntityEventListener
             return;
         }
 
-        $eventEntity = $this->eventService->hydrate(new EntityNewEvent($entity));
-
-        $em = $args->getObjectManager();
-        $em->persist($eventEntity);
-        $em->flush();
+        $this->eventService->log(new EntityNewEvent($entity));
     }
 }
