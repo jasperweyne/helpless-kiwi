@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Log\LoggableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  */
-class Reference implements LoggableEntityInterface
+class Reference
 {
     /**
      * @ORM\Id()
@@ -68,9 +67,5 @@ class Reference implements LoggableEntityInterface
         $this->name = $name;
 
         return $this;
-    }
-
-    public function getPrimairy() {
-        return $this->getId();
     }
 }

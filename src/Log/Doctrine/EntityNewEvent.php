@@ -3,11 +3,10 @@
 namespace App\Log\Doctrine;
 
 use App\Log\AbstractEvent;
-use App\Log\LoggableEntityInterface;
 
 class EntityNewEvent extends AbstractEvent
 {
-    public function __construct(LoggableEntityInterface $entity)
+    public function __construct($entity)
     {
         $this->setEntity($entity);
     }

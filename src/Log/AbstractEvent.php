@@ -37,7 +37,7 @@ abstract class AbstractEvent
         return $this->entity;
     }
 
-    public function setEntity(?LoggableEntityInterface $entity) {
+    public function setEntity($entity) {
         $this->entityCb = null;
         $this->entity = $entity;
 

@@ -49,7 +49,7 @@ class EventService
         $object = $event->getEntity();
         if ($object !== null) {
             $entity
-                ->setObjectId($object->getPrimairy())
+                ->setObjectId($this->getIdentifier($object))
                 ->setObjectType(get_class($object))
             ;
         }
@@ -87,10 +87,10 @@ class EventService
         return array_map($this->populate, $entities);
     }
 
-    public function findBy(?LoggableEntityInterface $entity = null, string $type = '', array $options = array()) {
+    public function findBy($entity = null, string $type = '', array $options = array()) {
 
         if ($entity !== null) {
-            $options['objectId'] = $entity->getPrimairy();
+            $options['objectId'] = $this->getIdentifier($entity);
             $options['objectType'] = get_class($entity);
         }
 
@@ -103,10 +103,10 @@ class EventService
         return $this->populateAll($found);
     }
 
-    public function findOneBy(?LoggableEntityInterface $entity = null, string $type = '', array $options = array()) {
+    public function findOneBy($entity = null, string $type = '', array $options = array()) {
         
         if ($entity !== null) {
-            $options['objectId'] = $entity->getPrimairy();
+            $options['objectId'] = $this->getIdentifier($entity);
             $options['objectType'] = get_class($entity);
         }
 
@@ -117,6 +117,13 @@ class EventService
         $found = $this->em->getRepository(EventEntity::class)->findOneBy($options);
 
         return $this->populate($found);
+    }
+
+    private function getIdentifier($entity) {
+        $className = get_class($entity);
+        $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
+        $reflFields = self::getAllProperties($className);
+        return $reflFields[$identifier]->getValue($entity);
     }
 
     public static function getAllProperties(string $class) {

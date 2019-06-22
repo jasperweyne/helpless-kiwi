@@ -3,9 +3,9 @@
 namespace App\Log\Doctrine;
 
 use App\Log\Doctrine\EntityNewEvent;
-use App\Log\LoggableEntityInterface;
 use App\Log\EventService;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use App\Entity\Log\Event;
 
 class EntityEventListener
 {
@@ -20,7 +20,7 @@ class EntityEventListener
     {
         $entity = $args->getObject();
 
-        if (!$entity instanceof LoggableEntityInterface) {
+        if ($entity instanceof Event) {
             return;
         }
 
