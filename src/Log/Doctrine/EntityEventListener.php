@@ -7,6 +7,8 @@ use App\Log\EventService;
 use App\Log\ReflectionService;
 use App\Log\Doctrine\EntityNewEvent;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EntityEventListener
 {
@@ -31,7 +33,8 @@ class EntityEventListener
                 continue;
             }
             
-            $fields = $this->extractFields($entity, $em->getClassMetadata(get_class($entity)));
+            $metadata = $em->getClassMetadata(get_class($entity));
+            $fields = $this->extractFields($entity, $metadata);
 
             $logEntity = $this->eventService->hydrate(new EntityNewEvent($entity, $fields));
             $logMeta = $em->getClassMetadata(get_class($logEntity));
@@ -77,8 +80,28 @@ class EntityEventListener
     }
 
     private function sanitize($value, $field, $metadata) {
+        if ($value === null)
+            return null;
+        
         if (array_key_exists($field, $metadata->getAssociationMappings())) {
-            return null; // todo: support references
+            if ($value instanceof PersistentCollection) {
+                $classname = $value->getTypeClass();
+
+                $values = array();
+                foreach ($value as $reference) {
+                    $values[] = array(
+                        'entity' => $classname,
+                        'identifier' => $this->eventService->getIdentifier($reference)
+                    );
+                }
+
+                return $values;
+            } else {
+                return array(
+                    'entity' => $this->eventService->getClassName($value),
+                    'identifier' => $this->eventService->getIdentifier($value)
+                );
+            }
         }
 
         return $value;

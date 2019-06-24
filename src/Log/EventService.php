@@ -113,7 +113,7 @@ class EventService
         return $this->populate($found);
     }
 
-    private function getIdentifier($entity) {
+    public function getIdentifier($entity) {
         $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
         $refl = $this->refl->getAccessibleProperty($className, $identifier);
