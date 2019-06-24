@@ -43,8 +43,4 @@ abstract class AbstractEvent
 
         return $this;
     }
-
-    public function migrateMetadata(array $meta) {
-        return $meta;
-    }
 }

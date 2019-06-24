@@ -3,7 +3,7 @@
 namespace App\Log;
 
 use App\Entity\Log\Event as EventEntity;
-use Doctrine\Instantiator\Instantiator;
+use App\Log\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -13,12 +13,12 @@ class EventService
 
     private $auth;
 
-    private $instantiator;
+    private $refl;
 
-    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage) {
+    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ReflectionService $refl) {
         $this->em = $em;
         $this->auth = $tokenStorage->getToken()->getUser();
-        $this->instantiator = new Instantiator();
+        $this->refl = $refl;
     }
 
     public function log(AbstractEvent $event) {
@@ -30,8 +30,8 @@ class EventService
 
     public function hydrate(AbstractEvent $event) {
         $meta = array();
-        $rootProperties = self::getAllProperties(AbstractEvent::class);
-        foreach (self::getAllProperties(get_class($event)) as $name => $property) {
+        $rootProperties = $this->refl->getAllProperties(AbstractEvent::class);
+        foreach ($this->refl->getAllProperties(get_class($event)) as $name => $property) {
             if (in_array($property, $rootProperties))
                 continue;
             
@@ -50,7 +50,7 @@ class EventService
         if ($object !== null) {
             $entity
                 ->setObjectId($this->getIdentifier($object))
-                ->setObjectType(get_class($object))
+                ->setObjectType($this->getClassName($object))
             ;
         }
 
@@ -59,7 +59,7 @@ class EventService
 
     public function populate(EventEntity $entity) {
 
-        $reflFields = self::getAllProperties($entity->getDiscr());
+        $reflFields = $this->refl->getAllProperties($entity->getDiscr());
         
         $objectType = $entity->getObjectType();
         $objectId   = $entity->getObjectId();
@@ -68,19 +68,13 @@ class EventService
         $objectClosure = function () use ($em, $objectType, $objectId) {
             return $em->find($objectType, $objectId);
         };
-        
-        $event = $this->instantiator->instantiate($entity->getDiscr());
 
-        $reflFields['time']->setValue($event, $entity->getTime());
-        $reflFields['auth']->setValue($event, $entity->getAuth());
-        $reflFields['entityCb']->setValue($event, $objectClosure);
+        $fields = unserialize($entity->getMeta());
+        $fields['time']     = $entity->getTime();
+        $fields['auth']     = $entity->getAuth();
+        $fields['entityCb'] = $objectClosure;
 
-        $meta = unserialize($entity->getMeta());
-        foreach ($event->migrateMetadata($meta) as $field => $value) {
-            $reflFields[$field]->setValue($event, $value);
-        }
-
-        return $event;
+        return $this->refl->instantiate($entity->getDiscr(), $fields);
     }
 
     public function populateAll(array $entities) {
@@ -120,24 +114,14 @@ class EventService
     }
 
     private function getIdentifier($entity) {
-        $className = get_class($entity);
+        $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
-        $reflFields = self::getAllProperties($className);
-        return $reflFields[$identifier]->getValue($entity);
+        $refl = $this->refl->getAccessibleProperty($className, $identifier);
+
+        return $refl->getValue($entity);
     }
 
-    public static function getAllProperties(string $class) {
-        $reflFields = array();
-        try {
-            $reflClass = new \ReflectionClass($class);
-            do {
-                foreach ($reflClass->getProperties() as $property) {
-                    $property->setAccessible(true);
-                    $reflFields[$property->getName()] = $property;
-                }
-            } while ($reflClass = $reflClass->getParentClass());
-        } catch (\ReflectionException $e) { }
-
-        return $reflFields;
+    public function getClassName($entity) {
+        return $this->em->getClassMetadata(get_class($entity))->name;
     }
 }

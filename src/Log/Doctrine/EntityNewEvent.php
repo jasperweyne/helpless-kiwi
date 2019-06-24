@@ -6,8 +6,16 @@ use App\Log\AbstractEvent;
 
 class EntityNewEvent extends AbstractEvent
 {
-    public function __construct($entity)
+    private $fields;
+
+    public function __construct($entity, $fields)
     {
         $this->setEntity($entity);
+
+        $this->fields = $fields;
+    }
+
+    public function getFields() {
+        return $this->fields;
     }
 }
