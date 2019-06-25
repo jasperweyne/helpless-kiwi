@@ -50,8 +50,10 @@ class EntityEventListener
     
             $newFields = array();
             foreach ($uow->getEntityChangeSet($entity) as $field => $values) {
-                $original[$field] = $this->sanitize($values[0], $field, $metadata);
-                $newFields[$field] = $this->sanitize($values[1], $field, $metadata);
+                if (!$values[0] instanceof PersistentCollection) {
+                    $original[$field] = $this->sanitize($values[0], $field, $metadata);
+                    $newFields[$field] = $this->sanitize($values[1], $field, $metadata);
+                }
             }
     
             $logEntity = $this->eventService->hydrate(new EntityUpdateEvent($entity, $original, $newFields));
@@ -68,12 +70,12 @@ class EntityEventListener
     }
 
     public function extractFields($entity, $metadata) {
-        $entityFqcn = $this->eventService->getClassName($entity);
-        $properties = $this->reflService->getAllProperties($entityFqcn);
+        $properties = $metadata->getReflectionProperties();
 
         $fields = array();
         foreach ($properties as $field => $property) {
-            $fields[$field] = $this->sanitize($property->getValue($entity), $field, $metadata);
+            if (!$property->getValue($entity) instanceof PersistentCollection)
+                $fields[$field] = $this->sanitize($property->getValue($entity), $field, $metadata);
         }
 
         return $fields;
@@ -85,17 +87,8 @@ class EntityEventListener
         
         if (array_key_exists($field, $metadata->getAssociationMappings())) {
             if ($value instanceof PersistentCollection) {
-                $classname = $value->getTypeClass();
-
-                $values = array();
-                foreach ($value as $reference) {
-                    $values[] = array(
-                        'entity' => $classname,
-                        'identifier' => $this->eventService->getIdentifier($reference)
-                    );
-                }
-
-                return $values;
+                // Is initialized by Doctrine through other entities; skip
+                throw new \LogicException("Values for this field should not be sanitized; skip this field");
             } else {
                 return array(
                     'entity' => $this->eventService->getClassName($value),
