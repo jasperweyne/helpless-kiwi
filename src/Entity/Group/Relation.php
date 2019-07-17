@@ -2,7 +2,7 @@
 
 namespace App\Entity\Group;
 
-use App\Entity\Group\Group;
+use App\Entity\Group\Taxonomy;
 use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,7 +13,7 @@ class Relation
 {
     /**
      * @ORM\Id
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\OneToOne(targetEntity="App\Entity\Group\Taxonomy")
      */
     private $collection;
 
@@ -23,12 +23,12 @@ class Relation
      */
     private $target;
 
-    public function getCollection(): ?Group
+    public function getCollection(): ?Taxonomy
     {
         return $this->collection;
     }
 
-    public function setCollection(?Group $collection): self
+    public function setCollection(?Taxonomy $collection): self
     {
         $this->collection = $collection;
 

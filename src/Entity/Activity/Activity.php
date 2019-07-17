@@ -3,7 +3,7 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Activity\PriceOption;
-use App\Entity\Group\Group;
+use App\Entity\Group\Taxonomy;
 use App\Entity\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -39,7 +39,7 @@ class Activity
     private $location;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\OneToOne(targetEntity="App\Entity\Group\Taxonomy")
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id")
      */
     private $author;
@@ -133,9 +133,9 @@ class Activity
     /**
      * Get author.
      *
-     * @return Group
+     * @return Taxonomy
      */
-    public function getAuthor(): ?Group
+    public function getAuthor(): ?Taxonomy
     {
         return $this->author;
     }
@@ -143,9 +143,9 @@ class Activity
     /**
      * Set author.
      *
-     * @param Group $author
+     * @param Taxonomy $author
      */
-    public function setAuthor(Group $author): self
+    public function setAuthor(Taxonomy $author): self
     {
         $this->author = $author;
 

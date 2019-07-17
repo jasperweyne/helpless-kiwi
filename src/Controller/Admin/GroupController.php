@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
-use App\Entity\Group\Group;
+use App\Entity\Group\Taxonomy;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -24,7 +24,7 @@ class GroupController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $groups = $em->getRepository(Group::class)->findAll();
+        $groups = $em->getRepository(Taxonomy::class)->findAll();
 
         return $this->render('admin/group/index.html.twig', [
             'groups' => $groups,

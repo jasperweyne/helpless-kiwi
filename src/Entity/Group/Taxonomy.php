@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Group
+class Taxonomy
 {
     /**
      * @ORM\Id()
@@ -24,13 +24,13 @@ class Group
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Taxonomy", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
      */
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Group\Group", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Group\Taxonomy", mappedBy="parent")
      */
     private $children;
 

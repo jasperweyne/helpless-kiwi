@@ -2,7 +2,7 @@
 
 namespace App\Entity\Inventory;
 
-use App\Entity\Location;
+use App\Entity\Location\Location;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,7 +38,7 @@ class Item
     /**
      * @var string
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\Location")
+     * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
      */
     private $location;

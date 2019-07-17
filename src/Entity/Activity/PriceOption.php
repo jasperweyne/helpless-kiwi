@@ -2,7 +2,7 @@
 
 namespace App\Entity\Activity;
 
-use App\Entity\Group\Group;
+use App\Entity\Group\Taxonomy;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

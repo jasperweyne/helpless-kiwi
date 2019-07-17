@@ -2,7 +2,7 @@
 
 namespace App\Entity\Mail;
 
-use App\Entity\Group\Group;
+use App\Entity\Group\Taxonomy;
 use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,7 +25,7 @@ class Mail
     private $auth;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\OneToOne(targetEntity="App\Entity\Group\Taxonomy")
      * @ORM\JoinColumn(name="target", referencedColumnName="id")
      */
     private $target;
@@ -81,12 +81,12 @@ class Mail
         return $this;
     }
 
-    public function getTarget(): ?Group
+    public function getTarget(): ?Taxonomy
     {
         return $this->target;
     }
 
-    public function setTarget(?Group $target): self
+    public function setTarget(?Taxonomy $target): self
     {
         $this->target = $target;
 
