@@ -23,7 +23,7 @@ class Activity
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, name="title")
      */
     private $name;
 
