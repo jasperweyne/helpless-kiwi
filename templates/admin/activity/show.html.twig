@@ -67,7 +67,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for option in activity.priceOptions %}
+                        {% for option in activity.options %}
                             <tr>
                                 <td>{{ option.name }}</td>
                                 <td>{{ option.price }}</td>
@@ -75,6 +75,31 @@
                         {% else %}
                             <tr>
                                 <td>Geen opties.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th>Aanmeldingen</th>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Optie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for registration in activity.registrations %}
+                            <tr>
+                                <td>{{ registration.person.fullname }}</td>
+                                <td>{{ registration.option.name }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen aanmeldingen.</td>
                             </tr>
                         {% endfor %}
                         </tbody>

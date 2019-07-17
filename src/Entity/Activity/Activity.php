@@ -33,6 +33,16 @@ class Activity
     private $description;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Activity\PriceOption", mappedBy="activity")
+     */
+    private $options;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="activity")
+     */
+    private $registrations;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
      */
@@ -43,11 +53,6 @@ class Activity
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id")
      */
     private $author;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Activity\PriceOption", mappedBy="activity")
-     */
-    private $priceOptions;
 
     /**
      * @ORM\Column(type="datetime")
@@ -131,6 +136,70 @@ class Activity
     }
 
     /**
+     * Get price options.
+     *
+     * @return Collection|PriceOption[]
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(PriceOption $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options[] = $option;
+            $option->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(PriceOption $option): self
+    {
+        if ($this->options->contains($option)) {
+            $this->options->removeElement($option);
+            // set the owning side to null (unless already changed)
+            if ($option->getActivity() === $this) {
+                $option->setActivity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Registration[]
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            // set the owning side to null (unless already changed)
+            if ($registration->getParent() === $this) {
+                $registration->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Get author.
      *
      * @return Taxonomy
@@ -148,28 +217,6 @@ class Activity
     public function setAuthor(Taxonomy $author): self
     {
         $this->author = $author;
-
-        return $this;
-    }
-
-    /**
-     * Get price options.
-     *
-     * @return PriceOption[]
-     */
-    public function getPriceOptions()//: ?ArrayCollection //todo: type hint
-    {
-        return $this->priceOptions;
-    }
-
-    /**
-     * Set price options.
-     *
-     * @param PriceOption[] $priceOptions
-     */
-    public function setPriceOptions(array $priceOptions): self
-    {
-        $this->priceOptions = $priceOptions;
 
         return $this;
     }
@@ -252,31 +299,9 @@ class Activity
         return $this;
     }
 
-    public function addPriceOption(PriceOption $priceOption): self
-    {
-        if (!$this->priceOptions->contains($priceOption)) {
-            $this->priceOptions[] = $priceOption;
-            $priceOption->setActivity($this);
-        }
-
-        return $this;
-    }
-
-    public function removePriceOption(PriceOption $priceOption): self
-    {
-        if ($this->priceOptions->contains($priceOption)) {
-            $this->priceOptions->removeElement($priceOption);
-            // set the owning side to null (unless already changed)
-            if ($priceOption->getActivity() === $this) {
-                $priceOption->setActivity(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function __construct()
     {
-        $this->priceOptions = new ArrayCollection();
+        $this->registrations = new ArrayCollection();
+        $this->options = new ArrayCollection();
     }
 }

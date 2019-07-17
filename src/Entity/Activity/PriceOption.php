@@ -2,7 +2,7 @@
 
 namespace App\Entity\Activity;
 
-use App\Entity\Group\Taxonomy;
+use App\Entity\Activity\Activity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,7 +23,7 @@ class PriceOption
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="priceOptions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="options")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      */
     private $activity;
