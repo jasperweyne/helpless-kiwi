@@ -22,8 +22,12 @@
                 <td>{{ activity.description }}</td>
             </tr>
             <tr>
+                <th>Aanmelddeadline</th>
+                <td>{{ activity.deadline|date('d-m-Y') }}</td>
+            </tr>
+            <tr>
                 <th>Georganiseerd door</th>
-                <td>{{ activity.author ? activity.author.name : '' }}</td>
+                <td>{{ activity.author.name ?? '' }}</td>
             </tr>
             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
                 <tr>
@@ -60,7 +64,6 @@
                             <tr>
                                 <th>Naam</th>
                                 <th>Prijs</th>
-                                <th>Deadline</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,7 +71,6 @@
                             <tr>
                                 <td>{{ option.name }}</td>
                                 <td>{{ option.price }}</td>
-                                <td>{{ option.start|date('d-m-Y') }}</td>
                             </tr>
                         {% else %}
                             <tr>
