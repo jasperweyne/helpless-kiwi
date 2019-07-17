@@ -84,7 +84,7 @@ class ActivityController extends AbstractController
         $modifs    = $this->events->findBy($activity, EntityUpdateEvent::class);
 
         return $this->render('admin/activity/show.html.twig', [
-            'createdAt' => $createdAt->getTime(),
+            'createdAt' => $createdAt,
             'modifs' => $modifs,
             'activity' => $activity,
         ]);
