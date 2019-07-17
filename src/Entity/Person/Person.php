@@ -80,18 +80,6 @@ class Person
     }
 
     /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName(): ?string
-    {
-        trigger_error('Person::getName() is deprecated, please use Person::getFullname()', E_USER_DEPRECATED);
-
-        return $this->getFullname();
-    }
-
-    /**
      * Get authentication entity.
      *
      * @return string
@@ -223,7 +211,7 @@ class Person
 
     public function getCanonical(): ?string
     {
-        $name = sprintf('pseudonymized (%s...)', substr($this->getName(), 0, 8));
+        $name = sprintf('pseudonymized (%s...)', substr($this->getFullname(), 0, 8));
 
         if (' ' !== $this->getFullname()) {
             $name = $this->getFullname();
