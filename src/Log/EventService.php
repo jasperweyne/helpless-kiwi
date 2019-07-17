@@ -51,7 +51,7 @@ class EventService
         $object = $event->getEntity();
         if ($object !== null) {
             $entity
-                ->setObjectId($this->getIdentifier($object))
+                ->setObjectId($this->getIdentifier($object)) // todo: assumes id is string without assertion, fix this
                 ->setObjectType($this->getClassName($object))
             ;
         }

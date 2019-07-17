@@ -33,7 +33,7 @@ class Activity
     private $description;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Location")
+     * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
      */
     private $location;
