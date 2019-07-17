@@ -32,6 +32,9 @@
                 <th>Gemaakt door</th>
                 <td>{{ createdAt.auth.person.fullname ?? '' }}</td>
             </tr>
+            <tr>
+                <th>Bestand</th>
+                <td><img src="{{ vich_uploader_asset(claim, 'imageFile') }}" alt="{{ claim.description }}" /></td>
         </tbody>
     </table>
     </div>

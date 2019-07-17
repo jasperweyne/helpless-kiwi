@@ -24,7 +24,8 @@
         "symfony/validator": "4.2.*",
         "symfony/web-link": "4.2.*",
         "symfony/webpack-encore-bundle": "^1.5",
-        "symfony/yaml": "4.2.*"
+        "symfony/yaml": "4.2.*",
+        "vich/uploader-bundle": "^1.10"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",
