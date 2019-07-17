@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
+use App\Log\Doctrine\EntityUpdateEvent;
 use App\Entity\Log\Event;
 
 /**
@@ -80,9 +81,11 @@ class ActivityController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
+        $modifs    = $this->events->findBy($activity, EntityUpdateEvent::class);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt->getTime(),
+            'modifs' => $modifs,
             'activity' => $activity,
         ]);
     }

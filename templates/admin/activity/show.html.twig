@@ -106,6 +106,31 @@
                     </table>
                 </td>
             </tr>
+            <tr>
+                <th>Aanpassingen</th>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Door</th>
+                                <th>Tijdstip</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for modif in modifs %}
+                            <tr>
+                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                <td>{{ modif.auth.person.fullname }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen aanpassingen.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
         </tbody>
     </table>
     </div>
