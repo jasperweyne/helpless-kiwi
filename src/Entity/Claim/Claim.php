@@ -39,13 +39,6 @@ class Claim
     private $description;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private $createdAt;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Security\Auth")
      * @ORM\JoinColumn(name="reviewed_by", referencedColumnName="person")
      */

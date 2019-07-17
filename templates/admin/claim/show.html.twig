@@ -1,0 +1,38 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Declaratie ' ~ claim.purpose %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+    <table>
+        <tbody>
+            <tr>
+                <th>Auteur</th>
+                <td>{{ claim.author.person.fullname }}</td>
+            </tr>
+            <tr>
+                <th>Beschrijving</th>
+                <td>{{ claim.description }}</td>
+            </tr>
+            <tr>
+                <th>Doel</th>
+                <td>{{ claim.purpose }}</td>
+            </tr>
+            <tr>
+                <th>Prijs</th>
+                <td>{{ claim.price }}</td>
+            </tr>
+            <tr>
+                <th>Gemaakt op</th>
+                <td>{{ createdAt.time|date('d-m-Y - H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Gemaakt door</th>
+                <td>{{ createdAt.auth.person.fullname ?? '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

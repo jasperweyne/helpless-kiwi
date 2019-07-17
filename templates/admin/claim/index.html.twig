@@ -4,13 +4,17 @@
     {% set page_title = 'Declaraties' %}
 {% endif %}
 
+{% block buttons %}
+<a href="{{ path("admin_claim_new") }} ">Nieuw</a>
+{% endblock %}
+
 {% block body %}
     <div class="table">
         <table>
             <thead>
                 <tr>
-                    <th>Datum</th>
                     <th>Auteur</th>
+                    <th>Beschrijving</th>
                     <th>Doel</th>
                     <th>Bedrag</th>
                 </tr>
@@ -18,8 +22,8 @@
             <tbody>
             {% for claim in claims %}
                 <tr>
-                    <td>{{ claim.createdAt }}</td>
-                    <td>{{ claim.author }}</td>
+                    <td>{{ claim.author.person.fullname ?? '' }}</td>
+                    <td>{{ claim.description }}</td>
                     <td>{{ claim.purpose }}</td>
                     <td>{{ claim.price }}</td>
                 </tr>
