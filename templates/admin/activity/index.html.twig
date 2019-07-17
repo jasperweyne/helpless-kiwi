@@ -25,7 +25,7 @@
                     <td><a href="{{ path("admin_activity_show", { 'id': activity.id }) }}">{{ activity.name }}</a></td>
                     <td>{{ activity.start|date('d-m-Y') }}</td>
                     <td>{{ activity.start|date('H:i') }}</td>
-                    <td>{{ activity.author.name }}</td>
+                    <td>{{ activity.author ? activity.author.name : '' }}</td>
                 </tr>
             {% else %}
                 <tr>

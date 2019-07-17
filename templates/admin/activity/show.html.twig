@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <th>Georganiseerd door</th>
-                <td>{{ activity.author.name }}</td>
+                <td>{{ activity.author ? activity.author.name : '' }}</td>
             </tr>
             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
                 <tr>
@@ -78,10 +78,6 @@
                         </tbody>
                     </table>
                 </td>
-            </tr>
-            <tr>
-                <th>Gemaakt op</th>
-                <td>{{ activity.createdAt|date('d-m-Y H:i') }}</td>
             </tr>
         </tbody>
     </table>

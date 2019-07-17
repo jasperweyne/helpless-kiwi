@@ -4,7 +4,7 @@ namespace App\Entity\Activity;
 
 use App\Entity\Activity\PriceOption;
 use App\Entity\Group\Taxonomy;
-use App\Entity\Location;
+use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
