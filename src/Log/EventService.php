@@ -80,7 +80,7 @@ class EventService
     }
 
     public function populateAll(array $entities) {
-        return array_map($this->populate, $entities);
+        return array_map(array($this, 'populate'), $entities);
     }
 
     public function findBy($entity = null, string $type = '', array $options = array()) {
