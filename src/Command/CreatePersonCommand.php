@@ -133,10 +133,7 @@ class CreatePersonCommand extends Command
             ->setEmail($this->inputInfo['email'])
             ->setFirstname($this->inputInfo['first'])
             ->setLastname($this->inputInfo['last'])
-
-            // Reference
-            ->setName($person->getFirstname() . ' ' . $person->getLastname())
-            ->setCreatedAt(new \DateTime())
+            ->setAddress(null)
         ;
 
         $this->em->persist($person);

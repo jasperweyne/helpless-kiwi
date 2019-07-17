@@ -16,8 +16,10 @@ class EventService
     private $refl;
 
     public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ReflectionService $refl) {
+        $token = $tokenStorage->getToken();
+
         $this->em = $em;
-        $this->auth = $tokenStorage->getToken()->getUser();
+        $this->auth = $token ? $token->getUser() : null;
         $this->refl = $refl;
     }
 

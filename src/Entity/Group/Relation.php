@@ -2,7 +2,8 @@
 
 namespace App\Entity\Group;
 
-use App\Entity\Reference;
+use App\Entity\Group\Group;
+use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,53 +19,9 @@ class Relation
 
     /**
      * @ORM\Id
-     * @ORM\OneToOne(targetEntity="App\Entity\Reference")
+     * @ORM\OneToOne(targetEntity="App\Entity\Person\Person")
      */
     private $target;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * Get group name.
-     *
-     * @return string
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set group name.
-     *
-     * @param string $name
-     */
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
 
     public function getCollection(): ?Group
     {
@@ -78,12 +35,12 @@ class Relation
         return $this;
     }
 
-    public function getTarget(): ?Reference
+    public function getTarget(): ?Person
     {
         return $this->target;
     }
 
-    public function setTarget(?Reference $target): self
+    public function setTarget(?Person $target): self
     {
         $this->target = $target;
 

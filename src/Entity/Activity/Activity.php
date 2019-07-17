@@ -5,7 +5,6 @@ namespace App\Entity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Group\Group;
 use App\Entity\Location;
-use App\Entity\Reference;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,8 +12,21 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Activity extends Group
+class Activity
 {
+
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $name;
+
     /**
      * @ORM\Column(type="string")
      */
@@ -27,7 +39,7 @@ class Activity extends Group
     private $location;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Reference")
+     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id")
      */
     private $author;
@@ -52,11 +64,49 @@ class Activity extends Group
      */
     private $deadline;
 
-    public function __construct()
+    /**
+     * Get id.
+     *
+     * @return string
+     */
+    public function getId(): ?string
     {
-        $this->priceOptions = new ArrayCollection();
+        return $this->id;
     }
 
+    /**
+     * Set id.
+     *
+     * @param string $id
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get name.
+     *
+     * @return string
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set name.
+     *
+     * @param string $name
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
 
     /**
      * Get description.
@@ -83,9 +133,9 @@ class Activity extends Group
     /**
      * Get author.
      *
-     * @return Reference
+     * @return Group
      */
-    public function getAuthor(): ?Reference
+    public function getAuthor(): ?Group
     {
         return $this->author;
     }
@@ -93,9 +143,9 @@ class Activity extends Group
     /**
      * Set author.
      *
-     * @param Reference $author
+     * @param Group $author
      */
-    public function setAuthor(Reference $author): self
+    public function setAuthor(Group $author): self
     {
         $this->author = $author;
 
@@ -223,5 +273,10 @@ class Activity extends Group
         }
 
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->priceOptions = new ArrayCollection();
     }
 }

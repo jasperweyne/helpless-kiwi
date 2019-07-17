@@ -2,7 +2,7 @@
 
 namespace App\Entity\Mail;
 
-use App\Entity\Reference;
+use App\Entity\Group\Group;
 use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,7 +25,7 @@ class Mail
     private $auth;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Reference")
+     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="target", referencedColumnName="id")
      */
     private $target;
@@ -81,12 +81,12 @@ class Mail
         return $this;
     }
 
-    public function getTarget(): ?Reference
+    public function getTarget(): ?Group
     {
         return $this->target;
     }
 
-    public function setTarget(?Reference $target): self
+    public function setTarget(?Group $target): self
     {
         $this->target = $target;
 

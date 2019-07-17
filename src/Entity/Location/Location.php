@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Location;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,16 +11,10 @@ class Location
 {
     /**
      * @ORM\Id()
-     * @ORM\Column(type="string", length=100)
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
      */
     private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private $created_at;
 
     /**
      * @ORM\Column(type="string")
@@ -30,18 +24,6 @@ class Location
     public function getId(): ?string
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
     }
 
     public function getAddress(): ?string

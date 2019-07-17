@@ -2,7 +2,6 @@
 
 namespace App\Entity\Group;
 
-use App\Entity\Reference;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,8 +9,20 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Group extends Reference
+class Group
 {
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $name;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
@@ -23,9 +34,48 @@ class Group extends Reference
      */
     private $children;
 
-    public function __construct()
+    /**
+     * Get id.
+     *
+     * @return string
+     */
+    public function getId(): ?string
     {
-        $this->children = new ArrayCollection();
+        return $this->id;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param string $id
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get name.
+     *
+     * @return string
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set name.
+     *
+     * @param string $name
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getParent(): ?self
@@ -69,5 +119,10 @@ class Group extends Reference
         }
 
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
     }
 }

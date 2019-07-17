@@ -2,16 +2,23 @@
 
 namespace App\Entity\Person;
 
-use App\Entity\Location;
-use App\Entity\Reference;
+use App\Entity\Location\Location;
 use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
  */
-class Person extends Reference
+class Person
 {
+
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
+     */
+    private $id;
+
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Security\Auth", mappedBy="person")
      */
@@ -45,10 +52,44 @@ class Person extends Reference
     private $email;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Location")
+     * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
      */
     private $address;
+
+    /**
+     * Get id.
+     *
+     * @return string
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param string $id
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get name.
+     *
+     * @return string
+     */
+    public function getName(): ?string
+    {
+        trigger_error('Person::getName() is deprecated, please use Person::getFullname()', E_USER_DEPRECATED);
+
+        return $this->getFullname();
+    }
 
     /**
      * Get authentication entity.
