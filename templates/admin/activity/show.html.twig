@@ -57,6 +57,18 @@
                 </tr>
             {% endif %}
             <tr>
+                <th>Gemaakt op</th>
+                <td>
+                    {{ createdAt.time|date('d-m-Y - H:i') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Gemaakt door</th>
+                <td>
+                    {{ createdAt.auth.person.fullname ?? '' }}
+                </td>
+            </tr>
+            <tr>
                 <th>Opties</th>
                 <td>
                     <table>
