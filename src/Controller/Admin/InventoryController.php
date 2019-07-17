@@ -24,7 +24,7 @@ class InventoryController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $items = $em->getRepository(Item::class)->findBy([], ['title' => 'ASC']);
+        $items = $em->getRepository(Item::class)->findBy([], ['name' => 'ASC']);
 
         return $this->render('admin/inventory/index.html.twig', [
             'items' => $items,
