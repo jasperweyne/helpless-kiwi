@@ -12,7 +12,7 @@ class SettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('ORG', TextType::class)
+            ->add('ORG_NAME', TextType::class)
         ;
     }
 }

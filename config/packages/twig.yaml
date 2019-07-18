@@ -1,7 +1,11 @@
+#Editted
+parameters:
+    env(ORG_NAME): 'Kiwi'
+
 twig:
     default_path: '%kernel.project_dir%/templates'
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
-    #Editted
     globals:
         menu: '@App\Template\MenuBuilder'
+        org: '%env(ORG_NAME)%'
