@@ -1,3 +1,7 @@
+<p align="center">
+<img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/master/assets/image/readme-header.png" alt="helpless-kiwi" style="max-width:100%;">
+</p>
+
 # Helpless Kiwi
 Helpless Kiwi is a project to manage members, create and manage activities, keep
 track of inventory and more. It has been written using the Symfony/Doctrine framework.
