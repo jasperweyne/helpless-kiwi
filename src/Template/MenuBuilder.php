@@ -19,11 +19,11 @@ class MenuBuilder
      *
      * @return array
      */
-    public function getItems()
+    public function getItems(string $menu = '')
     {
-        $mapped = $this->getMain();
+        $mapped = ($menu == 'admin') ? $this->getMain() : array();
 
-        $items = $this->discovery->getMenuItems();
+        $items = $this->discovery->getMenuItems($menu);
         foreach ($items as $item) {
             $arr = [
                 'title' => $item->getTitle(),

@@ -29,7 +29,7 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities.
      *
-     * @MenuItem(title="Activiteiten", activeCriteria="admin_activity_")
+     * @MenuItem(title="Activiteiten", menu="admin", activeCriteria="admin_activity_")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()

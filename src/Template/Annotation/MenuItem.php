@@ -20,6 +20,11 @@ class MenuItem
     /**
      * @var string
      */
+    public $menu;
+
+    /**
+     * @var string
+     */
     public $role;
 
     /**
@@ -43,6 +48,14 @@ class MenuItem
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMenu()
+    {
+        return $this->menu;
     }
 
     /**

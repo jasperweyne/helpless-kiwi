@@ -17,7 +17,7 @@ class InventoryController extends AbstractController
     /**
      * Lists all items.
      *
-     * @MenuItem(title="Inventaris")
+     * @MenuItem(title="Inventaris", menu="admin")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()

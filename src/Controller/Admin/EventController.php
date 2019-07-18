@@ -17,7 +17,7 @@ class EventController extends AbstractController
     /**
      * Lists all events.
      *
-     * @MenuItem(title="Gebeurtenislog")
+     * @MenuItem(title="Gebeurtenislog", menu="admin")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()

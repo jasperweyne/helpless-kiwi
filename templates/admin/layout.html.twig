@@ -27,7 +27,7 @@
             {% if activeSection is not defined %}
                 {% set activeSection = app.request.get('_route') %}
             {% endif %}
-            {% for item in menu.getItems() %}
+            {% for item in menu.getItems('admin') %}
                 {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
                     {% set item_type = (item.path is defined) ? "a"                          : "span" %}
                     {% set item_path = (item.path is defined) ? "href="~path(item.path) : "" %}

@@ -59,13 +59,17 @@ class MenuDiscovery
     /**
      * Returns all the menu items.
      */
-    public function getMenuItems()
+    public function getMenuItems(string $menu = "")
     {
         if (!$this->menuItems) {
             $this->discoverMenuItems();
         }
 
-        return $this->menuItems;
+        if (!array_key_exists($menu, $this->menuItems)) {
+            return array();
+        }
+
+        return $this->menuItems[$menu];
     }
 
     /**
@@ -102,7 +106,10 @@ class MenuDiscovery
                 }
 
                 /* @var MenuItem $annotation */
-                $this->menuItems[] = $annotation;
+                if (!array_key_exists($annotation->menu, $this->menuItems)) {
+                    $this->menuItems[$annotation->menu] = [];
+                }
+                $this->menuItems[$annotation->menu][] = $annotation;
             }
         }
     }

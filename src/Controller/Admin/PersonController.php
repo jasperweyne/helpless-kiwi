@@ -17,7 +17,7 @@ class PersonController extends AbstractController
     /**
      * Lists all Contact entities.
      *
-     * @MenuItem(title="Personen")
+     * @MenuItem(title="Personen", menu="admin")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
