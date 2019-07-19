@@ -1,0 +1,124 @@
+{% extends 'layout.html.twig' %}
+
+{% macro recommended(title, descr, day, month, cost, time, deadline, enlisted) %}
+    <span class="card">
+        <div class="top">
+            <div class="date">
+                <span class="day">{{ day }}</span>
+                <span class="month">{{ month }}</span>
+            </div>
+            <div class="info">
+                <h4>{{ title }}</h4>
+                <span>{{ descr }}</span>
+            </div>
+        </div>
+        <div style="display:flex;">
+            <p>Kosten: &euro;{{ cost }}<br />Tijd: {{ time }}</p>
+            <p>Deadline: {{ deadline }}<br />Aanmeldingen: {{ enlisted }}</p>
+        </div>
+    </span>
+{% endmacro %}
+
+{% import _self as card %}
+
+{% set page_title = 'Persoonlijk Dashboard' %}
+
+{% block body_root %}
+<div class="container">
+    <h2>{{ page_title }}</h2>
+</div>
+<div class="container row">
+    <h3>Aanbevolen Activiteiten</h3>
+    <div class="recommended cardholder">
+        <div class="grid-x medium-up-3">
+            <div class="cell">
+                {{ card.recommended("OutroWeekend", "Lekker kamperen", "28", "december", "35,-", "15:00", "26 juni", "15/35") }}
+            </div>
+            <div class="cell">
+                {{ card.recommended("Sun, Shots & Sandals", "Het feest van het jaar!", "6", "mei", "3,50", "21:00", "1 mei", "VOL!") }}
+            </div>
+            <div class="cell"><span class="card">Meer activiteiten...</span></div>
+        </div>
+    </div>
+</div>
+<div class="container row">
+    <h3>Mijn Account</h3>
+    <div class="cardholder">
+        <div class="grid-x medium-up-2">
+            <div class="cell"><div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aangemelde Activiteiten</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Efteling</td>
+                            <td>18 mei</td>
+                        </tr>
+                        <tr>
+                            <td>ViaLunchMuziek</td>
+                            <td>24 mei</td>
+                        </tr>
+                        <tr>
+                            <td>ViaLaatMeNietLachen</td>
+                            <td>31 mei</td>
+                        </tr>
+                        <tr>
+                            <td>ViaVaren</td>
+                            <td>14 juni</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div></div>
+            <div class="cell"><div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Openstaande Betalingen</th>
+                            <th>&euro; 11,-</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ViaGroenMoetJeDoen</td>
+                            <td>&euro; 3,-</td>
+                        </tr>
+                        <tr>
+                            <td>ViaCare</td>
+                            <td>&euro; 3,-</td>
+                        </tr>
+                        <tr>
+                            <td>Queerdispuut goes MOED</td>
+                            <td>&euro; 5,-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+    </div>
+</div>
+{# <div class="section row" style="background-color: #ccc;">
+    <div class="container">
+        <h3>Taakpaneel</h3>
+        <div class="cardholder">
+            <div class="grid-x">
+                <div class="cell medium-8"><div class="card" style="box-shadow:none">Projecten</div></div>
+                <div class="cell medium-4"><div class="card" style="box-shadow:none">Takenlijst</div></div>
+            </div>
+        </div>
+    </div>
+</div> #}
+<div class="container row">
+    <h3>Berichten</h3>
+    <div class="messages cardholder">
+        <div class="grid-x medium-up-3">
+            <div class="cell"><div class="card"><h4>Foto's online reis</h4><p>Mooie foto's luf. <a>Meer lezen...</a></p></div></div>
+            <div class="cell"><div class="card"><h4>Enquete reis</h4><p>Doe ff invullen joe <a>Meer lezen...</a></p></div></div>
+            <div class="cell"><div class="card"><h4>Nieuw lid: Pietje</h4><p>Hoi leuk mens ga aandacht geven <a>Meer lezen...</a></p></div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
