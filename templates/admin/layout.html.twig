@@ -1,96 +1,77 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% if page_title is defined %}{{ page_title }} - {% endif %}{{ org }}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('admin') }}
-        {% endblock %}
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-        <link rel="icon" href="{{ asset('android-icon.png') }}" sizes="192x192">
-        <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-    </head>
-	<body>
-        <input type="checkbox" id="nav-state">
-        <header class="topbar">
-            <label for="nav-state" class="nav-toggle"><b></b></label>
-            <h2 class="nav-site">{{ org }}</h2>
-            <div class="nav-profile">
-                <a href="{#{ path('admin_person_show', { 'id': app.user.person.id }) }#}">Mijn Profiel</a>
-                <a href="{{ path('app_logout') }}">Uitloggen</a>
-            </div>
-        </header>
-		<nav>
-            <h2>{{ org }}</h2>
-            <label for="nav-state" class="nav-toggle"><b></b>Sluit</label>
-            {% if activeSection is not defined %}
-                {% set activeSection = app.request.get('_route') %}
-            {% endif %}
-            {% for item in menu.getItems('admin') %}
-                {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
-                    {% set item_type = (item.path is defined) ? "a"                          : "span" %}
-                    {% set item_path = (item.path is defined) ? "href="~path(item.path) : "" %}
-                    {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "active " : "" %}
-                    {% if item.path is defined %}
-                    <div class="{{ (item_active ~ " " ~ item.class ?? "")|trim }}">
-                    {% endif %}
-                        <{{ item_type }} class="{{ item_active }}" {{ item_path }}>{{ item.title }}</{{ item_type }}>
-                        {% if item.sub is defined %}
-                            <div class="sub">
-                            {% for sub in item.sub %}
-                                <a href="{{ path(sub.path) }}">{{ sub.title }}</a>
-                            {% endfor %}
-                            </div>
-                        {% endif %}
-                    {% if item.path is defined %}
-                    </div>
-                    {% endif %}
+{% extends 'layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('admin') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
+
+{% block nav %}
+    <input type="checkbox" id="nav-state">
+    <header class="topbar">
+        <label for="nav-state" class="nav-toggle"><b></b></label>
+        <h2 class="nav-site">{{ org }}</h2>
+        <div class="nav-profile">
+            <a href="{#{ path('admin_person_show', { 'id': app.user.person.id }) }#}">Mijn Profiel</a>
+            <a href="{{ path('app_logout') }}">Uitloggen</a>
+        </div>
+    </header>
+    <nav>
+        <h2>{{ org }}</h2>
+        <label for="nav-state" class="nav-toggle"><b></b>Sluit</label>
+        {% if activeSection is not defined %}
+            {% set activeSection = app.request.get('_route') %}
+        {% endif %}
+        {% for item in menu.getItems('admin') %}
+            {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
+                {% set item_type = (item.path is defined) ? "a"                          : "span" %}
+                {% set item_path = (item.path is defined) ? "href="~path(item.path) : "" %}
+                {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "active " : "" %}
+                {% if item.path is defined %}
+                <div class="{{ (item_active ~ " " ~ item.class ?? "")|trim }}">
                 {% endif %}
-            {% endfor %}
-		</nav>
-        {% for flash_message in app.session.flashbag.get('success') %}
-            <div class="flash flash-success">
-                <div class="holder">
-                    {{ flash_message }}
+                    <{{ item_type }} class="{{ item_active }}" {{ item_path }}>{{ item.title }}</{{ item_type }}>
+                    {% if item.sub is defined %}
+                        <div class="sub">
+                        {% for sub in item.sub %}
+                            <a href="{{ path(sub.path) }}">{{ sub.title }}</a>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                {% if item.path is defined %}
                 </div>
-            </div>
+                {% endif %}
+            {% endif %}
         {% endfor %}
-        {% for flash_message in app.session.flashbag.get('error') %}
-            <div class="flash flash-error">
-                <div class="holder">
-                    {{ flash_message }}
-                </div>
-            </div>
-        {% endfor %}
-            <main>
-                {% block body_root %}
-                <div class="container row">
-                    <span class="top">
-                        <h3>{{ page_title }}</h3>
-                        <span class="buttons">
-                        {% block buttons %}
-                        {% endblock %}
-                        </span>
-                    </span>
-                    <div class="card">
-                    {% block body %}
-                    {% endblock %}
-                    </div>
-                </div>
-                {% endblock %}
-            </main>
-            <footer class="bottom">
-                <ul class="bottom-legal">
-                    <li>Helpless Kiwi 0.0.1</li>
-                    {% if app.environment == 'dev' %}<li>Development mode</li>{% endif %}
-                    <li>Maintained by Studio Weyne</li>
-                    <li>Licensed under Apache version 2.0</li>
-                    <li>Built with &hearts; and Symfony</li>
-                </ul>
-            </footer>
-        {% block javascripts %}
-            {{ encore_entry_script_tags('admin') }}
+    </nav>
+{% endblock %}
+
+{% block body_root %}
+    <div class="container row">
+        <span class="top">
+            <h3>{{ page_title }}</h3>
+            <span class="buttons">
+            {% block buttons %}
+            {% endblock %}
+            </span>
+        </span>
+        <div class="card">
+        {% block body %}
         {% endblock %}
-	</body>
-</html>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer class="bottom">
+        <ul class="bottom-legal">
+            <li>Helpless Kiwi 0.0.1</li>
+            {% if app.environment == 'dev' %}<li>Development mode</li>{% endif %}
+            <li>Maintained by Studio Weyne</li>
+            <li>Licensed under Apache version 2.0</li>
+            <li>Built with &hearts; and Symfony</li>
+        </ul>
+    </footer>
+{% endblock %}

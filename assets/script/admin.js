@@ -1,5 +1,5 @@
 // Styles
-require('../style/admin/admin.scss');
+require('../style/admin.scss');
 
 // Dependencies
 const $ = require('jquery');

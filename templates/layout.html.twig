@@ -12,6 +12,7 @@
         <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     </head>
 	<body>
+        {% block nav %}
         <header class="nav-main row">
             <input type="checkbox" id="nav-state">
             <div class="mobile">
@@ -36,6 +37,7 @@
                 </span>
             </div>
         </header>
+        {% endblock %}
         {% for flash_message in app.session.flashbag.get('success') %}
             <div class="flash flash-success">
                 <div class="holder">
@@ -50,7 +52,10 @@
                 </div>
             </div>
         {% endfor %}
-        {% block body %}{% endblock %}
+        <main>
+            {% block body_root %}{% endblock %}
+        </main>
+        {% block footer %}{% endblock %}
         {% block javascripts %}
             {{ encore_entry_script_tags('main') }}
         {% endblock %}
