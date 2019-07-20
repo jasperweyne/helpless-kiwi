@@ -15,7 +15,8 @@ class EntityNewEvent extends AbstractEvent
         $this->fields = $fields;
     }
 
-    public function getFields() {
+    public function getFields()
+    {
         return $this->fields;
     }
 }

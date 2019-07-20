@@ -45,7 +45,7 @@ class Claim
 
     /**
      * @Vich\UploadableField(mapping="claims", fileNameProperty="image.name", size="image.size", mimeType="image.mimeType", originalName="image.originalName", dimensions="image.dimensions")
-     * 
+     *
      * @var File
      */
     private $imageFile;
@@ -141,24 +141,24 @@ class Claim
     public function setImageFile(?File $imageFile = null)
     {
         $this->imageFile = $imageFile;
- 
+
         if (null !== $imageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->imageUpdatedAt = new \DateTimeImmutable();
         }
     }
- 
+
     public function getImageFile(): ?File
     {
         return $this->imageFile;
     }
- 
+
     public function setImage(EmbeddedFile $image)
     {
         $this->image = $image;
     }
- 
+
     public function getImage(): ?EmbeddedFile
     {
         return $this->image;
@@ -175,7 +175,7 @@ class Claim
 
         return $this;
     }
-    
+
     public function __construct()
     {
         $this->image = new EmbeddedFile();

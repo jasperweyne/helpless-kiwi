@@ -23,7 +23,7 @@ class ClaimController extends AbstractController
     {
         $this->events = $events;
     }
-    
+
     /**
      * Lists all claims.
      *
@@ -56,7 +56,7 @@ class ClaimController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $claim->setAuthor($user);
-            
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($claim);
             $em->flush();

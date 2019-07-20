@@ -25,8 +25,8 @@ class CreateAuthCommand extends Command
 
     public function __construct(EntityManagerInterface $em, AuthUserProvider $userProvider, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->em              = $em;
-        $this->userProvider    = $userProvider;
+        $this->em = $em;
+        $this->userProvider = $userProvider;
         $this->passwordEncoder = $passwordEncoder;
 
         parent::__construct();
@@ -37,18 +37,18 @@ class CreateAuthCommand extends Command
         $this
             // the short description shown while running "php bin/console list"
             ->setDescription('Sets a login for a Person.')
-    
+
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('This command allows you to create a login...')
-            
+
             // possible arguments
             ->addArgument('email', InputArgument::REQUIRED, 'The e-mail address of the login.')
         ;
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output) {
-
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
         $output->writeln([
             'Auth Creator',
             '============',
@@ -61,13 +61,13 @@ class CreateAuthCommand extends Command
             $question->setHidden(true);
             $question->setHiddenFallback(false);
             $pass = $helper->ask($input, $output, $question);
-            
+
             $question = new Question('Confirm the password: ');
             $question->setHidden(true);
             $question->setHiddenFallback(false);
             $pass_confirm = $helper->ask($input, $output, $question);
 
-            if ($pass === $pass_confirm && $pass != "") {
+            if ($pass === $pass_confirm && '' != $pass) {
                 $this->raw_pass = $pass;
                 break;
             }
@@ -97,6 +97,6 @@ class CreateAuthCommand extends Command
         $this->em->persist($auth);
         $this->em->flush();
 
-        $output->writeln($person->getCanonical() . ' login registered!');
+        $output->writeln($person->getCanonical().' login registered!');
     }
 }

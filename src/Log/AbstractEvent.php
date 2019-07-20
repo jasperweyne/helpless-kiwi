@@ -2,8 +2,6 @@
 
 namespace App\Log;
 
-use App\Entity\Log\Event;
-
 abstract class AbstractEvent
 {
     private $time;
@@ -11,25 +9,30 @@ abstract class AbstractEvent
     private $auth;
 
     private $entity;
-    
+
     private $entityCb;
 
-    public function getTime() {
-        if ($this->time === null)
-            throw new \RuntimeException("Can only be called after the event has been retrieved from the database");
+    public function getTime()
+    {
+        if (null === $this->time) {
+            throw new \RuntimeException('Can only be called after the event has been retrieved from the database');
+        }
 
         return $this->time;
     }
 
-    public function getAuth() {
-        if ($this->auth === null)
-            throw new \RuntimeException("Can only be called after the event has been retrieved from the database");
+    public function getAuth()
+    {
+        if (null === $this->auth) {
+            throw new \RuntimeException('Can only be called after the event has been retrieved from the database');
+        }
 
         return $this->auth;
     }
 
-    public function getEntity() {
-        if ($this->entityCb !== null) {
+    public function getEntity()
+    {
+        if (null !== $this->entityCb) {
             $this->entity = ($this->entityCb)();
             $this->entityCb = null;
         }
@@ -37,7 +40,8 @@ abstract class AbstractEvent
         return $this->entity;
     }
 
-    public function setEntity($entity) {
+    public function setEntity($entity)
+    {
         $this->entityCb = null;
         $this->entity = $entity;
 

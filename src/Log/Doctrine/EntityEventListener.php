@@ -5,10 +5,8 @@ namespace App\Log\Doctrine;
 use App\Entity\Log\Event;
 use App\Log\EventService;
 use App\Log\ReflectionService;
-use App\Log\Doctrine\EntityNewEvent;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\PersistentCollection;
-use Doctrine\ORM\EntityManagerInterface;
 
 class EntityEventListener
 {
@@ -19,7 +17,7 @@ class EntityEventListener
     public function __construct(EventService $eventService, ReflectionService $reflService)
     {
         $this->eventService = $eventService;
-        $this->reflService  = $reflService;
+        $this->reflService = $reflService;
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs)
@@ -32,7 +30,7 @@ class EntityEventListener
             if ($entity instanceof Event) {
                 continue;
             }
-            
+
             $metadata = $em->getClassMetadata(get_class($entity));
             $fields = $this->extractFields($entity, $metadata);
 
@@ -47,15 +45,15 @@ class EntityEventListener
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             $metadata = $em->getClassMetadata(get_class($entity));
             $original = $this->extractFields($entity, $metadata);
-    
-            $newFields = array();
+
+            $newFields = [];
             foreach ($uow->getEntityChangeSet($entity) as $field => $values) {
                 if (!$values[0] instanceof PersistentCollection) {
                     $original[$field] = $this->sanitize($values[0], $field, $metadata);
                     $newFields[$field] = $this->sanitize($values[1], $field, $metadata);
                 }
             }
-    
+
             $logEntity = $this->eventService->hydrate(new EntityUpdateEvent($entity, $original, $newFields));
             $logMeta = $em->getClassMetadata(get_class($logEntity));
 
@@ -65,35 +63,38 @@ class EntityEventListener
 
         // On remove entity
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
-
         }
     }
 
-    public function extractFields($entity, $metadata) {
+    public function extractFields($entity, $metadata)
+    {
         $properties = $metadata->getReflectionProperties();
 
-        $fields = array();
+        $fields = [];
         foreach ($properties as $field => $property) {
-            if (!$property->getValue($entity) instanceof PersistentCollection)
+            if (!$property->getValue($entity) instanceof PersistentCollection) {
                 $fields[$field] = $this->sanitize($property->getValue($entity), $field, $metadata);
+            }
         }
 
         return $fields;
     }
 
-    private function sanitize($value, $field, $metadata) {
-        if ($value === null)
+    private function sanitize($value, $field, $metadata)
+    {
+        if (null === $value) {
             return null;
-        
+        }
+
         if (array_key_exists($field, $metadata->getAssociationMappings())) {
             if ($value instanceof PersistentCollection) {
                 // Is initialized by Doctrine through other entities; skip
-                throw new \LogicException("Values for this field should not be sanitized; skip this field");
+                throw new \LogicException('Values for this field should not be sanitized; skip this field');
             } else {
-                return array(
+                return [
                     'entity' => $this->eventService->getClassName($value),
-                    'identifier' => $this->eventService->getIdentifier($value)
-                );
+                    'identifier' => $this->eventService->getIdentifier($value),
+                ];
             }
         }
 

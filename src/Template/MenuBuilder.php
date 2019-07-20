@@ -21,7 +21,7 @@ class MenuBuilder
      */
     public function getItems(string $menu = '')
     {
-        $mapped = ($menu == 'admin') ? $this->getMain() : array();
+        $mapped = ('admin' == $menu) ? $this->getMain() : [];
 
         $items = $this->discovery->getMenuItems($menu);
         foreach ($items as $item) {

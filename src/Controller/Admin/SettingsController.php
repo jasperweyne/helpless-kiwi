@@ -38,12 +38,12 @@ class SettingsController extends AbstractController
 
         $form = $this->createForm('App\Form\Settings\SettingsType', $settings);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $settings = $form->getData();
             $this->dotenv->write($settings);
         }
-    
+
         return $this->render('admin/settings/index.html.twig', [
             'form' => $form->createView(),
         ]);

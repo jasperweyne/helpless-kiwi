@@ -2,7 +2,6 @@
 
 namespace App\Entity\Activity;
 
-use App\Entity\Activity\PriceOption;
 use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,7 +21,7 @@ class Registration
      * @ORM\OneToOne(targetEntity="App\Entity\Person\Person")
      */
     private $person;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")

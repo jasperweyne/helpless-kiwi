@@ -30,11 +30,11 @@ class CreatePersonCommand extends Command
         $this
             // the short description shown while running "php bin/console list"
             ->setDescription('Creates a new person.')
-    
+
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('This command allows you to create a person...')
-            
+
             // possible arguments
             ->addArgument('email', InputArgument::REQUIRED, 'The e-mail address of the user.')
 
@@ -42,8 +42,8 @@ class CreatePersonCommand extends Command
         ;
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output) {
-
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
         $output->writeln([
             'Person Creator',
             '==============',
@@ -54,7 +54,7 @@ class CreatePersonCommand extends Command
         $this->inputInfo = [
             'email' => $input->getArgument('email'),
             'first' => $input->getArgument('name')[0],
-            'last'  => implode(' ', array_slice($input->getArgument('name'), 1))
+            'last' => implode(' ', array_slice($input->getArgument('name'), 1)),
         ];
 
         $initial = ($input->getArgument('email') && count($input->getArgument('name')) > 1);
@@ -64,8 +64,9 @@ class CreatePersonCommand extends Command
 
         // Verify info
         while (true) {
-            if ($this->verifyInput($input, $output))
+            if ($this->verifyInput($input, $output)) {
                 break;
+            }
 
             $this->gatherPerson($input, $output);
         }
@@ -76,9 +77,9 @@ class CreatePersonCommand extends Command
         $output->writeln([
             'Confirm that the following information is correct:',
             '',
-            'E-mail:    ' . $this->inputInfo['email'],
-            'Firstname: ' . $this->inputInfo['first'],
-            'Lastname:  ' . $this->inputInfo['last'],
+            'E-mail:    '.$this->inputInfo['email'],
+            'Firstname: '.$this->inputInfo['first'],
+            'Lastname:  '.$this->inputInfo['last'],
             '',
         ]);
 
@@ -87,11 +88,12 @@ class CreatePersonCommand extends Command
             $question = new Question('Is this correct? (y/n): ', 'n');
             $verify = $helper->ask($input, $output, $question);
 
-            if ($verify === 'y')
+            if ('y' === $verify) {
                 return true;
-            else if ($verify === 'n')
+            } elseif ('n' === $verify) {
                 return false;
-            
+            }
+
             $output->writeln("Please enter 'y' or 'n'.");
         }
     }
@@ -105,13 +107,13 @@ class CreatePersonCommand extends Command
             $question = new Question('Please enter the e-mail address of the person: ');
             $email = $helper->ask($input, $output, $question);
         }
-        
+
         $firstname = null;
         while (!$firstname) {
             $question = new Question('Please enter the first name of the person: ');
             $firstname = $helper->ask($input, $output, $question);
         }
-        
+
         $lastname = null;
         while (!$lastname) {
             $question = new Question('Please enter the last name of the person: ');
@@ -121,7 +123,7 @@ class CreatePersonCommand extends Command
         $this->inputInfo = [
             'email' => $email,
             'first' => $firstname,
-            'last'  => $lastname
+            'last' => $lastname,
         ];
     }
 
@@ -139,6 +141,6 @@ class CreatePersonCommand extends Command
         $this->em->persist($person);
         $this->em->flush();
 
-        $output->writeln($person->getCanonical() . ' registered!');
+        $output->writeln($person->getCanonical().' registered!');
     }
 }

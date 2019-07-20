@@ -18,11 +18,13 @@ class EntityUpdateEvent extends AbstractEvent
         $this->new = $newValues;
     }
 
-    public function getOld() {
+    public function getOld()
+    {
         return $this->old;
-    } 
+    }
 
-    public function getNew() {
+    public function getNew()
+    {
         $new = $this->old;
         foreach ($this->new as $field => $value) {
             $new[$field] = $value;
@@ -30,17 +32,19 @@ class EntityUpdateEvent extends AbstractEvent
 
         return $new;
     }
-    
-    public function getOldChanged() {
-        $old = array();
+
+    public function getOldChanged()
+    {
+        $old = [];
         foreach ($this->new as $field => $value) {
             $old[$field] = $this->old[$field];
         }
 
         return $old;
-    } 
+    }
 
-    public function getNewChanged() {
+    public function getNewChanged()
+    {
         return $this->new;
     }
 }

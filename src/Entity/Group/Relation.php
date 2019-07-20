@@ -2,7 +2,6 @@
 
 namespace App\Entity\Group;
 
-use App\Entity\Group\Taxonomy;
 use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
 

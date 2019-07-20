@@ -7,7 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichImageType;
-use Vich\UploaderBundle\Entity\File;
 
 class ClaimType extends AbstractType
 {
@@ -19,7 +18,7 @@ class ClaimType extends AbstractType
             ->add('price')
             ->add('imageFile', VichImageType::class, [
                 'required' => true,
-                'allow_delete' => false
+                'allow_delete' => false,
             ])
             // ->add('createdAt')
             // ->add('author')

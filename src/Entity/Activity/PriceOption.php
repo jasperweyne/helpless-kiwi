@@ -2,7 +2,6 @@
 
 namespace App\Entity\Activity;
 
-use App\Entity\Activity\Activity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
