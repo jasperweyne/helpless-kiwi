@@ -36,6 +36,21 @@
                 </span>
             </div>
         </header>
+        {% for flash_message in app.session.flashbag.get('success') %}
+            <div class="flash flash-success">
+                <div class="holder">
+                    {{ flash_message }}
+                </div>
+            </div>
+        {% endfor %}
+        {% for flash_message in app.session.flashbag.get('error') %}
+            <div class="flash flash-error">
+                <div class="holder">
+                    {{ flash_message }}
+                </div>
+            </div>
+        {% endfor %}
+        {% block body %}{% endblock %}
         {% block javascripts %}
             {{ encore_entry_script_tags('main') }}
         {% endblock %}
