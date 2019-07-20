@@ -2,19 +2,21 @@
 
 namespace App\Entity\Activity;
 
-use App\Entity\Activity\PriceOption;
 use App\Entity\Group\Taxonomy;
 use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Entity\File as EmbeddedFile;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity
  */
 class Activity
 {
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
@@ -68,6 +70,26 @@ class Activity
      * @ORM\Column(type="datetime")
      */
     private $deadline;
+    /**
+     * @Vich\UploadableField(mapping="claims", fileNameProperty="image.name", size="image.size", mimeType="image.mimeType", originalName="image.originalName", dimensions="image.dimensions")
+     *
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Embedded(class="Vich\UploaderBundle\Entity\File")
+     *
+     * @var EmbeddedFile
+     */
+    private $image;
+
+    /**
+     * @ORM\Column(type="datetime")
+     *
+     * @var \DateTime
+     */
+    private $imageUpdatedAt;
 
     /**
      * Get id.
@@ -299,9 +321,39 @@ class Activity
         return $this;
     }
 
+    /**
+     * @param File|UploadedFile $imageFile
+     */
+    public function setImageFile(?File $imageFile = null)
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->imageUpdatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImage(EmbeddedFile $image)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage(): ?EmbeddedFile
+    {
+        return $this->image;
+    }
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
         $this->options = new ArrayCollection();
+        $this->image = new EmbeddedFile();
     }
 }
