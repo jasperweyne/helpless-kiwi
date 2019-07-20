@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Activity controller.
  *
- * @Route("/activity", name="activity_")
+ * @Route("/", name="activity_")
  */
 class ActivityController extends AbstractController
 {

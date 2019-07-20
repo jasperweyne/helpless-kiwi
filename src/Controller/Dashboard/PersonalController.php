@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 class PersonalController extends AbstractController
 {
     /**
-     * @Route("/", name="admin_index")
+     * @Route("/organise/personal", name="organise_index")
      */
     public function indexAction(Request $request)
     {

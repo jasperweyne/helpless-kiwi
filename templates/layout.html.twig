@@ -27,8 +27,12 @@
                     <a href="{{ path('admin_index') }}">Beheer</a>
                 </nav>
                 <span class="personal">
+                {% if app.user %}
                     <a href="{#{ path('admin_person_show', { 'id': app.user.person.id }) }#}">Mijn Profiel</a>
                     <a href="{{ path('app_logout') }}">Uitloggen</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}">Inloggen</a>
+                {% endif %}
                 </span>
             </div>
         </header>

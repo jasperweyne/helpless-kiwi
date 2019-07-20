@@ -14,6 +14,11 @@ class LoginController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // you can't login again while you already are, redirect
+        if ($this->getUser()) {
+            return $this->redirect('/');
+        }
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
