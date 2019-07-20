@@ -48,88 +48,13 @@ class MenuBuilder
     {
         return [
             [
-                'path' => 'admin_index',
-                'title' => 'Dashboard',
-                'sub' => [
-                    [
-                        'path' => 'admin_index',
-                        'title' => 'Persoonlijk Dashboard',
-                    ],
-                    // array(
-                    //     'path' => 'admin_index',
-                    //     'title' => 'Prisma (Bestuur 10)' ,
-                    // ),
-                    // array(
-                    //     'path' => 'admin_index',
-                    //     'title' => 'Gaudium (Aco)' ,
-                    // ),
-                    // array(
-                    //     'path' => 'admin_index',
-                    //     'title' => 'CreaCie (CreaCie)' ,
-                    // ),
-                    // array(
-                    //     'path' => 'admin_index',
-                    //     'title' => 'Piratendispuut' ,
-                    // ),
-                ],
-            ],
-            // array(
-            //     'path' => 'admin_index',
-            //     'title' => 'Activiteiten',
-            //     'activeCriteria' => 'null',
-            // ),
-            [
-                'path' => 'app_logout',
-                'title' => 'Uitloggen',
-                'role' => 'ROLE_USER',
-                'class' => 'mobile',
+                'path' => 'activity_index',
+                'title' => 'Terug naar frontend',
+                'activeCriteria' => 'null',
             ],
             [
                 'title' => 'Beheer',
             ],
-            // array(
-            //     'path' => 'admin_index',
-            //     'title' => 'E-mail',
-            //     'activeCriteria' => 'null',
-            // ),
-            // array(
-            //     'path' => 'admin_index',
-            //     'title' => 'Statistieken',
-            //     'activeCriteria' => 'null',
-            // ),
-            // [
-            //     'path' => 'admin_person_index',
-            //     'title' => 'Contacten',
-            //     'activeCriteria' => 'admin_person',
-            // ],
-            // [
-            //     'path' => 'admin_partner_index',
-            //     'title' => 'Partners',
-            //     'activeCriteria' => 'admin_partner',
-            // ],
-            // array(
-            //     'path' => 'admin_inventory_index',
-            //     'title' => 'Inventaris',
-            //     'activeCriteria' => 'admin_inventory',
-            // ),
-            // array(
-            //     'path' => 'admin_index',
-            //     'title' => 'Financien',
-            //     'activeCriteria' => 'null',
-            // ),
-            // array(
-            //     'title' => 'Ontwikkeling'
-            // ),
-            // array(
-            //     'path' => 'admin_index',
-            //     'title' => 'Gebeurtenisoverzicht',
-            //     'activeCriteria' => 'null',
-            // ),
-            // array(
-            //     'path' => 'admin_index',
-            //     'title' => 'Instellingen',
-            //     'activeCriteria' => 'null',
-            // ),
         ];
     }
 }
