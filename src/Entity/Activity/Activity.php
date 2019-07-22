@@ -14,6 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity
+ * @Vich\Uploadable
  */
 class Activity
 {
@@ -57,6 +58,11 @@ class Activity
     private $author;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private $color;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $start;
@@ -71,7 +77,7 @@ class Activity
      */
     private $deadline;
     /**
-     * @Vich\UploadableField(mapping="claims", fileNameProperty="image.name", size="image.size", mimeType="image.mimeType", originalName="image.originalName", dimensions="image.dimensions")
+     * @Vich\UploadableField(mapping="activities", fileNameProperty="image.name", size="image.size", mimeType="image.mimeType", originalName="image.originalName", dimensions="image.dimensions")
      *
      * @var File
      */
@@ -239,6 +245,28 @@ class Activity
     public function setAuthor(Taxonomy $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get color.
+     *
+     * @return string
+     */
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    /**
+     * Set color.
+     *
+     * @param string $color
+     */
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }

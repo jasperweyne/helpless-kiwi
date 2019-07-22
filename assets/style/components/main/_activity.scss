@@ -1,0 +1,120 @@
+
+.cardholder {
+    margin            : $padding * -0.5;
+}
+
+.activity {
+    width: 100%;
+    height: 400px;
+    display: block;
+    position: relative;
+    
+    .cardholder & {
+        width        : calc(100% - #{$padding});
+        margin        : $padding * 0.5;
+        box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.3);
+    }
+    
+    * {
+        position: absolute;
+    }
+    
+    h2 {
+        bottom: .5em;
+        left: .5em;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    
+    img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    
+        &.filter {
+            filter: contrast(5%) brightness(0.5) grayscale(100%);
+        }
+    
+        &.over {
+            filter: saturate(2);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.1));
+        }
+    }
+
+    @mixin color_filter($deg) {
+        filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate($deg);
+    }
+
+    &.red {
+        background-color: red;
+
+        img.filter {
+            @include color_filter(320deg);
+        }
+    }
+
+    &.orange {
+        background-color: orange;
+
+        img.filter {
+            @include color_filter(350deg);
+        }
+    }
+    
+    &.yellow {
+        background-color: yellow;
+
+        img.filter {
+            @include color_filter(10deg);
+        }
+    }
+
+    &.green {
+        background-color: green;
+
+        img.filter {
+            @include color_filter(80deg);
+        }
+    }
+    
+    &.cyan {
+        background-color: cyan;
+
+        img.filter {
+            @include color_filter(120deg);
+        }
+    }
+    
+    &.ltblue {
+        background-color: deepskyblue;
+
+        img.filter {
+            @include color_filter(150deg);
+        }
+    }
+
+    &.blue {
+        background-color: blue;
+
+        img.filter {
+            @include color_filter(180deg);
+        }
+    }
+    
+    &.purple {
+        background-color: purple;
+
+        img.filter {
+            @include color_filter(210deg);
+        }
+    }
+    
+    &.pink {
+        background-color: magenta;
+
+        img.filter {
+            @include color_filter(290deg);
+        }
+    }
+}

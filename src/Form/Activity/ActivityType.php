@@ -6,8 +6,10 @@ use App\Form\Location\LocationType;
 use App\Entity\Activity\Activity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ActivityType extends AbstractType
 {
@@ -27,6 +29,24 @@ class ActivityType extends AbstractType
             ])
             ->add('start')
             ->add('end')
+            ->add('imageFile', VichImageType::class, [
+                'required' => true,
+                'allow_delete' => false,
+            ])
+            ->add('color', ChoiceType::class, [
+                'choices'  => [
+                    '' => null,
+                    'Rood' => 'red',
+                    'Oranje' => 'orange',
+                    'Geel' => 'yellow',
+                    'Groen' => 'green',
+                    'Cyaan' => 'cyan',
+                    'Lichtblauw' => 'ltblue',
+                    'Blauw' => 'blue',
+                    'Paars' => 'purple',
+                    'Roze' => 'pink',
+                ],
+            ])
         ;
     }
 

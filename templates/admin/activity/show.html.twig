@@ -69,6 +69,14 @@
                 </td>
             </tr>
             <tr>
+                <th>Afbeelding</th>
+                <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Kleur</th>
+                <td>{{ activity.color ?? '' }}</td>
+            </tr>
+            <tr>
                 <th>Opties</th>
                 <td>
                     <table>
