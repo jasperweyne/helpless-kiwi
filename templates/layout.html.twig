@@ -53,7 +53,7 @@
             </div>
         {% endfor %}
         <main>
-            {% block body_root %}{% endblock %}
+            {% block body_root %}{% block body %}{% endblock %}{% endblock %}
         </main>
         {% block footer %}{% endblock %}
         {% block javascripts %}
