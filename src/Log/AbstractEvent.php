@@ -23,7 +23,7 @@ abstract class AbstractEvent
 
     public function getAuth()
     {
-        if (null === $this->auth) {
+        if (null === $this->time) {
             throw new \RuntimeException('Can only be called after the event has been retrieved from the database');
         }
 

@@ -35,8 +35,11 @@ class EntityEventListener
             $fields = $this->extractFields($entity, $metadata);
 
             $logEntity = $this->eventService->hydrate(new EntityNewEvent($entity, $fields));
-            $logMeta = $em->getClassMetadata(get_class($logEntity));
+            if ($logEntity == null) {
+                continue;
+            }
 
+            $logMeta = $em->getClassMetadata(get_class($logEntity));
             $em->persist($logEntity);
             $uow->computeChangeSet($logMeta, $logEntity);
         }
@@ -55,8 +58,11 @@ class EntityEventListener
             }
 
             $logEntity = $this->eventService->hydrate(new EntityUpdateEvent($entity, $original, $newFields));
-            $logMeta = $em->getClassMetadata(get_class($logEntity));
+            if ($logEntity == null) {
+                continue;
+            }
 
+            $logMeta = $em->getClassMetadata(get_class($logEntity));
             $em->persist($logEntity);
             $uow->computeChangeSet($logMeta, $logEntity);
         }

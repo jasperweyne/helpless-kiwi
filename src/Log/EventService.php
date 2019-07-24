@@ -18,8 +18,13 @@ class EventService
     {
         $token = $tokenStorage->getToken();
 
+        if (null === $token || !\is_object($token->getUser())) {
+            $this->auth = null;
+        } else {
+            $this->auth = $token->getUser();
+        }
+
         $this->em = $em;
-        $this->auth = $token ? $token->getUser() : null;
         $this->refl = $refl;
     }
 
@@ -31,8 +36,12 @@ class EventService
         $this->em->flush();
     }
 
-    public function hydrate(AbstractEvent $event)
+    public function hydrate(?AbstractEvent $event)
     {
+        if ($event === null) {
+            return null;
+        }
+
         $meta = [];
         $rootProperties = $this->refl->getAllProperties(AbstractEvent::class);
         foreach ($this->refl->getAllProperties(get_class($event)) as $name => $property) {
@@ -53,6 +62,11 @@ class EventService
 
         $object = $event->getEntity();
         if (null !== $object) {
+            if (!is_string($this->getIdentifier($object))) {
+                @trigger_error("Entities with identifiers that are not of type string, are not supported yet.", E_USER_WARNING);
+                return null;
+            }
+                
             $entity
                 ->setObjectId($this->getIdentifier($object)) // todo: assumes id is string without assertion, fix this
                 ->setObjectType($this->getClassName($object))
@@ -62,8 +76,12 @@ class EventService
         return $entity;
     }
 
-    public function populate(EventEntity $entity)
+    public function populate(?EventEntity $entity)
     {
+        if ($entity === null) {
+            return null;
+        }
+
         $reflFields = $this->refl->getAllProperties($entity->getDiscr());
 
         $objectType = $entity->getObjectType();
