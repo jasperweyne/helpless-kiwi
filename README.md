@@ -36,11 +36,11 @@ Then, insert the tables:
 
 To add a user, first register a person with:
 
-```php bin/console create-person [email] [name]```
+```php bin/console app:create-person [email] [name]```
 
 Then, add a login to that user with:
 
-```php bin/console set-auth [email]```
+```php bin/console app:set-auth [email]```
 
 To run the server, use:
 
