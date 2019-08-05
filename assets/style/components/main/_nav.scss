@@ -51,7 +51,7 @@
             width: 26px;
             height: 20px;
             position: absolute;
-            z-index: 3;
+            z-index: 15;
             cursor: pointer;
             padding: 9px 0;
             right: $padding;
@@ -151,6 +151,7 @@
         bottom: 0;
         left: 0;
         right: 0;
+        z-index: 10;
 
         a {
             color: #ffffff;
