@@ -1,11 +1,11 @@
 main, .bottom {
     clear: both;
-    margin: 0 $padding;
 }
 
 .bottom, .container {
 	@include flex-grid-row();
     flex-direction: column;
+    padding: 0 $padding;
 }
 
 .section {
