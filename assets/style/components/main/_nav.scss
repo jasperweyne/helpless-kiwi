@@ -86,54 +86,6 @@
         }
     }
 
-    /*
-    .nav-toggle {
-        position: relative;
-        z-index: 100;
-        width         : auto;
-        height        : $nav-height;
-        padding       : ($nav-height - rem-calc(12)) / 2 $padding;
-        cursor        : pointer;
-        font-size     : rem-calc(12);
-        font-weight   : $global-weight-bold;
-        line-height   : 1;
-        text-transform: uppercase;
-        display       : block;
-        
-        @include breakpoint(large) {
-            display: none;
-        }
-
-        b {
-            @include hamburger();
-            
-            /*
-            width         : 14px;
-            height        : 2px;
-            vertical-align: middle;
-            margin-top    : -2px;
-            margin-right  : 5px;
-            background    : $dark-gray;
-            display       : inline-block;
-            position      : relative;
-            
-            &:before, &:after {
-                display   : block;
-                content   : "";
-                width     : 100%;
-                height    : 100%;
-                position  : absolute;
-                left      : 0;
-                top       : -4px;
-                background: inherit;
-            }
-            
-            &:after {
-                top: 4px;
-            }* /
-        }
-    }*/
-
     #nav-state:checked ~ .menu {
         @include flex;
     }
@@ -155,6 +107,17 @@
 
         a {
             color: #ffffff;
+            display: inline-block;
+            white-space: nowrap;
+            padding: 0 .5rem;
+
+            &:first-child {
+                padding-left: 0;
+            }
+
+            &:last-child {
+                padding-right: 0;
+            }
         }
 
         nav {
