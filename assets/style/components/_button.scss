@@ -32,7 +32,7 @@
         position: relative;
 
         &, span, .content {
-            transition: all .5s ease-in-out .5s;
+            transition: all .5s ease-in-out .5s, opacity .1s ease-in-out .9s;
         }
 
         .content {
@@ -42,17 +42,19 @@
             bottom: 0;
             clip-path: circle(0% at 0% 100%);
             border-radius: $global-radius;
+            opacity: 0; // added for incompatibilty problems
         }
 
         &:active, &:hover, &:focus {
             &, span, .content {
-                transition: all .5s ease-in-out;
+                transition: all .5s ease-in-out, opacity .1s ease-in-out;
             }
             span {
                 opacity: 0;
             }
             .content {
                 clip-path: circle(75%);
+                opacity: 1;
             }
         }
     }
