@@ -1,11 +1,30 @@
 .button {
+    background-color: white;
     color: $anchor-color;
-    border: 1px solid $anchor-color;
     display: inline-block;
-    padding: .5rem;
+    padding: .5rem 1rem;
     border-radius: $global-radius;
+
     &:hover, &:focus, &:active {
         color: $anchor-color-hover;
-        border-color: $anchor-color-hover;
+    }
+    
+    &.disabled, &[disabled] {
+        opacity: 0.25;
+        cursor: not-allowed;
+    }
+    
+    &.confirm, &.add {
+        background-color: #0c0;
+        color: white;
+    }
+
+    &.deny, &.delete {
+        background-color: #c00;
+        color: white;
+    }
+
+    &.secondary {
+        background-color: lightgray;
     }
 }

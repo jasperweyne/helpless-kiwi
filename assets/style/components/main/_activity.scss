@@ -32,7 +32,13 @@
 
     &.hero {
         margin-top: -$padding;
+        margin-bottom: $padding * 1.5;
         height: 70vh;
+
+        .buttons {
+            margin-top: $padding * 0.5;
+            margin-bottom: -1.75 * $padding;
+        }
 
         @include breakpoint(large) {
             height: 60vh;

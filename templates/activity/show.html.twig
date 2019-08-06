@@ -19,6 +19,9 @@
         {% endif %}
         <span>{{ activity.location.address }}</span>
         <span>{{ activity.registrations|length }} aanmeldingen - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
+        <div class="buttons">
+            <a href="" class="button confirm">Aanmelden</a>
+        </div>
     </div>
 </div>
 <div class="container row">
