@@ -18,9 +18,36 @@
             <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('d-m-Y H:i') }}</span>
         {% endif %}
         <span>{{ activity.location.address }}</span>
+        <span>{{ activity.registrations|length }} aanmeldingen - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
     </div>
 </div>
 <div class="container row">
-    <p>{{ activity.description }}</p>
+    <div class="grid-x">
+        <div class="cell small-12 medium-8">
+            <p>{{ activity.description }}</p>
+        </div>
+        <div class="cell medium-4 registrations">
+            <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aanmeldingen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for registration in activity.registrations %}
+                            <tr>
+                                <td>{{ registration.person.fullname }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen aanmeldingen.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
