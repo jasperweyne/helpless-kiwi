@@ -26,7 +26,28 @@
         {% endif %}
         <span>{{ activity.registrations|length }} {{ activity.registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }} - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
         <div class="buttons">
-            <span href="" class="button confirm disabled">Niet beschikbaar</a>
+            {% if activity.options|length == 0 %}
+                <span class="button confirm disabled">Niet beschikbaar</span>
+            {% elseif activity.options|length == 1 %}
+                <a href="" class="button confirm">Aanmelden</a>
+            {% else %}
+                <div class="button confirm grow">
+                    <span>Aanmelden</span>
+                    <div class="content">
+                        <table>
+                            <tbody>
+                            {% for option in activity.options %}
+                                <tr>
+                                    <td>{{ option.name }}</td>
+                                    <td>&euro; {{ option.price }}</td>
+                                    <td><a href="" class="button confirm">Aanmelden</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

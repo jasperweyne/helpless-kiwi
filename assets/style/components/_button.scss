@@ -1,5 +1,5 @@
 .button {
-    background-color: white;
+    background-color: gray;
     color: white;
     display: inline-block;
     padding: .5rem 1rem;
@@ -28,7 +28,32 @@
         }
     }
 
-    &.secondary {
-        background-color: lightgray;
+    &.grow {
+        position: relative;
+
+        &, span, .content {
+            transition: all .5s ease-in-out .5s;
+        }
+
+        .content {
+            z-index: 5;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            clip-path: circle(0% at 0% 100%);
+            border-radius: $global-radius;
+        }
+
+        &:active, &:hover, &:focus {
+            &, span, .content {
+                transition: all .5s ease-in-out;
+            }
+            span {
+                opacity: 0;
+            }
+            .content {
+                clip-path: circle(75%);
+            }
+        }
     }
 }

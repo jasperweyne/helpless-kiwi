@@ -36,6 +36,21 @@
         .buttons {
             margin-top: $padding * 0.5;
             margin-bottom: -1.75 * $padding;
+
+            .grow {
+                .content {
+                    padding: 0 $padding / 2;
+                    background-color: #0c0;
+                    color: black;
+                }
+
+                &:active, &:hover, &:focus {
+                    background-color: white;
+                    .content {
+                        background-color: white;
+                    }
+                }
+            }
         }
 
         @include breakpoint(large) {
