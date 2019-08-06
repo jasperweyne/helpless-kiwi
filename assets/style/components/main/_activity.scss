@@ -23,6 +23,7 @@
     display: block;
     position: relative;
     color: white;
+    background-color: gray;
     
     .cardholder & {
         width        : calc(100% - #{$padding});
