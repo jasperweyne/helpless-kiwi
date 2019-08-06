@@ -8,23 +8,40 @@
     height: 400px;
     display: block;
     position: relative;
+    color: white;
     
     .cardholder & {
         width        : calc(100% - #{$padding});
         margin        : $padding * 0.5;
         box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.3);
     }
-    
-    * {
-        position: absolute;
+
+    &.hero {
+        margin-top: -$padding;
+        height: 70vh;
+
+        @include breakpoint(large) {
+            height: 60vh;
+        }
     }
     
-    h2 {
-        bottom: .5em;
-        left: .5em;
-        color: white;
-        font-size: 2rem;
-        font-weight: bold;
+    & > * {
+        position: absolute;
+    }
+
+    .container {
+        width: 100%;
+        left: 0;
+        right: 0;
+        bottom: $padding;
+
+        * {
+            margin-bottom: 0;
+        }
+    
+        h2 {
+            font-size: 2rem;
+        }
     }
     
     img {

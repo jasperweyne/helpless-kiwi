@@ -1,0 +1,26 @@
+{% extends 'layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = activity.name %}
+{% endif %}
+
+{% block body_root %}
+<div class="activity hero row {{ activity.color ?? '' }}">
+    {% if activity.image.name %}
+        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="filter">
+        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="over">
+    {% endif %}
+    <div class="container">
+        <h2>{{ activity.name }}</h2>
+        {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
+            <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('H:i') }}</span>
+        {% else %}
+            <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('d-m-Y H:i') }}</span>
+        {% endif %}
+        <span>{{ activity.location.address }}</span>
+    </div>
+</div>
+<div class="container row">
+    <p>{{ activity.description }}</p>
+</div>
+{% endblock %}

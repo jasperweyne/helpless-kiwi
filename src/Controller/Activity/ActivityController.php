@@ -28,4 +28,18 @@ class ActivityController extends AbstractController
             'activities' => $activities,
         ]);
     }
+
+    /**
+     * Finds and displays a activity entity.
+     *
+     * @Route("/activity/{id}", name="show", methods={"GET"})
+     */
+    public function showAction(Activity $activity)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        return $this->render('activity/show.html.twig', [
+            'activity' => $activity,
+        ]);
+    }
 }
