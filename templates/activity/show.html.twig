@@ -21,12 +21,10 @@
         {% set prices = activity.options|map(p => p.price)|sort %}
         {% if prices|length == 0 %}
             <span>Prijs onbekend</span>
-        {% elseif prices|first == prices|last %}
-            <span>&euro; {{ prices|first }}</span>
         {% else %}
-            <span>&euro; {{ prices|first }} - &euro; {{ prices|last }} </span>
+            <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span>
         {% endif %}
-        <span>{{ activity.registrations|length }} aanmeldingen - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
+        <span>{{ activity.registrations|length }} {{ activity.registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }} - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
         <div class="buttons">
             <span href="" class="button confirm disabled">Niet beschikbaar</a>
         </div>
