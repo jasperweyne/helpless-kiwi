@@ -18,9 +18,17 @@
             <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('d-m-Y H:i') }}</span>
         {% endif %}
         <span>{{ activity.location.address }}</span>
+        {% set prices = activity.options|map(p => p.price)|sort %}
+        {% if prices|length == 0 %}
+            <span>Prijs onbekend</span>
+        {% elseif prices|first == prices|last %}
+            <span>&euro; {{ prices|first }}</span>
+        {% else %}
+            <span>&euro; {{ prices|first }} - &euro; {{ prices|last }} </span>
+        {% endif %}
         <span>{{ activity.registrations|length }} aanmeldingen - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
         <div class="buttons">
-            <a href="" class="button confirm">Aanmelden</a>
+            <span href="" class="button confirm disabled">Niet beschikbaar</a>
         </div>
     </div>
 </div>
