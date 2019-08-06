@@ -4,16 +4,13 @@
 }
 
 .registrations {
-    display: none;
+    .card {
+        box-shadow: none;
+    }
 
     @include breakpoint(medium) {
-        display: block;
         margin-top: -140px;
         z-index: 3;
-
-        .card {
-            box-shadow: none;
-        }
     }
 }
 
