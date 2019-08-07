@@ -5,6 +5,7 @@
     padding: .5rem 1rem;
     border-radius: $global-radius;
     cursor: pointer;
+    line-height: 1.5;
     
     &.disabled, &[disabled] {
         cursor: not-allowed;

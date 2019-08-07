@@ -25,22 +25,23 @@
             <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span>
         {% endif %}
         <span>{{ activity.registrations|length }} {{ activity.registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }} - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
-        <div class="buttons">
-            {% if activity.options|length == 0 %}
+        <form action="{{ path("activity_register", { 'id': activity.id }) }}" method="post" class="buttons">
+            {% if options|length == 0 %}
                 <span class="button confirm disabled">Niet beschikbaar</span>
-            {% elseif activity.options|length == 1 %}
-                <a href="" class="button confirm">Aanmelden</a>
+            {% elseif options|length == 1 %}
+                {{ form(options|first.form) }}
+                <button class="button confirm" name="single_option" value="{{ activity.options[0].id }}" type="submit">Aanmelden</button>
             {% else %}
                 <div class="button confirm grow">
                     <span>Aanmelden</span>
                     <div class="content">
                         <table>
                             <tbody>
-                            {% for option in activity.options %}
+                            {% for option in options %}
                                 <tr>
-                                    <td>{{ option.name }}</td>
-                                    <td>&euro; {{ option.price }}</td>
-                                    <td><a href="" class="button confirm">Aanmelden</a></td>
+                                    <td>{{ option.data.name }}</td>
+                                    <td>&euro; {{ option.data.price }}</td>
+                                    <td>{{ form(option.form) }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -48,7 +49,7 @@
                     </div>
                 </div>
             {% endif %}
-        </div>
+        </form>
     </div>
 </div>
 <div class="container row">

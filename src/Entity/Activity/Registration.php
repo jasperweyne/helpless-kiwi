@@ -11,14 +11,19 @@ use Doctrine\ORM\Mapping as ORM;
 class Registration
 {
     /**
-     * @ORM\Id
-     * @ORM\OneToOne(targetEntity="App\Entity\Activity\PriceOption")
+     * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption")
      */
     private $option;
 
     /**
-     * @ORM\Id
-     * @ORM\OneToOne(targetEntity="App\Entity\Person\Person")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person")
      */
     private $person;
 
@@ -27,6 +32,28 @@ class Registration
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      */
     private $activity;
+
+    /**
+     * Get id.
+     *
+     * @return string
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param string $id
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     public function getOption(): ?PriceOption
     {
