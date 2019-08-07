@@ -85,7 +85,7 @@ class ActivityController extends AbstractController
         foreach ($activity->getOptions() as $option) {
             $forms[] = [
                 'data' => $option,
-                'form' => $this->generateRegisterSingleForm($option)->createView(),
+                'form' => $this->singleRegistrationForm($option)->createView(),
             ];
         }
 
