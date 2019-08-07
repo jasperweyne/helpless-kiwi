@@ -61,7 +61,15 @@
         <main>
             {% block body_root %}{% block body %}{% endblock %}{% endblock %}
         </main>
-        {% block footer %}{% endblock %}
+        {% block footer %}
+        <div class="feedback button grow">
+            <span>i</span>
+            <div class="content">
+                <h4>Feedback</h4>
+                <p>Kiwi is volop in ontwikkeling. Er kunnen dus nog fouten in zitten. Heb jij een fout gevonden? Heb jij een idee om Kiwi te verbeteren? Of wil jij zelf graag mee helpen? Laat het <a href="https://github.com/jasperweyne/helpless-kiwi/issues">hier</a> weten, dan helpen we je uit de brand!</p> 
+            </div>
+        </div>
+        {% endblock %}
         {% block javascripts %}
             {% for file in encore_entry_js_files('main') %}
                 <script src="{{ preload(asset(file), { as: 'script' }) }}" ></script>
