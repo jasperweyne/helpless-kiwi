@@ -28,11 +28,12 @@
         <div class="buttons">
             {% if not is_granted('ROLE_USER') %}
                 <span class="button confirm disabled">Niet ingelogd</span>
+            {% elseif unregister is not null %}
+                {{ form(unregister) }}
             {% elseif options|length == 0 %}
                 <span class="button confirm disabled">Niet beschikbaar</span>
             {% elseif options|length == 1 %}
                 {{ form(options|first.form) }}
-                <button class="button confirm" name="single_option" value="{{ activity.options[0].id }}" type="submit">Aanmelden</button>
             {% else %}
                 <div class="button confirm grow">
                     <span>Aanmelden</span>

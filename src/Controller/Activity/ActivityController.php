@@ -40,7 +40,39 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      *
-     * @Route("/activity/{id}/register", name="register", methods={"POST", "DELETE"})
+     * @Route("/activity/{id}/unregister", name="unregister", methods={"POST"})
+     */
+    public function unregisterAction(Request $request, Activity $activity)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createUnregisterForm($activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            
+            if ($data['registration_single'] !== null) {
+                $registration = $em->getRepository(Registration::class)->find($data['registration_single']);
+
+                if ($registration !== null) {
+                    $em->remove($registration);
+                    $em->flush();
+
+                    $this->addFlash('success', 'Afmelding gelukt!');
+                    return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
+                }
+            }
+        }
+
+        $this->addFlash('error', 'Probleem tijdens afmelden');
+        return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
+    }
+
+    /**
+     * Displays a form to edit an existing activity entity.
+     *
+     * @Route("/activity/{id}/register", name="register", methods={"POST"})
      */
     public function registerAction(Request $request, Activity $activity)
     {
@@ -91,10 +123,26 @@ class ActivityController extends AbstractController
             ];
         }
 
+        $unregister = null;
+        if ($this->getUser() !== null) {
+            $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson()]);
+            if ($registration !== null) {
+                $unregister = $this->singleUnregistrationForm($registration)->createView();
+            }
+        }
+
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
             'options' => $forms,
+            'unregister' => $unregister,
         ]);
+    }
+
+    public function singleUnregistrationForm(Registration $registration)
+    {
+        $form = $this->createUnregisterForm($registration->getActivity());
+        $form->get('registration_single')->setData($registration->getId());
+        return $form;
     }
 
     public function singleRegistrationForm(PriceOption $option)
@@ -102,6 +150,19 @@ class ActivityController extends AbstractController
         $form = $this->createRegisterForm($option->getActivity());
         $form->get('single_option')->setData($option->getId());
         return $form;
+    }
+
+    private function createUnregisterForm(Activity $activity)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('activity_unregister', ['id' => $activity->getId()]))
+            ->add('registration_single', HiddenType::class)
+            ->add('submit', SubmitType::class, [
+                'attr' => ['class' => 'button delete'],
+                'label' => 'Afmelden',
+            ])
+            ->getForm()
+        ;
     }
 
     private function createRegisterForm(Activity $activity)
