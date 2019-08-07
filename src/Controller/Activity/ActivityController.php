@@ -40,7 +40,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      *
-     * @Route("/activity/{id}/register", name="register", methods={"NEW", "DELETE"})
+     * @Route("/activity/{id}/register", name="register", methods={"POST", "DELETE"})
      */
     public function registerAction(Request $request, Activity $activity)
     {
