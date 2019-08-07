@@ -26,7 +26,7 @@
                 <nav>
                     {% for item in menu.getItems() %}
                         {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
-                            <a href="{{ item.path ?? '' }}">{{ item.title }}</a>
+                            <a href="{{ path(item.path) ?? '' }}">{{ item.title }}</a>
                         {% endif %}
                     {% endfor %}
                     {% if is_granted("ROLE_USER") %}
