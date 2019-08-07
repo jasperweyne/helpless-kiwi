@@ -21,8 +21,7 @@ class MenuBuilder
      */
     public function getItems(string $menu = '')
     {
-        $mapped = ('admin' == $menu) ? $this->getMain() : [];
-
+        $mapped = [];
         $items = $this->discovery->getMenuItems($menu);
         foreach ($items as $item) {
             $arr = [
@@ -42,19 +41,5 @@ class MenuBuilder
         }
 
         return $mapped;
-    }
-
-    public function getMain()
-    {
-        return [
-            [
-                'path' => 'activity_index',
-                'title' => 'Terug naar frontend',
-                'activeCriteria' => 'null',
-            ],
-            [
-                'title' => 'Beheer',
-            ],
-        ];
     }
 }

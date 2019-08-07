@@ -14,7 +14,7 @@
         <label for="nav-state" class="nav-toggle"><b></b></label>
         <h2 class="nav-site">{{ org }}</h2>
         <div class="nav-profile">
-            <a href="{#{ path('admin_person_show', { 'id': app.user.person.id }) }#}">Mijn Profiel</a>
+            <a href="{{ path('activity_index') }}">Terug naar frontend</a>
             <a href="{{ path('app_logout') }}">Uitloggen</a>
         </div>
     </header>

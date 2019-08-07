@@ -2,6 +2,7 @@
 
 namespace App\Controller\Activity;
 
+use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,6 +23,7 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities.
      *
+     * @MenuItem(title="Activiteiten")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
@@ -38,7 +40,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      *
-     * @Route("/activity/{id}/register", name="register", methods={"POST"})
+     * @Route("/activity/{id}/register", name="register", methods={"NEW", "DELETE"})
      */
     public function registerAction(Request $request, Activity $activity)
     {

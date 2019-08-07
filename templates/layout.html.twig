@@ -24,10 +24,14 @@
             <div class="menu">
                 <a href="/">{{ org }}</a>
                 <nav>
-                    <a href="">Activiteiten</a>
-                    <a href="">Foto's</a>
-                    <a href="">Organiseren</a>
-                    <a href="{{ path('admin_index') }}">Beheer</a>
+                    {% for item in menu.getItems() %}
+                        {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
+                            <a href="{{ item.path ?? '' }}">{{ item.title }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if is_granted("ROLE_USER") %}
+                        <a href="{{ path('admin_index') }}">Beheer</a>
+                    {% endif %}
                 </nav>
                 <span class="personal">
                 {% if app.user %}
