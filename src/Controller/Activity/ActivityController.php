@@ -110,7 +110,7 @@ class ActivityController extends AbstractController
             ->setAction($this->generateUrl('activity_register', ['id' => $activity->getId()]))
             ->add('single_option', HiddenType::class)
             ->add('submit', SubmitType::class, [
-                'attr' => ['class' => 'confirm'],
+                'attr' => ['class' => 'button confirm'],
                 'label' => 'Aanmelden',
             ])
             ->getForm()
