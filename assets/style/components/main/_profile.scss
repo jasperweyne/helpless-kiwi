@@ -1,0 +1,28 @@
+.hero {
+    margin-top: -$padding;
+    margin-bottom: $padding;
+    height: 40vh;
+    width: 100%;
+    display: block;
+    position: relative;
+    color: white;
+    background-color: #3377ee;
+
+    .container {
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+    }
+    
+    @include breakpoint(large) {
+        height: 50vh;
+
+        h1 {
+            font-size: 3rem;
+        }
+    }
+}
