@@ -1,20 +1,20 @@
 {% extends 'layout.html.twig' %}
 
-{% set page_title = 'Mijn Profiel' %}
+{% set page_title = 'Profiel' %}
 
 {% block body_root %}
-    <div class="container row">
-        <span class="top">
-            <h3>{{ page_title }}</h3>
-        </span>
-        <div class="card">
-        {% block body %}
-            <h4>{{ personal.fullname }}</h4>
-            <span>E-mail: {{ personal.email ?? '' }}</span>
-            <span>Verjaardag: {{ personal.birthday|date('d-m-Y') }}</span>
-            <span>Adres: {{ personal.address.address ?? '' }}</span>
-        {% endblock %}
+    <div class="hero row">
+        <div class="container">
+            <h1>Hey {{ personal.firstname }}!</h1>
         </div>
+    </div>
+    <div class="container row">
+    {% block body %}
+        <h4>{{ personal.fullname }}</h4>
+        <span>E-mail: {{ personal.email ?? '' }}</span>
+        <span>Verjaardag: {{ personal.birthday|date('d-m-Y') }}</span>
+        <span>Adres: {{ personal.address.address ?? '' }}</span>
+    {% endblock %}
     </div>
 {% endblock %}
 
