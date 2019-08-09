@@ -34,7 +34,7 @@ class ActivityType extends AbstractType
                 'allow_delete' => false,
             ])
             ->add('color', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     '' => null,
                     'Rood' => 'red',
                     'Oranje' => 'orange',

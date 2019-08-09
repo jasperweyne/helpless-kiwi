@@ -384,4 +384,13 @@ class Activity
         $this->options = new ArrayCollection();
         $this->image = new EmbeddedFile();
     }
+
+    public function getDaysTillDeadline()
+    {
+        $now = new \DateTime('now');
+        $deadline = $this->getDeadline();
+        $difference = $now->diff($deadline);
+
+        return $difference->format('%d');
+    }
 }

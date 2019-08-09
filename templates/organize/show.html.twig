@@ -17,42 +17,18 @@
         {% else %}
             <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('d-m-Y H:i') }}</span>
         {% endif %}
-        <span>{{ activity.location.address }}</span>
-        <span></span>
-        <span>{{ activity.registrations|length }} {{ activity.registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }} - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
-        <div class="buttons">
-            {% if not is_granted('ROLE_USER') %}
-                <span class="button confirm disabled">Niet ingelogd</span>
-            {% elseif unregister is not null %}
-                {{ form(unregister) }}
-            {% elseif options|length == 0 %}
-                <span class="button confirm disabled">Niet beschikbaar</span>
-            {% elseif options|length == 1 %}
-                {{ form(options|first.form) }}
-            {% else %}
-                <div class="button confirm grow">
-                    <span>Aanmelden</span>
-                    <div class="content">
-                        <table>
-                            <tbody>
-                            {% for option in options %}
-                                <tr>
-                                    <td>{{ option.data.name }}</td>
-                                    <td>&euro; {{ option.data.price }}</td>
-                                    <td>{{ form(option.form) }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
+        <span>Locatie: {{ activity.location.address }}</span>
+        <span>Deadline: {{ activity.deadline|date('d-m-Y') }}</span>
+        <span>{{ activity.registrations|length }} {{ activity.registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }}</span>
+        
     </div>
 </div>
 <div class="container row">
     <div class="grid-x">
         <div class="cell small-12 {{ is_granted('ROLE_USER') ? 'medium-8' : ''}}">
+            {% for registration in activity.registrations %}
+                <p>{{ registration.person }}</p>
+            {% endfor %}
             <p>{{ activity.description }}</p>
         </div>
         {% if is_granted('ROLE_USER') %}

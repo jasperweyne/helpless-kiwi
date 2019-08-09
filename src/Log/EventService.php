@@ -38,7 +38,7 @@ class EventService
 
     public function hydrate(?AbstractEvent $event)
     {
-        if ($event === null) {
+        if (null === $event) {
             return null;
         }
 
@@ -63,10 +63,11 @@ class EventService
         $object = $event->getEntity();
         if (null !== $object) {
             if (!is_string($this->getIdentifier($object))) {
-                @trigger_error("Entities with identifiers that are not of type string, are not supported yet.", E_USER_WARNING);
+                @trigger_error('Entities with identifiers that are not of type string, are not supported yet.', E_USER_WARNING);
+
                 return null;
             }
-                
+
             $entity
                 ->setObjectId($this->getIdentifier($object)) // todo: assumes id is string without assertion, fix this
                 ->setObjectType($this->getClassName($object))
@@ -78,7 +79,7 @@ class EventService
 
     public function populate(?EventEntity $entity)
     {
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
 

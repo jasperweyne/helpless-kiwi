@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Activity\PriceOption;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Entity\Activity\Registration;
@@ -51,21 +50,23 @@ class ActivityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            
-            if ($data['registration_single'] !== null) {
+
+            if (null !== $data['registration_single']) {
                 $registration = $em->getRepository(Registration::class)->find($data['registration_single']);
 
-                if ($registration !== null) {
+                if (null !== $registration) {
                     $em->remove($registration);
                     $em->flush();
 
                     $this->addFlash('success', 'Afmelding gelukt!');
+
                     return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
                 }
             }
         }
 
         $this->addFlash('error', 'Probleem tijdens afmelden');
+
         return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
     }
 
@@ -83,11 +84,11 @@ class ActivityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            
-            if ($data['single_option'] !== null) {
+
+            if (null !== $data['single_option']) {
                 $option = $em->getRepository(PriceOption::class)->find($data['single_option']);
 
-                if ($option !== null) {
+                if (null !== $option) {
                     $reg = new Registration();
                     $reg->setActivity($activity);
                     $reg->setOption($option);
@@ -97,12 +98,14 @@ class ActivityController extends AbstractController
                     $em->flush();
 
                     $this->addFlash('success', 'Aangemelding gelukt!');
+
                     return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
                 }
             }
         }
 
         $this->addFlash('error', 'Probleem tijdens aanmelden');
+
         return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
     }
 
@@ -114,8 +117,8 @@ class ActivityController extends AbstractController
     public function showAction(Activity $activity)
     {
         $em = $this->getDoctrine()->getManager();
-        
-        $forms = array();
+
+        $forms = [];
         foreach ($activity->getOptions() as $option) {
             $forms[] = [
                 'data' => $option,
@@ -124,9 +127,9 @@ class ActivityController extends AbstractController
         }
 
         $unregister = null;
-        if ($this->getUser() !== null) {
+        if (null !== $this->getUser()) {
             $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson()]);
-            if ($registration !== null) {
+            if (null !== $registration) {
                 $unregister = $this->singleUnregistrationForm($registration)->createView();
             }
         }
@@ -142,6 +145,7 @@ class ActivityController extends AbstractController
     {
         $form = $this->createUnregisterForm($registration->getActivity());
         $form->get('registration_single')->setData($registration->getId());
+
         return $form;
     }
 
@@ -149,6 +153,7 @@ class ActivityController extends AbstractController
     {
         $form = $this->createRegisterForm($option->getActivity());
         $form->get('single_option')->setData($option->getId());
+
         return $form;
     }
 
