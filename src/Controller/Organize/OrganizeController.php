@@ -4,14 +4,8 @@ namespace App\Controller\Organize;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Activity\PriceOption;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use App\Entity\Activity\Registration;
 
 /**
  * Activity controller.
