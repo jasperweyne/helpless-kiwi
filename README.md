@@ -15,10 +15,41 @@ track of inventory and more. It has been written using the Symfony/Doctrine fram
  - SCSS
  - Phpunit
 
-## How to install/deploy
-Please refer to the INSTALL.md file.
+## How to install
+Make sure php 7, composer, node.js and yarn are installed on your system.
 
-## Commands to remember!
+```
+composer install
+yarn install
+```
+
+## How to run in development
+Make sure a database is installed. MySQL is supported.
+Create a ```/.env.local``` file in the root folder, and configure the database.
+For example, with a MySQL database:
+
+```DATABASE_URL=mysql://username:password@127.0.0.1:3306/database```
+
+Then, insert the tables:
+
+```php bin/console doctrine:schema:update --force```
+
+To add a user, first register a person with:
+
+```php bin/console app:create-person [email] [name]```
+
+Then, add a login to that user with:
+
+```php bin/console app:set-auth [email]```
+
+To run the server, use:
+
+```php bin/console server:run```
+
+## How to run in production
+Don't! It's not ready yet!
+
+## Other Commands
 
  - ```php bin/console cache:clear```: Always a good idea!
  - ```composer fix```: Fix PHP source code formatting

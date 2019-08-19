@@ -91,14 +91,14 @@ class Taxonomy
     }
 
     /**
-     * @return Collection|Taxonomy[]
+     * @return Collection|Group[]
      */
     public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    public function addChild(Taxonomy $child): self
+    public function addChild(Group $child): self
     {
         if (!$this->children->contains($child)) {
             $this->children[] = $child;
@@ -108,7 +108,7 @@ class Taxonomy
         return $this;
     }
 
-    public function removeChild(Taxonomy $child): self
+    public function removeChild(Group $child): self
     {
         if ($this->children->contains($child)) {
             $this->children->removeElement($child);

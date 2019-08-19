@@ -3,12 +3,12 @@
 {% set page_title = 'Profiel' %}
 
 {% block body_root %}
-    <div class="profile hero row">
+    <div class="hero row">
         <div class="container">
             <h1>Hey {{ personal.firstname }}!</h1>
         </div>
     </div>
-    <div class="profile card row">
+    <div class="container row">
     {% block body %}
         <h4>{{ personal.fullname }}</h4>
         <span>E-mail: {{ personal.email ?? '' }}</span>
