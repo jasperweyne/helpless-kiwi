@@ -44,11 +44,11 @@ class Auth implements UserInterface, EquatableInterface
     protected $lastLogin;
 
     /**
-     * Random string sent to the user email address in order to verify it.
+     * Encrypted string whose value is sent to the user email address in order to (re-)set the password.
      *
      * @var string
      *
-     * @ORM\Column(name="confirmation_token", type="string", nullable=true)
+     * @ORM\Column(name="password_request_token", type="string", nullable=true)
      */
     protected $passwordRequestToken;
 
