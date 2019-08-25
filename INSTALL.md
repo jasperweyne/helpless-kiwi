@@ -93,10 +93,9 @@ When moving the public folder, ```composer install``` will give a warning on the
 out-of-date lock file, as well as an error when executing assets:install. You
 can safely ignore these messages.
 
-After that, you can clean the cache and build the assets
+After that, you can build the assets
 
 ```bash
-php bin/console cache:clear
 yarn build
 ```
 
@@ -107,11 +106,13 @@ your deployment server:
 * public (this might be renamed)
 * src
 * templates
-* var
 * vendor
 * .env(*)
 
-If everything went right, your server should now be running correctly!
+If you deploy on the local machine or over SSH, it is recommended to run
+```php bin/console cache:clear``` and deploy the var folder as well, otherwise
+skip this step. If everything went right, your server should now be running
+correctly!
 
 ## Database
 To insert the tables, make sure you're running the program with a database
