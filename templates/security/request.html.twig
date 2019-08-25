@@ -1,0 +1,14 @@
+{% extends 'layout.html.twig' %}
+
+{% set page_title = 'Wachtwoord vergeten' %}
+
+{% block body %}
+    <p>Ben je je wachtwoord vergeten? Vul hier je e-mailadres in waarmee je {{ org }} account is ingeschreven, dan sturen we je een herstelmail.</p>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="button-group">
+            <button type="submit">Verzenden</button>
+            <a href="{{ path('app_login') }}">Terug naar login</a>
+        </div>
+    {{ form_end(form) }}
+{% endblock body %}

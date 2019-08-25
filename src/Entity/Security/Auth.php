@@ -27,7 +27,7 @@ class Auth implements UserInterface, EquatableInterface
     /**
      * @var string The hashed password
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $password;
 
@@ -44,13 +44,13 @@ class Auth implements UserInterface, EquatableInterface
     protected $lastLogin;
 
     /**
-     * Random string sent to the user email address in order to verify it.
+     * Encrypted string whose value is sent to the user email address in order to (re-)set the password.
      *
      * @var string
      *
-     * @ORM\Column(name="confirmation_token", type="string", nullable=true)
+     * @ORM\Column(name="password_request_token", type="string", nullable=true)
      */
-    protected $confirmationToken;
+    protected $passwordRequestToken;
 
     /**
      * @var \DateTime
@@ -261,7 +261,7 @@ class Auth implements UserInterface, EquatableInterface
      * setConfirmationToken
      * Insert description here.
      *
-     * @param $confirmationToken
+     * @param $passwordRequestToken
      *
      * @return
      *
@@ -270,9 +270,9 @@ class Auth implements UserInterface, EquatableInterface
      * @see
      * @since
      */
-    public function setConfirmationToken($confirmationToken)
+    public function setPasswordRequestToken($passwordRequestToken)
     {
-        $this->confirmationToken = $confirmationToken;
+        $this->passwordRequestToken = $passwordRequestToken;
 
         return $this;
     }
@@ -324,8 +324,9 @@ class Auth implements UserInterface, EquatableInterface
      */
     public function isPasswordRequestNonExpired($ttl)
     {
-        return $this->getPasswordRequestedAt() instanceof \DateTime &&
-               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
+        return null === $this->getPasswordRequestedAt() || (
+               $this->getPasswordRequestedAt() instanceof \DateTime &&
+               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time());
     }
 
     /**
@@ -351,8 +352,20 @@ class Auth implements UserInterface, EquatableInterface
         return $this->getUsername === $user->getUsername();
     }
 
-    public function getConfirmationToken(): ?string
+    public function getPasswordRequestToken(): ?string
     {
-        return $this->confirmationToken;
+        return $this->passwordRequestToken;
+    }
+
+    public function getPasswordRequestSalt(): ?string
+    {
+        // not needed
+    }
+
+    public function setPasswordRequestSalt(): Auth
+    {
+        // not needed
+
+        return $this;
     }
 }
