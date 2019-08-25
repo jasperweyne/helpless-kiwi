@@ -4,6 +4,10 @@
     {% set page_title = 'Personen' %}
 {% endif %}
 
+{% block buttons %}
+<a href="{{ path("admin_person_new") }} ">Nieuw</a>
+{% endblock %}
+
 {% block body %}
     <div class="table">
         <table>
@@ -11,17 +15,13 @@
                 <tr>
                     <th>Naam</th>
                     <th>E-mail</th>
-                    <th>Type</th>
-                    <th>Kan inloggen?</th>
                 </tr>
             </thead>
             <tbody>
             {% for person in persons %}
                 <tr>
-                    <td>{{ person.canonical }}</td>
+                    <td><a href="{{ path("admin_person_show", { 'id': person.id }) }}">{{ person.canonical }}</a></td>
                     <td>{{ person.email }}</td>
-                    <td>{{ person.type }}</td>
-                    <td>{{ person.auth is null ? 'Nee' : 'Ja' }}</td>
                 </tr>
             {% else %}
                 <tr>

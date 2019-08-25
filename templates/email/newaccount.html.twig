@@ -1,0 +1,3 @@
+<h1>Jouw {{ org }} account</h1>
+<p>Welkom bij {{ org }}! Er is een account voor je aangemaakt in het ledenportaal, <a href="{{ path('password_register', { 'id': auth.person.id, 'token': token }) }}">klik hier</a> om jouw account te activeren.</p>
+<p>Werkt deze knop niet? Kopieer dan de volgende link in je browser: <a href="{{ path('password_register', { 'id': auth.person.id, 'token': token }) }}">{{ path('password_register', { 'id': auth.person.id, 'token': token }) }}</a>
