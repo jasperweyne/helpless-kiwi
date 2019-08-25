@@ -41,6 +41,10 @@ php bin/console server:run
 ```
 
 ### Production
+To ease the building process, you can run build_prod.sh to generate a production
+environment. If this doesn't work, you can deploy manually using these
+instructions.
+
 For clarity purposes, we're assuming you're deploying to another location, for
 example by moving the files over FTP. Locally or through SSH should work fine
 as well though.
