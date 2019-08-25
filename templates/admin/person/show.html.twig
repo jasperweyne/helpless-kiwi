@@ -31,7 +31,13 @@
             </tr>
             <tr>
                 <th>Kan inloggen?</th>
-                <td>{{ person.auth is null ? 'Nee' : 'Ja' }}</td>
+                {% if person.auth.password %}
+                    <td>Ja</td>
+                {% elseif person.auth %}
+                    <td>Uitnodiging verstuurd</td>
+                {% else %}
+                    <td>Nee, <a href="{{ path('admin_person_auth', { 'id': person.id }) }}">Account toevoegen</a></td>
+                {% endif %}
             </tr>
             <tr>
                 <th>Gemaakt op</th>

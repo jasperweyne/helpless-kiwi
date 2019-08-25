@@ -15,8 +15,6 @@
                 <tr>
                     <th>Naam</th>
                     <th>E-mail</th>
-                    <th>Type</th>
-                    <th>Kan inloggen?</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,8 +22,6 @@
                 <tr>
                     <td><a href="{{ path("admin_person_show", { 'id': person.id }) }}">{{ person.canonical }}</a></td>
                     <td>{{ person.email }}</td>
-                    <td>{{ person.type }}</td>
-                    <td>{{ person.auth is null ? 'Nee' : 'Ja' }}</td>
                 </tr>
             {% else %}
                 <tr>
