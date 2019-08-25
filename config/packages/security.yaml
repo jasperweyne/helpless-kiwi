@@ -2,7 +2,7 @@
 security:
     encoders:
         App\Entity\Security\Auth:
-            algorithm: argon2i
+            algorithm: auto
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
