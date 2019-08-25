@@ -1,0 +1,14 @@
+{% extends 'layout.html.twig' %}
+
+{% set page_title = 'Welkom bij jouw ' ~ org ~ ' account!' %}
+
+{% block body %}
+    <h1>{{ page_title }}</h1>
+    <p>Welkom bij jouw {{ org }} account! Om je account te activeren, maak hier je wachtwoord aan en log in.</p>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="button-group">
+            <button type="submit">Account activeren</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock body %}
