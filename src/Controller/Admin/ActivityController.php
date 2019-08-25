@@ -35,7 +35,7 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $activities = $em->getRepository(Activity::class)->findAll();
+        $activities = $em->getRepository(Activity::class)->findBy([], ['start' => 'DESC']);
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
