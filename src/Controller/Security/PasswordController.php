@@ -134,7 +134,7 @@ class PasswordController extends AbstractController
                 ]);
 
                 $message = (new \Swift_Message('Wachtwoord vergeten'))
-                    ->setFrom('jasperweyne@gmail.com')
+                    ->setFrom($_ENV['DEFAULT_FROM'])
                     ->setTo($mail)
                     ->setBody($body, 'text/html')
                     ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
@@ -145,14 +145,14 @@ class PasswordController extends AbstractController
                 $body = $this->renderView('email/unknownemail.html.twig');
 
                 $message = (new \Swift_Message('Wachtwoord vergeten'))
-                    ->setFrom('jasperweyne@gmail.com')
+                    ->setFrom($_ENV['DEFAULT_FROM'])
                     ->setTo($mail)
                     ->setBody($body, 'text/html')
                     ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
                 ;
             }
 
-            $this->addFlash('success', 'Indien er een account geregistreerd is, is er een herstelmail gestuurd!');
+            $this->addFlash('success', 'Er is een mail met insctructies gestuurd naar ' . $mail);
 
             return $this->redirectToRoute('app_login');
         }

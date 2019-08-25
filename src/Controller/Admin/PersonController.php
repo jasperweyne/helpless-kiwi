@@ -119,7 +119,7 @@ class PersonController extends AbstractController
             ]);
 
             $message = (new \Swift_Message('Jouw account'))
-                ->setFrom('jasperweyne@gmail.com')
+                ->setFrom($_ENV['DEFAULT_FROM'])
                 ->setTo($person->getEmail())
                 ->setBody($body, 'text/html')
                 ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
