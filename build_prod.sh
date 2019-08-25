@@ -1,4 +1,10 @@
 #!/bin/bash
+# Check if currently in git repository
+if [ -d ".git" ]; then
+    echo Please move this script outside of the repository before running it!
+    exit 1
+fi
+
 # Delete leftover files
 echo Removing files from earlier runs, please wait...
 rm -rf kiwi
@@ -42,6 +48,7 @@ return array (
     'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
     'DATABASE_URL' => 'mysql://db_user:db_pass@127.0.0.1:3306/db',
     'MAILER_URL' => 'null://localhost',
+    'DEFAULT_FROM' => 'foo@bar.com',
 );
 EOL
 echo Please edit '.env.local.php' and push the code to your server
