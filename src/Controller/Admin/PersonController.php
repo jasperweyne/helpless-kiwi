@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
@@ -10,6 +11,8 @@ use App\Template\Annotation\MenuItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Security\PasswordResetService;
+use App\Security\AuthUserProvider;
 
 /**
  * Person controller.
@@ -85,6 +88,47 @@ class PersonController extends AbstractController
             'modifs' => $modifs,
             'person' => $person,
         ]);
+    }
+
+    /**
+     * Add a login to person.
+     *
+     * @Route("/{id}/auth", name="auth", methods={"GET"})
+     */
+    public function authAction(Request $request, Person $person, PasswordResetService $passwordReset, AuthUserProvider $authProvider, \Swift_Mailer $mailer)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $person->getAuth()) {
+            $auth = new Auth();
+            $auth
+                ->setPerson($person)
+                ->setAuthId($authProvider->usernameHash($person->getEmail()))
+            ;
+
+            $token = $passwordReset->generatePasswordRequestToken($auth);
+            $auth->setPasswordRequestedAt(null);
+
+            $em->persist($auth);
+            $em->flush();
+
+            $body = $this->renderView('email/newaccount.html.twig', [
+                'name' => $person->getFirstname(),
+                'auth' => $auth,
+                'token' => $token,
+            ]);
+
+            $message = (new \Swift_Message('Jouw account'))
+                ->setFrom('jasperweyne@gmail.com')
+                ->setTo($person->getEmail())
+                ->setBody($body, 'text/html')
+                ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
+            ;
+
+            $mailer->send($message);
+        }
+
+        return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
     }
 
     /**
