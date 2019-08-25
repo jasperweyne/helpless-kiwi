@@ -1,0 +1,76 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = person.fullname %}
+
+    {% block buttons %}
+        <a href="{{ path('admin_person_edit', { 'id': person.id }) }}">Bewerken</a>
+        <a href="{{ path('admin_person_delete', { 'id': person.id }) }}">Verwijderen</a>
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+    <table>
+        <tbody>
+            <tr>
+                <th>Voornaam</th>
+                <td>{{ person.firstname ?? '' }}</td>
+            </tr>
+            <tr>
+                <th>Achternaam</th>
+                <td>{{ person.lastname ?? '' }}</td>
+            </tr>
+            <tr>
+                <th>E-mailadres</th>
+                <td>{{ person.email ?? '' }}</td>
+            </tr>
+            <tr>
+                <th>Geboortedatum</th>
+                <td>{{ person.birthday|date('d-m-Y') }}</td>
+            </tr>
+            <tr>
+                <th>Kan inloggen?</th>
+                <td>{{ person.auth is null ? 'Nee' : 'Ja' }}</td>
+            </tr>
+            <tr>
+                <th>Gemaakt op</th>
+                <td>
+                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
+                </td>
+            </tr>
+            <tr>
+                <th>Gemaakt door</th>
+                <td>
+                    {{ createdAt.auth.person.fullname ?? '' }}
+                </td>
+            </tr>
+            <tr>
+                <th>Aanpassingen</th>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Door</th>
+                                <th>Tijdstip</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for modif in modifs %}
+                            <tr>
+                                <td>{{ modif.auth.person.fullname }}</td>
+                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen aanpassingen.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
