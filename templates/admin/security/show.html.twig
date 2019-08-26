@@ -1,12 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = person.fullname %}
-
-    {% block buttons %}
-        <a href="{{ path('admin_person_edit', { 'id': person.id }) }}">Bewerken</a>
-        <a href="{{ path('admin_person_delete', { 'id': person.id }) }}">Verwijderen</a>
-    {% endblock %}
+    {% set page_title = 'Account' ~ (auth.person ? ' van ' ~ auth.person.fullname : '') %}
 {% endif %}
 
 {% block body %}
@@ -14,30 +9,23 @@
     <table>
         <tbody>
             <tr>
-                <th>Voornaam</th>
-                <td>{{ person.firstname ?? '' }}</td>
+                <th>Persoon</th>
+                <td>{% if auth.person %}<a href="{{ path('admin_person_show', { 'id': auth.person.id }) }}">{{ auth.person.canonical }}</a>{% endif %}</td>
             </tr>
             <tr>
-                <th>Achternaam</th>
-                <td>{{ person.lastname ?? '' }}</td>
+                <th>Account geactiveerd</th>
+                <td>{{ auth.password ? 'Ja' : 'Nee' }}</td>
             </tr>
             <tr>
-                <th>E-mailadres</th>
-                <td>{{ person.email ?? '' }}</td>
-            </tr>
-            <tr>
-                <th>Geboortedatum</th>
-                <td>{{ person.birthday|date('d-m-Y') }}</td>
-            </tr>
-            <tr>
-                <th>Kan inloggen?</th>
-                {% if person.auth.password %}
-                    <td>Ja,<a href="{{ path('admin_security_show', { 'person': person.id }) }}">details bekijken</a></td>
-                {% elseif person.auth %}
-                    <td>Uitnodiging verstuurd</td>
-                {% else %}
-                    <td>Nee, <a href="{{ path('admin_person_auth', { 'id': person.id }) }}">Account toevoegen</a></td>
-                {% endif %}
+                <th>Rollen</th>
+                <td>
+                    <ul>
+                        {% for role in auth.roles %}
+                            <li>{{ role }}</li>
+                        {% endfor %}
+                    </ul>
+                    <span><a href="{{ path('admin_security_roles', { 'person': auth.person.id }) }}">Rollen bewerken</a></span>
+                </td>
             </tr>
             <tr>
                 <th>Gemaakt op</th>
