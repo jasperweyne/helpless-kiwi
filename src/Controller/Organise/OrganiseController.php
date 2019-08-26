@@ -23,7 +23,7 @@ class OrganiseController extends AbstractController
     /**
      * Lists all activities.
      *
-     * @MenuItem(title="Organiseren")
+     * @MenuItem(title="Organiseren", role="ROLE_DISABLED")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
