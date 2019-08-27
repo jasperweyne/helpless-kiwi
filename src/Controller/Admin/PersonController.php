@@ -99,34 +99,36 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        if (null === $person->getAuth()) {
-            $auth = new Auth();
-            $auth
-                ->setPerson($person)
-                ->setAuthId($authProvider->usernameHash($person->getEmail()))
-            ;
-
-            $token = $passwordReset->generatePasswordRequestToken($auth);
-            $auth->setPasswordRequestedAt(null);
-
-            $em->persist($auth);
-            $em->flush();
-
-            $body = $this->renderView('email/newaccount.html.twig', [
-                'name' => $person->getFirstname(),
-                'auth' => $auth,
-                'token' => $token,
-            ]);
-
-            $message = (new \Swift_Message('Jouw account'))
-                ->setFrom($_ENV['DEFAULT_FROM'])
-                ->setTo($person->getEmail())
-                ->setBody($body, 'text/html')
-                ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
-            ;
-
-            $mailer->send($message);
+        if (null !== $person->getAuth()) {
+            $em->remove($person->getAuth());
         }
+
+        $auth = new Auth();
+        $auth
+            ->setPerson($person)
+            ->setAuthId($authProvider->usernameHash($person->getEmail()))
+        ;
+
+        $token = $passwordReset->generatePasswordRequestToken($auth);
+        $auth->setPasswordRequestedAt(null);
+
+        $em->persist($auth);
+        $em->flush();
+
+        $body = $this->renderView('email/newaccount.html.twig', [
+            'name' => $person->getFirstname(),
+            'auth' => $auth,
+            'token' => $token,
+        ]);
+
+        $message = (new \Swift_Message('Jouw account'))
+            ->setFrom($_ENV['DEFAULT_FROM'])
+            ->setTo($person->getEmail())
+            ->setBody($body, 'text/html')
+            ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
+        ;
+
+        $mailer->send($message);
 
         return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
     }
