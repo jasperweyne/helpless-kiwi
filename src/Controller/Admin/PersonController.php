@@ -100,7 +100,11 @@ class PersonController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         if (null !== $person->getAuth()) {
-            $em->remove($person->getAuth());
+            $oldAuth = $person->getAuth();
+            $person->setAuth(null);
+
+            $em->remove($oldAuth);
+            $em->flush();
         }
 
         $auth = new Auth();
