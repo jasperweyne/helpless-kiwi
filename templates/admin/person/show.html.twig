@@ -31,7 +31,7 @@
             </tr>
             <tr>
                 <th>Kan inloggen?</th>
-                {% if person.auth.password %}
+                {% if person.auth.password ?? false %}
                     <td>Ja,<a href="{{ path('admin_security_show', { 'person': person.id }) }}">details bekijken</a></td>
                 {% elseif person.auth %}
                     <td>Uitnodiging verstuurd</td>
