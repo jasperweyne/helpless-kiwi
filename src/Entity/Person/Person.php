@@ -93,7 +93,7 @@ class Person
      *
      * @param Auth $auth
      */
-    public function setAuth(Auth $auth): self
+    public function setAuth(?Auth $auth): self
     {
         $this->auth = $auth;
 
