@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
+use App\Entity\Activity\PriceOption;
 
 /**
  * Activity controller.
@@ -35,7 +36,7 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $activities = $em->getRepository(Activity::class)->findAll();
+        $activities = $em->getRepository(Activity::class)->findBy([], ['start' => 'DESC']);
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
@@ -129,6 +130,38 @@ class ActivityController extends AbstractController
         }
 
         return $this->render('admin/activity/delete.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+    
+    /**
+     * Finds and displays a activity entity.
+     *
+     * @Route("/{id}/price/new", name="price_new", methods={"GET", "POST"})
+     */
+    public function priceNewAction(Request $request, Activity $activity)
+    {
+        $price = new PriceOption();
+        $price->setActivity($activity);
+
+        $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $price
+                ->setDetails([])
+                ->setConfirmationMsg('')
+            ;
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($price);
+            $em->flush();
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/price/new.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);

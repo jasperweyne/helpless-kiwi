@@ -77,7 +77,7 @@
                 <td>{{ activity.color ?? '' }}</td>
             </tr>
             <tr>
-                <th>Opties</th>
+                <th>Prijzen</th>
                 <td>
                     <table>
                         <thead>
@@ -90,13 +90,16 @@
                         {% for option in activity.options %}
                             <tr>
                                 <td>{{ option.name }}</td>
-                                <td>{{ option.price }}</td>
+                                <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
                             </tr>
                         {% else %}
                             <tr>
                                 <td>Geen opties.</td>
                             </tr>
                         {% endfor %}
+                            <tr>
+                                <td><a href="{{ path('admin_activity_price_new', { 'id': activity.id }) }}">Prijs toevoegen</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </td>
