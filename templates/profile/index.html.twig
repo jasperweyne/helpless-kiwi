@@ -11,9 +11,8 @@
     <div class="profile card row">
     {% block body %}
         <h4>{{ personal.fullname }}</h4>
-        <span>E-mail: {{ personal.email ?? '' }}</span>
+        <span>E-mail: {{ personal.email ?? '' }}</span><br />
         <span>Verjaardag: {{ personal.birthday|date('d-m-Y') }}</span>
-        <span>Adres: {{ personal.address.address ?? '' }}</span>
     {% endblock %}
     </div>
 {% endblock %}
