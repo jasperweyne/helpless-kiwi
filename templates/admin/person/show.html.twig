@@ -34,7 +34,7 @@
                 {% if person.auth.password ?? false %}
                     <td>Ja,<a href="{{ path('admin_security_show', { 'person': person.id }) }}">details bekijken</a></td>
                 {% elseif person.auth %}
-                    <td>Uitnodiging verstuurd</td>
+                    <td>Uitnodiging verstuurd, <a href="{{ path('admin_person_auth', { 'id': person.id }) }}">opnieuw verzenden</a></td>
                 {% else %}
                     <td>Nee, <a href="{{ path('admin_person_auth', { 'id': person.id }) }}">Account toevoegen</a></td>
                 {% endif %}
