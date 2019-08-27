@@ -18,7 +18,7 @@
             <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('d-m-Y H:i') }}</span>
         {% endif %}
         <span>{{ activity.location.address }}</span>
-        {% set prices = activity.options|map(p => p.price)|sort %}
+        {% set prices = activity.options|sort|map(p => '%01.2f'|format(p.price / 100)) %}
         {% if prices|length == 0 %}
             <span>Prijs onbekend</span>
         {% else %}
@@ -28,10 +28,16 @@
         <div class="buttons">
             {% if not is_granted('ROLE_USER') %}
                 <span class="button confirm disabled">Niet ingelogd</span>
-            {% elseif unregister is not null %}
-                {{ form(unregister) }}
             {% elseif options|length == 0 %}
                 <span class="button confirm disabled">Niet beschikbaar</span>
+            {% elseif activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
+                {% if unregister is null %}
+                    <span class="button confirm disabled">Inschrijvingen gesloten</span>
+                {% else %}
+                    <span class="button delete disabled">Uitschrijvingen gesloten</span>
+                {% endif %}
+            {% elseif unregister is not null %}
+                {{ form(unregister) }}
             {% elseif options|length == 1 %}
                 {{ form(options|first.form) }}
             {% else %}
@@ -43,7 +49,7 @@
                             {% for option in options %}
                                 <tr>
                                     <td>{{ option.data.name }}</td>
-                                    <td>&euro; {{ option.data.price }}</td>
+                                    <td>&euro; {{ '%01.2f'|format(option.data.price / 100) }}</td>
                                     <td>{{ form(option.form) }}</td>
                                 </tr>
                             {% endfor %}

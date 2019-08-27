@@ -30,7 +30,7 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $activities = $em->getRepository(Activity::class)->findAll();
+        $activities = $em->getRepository(Activity::class)->findUpcoming();
 
         return $this->render('activity/index.html.twig', [
             'activities' => $activities,

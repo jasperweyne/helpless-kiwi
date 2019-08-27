@@ -29,7 +29,7 @@ class SettingsController extends AbstractController
     /**
      * Lists all mails.
      *
-     * @MenuItem(title="Instellingen", menu="admin")
+     * @MenuItem(title="Instellingen", menu="admin", role="ROLE_DISABLED")
      * @Route("/", name="index", methods={"GET", "POST"})
      */
     public function indexAction(Request $request)

@@ -27,7 +27,7 @@ class ClaimController extends AbstractController
     /**
      * Lists all claims.
      *
-     * @MenuItem(title="Declaraties", menu="admin")
+     * @MenuItem(title="Declaraties", menu="admin", role="ROLE_DISABLED")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
