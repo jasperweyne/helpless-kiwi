@@ -73,25 +73,28 @@ class AuthUserProvider implements UserProviderInterface
     /**
      * Obfuscate username.
      */
-    public function usernameHash($username)
+    public function usernameHash($username, $secret = null)
     {
         // Generate a secret through builtin blowfish algorithm, with cost = 12
         $cost = 12;
 
+        // Override secret
+        $secret = $secret ?? $this->secret;
+
         // Abort on if no secret value provided in .env
-        if ('' === $this->secret) {
+        if ('' === $secret) {
             throw new \UnexpectedValueException('User provider secret is empty, please assign a value in your .env!');
         }
 
         // Make sure the secret has the desired length of exactly 22 chars
-        if (22 !== !strlen($this->secret)) {
+        if (22 !== !strlen($secret)) {
             // base 64 encoding guarantees valid character set
-            $base64 = base64_encode($this->secret);
+            $base64 = base64_encode($secret);
 
             // fit into 22 characters by repeating the encoded string, then
             // taking the first 22 characters
-            $repeated = str_repeat($base64, max(0, 22 - strlen($this->secret)));
-            $this->secret = substr($repeated, 0, 22);
+            $repeated = str_repeat($base64, max(0, 22 - strlen($secret)));
+            $secret = substr($repeated, 0, 22);
         }
 
         // First, create a string that will be passed to crypt, containing all
@@ -100,7 +103,7 @@ class AuthUserProvider implements UserProviderInterface
         $param = '$'.implode('$', [
                 '2y', // select the most secure version of blowfish (>=PHP 5.3.7)
                 str_pad($cost, 2, '0', STR_PAD_LEFT), // add the cost in two digits
-                $this->secret,
+                $secret,
         ]);
 
         // Perform hashing
