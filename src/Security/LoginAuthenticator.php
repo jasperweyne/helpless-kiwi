@@ -17,6 +17,8 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validation;
 
 class LoginAuthenticator extends AbstractFormLoginAuthenticator
 {
@@ -61,6 +63,13 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
+        }
+
+        // Check if valid email
+        $validator = Validation::createValidator();
+        $violations = $validator->validate($credentials['username'], new Assert\Email());
+        if (0 !== count($violations)) {
+            throw new CustomUserMessageAuthenticationException($violations[0]->getMessage());
         }
 
         // Load / create our user however you need.
