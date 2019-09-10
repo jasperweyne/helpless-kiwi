@@ -70,7 +70,7 @@ Additionally, add this line to ```composer.json```:
 {
     ...
     "extra": {
-        "public_dir": "new/folder/name",
+        "public-dir": "new/folder/name",
         ...
     }
 }
@@ -94,8 +94,7 @@ yarn install
 > shell environment, or re-export these variables again.
 
 When moving the public folder, ```composer install``` will give a warning on the
-out-of-date lock file, as well as an error when executing assets:install. You
-can safely ignore these messages.
+out-of-date lock file. You can safely ignore this message.
 
 After that, you can build the assets
 
