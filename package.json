@@ -16,6 +16,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "dom-to-image": "^2.6.0",
         "foundation-sites": "^6.5.3",
         "jquery": "^3.4.0"
     }
