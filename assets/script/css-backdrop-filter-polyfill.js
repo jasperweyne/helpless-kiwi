@@ -3,7 +3,7 @@ require('./polyfill.js');
 
 var domtoimage = require('dom-to-image');
 
-if (!window.CSS.supports('backdrop-filter')) {
+if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
     // List of all elements with 'backdrop-filter' on page
     var elems = [];
 
