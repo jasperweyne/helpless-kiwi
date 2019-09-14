@@ -53,27 +53,17 @@ if (!window.CSS.supports('backdrop-filter')) {
                 elem.node.style.opacity = 0;
                 elem.bgNode.style.opacity = 0;
             });
-            
 
-            // List of all fixed elements, will be hidden at render time
-            var fixed = [];
-            document.body.getElementsByTagName("*").forEach(function (elem) {
-                if (window.getComputedStyle(elem, null).getPropertyValue('position') == 'fixed') {
-                    fixed.push({
-                        'node': elem,
-                        'originalDisplay': elem.style.display
-                    })
-                    elem.style.display = 'none';
-                }
-            });
+            function renderElem(node) {
+                var isFixed = false;
+                try {
+                    isFixed = window.getComputedStyle(node, null).getPropertyValue('position') == 'fixed';
+                } catch (e) { }
+                return !isFixed;
+            }
 
             // then, convert the dom to an image
-            domtoimage.toPng(document.body).then(function (dataUrl) {
-                // first, restore fixed elements
-                fixed.forEach(function(elem) {
-                    elem.node.style.display = elem.originalDisplay;
-                });
-
+            domtoimage.toPng(document.body, {filter: renderElem}).then(function (dataUrl) {
                 // now, restore opacity of each node and set blurred image
                 elems.forEach(function(elem) {
                     elem.node.style.opacity = elem.originalOpacity;
@@ -86,6 +76,10 @@ if (!window.CSS.supports('backdrop-filter')) {
                         'left': elem.node.offsetLeft + 'px',
                         'width': elem.node.offsetWidth + 'px',
                         'height': elem.node.offsetHeight + 'px',
+                        'border-top-left-radius': window.getComputedStyle(elem.node).getPropertyValue('border-top-left-radius'),
+                        'border-top-right-radius': window.getComputedStyle(elem.node).getPropertyValue('border-top-right-radius'),
+                        'border-bottom-right-radius': window.getComputedStyle(elem.node).getPropertyValue('border-bottom-right-radius'),
+                        'border-bottom-left-radius': window.getComputedStyle(elem.node).getPropertyValue('border-bottom-left-radius'),
                         'background': 'url(' + dataUrl + ') no-repeat ' + (-1 * elem.node.offsetLeft) + 'px ' + (-1 * elem.node.offsetTop) + 'px',
                     });
                 });
