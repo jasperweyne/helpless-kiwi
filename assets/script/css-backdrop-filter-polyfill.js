@@ -55,9 +55,11 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                     "scroll",
                     function(event) {
                         if (elem.scroll) {
-                            var scrollY = -1 * node.offsetTop  + elem.offset - this.scrollY;
-                            var scrollX = -1 * node.offsetLeft + elem.offset - this.scrollX;
-                            bgNode.style.backgroundPosition = scrollX + 'px ' + scrollY + 'px';
+                            window.requestAnimationFrame(() => {
+                                var scrollY = -1 * node.offsetTop  + elem.offset - this.scrollY;
+                                var scrollX = -1 * node.offsetLeft + elem.offset - this.scrollX;
+                                bgNode.style.backgroundPosition = scrollX + 'px ' + scrollY + 'px';
+                            });
                         }
                     },
                     true
