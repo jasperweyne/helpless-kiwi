@@ -2,6 +2,7 @@ require('./css-supports-polyfill.js');
 require('./polyfill.js');
 
 var domtoimage = require('dom-to-image');
+var toPx = require('to-px');
 
 if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
     // List of all elements with 'backdrop-filter' on page
@@ -14,22 +15,39 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
         // Build list of all elements with backdrop-filter on page
         rules.each(function(rule) {
             var filterVal = rule.getDeclaration()['backdrop-filter'];
+            var extracted = '0px';
+            try {
+                extracted = filterVal.match(/blur\((\w+)\)/)[1];
+            } catch (e) { };
             
             document.querySelectorAll(rule.getSelectors()).forEach(function(node) {
+                var containerNode = document.createElement('div');
+                Object.assign(containerNode.style, {
+                    'overflow': 'hidden',
+                });
+                node.parentNode.insertBefore(containerNode, node);
+
                 var bgNode = document.createElement('div');
                 Object.assign(bgNode.style, {
+                    'width': 'calc(100% + 2 * ' + extracted + ')',
+                    'height': 'calc(100% + 2 * ' + extracted + ')',
+                    'position': 'absolute',
+                    'top': '-' + extracted,
+                    'left': '-' + extracted,
                     '-webkit-filter': filterVal,
                     '-moz-filter': filterVal,
                     'filter': filterVal
                 })
-                node.parentNode.insertBefore(bgNode, node);
+                containerNode.appendChild(bgNode);
 
                 var isFixed = window.getComputedStyle(node).getPropertyValue('position') == 'fixed';
                 var elem = {
                     'node': node,
+                    'containerNode': containerNode,
                     'bgNode': bgNode,
                     'originalOpacity': node.style.opacity || 1,
-                    'scroll': isFixed
+                    'scroll': isFixed,
+                    'offset': toPx(extracted),
                 }
                 elems.push(elem);
 
@@ -37,9 +55,9 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                     "scroll",
                     function(event) {
                         if (elem.scroll) {
-                            var scroll = this.scrollY
-                            var scrollx = this.scrollX
-                            bgNode.style.backgroundPosition = (-1 * node.offsetLeft - scrollx) + 'px ' + (-1 * node.offsetTop - scroll) + 'px';
+                            var scrollY = -1 * node.offsetTop  + elem.offset - this.scrollY;
+                            var scrollX = -1 * node.offsetLeft + elem.offset - this.scrollX;
+                            bgNode.style.backgroundPosition = scrollX + 'px ' + scrollY + 'px';
                         }
                     },
                     true
@@ -51,7 +69,7 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
             // first, hide all nodes
             elems.forEach(function(elem) {
                 elem.node.style.opacity = 0;
-                elem.bgNode.style.opacity = 0;
+                elem.containerNode.style.opacity = 0;
             });
 
             function renderElem(node) {
@@ -67,10 +85,10 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                 // now, restore opacity of each node and set blurred image
                 elems.forEach(function(elem) {
                     elem.node.style.opacity = elem.originalOpacity;
-                    elem.bgNode.style.opacity = 1;
+                    elem.containerNode.style.opacity = 1;
                     var isFixed = window.getComputedStyle(elem.node).getPropertyValue('position') == 'fixed';
                     elem.scroll = isFixed;
-                    Object.assign(elem.bgNode.style, {
+                    Object.assign(elem.containerNode.style, {
                         'position': isFixed ? 'fixed' : 'absolute',
                         'top': elem.node.offsetTop + 'px',
                         'left': elem.node.offsetLeft + 'px',
@@ -80,7 +98,11 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                         'border-top-right-radius': window.getComputedStyle(elem.node).getPropertyValue('border-top-right-radius'),
                         'border-bottom-right-radius': window.getComputedStyle(elem.node).getPropertyValue('border-bottom-right-radius'),
                         'border-bottom-left-radius': window.getComputedStyle(elem.node).getPropertyValue('border-bottom-left-radius'),
-                        'background': 'url(' + dataUrl + ') no-repeat ' + (-1 * elem.node.offsetLeft) + 'px ' + (-1 * elem.node.offsetTop) + 'px',
+                    });
+                    var posX = -1 * elem.node.offsetLeft + elem.offset;
+                    var posY = -1 * elem.node.offsetTop  + elem.offset;
+                    Object.assign(elem.bgNode.style, {
+                        'background': window.getComputedStyle(document.body, null).getPropertyValue('background-color') + ' url(' + dataUrl + ') no-repeat ' + posX + 'px ' + posY + 'px',
                     });
                 });
             });
