@@ -134,5 +134,5 @@ php bin/console app:create-person [email] [name]
 Then, add a login to that user with:
 
 ```bash
-php bin/console app:set-auth [email]
+php bin/console app:set-auth --admin [email]
 ```
