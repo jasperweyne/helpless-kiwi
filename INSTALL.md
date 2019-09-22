@@ -15,10 +15,13 @@ variations in between those too are possible, but to keep things brief, we're
 assuming typical cases
 
 ### Development
-First, create a ```/.env.local``` file in the root folder, and configure the 
-database. For example, with a MySQL database:
+First, create a ```.env.local``` file in the root folder, disable the HTTPS
+requirement, and configure the database. For example, with a MySQL database:
 
-```DATABASE_URL=mysql://username:password@127.0.0.1:3306/database```
+```bash
+SECURE_SCHEME=http
+DATABASE_URL=mysql://username:password@127.0.0.1:3306/database
+```
 
 Then, make sure dependencies are installed.
 

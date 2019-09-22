@@ -1,4 +1,11 @@
 # Editted
+parameters:
+    # Adds a fallback DATABASE_URL if the env var is not set.
+    # This allows you to run cache:warmup even if your
+    # environment variables are not available yet.
+    # You should not need to change this value.
+    env(SECURE_SCHEME): 'https'
+
 security:
     encoders:
         App\Entity\Security\Auth:
@@ -35,5 +42,6 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/profile, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: '%env(SECURE_SCHEME)%' }
