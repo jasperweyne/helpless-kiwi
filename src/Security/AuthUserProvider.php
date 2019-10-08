@@ -107,7 +107,7 @@ class AuthUserProvider implements UserProviderInterface
         ]);
 
         // Perform hashing
-        $hash = crypt($username, $param);
+        $hash = crypt(trim($username), $param);
 
         // Finally, remove parameters from hash. Note that first to bits of the hash
         // are removed as well, to result in a readable string
