@@ -32,6 +32,8 @@ cd ../
 # Remove files redundant for operation 
 echo Removing files redundant for operation, please wait...
 rm kiwi/* 2> /dev/null
+rm -rf kiwi/.github
+rm -rf kiwi/.hooks
 rm -rf kiwi/assets
 rm -rf kiwi/bin
 rm -rf kiwi/node_modules

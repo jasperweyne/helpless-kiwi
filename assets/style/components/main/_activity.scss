@@ -21,6 +21,10 @@
     position: relative;
     color: white;
     background-color: gray;
+
+    * {
+        word-break: break-word;
+    }
     
     .cardholder & {
         width        : calc(100% - #{$padding});
