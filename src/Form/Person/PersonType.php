@@ -6,6 +6,7 @@ use App\Entity\Person\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 
 class PersonType extends AbstractType
 {
@@ -14,7 +15,7 @@ class PersonType extends AbstractType
         $builder
             ->add('firstname')
             ->add('lastname')
-            ->add('birthday')
+            ->add('birthday', BirthdayType::class)
             ->add('email')
         ;
     }

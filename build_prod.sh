@@ -17,7 +17,7 @@ rm -rf kiwi/.git
 # Move kiwi/public to public_html/kiwi
 egrep -lRZ 'public/' kiwi | xargs -0 -l sed -i -e 's/public\//..\/public_html\/kiwi\//g'
 sed -i -e 's/\/config\/bootstrap.php/\/..\/kiwi\/config\/bootstrap.php/g' kiwi/public/index.php
-sed -i -e 's/\"extra\": {/\"extra\": {\n        \"public_dir\": \"..\/public_html\/kiwi\",/g' kiwi/composer.json
+sed -i -e 's/\"extra\": {/\"extra\": {\n        \"public-dir\": \"..\/public_html\/kiwi\",/g' kiwi/composer.json
 mkdir public_html
 mv kiwi/public public_html/kiwi
 
@@ -32,6 +32,8 @@ cd ../
 # Remove files redundant for operation 
 echo Removing files redundant for operation, please wait...
 rm kiwi/* 2> /dev/null
+rm -rf kiwi/.github
+rm -rf kiwi/.hooks
 rm -rf kiwi/assets
 rm -rf kiwi/bin
 rm -rf kiwi/node_modules

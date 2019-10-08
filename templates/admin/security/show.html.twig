@@ -13,6 +13,10 @@
                 <td>{% if auth.person %}<a href="{{ path('admin_person_show', { 'id': auth.person.id }) }}">{{ auth.person.canonical }}</a>{% endif %}</td>
             </tr>
             <tr>
+                <th>Authenticatie ID</th>
+                <td>{{ auth.authId }}</td>
+            </tr>
+            <tr>
                 <th>Account geactiveerd</th>
                 <td>{{ auth.password ? 'Ja' : 'Nee' }}</td>
             </tr>

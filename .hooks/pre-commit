@@ -1,0 +1,77 @@
+#!/bin/bash
+
+LOGDIR="var/log/commits/"
+mkdir -p "${LOGDIR}"
+
+echo "php-cs-fixer pre commit hook start"
+
+PHP_CS_FIXER="vendor/bin/php-cs-fixer"
+PHP_CS_FIXER_LOG="phpcsfixer_output_`date +%s`.log"
+HAS_PHP_CS_FIXER=false
+
+if [ -x vendor/bin/php-cs-fixer ]; then
+    HAS_PHP_CS_FIXER=true
+fi
+
+if $HAS_PHP_CS_FIXER; then
+    git status --porcelain | grep -e '^[AM]\(.*\).php$' | cut -c 3- | while read line; do
+        $PHP_CS_FIXER fix --verbose "$line" &>> "${LOGDIR}${PHP_CS_FIXER_LOG}";
+        git add "$line";
+    done
+else
+    echo ""
+    echo "Please install php-cs-fixer, included in the composer file, e.g.:"
+    echo ""
+    echo "  composer install"
+    echo ""
+    echo "php-cs-fixer pre commit hook abort"
+    exit 1
+fi
+
+echo "php-cs-fixer pre commit hook success"
+
+echo "phpunit pre commit hook start"
+
+PHPUNIT="bin/phpunit"
+PHPUNIT_ARGS=""
+
+# Define a location to save the output.
+PHPUNIT_LOG="phpunit_output_`date +%s`.log"
+
+# execute unit tests. (Assume that phpunit.xml is in root of project).
+OUTPUT=`${PHPUNIT} ${PHPUNIT_ARGS}`
+RETURNCODE=$?
+
+# Save the output of phpunit for posterity.
+echo "$OUTPUT" > "${LOGDIR}${PHPUNIT_LOG}"
+
+# if unit tests fail, output a summary and exit with failure code.
+if [ $RETURNCODE -ne 0 ]; then
+
+    # find the line with the summary.
+    while read -r line; do
+      if [[ $line =~ Failures: ]] ; then
+        summary=$line
+        break
+      fi
+    done <<< "$OUTPUT"
+
+    # output the status.
+    echo -e "  + Test suite failed with return code ${RETURNCODE}"
+    echo
+    echo -e "$summary"
+    echo
+
+    echo "  + The full output of phpunit has been saved in:"
+    echo -e "      ${LOGDIR}${PHPUNIT_LOG}"
+    echo
+
+    # abort the commit.
+    echo
+    echo "phpunit pre commit hook abort"
+    exit $RETURNCODE
+else
+  echo "phpunit pre commit hook success"
+fi
+
+exit 0

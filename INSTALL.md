@@ -15,10 +15,13 @@ variations in between those too are possible, but to keep things brief, we're
 assuming typical cases
 
 ### Development
-First, create a ```/.env.local``` file in the root folder, and configure the 
-database. For example, with a MySQL database:
+First, create a ```.env.local``` file in the root folder, disable the HTTPS
+requirement, and configure the database. For example, with a MySQL database:
 
-```DATABASE_URL=mysql://username:password@127.0.0.1:3306/database```
+```bash
+SECURE_SCHEME=http
+DATABASE_URL=mysql://username:password@127.0.0.1:3306/database
+```
 
 Then, make sure dependencies are installed.
 
@@ -70,7 +73,7 @@ Additionally, add this line to ```composer.json```:
 {
     ...
     "extra": {
-        "public_dir": "new/folder/name",
+        "public-dir": "new/folder/name",
         ...
     }
 }
@@ -94,8 +97,7 @@ yarn install
 > shell environment, or re-export these variables again.
 
 When moving the public folder, ```composer install``` will give a warning on the
-out-of-date lock file, as well as an error when executing assets:install. You
-can safely ignore these messages.
+out-of-date lock file. You can safely ignore this message.
 
 After that, you can build the assets
 
@@ -135,5 +137,5 @@ php bin/console app:create-person [email] [name]
 Then, add a login to that user with:
 
 ```bash
-php bin/console app:set-auth [email]
+php bin/console app:set-auth --admin [email]
 ```

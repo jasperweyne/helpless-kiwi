@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 class CreateAuthCommand extends Command
 {
@@ -44,7 +45,9 @@ class CreateAuthCommand extends Command
 
             // possible arguments
             ->addArgument('email', InputArgument::REQUIRED, 'The e-mail address of the login.')
-        ;
+
+            // options
+            ->addOption('admin', null, InputOption::VALUE_NONE, 'Make the user an admin');
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -93,6 +96,10 @@ class CreateAuthCommand extends Command
             ->setAuthId($this->userProvider->usernameHash($email))
             ->setPassword($this->passwordEncoder->encodePassword($auth, $this->raw_pass))
         ;
+
+        if (false !== $input->getOption('admin')) {
+            $auth->setRoles(['ROLE_ADMIN']);
+        }
 
         $this->em->persist($auth);
         $this->em->flush();
