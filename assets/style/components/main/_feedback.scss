@@ -1,4 +1,5 @@
 .feedback.button.grow {
+    backdrop-filter: blur(3px);
     border-radius: $padding + 4rem;
     position: fixed;
     right: 5vh;
