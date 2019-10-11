@@ -4,6 +4,10 @@ require('./polyfill.js');
 var domtoimage = require('dom-to-image');
 var toPx = require('to-px');
 
+var getNodeProperty = function(node, style) {
+    return window.getComputedStyle(node).getPropertyValue(style);
+}
+
 if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
     // List of all elements with 'backdrop-filter' on page
     var elems = [];
@@ -40,12 +44,14 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                 })
                 containerNode.appendChild(bgNode);
 
-                var isFixed = window.getComputedStyle(node).getPropertyValue('position') == 'fixed';
+                var isFixed = getNodeProperty(node, 'position') == 'fixed';
+                console.log(getNodeProperty(node, 'opacity'));
                 var elem = {
                     'node': node,
                     'containerNode': containerNode,
                     'bgNode': bgNode,
-                    'originalOpacity': node.style.opacity || 1,
+                    'originalOpacity': getNodeProperty(node, 'opacity'),
+                    'originalContainerOpacity': getNodeProperty(containerNode, 'opacity'),
                     'scroll': isFixed,
                     'offset': toPx(extracted),
                 }
@@ -77,7 +83,7 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
             function renderElem(node) {
                 var isFixed = false;
                 try {
-                    isFixed = window.getComputedStyle(node, null).getPropertyValue('position') == 'fixed';
+                    isFixed = getNodeProperty(node, 'position') == 'fixed';
                 } catch (e) { }
                 return !isFixed;
             }
@@ -87,8 +93,8 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                 // now, restore opacity of each node and set blurred image
                 elems.forEach(function(elem) {
                     elem.node.style.opacity = elem.originalOpacity;
-                    elem.containerNode.style.opacity = 1;
-                    var isFixed = window.getComputedStyle(elem.node).getPropertyValue('position') == 'fixed';
+                    elem.containerNode.style.opacity = elem.originalContainerOpacity;
+                    var isFixed = getNodeProperty(elem.node, 'position') == 'fixed';
                     elem.scroll = isFixed;
                     Object.assign(elem.containerNode.style, {
                         'position': isFixed ? 'fixed' : 'absolute',
@@ -96,15 +102,15 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                         'left': elem.node.offsetLeft + 'px',
                         'width': elem.node.offsetWidth + 'px',
                         'height': elem.node.offsetHeight + 'px',
-                        'border-top-left-radius': window.getComputedStyle(elem.node).getPropertyValue('border-top-left-radius'),
-                        'border-top-right-radius': window.getComputedStyle(elem.node).getPropertyValue('border-top-right-radius'),
-                        'border-bottom-right-radius': window.getComputedStyle(elem.node).getPropertyValue('border-bottom-right-radius'),
-                        'border-bottom-left-radius': window.getComputedStyle(elem.node).getPropertyValue('border-bottom-left-radius'),
+                        'border-top-left-radius':     getNodeProperty(elem.node, 'border-top-left-radius'),
+                        'border-top-right-radius':    getNodeProperty(elem.node, 'border-top-right-radius'),
+                        'border-bottom-right-radius': getNodeProperty(elem.node, 'border-bottom-right-radius'),
+                        'border-bottom-left-radius':  getNodeProperty(elem.node, 'border-bottom-left-radius'),
                     });
                     var posX = -1 * elem.node.offsetLeft + elem.offset;
                     var posY = -1 * elem.node.offsetTop  + elem.offset;
                     Object.assign(elem.bgNode.style, {
-                        'background': window.getComputedStyle(document.body, null).getPropertyValue('background-color') + ' url(' + dataUrl + ') no-repeat ' + posX + 'px ' + posY + 'px',
+                        'background': getNodeProperty(document.body, 'background-color') + ' url(' + dataUrl + ') no-repeat ' + posX + 'px ' + posY + 'px',
                     });
                 });
             });
