@@ -55,6 +55,14 @@ Encore
         corejs: 3
     })
 
+    .configureTerserPlugin((options) => {
+        options.terserOptions = {
+            compress: {
+                inline: false // fixes bug with compressing assets/polyfill.js in production
+            }
+        }
+    })
+
     // enables Sass/SCSS support
     .enableSassLoader(function (options) {
         options.includePaths = ['./node_modules/foundation-sites/scss'];

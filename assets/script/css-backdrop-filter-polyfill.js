@@ -49,8 +49,8 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                     'node': node,
                     'containerNode': containerNode,
                     'bgNode': bgNode,
-                    'originalOpacity': getNodeProperty(node, 'opacity'),
-                    'originalContainerOpacity': getNodeProperty(containerNode, 'opacity'),
+                    'originalOpacity': node.style.opacity,
+                    'originalContainerOpacity': containerNode.style.opacity,
                     'scroll': isFixed,
                     'offset': toPx(extracted),
                 }
