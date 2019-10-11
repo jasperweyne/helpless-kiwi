@@ -109,15 +109,6 @@
             color: #ffffff;
             display: inline-block;
             white-space: nowrap;
-            padding: 0 .5rem;
-
-            &:first-child {
-                padding-left: 0;
-            }
-
-            &:last-child {
-                padding-right: 0;
-            }
         }
 
         nav {
@@ -136,6 +127,18 @@
             
             h2, a {
                 color: #000000;
+            }
+            
+            a {
+                padding: 0 .5rem;
+
+                &:first-child {
+                    padding-left: 0;
+                }
+
+                &:last-child {
+                    padding-right: 0;
+                }
             }
                 
             nav {
