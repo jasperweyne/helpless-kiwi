@@ -4,11 +4,11 @@
 
 {% block body %}
 <form method="post" class="container row">
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername" class="sr-only">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <h1 class="h3 mb-3 font-weight-normal">Inloggen</h1>
+    <label for="inputUsername" class="sr-only">E-mailadres</label>
+    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" placeholder="E-mailadres" required autofocus>
+    <label for="inputPassword" class="sr-only">Wachtwoord</label>
+    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Wachtwoord" required>
 
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
@@ -20,13 +20,13 @@
 
         <div class="checkbox mb-3">
             <label>
-                <input type="checkbox" name="_remember_me"> Remember me
+                <input type="checkbox" name="_remember_me"> Onthoud mij
             </label>
         </div>
     #}
 
     <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
+        Log in
     </button>
     <a href="{{ path('password_request') }}">Wachtwoord vergeten</a>
 </form>
