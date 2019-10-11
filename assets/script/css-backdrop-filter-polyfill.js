@@ -45,7 +45,6 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                 containerNode.appendChild(bgNode);
 
                 var isFixed = getNodeProperty(node, 'position') == 'fixed';
-                console.log(getNodeProperty(node, 'opacity'));
                 var elem = {
                     'node': node,
                     'containerNode': containerNode,
