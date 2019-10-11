@@ -142,13 +142,17 @@ class PersonController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Person $person)
+    public function editAction(Request $request, Person $person, AuthUserProvider $authProvider)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $form = $this->createForm('App\Form\Person\PersonType', $person);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $auth = $person->getAuth();
+            $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
+            $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
         }
