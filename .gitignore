@@ -31,4 +31,5 @@ yarn-error.log
 
 ###> custom ###
 /public/uploads/
+Thumbs.db
 ###< custom ###
