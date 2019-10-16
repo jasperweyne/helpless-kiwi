@@ -109,6 +109,7 @@
             color: #ffffff;
             display: inline-block;
             white-space: nowrap;
+            padding: 0 .5rem;
         }
 
         nav {
@@ -130,8 +131,6 @@
             }
             
             a {
-                padding: 0 .5rem;
-
                 &:first-child {
                     padding-left: 0;
                 }
