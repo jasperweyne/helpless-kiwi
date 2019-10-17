@@ -50,4 +50,7 @@ function xcopy($source, $dest, $permissions = 0755)
     return true;
 }
 
-xcopy(__DIR__, dirname(__DIR__).'/.git/hooks/');
+$root = dirname(__DIR__).'/';
+if (is_dir($root.'.git/')) {
+    xcopy(__DIR__, $root.'.git/hooks/');
+}
