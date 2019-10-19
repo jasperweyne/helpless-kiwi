@@ -11,7 +11,7 @@
 
 {% block body %}
     <div class="table">
-    <table>
+    <table style="margin-bottom:100px;">
         <tbody>
             <tr>
                 <th>Titel</th>
@@ -125,6 +125,9 @@
                                 <td>Geen aanmeldingen.</td>
                             </tr>
                         {% endfor %}
+                            <tr>
+                                <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </td>
