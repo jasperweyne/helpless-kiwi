@@ -5,7 +5,11 @@
 {% block body %}
 <div class="container row">
     <form method="post" class="login">
-        <span class="h3 mb-3 font-weight-normal">Inloggen</span>
+        {% if app.user %}
+            <span class="h3 mb-3 font-weight-normal">Log opnieuw in</span>
+        {% else %}
+            <span class="h3 mb-3 font-weight-normal">Inloggen</span>
+        {% endif %}
         <label for="inputUsername" class="sr-only">E-mailadres</label>
         <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" placeholder="E-mailadres" required autofocus>
         <label for="inputPassword" class="sr-only">Wachtwoord</label>
@@ -29,7 +33,9 @@
         <button class="btn btn-lg btn-primary" type="submit">
             Log in
         </button>
-        <a href="{{ path('password_request') }}">Wachtwoord vergeten</a>
+        {% if not app.user %}
+            <a href="{{ path('password_request') }}">Wachtwoord vergeten</a>
+        {% endif %}
     </form>
 </div>
 {% endblock %}

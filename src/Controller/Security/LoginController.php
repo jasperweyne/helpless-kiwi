@@ -16,7 +16,7 @@ class LoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
     {
         // you can't login again while you already are, redirect
-        if ($this->getUser()) {
+        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect('/');
         }
 
