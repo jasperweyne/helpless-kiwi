@@ -14,7 +14,7 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class CreateAuthCommand extends Command
+class SetAuthCommand extends Command
 {
     private $em;
     private $userProvider;
@@ -83,13 +83,12 @@ class CreateAuthCommand extends Command
     {
         $email = $input->getArgument('email');
 
-        $repository = $this->em->getRepository(Person::class);
-        $person = $repository->findOneBy(['email' => $email]);
+        $person = $this->em->getRepository(Person::class)->findOneBy(['email' => $email]);
         if (null === $person) {
             throw new \Exception('Person for given email not found.');
         }
 
-        $auth = new Auth();
+        $auth = $person->getAuth() ?? new Auth();
         $auth
             // Persons
             ->setPerson($person)
