@@ -43,3 +43,6 @@ services:
     App\Log\Doctrine\EntityEventListener:
         tags:
             - { name: doctrine.event_listener, event: onFlush }
+
+    App\DataCollector\AuthSecurityDataCollector:
+        decorates: data_collector.security

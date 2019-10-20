@@ -74,7 +74,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
 
         // Load / create our user however you need.
         // You can do this by calling the user provider, or with custom logic here.
-        $user = $userProvider->loadUserByUsername($credentials['username']);
+        $user = $userProvider->loadUserByEmail($credentials['username']);
 
         if (!$user) {
             // fail authentication with a custom error
