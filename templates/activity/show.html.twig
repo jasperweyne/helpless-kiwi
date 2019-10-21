@@ -4,6 +4,8 @@
     {% set page_title = activity.name %}
 {% endif %}
 
+{% set messages_overlay = true %}
+
 {% block body_root %}
 <div class="activity hero row {{ activity.color ?? '' }}">
     {% if activity.image.name %}

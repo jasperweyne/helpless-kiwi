@@ -44,21 +44,25 @@
             </div>
         </header>
         {% endblock %}
-        {% for flash_message in app.session.flashbag.get('error') %}
-            <div class="container row">
-                <div class="flash flash-error">
-                    {{ flash_message }}
-                </div>
-            </div>
-        {% endfor %}
-        {% for flash_message in app.session.flashbag.get('success') %}
-            <div class="container row">
-                <div class="flash flash-success">
-                    {{ flash_message }}
-                </div>
-            </div>
-        {% endfor %}
         <main>
+            {% block messages %}
+            <div class="messages {{ messages_overlay is defined and messages_overlay ? 'messages_overlay' : '' }}">
+                {% for flash_message in app.session.flashbag.get('error') %}
+                    <div class="container row">
+                        <div class="flash flash-error">
+                            {{ flash_message }}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for flash_message in app.session.flashbag.get('success') %}
+                    <div class="container row">
+                        <div class="flash flash-success">
+                            {{ flash_message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endblock %}
             {% block body_root %}{% block body %}{% endblock %}{% endblock %}
         </main>
         {% block footer %}
