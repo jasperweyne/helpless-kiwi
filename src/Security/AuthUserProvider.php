@@ -25,10 +25,10 @@ class AuthUserProvider implements UserProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadUserByUsername($username)
+    public function loadUserByEmail($username)
     {
         try {
-            return $this->loadUserById($this->usernameHash($username));
+            return $this->loadUserByUsername($this->usernameHash($username));
         } catch (UsernameNotFoundException $e) {
             throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
         }
@@ -43,7 +43,7 @@ class AuthUserProvider implements UserProviderInterface
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        return $this->loadUserById($user->getAuthId()); // todo: support username editting, requires backref to Person
+        return $this->loadUserByUsername($user->getAuthId()); // todo: support username editting, requires backref to Person
     }
 
     /**
@@ -57,14 +57,14 @@ class AuthUserProvider implements UserProviderInterface
     /**
      * Find user in storage through secret id.
      */
-    public function loadUserById($hash)
+    public function loadUserByUsername($authId)
     {
         $manager = $this->registry->getManager($this->managerName);
         $repository = $manager->getRepository(Auth::class);
 
-        $user = $repository->findOneBy(['auth_id' => $hash]);
+        $user = $repository->findOneBy(['auth_id' => $authId]);
         if (null === $user) {
-            throw new UsernameNotFoundException('User not found.');
+            throw (new UsernameNotFoundException('User not found.'))->setUsername($authId);
         }
 
         return $user;

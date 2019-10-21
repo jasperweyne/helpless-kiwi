@@ -125,7 +125,7 @@ class PasswordController extends AbstractController
             $mail = $data['email'];
 
             try {
-                $auth = $userProvider->loadUserByUsername($mail);
+                $auth = $userProvider->loadUserByEmail($mail);
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
 
                 $body = $this->renderView('email/resetpassword.html.twig', [
@@ -152,7 +152,7 @@ class PasswordController extends AbstractController
                 ;
             }
 
-            $this->addFlash('success', 'Er is een mail met insctructies gestuurd naar ' . $mail);
+            $this->addFlash('success', 'Er is een mail met insctructies gestuurd naar '.$mail);
 
             return $this->redirectToRoute('app_login');
         }

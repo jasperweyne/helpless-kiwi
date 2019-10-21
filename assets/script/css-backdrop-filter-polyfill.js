@@ -49,8 +49,8 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                     'node': node,
                     'containerNode': containerNode,
                     'bgNode': bgNode,
-                    'originalOpacity': getNodeProperty(node, 'opacity'),
-                    'originalContainerOpacity': getNodeProperty(containerNode, 'opacity'),
+                    'originalOpacity': node.style.opacity,
+                    'originalContainerOpacity': containerNode.style.opacity,
                     'scroll': isFixed,
                     'offset': toPx(extracted),
                 }
@@ -61,8 +61,15 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                     function(event) {
                         if (elem.scroll) {
                             window.requestAnimationFrame(() => {
-                                var scrollY = -1 * node.offsetTop  + elem.offset - this.scrollY;
-                                var scrollX = -1 * node.offsetLeft + elem.offset - this.scrollX;
+                                var clientTop  = document.documentElement.clientTop  || document.body.clientTop  || 0;
+                                var clientLeft = document.documentElement.clientLeft || document.body.clientLeft || 0;
+            
+                                var box = elem.node.getBoundingClientRect();
+                                var offsetLeft = box.left - clientLeft;
+                                var offsetTop  = box.top  - clientTop;
+
+                                var scrollY = -1 * offsetTop  + elem.offset - this.scrollY;
+                                var scrollX = -1 * offsetLeft + elem.offset - this.scrollX;
                                 bgNode.style.backgroundPosition = scrollX + 'px ' + scrollY + 'px';
                             });
                         }
@@ -106,8 +113,16 @@ if (!window.CSS.supports('backdrop-filter', 'blur(1px)')) {
                         'border-bottom-right-radius': getNodeProperty(elem.node, 'border-bottom-right-radius'),
                         'border-bottom-left-radius':  getNodeProperty(elem.node, 'border-bottom-left-radius'),
                     });
-                    var posX = -1 * elem.node.offsetLeft + elem.offset;
-                    var posY = -1 * elem.node.offsetTop  + elem.offset;
+                    
+                    var clientTop  = document.documentElement.clientTop  || document.body.clientTop  || 0;
+                    var clientLeft = document.documentElement.clientLeft || document.body.clientLeft || 0;
+
+                    var box = elem.node.getBoundingClientRect();
+                    var offsetLeft = box.left - clientLeft;
+                    var offsetTop  = box.top  - clientTop;
+
+                    var posX = -1 * offsetLeft + elem.offset;
+                    var posY = -1 * offsetTop  + elem.offset;
                     Object.assign(elem.bgNode.style, {
                         'background': getNodeProperty(document.body, 'background-color') + ' url(' + dataUrl + ') no-repeat ' + posX + 'px ' + posY + 'px',
                     });

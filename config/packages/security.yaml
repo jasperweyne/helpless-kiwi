@@ -30,6 +30,9 @@ security:
                 path:   app_logout
                 # where to redirect after logout
                 # target: app_any_route
+            remember_me:
+                secret: '%kernel.secret%'
+                always_remember_me: true
 
             # activate different ways to authenticate
 
@@ -42,6 +45,6 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/admin, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/profile, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: '%env(SECURE_SCHEME)%' }
