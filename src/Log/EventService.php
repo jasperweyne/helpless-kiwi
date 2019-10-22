@@ -3,6 +3,7 @@
 namespace App\Log;
 
 use App\Entity\Log\Event as EventEntity;
+use App\Reflection\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 

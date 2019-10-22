@@ -3,6 +3,7 @@
 namespace App\Log\Doctrine;
 
 use App\Log\AbstractEvent;
+use App\Reflection\ClassNameService;
 
 class EntityUpdateEvent extends AbstractEvent
 {
@@ -50,6 +51,6 @@ class EntityUpdateEvent extends AbstractEvent
 
     public function getTitle()
     {
-        return 'Updated '.$this->getEntityType();
+        return 'Updated '.ClassNameService::fqcnToName($this->getEntityType());
     }
 }

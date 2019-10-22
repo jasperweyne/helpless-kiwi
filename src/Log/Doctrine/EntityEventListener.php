@@ -4,7 +4,7 @@ namespace App\Log\Doctrine;
 
 use App\Entity\Log\Event;
 use App\Log\EventService;
-use App\Log\ReflectionService;
+use App\Reflection\ReflectionService;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\PersistentCollection;
 
@@ -35,7 +35,7 @@ class EntityEventListener
             $fields = $this->extractFields($entity, $metadata);
 
             $logEntity = $this->eventService->hydrate(new EntityNewEvent($entity, $fields));
-            if ($logEntity == null) {
+            if (null == $logEntity) {
                 continue;
             }
 
@@ -58,7 +58,7 @@ class EntityEventListener
             }
 
             $logEntity = $this->eventService->hydrate(new EntityUpdateEvent($entity, $original, $newFields));
-            if ($logEntity == null) {
+            if (null == $logEntity) {
                 continue;
             }
 
