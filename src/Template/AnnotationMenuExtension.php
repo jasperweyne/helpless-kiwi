@@ -9,7 +9,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 // ToDo: implement caching
-class MenuDiscovery
+class AnnotationMenuExtension implements MenuExtensionInterface
 {
     /**
      * @var string
@@ -68,8 +68,26 @@ class MenuDiscovery
         if (!array_key_exists($menu, $this->menuItems)) {
             return [];
         }
+        
+        $mapped = [];
+        foreach ($this->menuItems[$menu] as $item) {
+            $arr = [
+                'title' => $item->getTitle(),
+                'path' => $item->getPath(),
+            ];
+            if (null !== $item->getRole()) {
+                $arr['role'] = $item->getRole();
+            }
+            if (null !== $item->getClass()) {
+                $arr['class'] = $item->getClass();
+            }
+            if (null !== $item->getActiveCriteria()) {
+                $arr['activeCriteria'] = $item->getActiveCriteria();
+            }
+            $mapped[] = $arr;
+        }
 
-        return $this->menuItems[$menu];
+        return $mapped;
     }
 
     /**

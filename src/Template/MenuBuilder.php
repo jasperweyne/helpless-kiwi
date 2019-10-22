@@ -4,14 +4,24 @@ namespace App\Template;
 
 class MenuBuilder
 {
-    /**
-     * @var MenuDiscovery
-     */
-    private $discovery;
+    private $extensions;
 
-    public function __construct(MenuDiscovery $discovery)
+    private $menuitems;
+
+    public function __construct($extensions)
     {
-        $this->discovery = $discovery;
+        $this->extensions = $extensions;
+        $this->menuitems = [];
+    }
+
+    /**
+     * Returns the extensions loaded by the framework.
+     *
+     * @return MenuExtensionInterface[]
+     */
+    public function getExtensions()
+    {
+        return $this->extensions;
     }
 
     /**
@@ -21,25 +31,16 @@ class MenuBuilder
      */
     public function getItems(string $menu = '')
     {
-        $mapped = [];
-        $items = $this->discovery->getMenuItems($menu);
-        foreach ($items as $item) {
-            $arr = [
-                'title' => $item->getTitle(),
-                'path' => $item->getPath(),
-            ];
-            if (null !== $item->getRole()) {
-                $arr['role'] = $item->getRole();
+        if (!isset($this->menuitems[$menu])) {
+            $items = [];
+
+            foreach ($this->extensions as $extension) {
+                $items = array_merge($items, $extension->getMenuItems($menu));
             }
-            if (null !== $item->getClass()) {
-                $arr['class'] = $item->getClass();
-            }
-            if (null !== $item->getActiveCriteria()) {
-                $arr['activeCriteria'] = $item->getActiveCriteria();
-            }
-            $mapped[] = $arr;
+
+            $this->menuitems[$menu] = $items;
         }
 
-        return $mapped;
+        return $this->menuitems[$menu];
     }
 }
