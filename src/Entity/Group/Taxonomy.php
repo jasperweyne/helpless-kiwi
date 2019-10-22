@@ -35,6 +35,11 @@ class Taxonomy
     private $children;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $category;
+
+    /**
      * Get id.
      *
      * @return string
@@ -121,8 +126,21 @@ class Taxonomy
         return $this;
     }
 
+    public function getCategory(): ?bool
+    {
+        return $this->category;
+    }
+
+    public function setCategory(bool $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->category = false;
     }
 }
