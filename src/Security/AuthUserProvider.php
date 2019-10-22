@@ -64,7 +64,9 @@ class AuthUserProvider implements UserProviderInterface
 
         $user = $repository->findOneBy(['auth_id' => $authId]);
         if (null === $user) {
-            throw (new UsernameNotFoundException('User not found.'))->setUsername($authId);
+            $excep = new UsernameNotFoundException('User not found.');
+            $excep->setUsername($authId);
+            throw $excep;
         }
 
         return $user;
