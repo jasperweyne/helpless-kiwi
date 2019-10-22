@@ -8,6 +8,8 @@ class EntityNewEvent extends AbstractEvent
 {
     private $fields;
 
+    private $type;
+
     public function __construct($entity, $fields)
     {
         $this->setEntity($entity);
@@ -18,5 +20,10 @@ class EntityNewEvent extends AbstractEvent
     public function getFields()
     {
         return $this->fields;
+    }
+
+    public function getTitle()
+    {
+        return 'Added '.$this->getEntityType();
     }
 }

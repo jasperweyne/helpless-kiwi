@@ -12,6 +12,8 @@ abstract class AbstractEvent
 
     private $entityCb;
 
+    private $entityType = '';
+
     public function getTime()
     {
         if (null === $this->time) {
@@ -44,7 +46,22 @@ abstract class AbstractEvent
     {
         $this->entityCb = null;
         $this->entity = $entity;
+        $this->entityType = \get_class($entity);
 
         return $this;
     }
+
+    public function getEntityType()
+    {
+        return $this->entityType;
+    }
+
+    public function setEntityType($type)
+    {
+        $this->entityType = $type;
+
+        return $this;
+    }
+
+    abstract public function getTitle();
 }

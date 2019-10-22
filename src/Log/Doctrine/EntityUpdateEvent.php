@@ -47,4 +47,9 @@ class EntityUpdateEvent extends AbstractEvent
     {
         return $this->new;
     }
+
+    public function getTitle()
+    {
+        return 'Updated '.$this->getEntityType();
+    }
 }

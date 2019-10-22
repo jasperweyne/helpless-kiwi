@@ -9,12 +9,14 @@
         <table>
             <thead>
                 <tr>
+                    <th>Naam</th>
                     <th>Tijd</th>
                 </tr>
             </thead>
             <tbody>
             {% for event in log %}
                 <tr>
+                    <td>{{ event.title }}</td>
                     <td>{{ event.time|date('d-m-Y H:i') }}</td>
                 </tr>
             {% else %}
