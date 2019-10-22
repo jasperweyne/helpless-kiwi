@@ -13,9 +13,9 @@
                 </tr>
             </thead>
             <tbody>
-            {% for group in groups %}
+            {% for group in children %}
                 <tr>
-                    <td>{{ group.name }}</td>
+                    <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
                 </tr>
             {% else %}
                 <tr>

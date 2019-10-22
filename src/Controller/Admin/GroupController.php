@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Group\Taxonomy;
+use App\Entity\Group\Relation;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,23 +17,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class GroupController extends AbstractController
 {
-    /**
-     * Lists all groups.
-     *
-     * @MenuItem(title="Groepen", menu="admin")
-     * @Route("/", name="index", methods={"GET"})
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $groups = $em->getRepository(Taxonomy::class)->findBy([/*'parent' => null, 'category' => true*/]);
-
-        return $this->render('admin/group/index.html.twig', [
-            'groups' => $groups,
-        ]);
-    }
-
     /**
      * Generate default groups.
      *
@@ -64,6 +48,30 @@ class GroupController extends AbstractController
 
         return $this->render('admin/group/generate.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Lists all groups.
+     *
+     * @MenuItem(title="Groepen", menu="admin")
+     * @Route("/{id?}", name="show", methods={"GET"})
+     */
+    public function showAction(?Taxonomy $taxonomy)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $children = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => true]);
+        $instances = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => false]);
+        $persons = $em->getRepository(Relation::class)->findBy(['collection' => $taxonomy]);
+
+        $view = $taxonomy ? 'admin/group/taxonomy.html.twig' : 'admin/group/index.html.twig';
+
+        return $this->render($view, [
+            'taxonomy' => $taxonomy,
+            'children' => $children,
+            'instances' => $instances,
+            'persons' => $persons,
         ]);
     }
 

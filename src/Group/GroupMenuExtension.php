@@ -53,7 +53,7 @@ class GroupMenuExtension implements MenuExtensionInterface
         foreach ($groups as $group) {
             $mapped[] = [
                 'title' => $group->getName(),
-                'path' => 'admin_group_index',
+                'path' => 'admin_index',
             ];
         }
 

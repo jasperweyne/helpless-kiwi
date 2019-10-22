@@ -126,6 +126,11 @@ class Taxonomy
         return $this;
     }
 
+    public function isCategory(): bool
+    {
+        return $this->category ?? false;
+    }
+
     public function getCategory(): ?bool
     {
         return $this->category;
