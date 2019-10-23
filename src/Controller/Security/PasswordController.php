@@ -129,7 +129,11 @@ class PasswordController extends AbstractController
             $person = $em->getRepository(Person::class)->findOneBy(['email' => $mail]);
             if (!$person) {
                 $person = new Person();
-                $person->setEmail($mail);
+                $person
+                    ->setEmail($mail)
+                    ->setFirstname('')
+                    ->setLastname('')
+                ;
 
                 $em->persist($person);
                 $em->flush();
@@ -151,7 +155,7 @@ class PasswordController extends AbstractController
                 $mailer->message($person, 'Wachtwoord vergeten', $body);
             }
 
-            $this->addFlash('success', 'Er is een mail met insctructies gestuurd naar '.$mail);
+            $this->addFlash('success', 'Er is een mail met instructies gestuurd naar '.$mail);
 
             return $this->redirectToRoute('app_login');
         }
