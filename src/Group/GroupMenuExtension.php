@@ -31,6 +31,8 @@ class GroupMenuExtension implements MenuExtensionInterface
      */
     public function getMenuItems(string $menu = '')
     {
+        return []; // disable for now
+
         if (!$this->menuItems) {
             $this->discoverMenuItems();
         }
