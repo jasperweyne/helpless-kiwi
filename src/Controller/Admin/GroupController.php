@@ -57,9 +57,22 @@ class GroupController extends AbstractController
      * @MenuItem(title="Groepen", menu="admin")
      * @Route("/{id?}", name="show", methods={"GET"})
      */
-    public function showAction(?Taxonomy $taxonomy)
+    public function showAction(Request $request, ?Taxonomy $taxonomy)
     {
         $em = $this->getDoctrine()->getManager();
+
+        if (!$taxonomy && $request->query->get('showall')) {
+            $children = $em->getRepository(Taxonomy::class)->findBy(['category' => true]);
+            $instances = $em->getRepository(Taxonomy::class)->findBy(['category' => false]);
+
+            return $this->render('admin/group/show.html.twig', [
+                'taxonomy' => null,
+                'children' => $children,
+                'instances' => $instances,
+                'relations' => [],
+                'show_instances' => true,
+            ]);
+        }
 
         $children = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => true]);
         $instances = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => false]);

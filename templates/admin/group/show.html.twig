@@ -5,12 +5,23 @@
     
     {% block buttons %}
         {% if taxonomy %}
-            <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }} </a>
+            <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }}</a>
+        {% else %}
+            {% if show_instances ?? false %}
+            <a href="{{ path('admin_group_show') }}">Terug</a>
+            {% else %}
+            <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
+            {% endif %}
         {% endif %}
     {% endblock %}
 {% endif %}
 
+{% set show_categories = show_categories ?? true %}
+{% set show_instances  = show_instances  ?? (taxonomy and taxonomy.category) %}
+{% set show_relations  = show_relations  ?? (taxonomy and not taxonomy.category) %}
+
 {% block body %}
+    {% if show_categories %}{% block categories_block %}
     <div class="table">
         <table>
             <thead>
@@ -35,49 +46,49 @@
             </tbody>
         </table>
     </div>
-    {% if taxonomy %}
-        {% if taxonomy.category %}
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Instanties</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for group in instances %}
-                    <tr>
-                        <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td>Geen instanties.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Leden</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for relation in relations %}
-                    <tr>
-                        <td>{{ relation.root.person.fullname }}</td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td>Geen leden.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-    {% endif %}
+    {% endblock %}{% endif %}
+    {% if show_instances %}{% block instances_block %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Instanties</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for group in instances %}
+                <tr>
+                    <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen instanties.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}{% endif %}
+    {% if show_relations %}{% block relations_block %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Leden</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for relation in relations %}
+                <tr>
+                    <td>{{ relation.root.person.fullname }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen leden.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}{% endif %}
 {% endblock %}
