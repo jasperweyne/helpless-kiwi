@@ -45,6 +45,21 @@ class Taxonomy
     private $relations;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $hasChildren;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $hasInstances;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $readonly;
+
+    /**
      * Get id.
      *
      * @return string
@@ -151,8 +166,9 @@ class Taxonomy
     public function __construct()
     {
         $this->children = new ArrayCollection();
-        $this->category = false;
         $this->relations = new ArrayCollection();
+        $this->category = false;
+        $this->readonly = false;
     }
 
     /**
@@ -182,6 +198,52 @@ class Taxonomy
                 $relation->setTaxonomy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNoChildren(): ?bool
+    {
+        return null === $this->hasChildren ? null : !$this->hasChildren;
+    }
+
+    public function getHasChildren(): ?bool
+    {
+        return $this->hasChildren;
+    }
+
+    public function setHasChildren(bool $hasChildren): self
+    {
+        $this->hasChildren = $hasChildren;
+
+        return $this;
+    }
+
+    public function getNoInstances(): ?bool
+    {
+        return null === $this->hasInstances ? null : !$this->hasInstances;
+    }
+
+    public function getHasInstances(): ?bool
+    {
+        return $this->hasInstances;
+    }
+
+    public function setHasInstances(bool $hasInstances): self
+    {
+        $this->hasInstances = $hasInstances;
+
+        return $this;
+    }
+
+    public function getReadonly(): ?bool
+    {
+        return $this->readonly;
+    }
+
+    public function setReadonly(bool $readonly): self
+    {
+        $this->readonly = $readonly;
 
         return $this;
     }

@@ -108,6 +108,7 @@ class GroupController extends AbstractController
         $committees
             ->setName('Commissies')
             ->setCategory(true)
+            ->setHasInstances(false)
         ;
         $em->persist($committees);
 
@@ -122,6 +123,7 @@ class GroupController extends AbstractController
         $positions
             ->setName('Functies')
             ->setCategory(true)
+            ->setHasChildren(false)
         ;
         $em->persist($positions);
 

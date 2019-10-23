@@ -41,6 +41,7 @@ class MailService
 
         $recipients = $this->buildTaxonomy($to);
         $recipients
+            ->setReadonly(true)
             ->setName('Mail\\'.date('YmdHis').'-'.$title)
         ;
         $this->em->persist($recipients);

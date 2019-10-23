@@ -16,8 +16,8 @@
     {% endblock %}
 {% endif %}
 
-{% set show_categories = show_categories ?? true %}
-{% set show_instances  = show_instances  ?? (taxonomy and taxonomy.category) %}
+{% set show_categories = show_categories ?? taxonomy.hasChildren  ?? true %}
+{% set show_instances  = show_instances  ?? taxonomy.hasInstances ?? (taxonomy and taxonomy.category) %}
 {% set show_relations  = show_relations  ?? (taxonomy and not taxonomy.category) %}
 
 {% block body %}
