@@ -43,7 +43,7 @@ class GroupController extends AbstractController
 
             $this->addFlash('success', 'Standaard groepen gegenereerd, begin met invullen!');
 
-            return $this->redirectToRoute('admin_group_index');
+            return $this->redirectToRoute('admin_group_show');
         }
 
         return $this->render('admin/group/generate.html.twig', [
@@ -63,15 +63,13 @@ class GroupController extends AbstractController
 
         $children = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => true]);
         $instances = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => false]);
-        $persons = $em->getRepository(Relation::class)->findBy(['collection' => $taxonomy]);
+        $relations = $em->getRepository(Relation::class)->findBy(['taxonomy' => $taxonomy]);
 
-        $view = $taxonomy ? 'admin/group/taxonomy.html.twig' : 'admin/group/index.html.twig';
-
-        return $this->render($view, [
+        return $this->render('admin/group/show.html.twig', [
             'taxonomy' => $taxonomy,
             'children' => $children,
             'instances' => $instances,
-            'persons' => $persons,
+            'relations' => $relations,
         ]);
     }
 
@@ -97,7 +95,6 @@ class GroupController extends AbstractController
         $committees
             ->setName('Commissies')
             ->setCategory(true)
-            ->setParent($current)
         ;
         $em->persist($committees);
 

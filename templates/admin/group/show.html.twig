@@ -1,0 +1,83 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = taxonomy.name ?? 'Groepen' %}
+    
+    {% block buttons %}
+        {% if taxonomy %}
+            <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }} </a>
+        {% endif %}
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ taxonomy ? 'Subcategorie' : 'Categorie' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for group in children %}
+                <tr>
+                    <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    {% if taxonomy %}
+                    <td>Geen subcategorieen.</td>
+                    {% else %}
+                    <td>Geen categorieen. Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if taxonomy %}
+        {% if taxonomy.category %}
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Instanties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for group in instances %}
+                    <tr>
+                        <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>Geen instanties.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Leden</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for relation in relations %}
+                    <tr>
+                        <td>{{ relation.root.person.fullname }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>Geen leden.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
