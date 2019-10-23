@@ -2,7 +2,7 @@
 
 namespace App\Log;
 
-abstract class AbstractEvent
+class AbstractEvent
 {
     private $time;
 
@@ -63,5 +63,8 @@ abstract class AbstractEvent
         return $this;
     }
 
-    abstract public function getTitle();
+    public function getTitle()
+    {
+        return 'Unknown event type';
+    }
 }

@@ -84,8 +84,6 @@ class EventService
             return null;
         }
 
-        $reflFields = $this->refl->getAllProperties($entity->getDiscr());
-
         $objectType = $entity->getObjectType();
         $objectId = $entity->getObjectId();
         $em = $this->em;
@@ -100,7 +98,9 @@ class EventService
         $fields['entityCb'] = $objectClosure;
         $fields['entityType'] = $objectType;
 
-        return $this->refl->instantiate($entity->getDiscr(), $fields);
+        $class = class_exists($entity->getDiscr()) ? $entity->getDiscr() : AbstractEvent::class;
+
+        return $this->refl->instantiate($class, $fields);
     }
 
     public function populateAll(array $entities)
