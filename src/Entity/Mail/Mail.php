@@ -45,6 +45,11 @@ class Mail
      */
     private $sender;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $sentAt;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -106,6 +111,18 @@ class Mail
     public function setSender(string $sender): self
     {
         $this->sender = $sender;
+
+        return $this;
+    }
+
+    public function getSentAt(): ?\DateTimeInterface
+    {
+        return $this->sentAt;
+    }
+
+    public function setSentAt(\DateTimeInterface $sentAt): self
+    {
+        $this->sentAt = $sentAt;
 
         return $this;
     }

@@ -24,7 +24,7 @@ class MailController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $mails = $em->getRepository(Mail::class)->findAll();
+        $mails = $em->getRepository(Mail::class)->findBy([], ['sentAt' => 'DESC']);
 
         return $this->render('admin/mail/index.html.twig', [
             'mails' => $mails,
