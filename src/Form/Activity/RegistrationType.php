@@ -22,7 +22,7 @@ class RegistrationType extends AbstractType
                         ->orderBy('u.firstname', 'ASC');
                 },
                 'choice_label' => function ($ref) {
-                    return $ref->getFirstname().' '.$ref->getLastname();
+                    return $ref;
                 },
             ])
             ->add('option', EntityType::class, [
@@ -30,7 +30,7 @@ class RegistrationType extends AbstractType
                 'class' => 'App\Entity\Activity\PriceOption',
                 'choices' => $options['allowed_options'],
                 'choice_label' => function ($ref) {
-                    return $ref->getName().' '.number_format($ref->getPrice() / 100, 2, '.', '').'€';
+                    return $ref;
                 },
             ])
 
