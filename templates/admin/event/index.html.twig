@@ -11,6 +11,7 @@
                 <tr>
                     <th>Naam</th>
                     <th>Tijd</th>
+                    <th>Gebruiker</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,6 +19,7 @@
                 <tr>
                     <td>{{ event.title }}</td>
                     <td>{{ event.time|date('d-m-Y H:i') }}</td>
+                    <td>{{ event.auth.person.canonical ?? 'Onbekend' }}</td>
                 </tr>
             {% else %}
                 <tr>
