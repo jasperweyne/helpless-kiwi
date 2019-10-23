@@ -19,7 +19,7 @@ class Mail
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Security\Auth")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\Auth")
      * @ORM\JoinColumn(name="auth", referencedColumnName="person")
      */
     private $auth;
