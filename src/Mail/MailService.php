@@ -8,6 +8,7 @@ use App\Entity\Mail\Mail;
 use App\Entity\Security\Auth;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class MailService
 {
@@ -17,11 +18,14 @@ class MailService
 
     private $tokenStorage;
 
-    public function __construct(\Swift_Mailer $mailer, EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
+    private $params;
+
+    public function __construct(\Swift_Mailer $mailer, EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ParameterBagInterface $params)
     {
         $this->mailer = $mailer;
         $this->em = $em;
         $this->tokenStorage = $tokenStorage;
+        $this->params = $params;
     }
 
     public function message($to, string $title, string $body)
@@ -30,7 +34,7 @@ class MailService
             $to = [$to];
         }
 
-        $title = $this->getParameter('env(ORG_NAME)').' - '.$title;
+        $title = $this->params->get('env(ORG_NAME)').' - '.$title;
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
 

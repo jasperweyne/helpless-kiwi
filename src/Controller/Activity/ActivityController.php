@@ -42,7 +42,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/activity/{id}/unregister", name="unregister", methods={"POST"})
      */
-    public function unregisterAction(Request $request, Activity $activity)
+    public function unregisterAction(Request $request, Activity $activity, MailService $mailer)
     {
         $em = $this->getDoctrine()->getManager();
 
