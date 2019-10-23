@@ -133,4 +133,9 @@ class PriceOption
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->name.' €'.number_format($this->price / 100, 2, '.', '');
+    }
 }
