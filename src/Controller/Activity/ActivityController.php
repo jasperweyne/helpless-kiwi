@@ -61,6 +61,13 @@ class ActivityController extends AbstractController
 
                     $this->addFlash('success', 'Afmelding gelukt!');
 
+                    $body = $this->renderView('email/removedregistration.html.twig', [
+                        'person' => $this->getUser()->getPerson(),
+                        'activity' => $activity,
+                    ]);
+
+                    $mailer->message($this->getUser()->getPerson(), 'Afmeldbevestiging '.$activity->getName(), $body);
+
                     return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
                 }
             }
@@ -105,7 +112,7 @@ class ActivityController extends AbstractController
                         'activity' => $activity,
                     ]);
 
-                    $mailer->message($this->getUser()->getPerson(), 'Je ben aangemeld voor '.$activity->getName().'!', $body);
+                    $mailer->message($this->getUser()->getPerson(), 'Aanmeldbevestiging '.$activity->getName(), $body);
 
                     return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
                 }
