@@ -1,3 +1,8 @@
-<h2>Hallo {{person.firstname}}, wat leuk dat je hebt aangemeld voor {{activity.name}}!</h2>
-<p>Zorg dat je op {{ activity.start|date('d-m-Y') }} om {{ activity.start|date('H:i') }} aanwezig bent bij {{ activity.location.address }}. </p>
-<p>De activiteit duurt ongeveer van {{ activity.start|date('H:i') }} tot {{ activity.end|date('H:i') }}. </p>
+<h2>{{ title }}</h2>
+<p>Hallo {{ person.firstname }},<br />
+Je hebt je aangemeld voor {{ activity.name }}, wat leuk!<br />
+Je wordt verwacht op {{ activity.start|date('d-m-Y') }} om {{ activity.start|date('H:i') }} bij {{ activity.location.address }}.<br />
+De activiteit duurt ongeveer tot {{ activity.end|date('H:i') }}. Afmelden is mogelijk tot {{ activity.deadline|date('d-m-Y') }}.<br />
+<br />
+Tot dan!<br />
+Groetjes van {{ org }}<p>
