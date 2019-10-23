@@ -2,11 +2,13 @@
 
 namespace App\Controller\Security;
 
+use App\Entity\Person\Person;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Security\Auth;
+use App\Mail\MailService;
 use App\Security\AuthUserProvider;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use App\Security\PasswordResetService;
@@ -113,7 +115,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/request", name="request", methods={"GET", "POST"})
      */
-    public function requestAction(Request $request, AuthUserProvider $userProvider, \Swift_Mailer $mailer)
+    public function requestAction(Request $request, AuthUserProvider $userProvider, MailService $mailer)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -124,6 +126,15 @@ class PasswordController extends AbstractController
             $data = $form->getData();
             $mail = $data['email'];
 
+            $person = $em->getRepository(Person::class)->findOneBy(['email' => $mail]);
+            if (!$person) {
+                $person = new Person();
+                $person->setEmail($mail);
+
+                $em->persist($person);
+                $em->flush();
+            }
+
             try {
                 $auth = $userProvider->loadUserByEmail($mail);
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
@@ -133,23 +144,11 @@ class PasswordController extends AbstractController
                     'token' => $token,
                 ]);
 
-                $message = (new \Swift_Message('Wachtwoord vergeten'))
-                    ->setFrom($_ENV['DEFAULT_FROM'])
-                    ->setTo($mail)
-                    ->setBody($body, 'text/html')
-                    ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
-                ;
-
-                $mailer->send($message);
+                $mailer->message($person, 'Wachtwoord vergeten', $body);
             } catch (UsernameNotFoundException $exception) {
                 $body = $this->renderView('email/unknownemail.html.twig');
 
-                $message = (new \Swift_Message('Wachtwoord vergeten'))
-                    ->setFrom($_ENV['DEFAULT_FROM'])
-                    ->setTo($mail)
-                    ->setBody($body, 'text/html')
-                    ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
-                ;
+                $mailer->message($person, 'Wachtwoord vergeten', $body);
             }
 
             $this->addFlash('success', 'Er is een mail met insctructies gestuurd naar '.$mail);

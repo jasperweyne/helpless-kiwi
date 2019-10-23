@@ -2,7 +2,10 @@
 
 namespace App\Mail;
 
+use App\Entity\Group\Relation;
+use App\Entity\Group\Taxonomy;
 use App\Entity\Mail\Mail;
+use App\Entity\Security\Auth;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -21,33 +24,85 @@ class MailService
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function message(string $to, string $title, string $body)
+    public function message($to, string $title, string $body)
     {
-        $message = (new \Swift_Message($title))
-            ->setFrom($_ENV['DEFAULT_FROM'])
-            ->setTo($to)
-            ->setBody($body, 'text/html')
-            ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
-        ;
+        if (is_object($to)) {
+            $to = [$to];
+        }
 
-        $user = null;
-        if (null == $token = $this->tokenStorage->getToken()) {
-            if (!\is_object($user = $token->getUser())) {
-                // e.g. anonymous authentication
-                $user = null;
+        $from = $_ENV['DEFAULT_FROM'];
+        $body_plain = html_entity_decode(strip_tags($body));
+
+        $recipients = $this->buildTaxonomy($to);
+        $recipients
+            ->setName('Mail\\'.date('YmdHis').'-'.$title)
+        ;
+        $this->em->persist($recipients);
+
+        $addresses = [];
+        foreach ($to as $person) {
+            if ('' == trim($person->getFullname() ?? '')) {
+                $addresses[] = $person->getEmail();
+            } else {
+                $addresses[$person->getEmail()] = $person->getFullname();
             }
         }
 
+        $message = (new \Swift_Message($title))
+            ->setFrom($from)
+            ->setTo($addresses)
+            ->setBody($body, 'text/html')
+            ->addPart($body_plain, 'text/plain')
+        ;
+
+        $content = serialize([
+            'html' => $body,
+            'plain' => $body_plain,
+        ]);
+
         $msgEntity = new Mail();
         $msgEntity
-            ->setAuth($user)
+            ->setSender($from)
+            ->setTarget($recipients)
+            ->setAuth($this->getUser())
             ->setTitle($title)
-            ->setContent($body)
+            ->setContent($content)
         ;
 
         $this->em->persist($msgEntity);
         $this->em->flush();
 
         $this->mailer->send($message);
+    }
+
+    private function getUser(): ?Auth
+    {
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return null;
+        }
+
+        if (!\is_object($user = $token->getUser())) {
+            // e.g. anonymous authentication
+            return null;
+        }
+
+        return $user;
+    }
+
+    private function buildTaxonomy(array $to): ?Taxonomy
+    {
+        $recipients = new Taxonomy();
+
+        foreach ($to as $person) {
+            $recipient = new Relation();
+            $recipient
+                ->setTaxonomy($recipients)
+                ->setPerson($person)
+            ;
+
+            $this->em->persist($recipient);
+        }
+
+        return $recipients;
     }
 }
