@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
-use App\Entity\Activity\PriceOption;
 
 class RegistrationType extends AbstractType
 {
@@ -40,11 +39,9 @@ class RegistrationType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        //$resolver->setAllowedTypes('allowed_options', ['PriceOption', 'string', 'array']);
-
         $resolver->setDefaults([
             'data_class' => Registration::class,
-            'allowed_options' => null,
+            'allowed_options' => [],
         ]);
     }
 }
