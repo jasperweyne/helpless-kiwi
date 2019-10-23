@@ -35,7 +35,7 @@ class MailService
             $to = [$to];
         }
 
-        $title = $this->params->get('env(ORG_NAME)').' - '.$title;
+        $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')).' - '.$title;
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
 
