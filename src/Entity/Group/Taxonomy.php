@@ -35,6 +35,16 @@ class Taxonomy
     private $children;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="taxonomy", orphanRemoval=true)
+     */
+    private $relations;
+
+    /**
      * Get id.
      *
      * @return string
@@ -121,8 +131,58 @@ class Taxonomy
         return $this;
     }
 
+    public function isCategory(): bool
+    {
+        return $this->category ?? false;
+    }
+
+    public function getCategory(): ?bool
+    {
+        return $this->category;
+    }
+
+    public function setCategory(bool $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->category = false;
+        $this->relations = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|Relation[]
+     */
+    public function getRelations(): Collection
+    {
+        return $this->relations;
+    }
+
+    public function addRelation(Relation $relation): self
+    {
+        if (!$this->relations->contains($relation)) {
+            $this->relations[] = $relation;
+            $relation->setTaxonomy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Relation $relation): self
+    {
+        if ($this->relations->contains($relation)) {
+            $this->relations->removeElement($relation);
+            // set the owning side to null (unless already changed)
+            if ($relation->getTaxonomy() === $this) {
+                $relation->setTaxonomy(null);
+            }
+        }
+
+        return $this;
     }
 }

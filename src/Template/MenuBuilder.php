@@ -38,6 +38,18 @@ class MenuBuilder
                 $items = array_merge($items, $extension->getMenuItems($menu));
             }
 
+            usort($items, function ($a, $b) {
+                if (array_key_exists('order', $a) && array_key_exists('order', $b)) {
+                    return $a['order'] <=> $b['order'];
+                } elseif (array_key_exists('order', $b)) {
+                    return -$b['order'];
+                } elseif (array_key_exists('order', $a)) {
+                    return $a['order'];
+                } else {
+                    return $a['title'] <=> $b['title'];
+                }
+            });
+
             $this->menuitems[$menu] = $items;
         }
 

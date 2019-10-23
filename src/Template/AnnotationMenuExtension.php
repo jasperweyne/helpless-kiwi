@@ -68,7 +68,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
         if (!array_key_exists($menu, $this->menuItems)) {
             return [];
         }
-        
+
         $mapped = [];
         foreach ($this->menuItems[$menu] as $item) {
             $arr = [
@@ -83,6 +83,9 @@ class AnnotationMenuExtension implements MenuExtensionInterface
             }
             if (null !== $item->getActiveCriteria()) {
                 $arr['activeCriteria'] = $item->getActiveCriteria();
+            }
+            if (null !== $item->getOrder()) {
+                $arr['order'] = $item->getOrder();
             }
             $mapped[] = $arr;
         }
