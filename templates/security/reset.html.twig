@@ -3,10 +3,12 @@
 {% set page_title = 'Nieuw wachtwoord' %}
 
 {% block body %}
+<div class="container row">
     {{ form_start(form) }}
         {{ form_widget(form) }}
         <div class="button-group">
             <button type="submit">Nieuw wachtwoord bevestigen</button>
         </div>
     {{ form_end(form) }}
+</div>
 {% endblock body %}
