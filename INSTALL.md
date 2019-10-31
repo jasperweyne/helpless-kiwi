@@ -4,10 +4,27 @@
 Make sure php 7 is installed on your machine. If you're deploying to another
 machine, make sure this has a php server installed, for example Apache or Nginx.
 Also, make sure that the machine you're deploying to has a database available,
-MySQL is supported primairily.
+MySQL is supported primairily. When developing, it is recommended to download
+both PHP and MySQL as part of a stack, such as WAMP, XAMPP or LAMP for Windows,
+Mac and Linux respectively.
 
-After that, make sure [composer](https://getcomposer.org/), [node.js](https://nodejs.org/) 
-and [yarn](https://yarnpkg.com/) are installed on your local system.
+For dependencies, Kiwi uses two package managers, [composer](https://getcomposer.org/)
+and [yarn](https://yarnpkg.com/). Composer is dependent on php, which you've
+already installed, and yarn is dependent on [node.js](https://nodejs.org/). All
+these tools need to be installed. For installing these tools, it is recommended
+to use a package manager, such as [Chocolatey](https://chocolatey.org/) when
+using Windows, [Homebrew](https://brew.sh/) when using Mac or the package
+manager with your distro when using Linux. 
+
+Throughout Kiwi, it is assumed that these tools are installed globally and are
+accesible from your PATH variable. Please make sure of this by running in your
+command line interface:
+
+```
+php -v
+composer -v
+yarn -v
+```
 
 ## Deployment
 We're assuming you're deploying to either development or production. More
@@ -15,23 +32,54 @@ variations in between those too are possible, but to keep things brief, we're
 assuming typical cases
 
 ### Development
-First, create a ```.env.local``` file in the root folder, disable the HTTPS
-requirement, and configure the database. For example, with a MySQL database:
+Start by cloning the develop branch of the repository. For first time git users,
+it is recommended to use a GUI for git. Instructions for those vary, please
+check the documentation for your program. When using the git in the command line,
+simply clone the develop branch:
+
+```bash
+git clone https://github.com/jasperweyne/helpless-kiwi.git -b develop
+cd helpless-kiwi
+```
+
+Now, create a ```.env.local``` file in the root folder. Here, disable HTTPS, and
+configure your database connection. For example (modify this according to your
+local environment:
 
 ```bash
 SECURE_SCHEME=http
 DATABASE_URL=mysql://username:password@127.0.0.1:3306/database
 ```
 
-Then, make sure dependencies are installed.
+Then, make sure dependencies are installed. When doing this, composer will
+install the git hooks from the .hooks folder.
 
 ```bash
 composer install
 yarn install
 ```
 
-After deploying the table structure (see the next chapter), you'll want to build
-the assets. To do this continiously while editing them, use:
+Now, you should deploy the database table structure. To insert the tables, make
+sure you have your database connection configured correctly. Then, run:
+
+```bash
+php bin/console doctrine:schema:update --force
+```
+
+To add a user, first register a person with:
+
+```bash
+php bin/console app:create-person [email] [name]
+```
+
+Then, add a login to that user with:
+
+```bash
+php bin/console app:set-auth --admin [email]
+```
+
+Now, you'll want to build the assets. To do this continuously while editing them,
+use:
 
 ```bash
 yarn watch
@@ -44,9 +92,9 @@ php bin/console server:run
 ```
 
 ### Production
-To ease the building process, you can run build_prod.sh to generate a production
-environment. If this doesn't work, you can deploy manually using these
-instructions.
+To ease the building process, you can download, modify and run the build_prod.sh
+script from this repository to generate a production environment. If this
+doesn't work properly for you can deploy manually using these instructions.
 
 For clarity purposes, we're assuming you're deploying to another location, for
 example by moving the files over FTP. Locally or through SSH should work fine
@@ -54,9 +102,13 @@ as well though.
 
 Again, make sure a database is installed and available. Configure this in the
 ```/.env.local``` file, the same way as with a development build. Additionally,
-add to that file:
+remove the HTTPS disabling flag and set your environment to production. A basic
+configuration could look like:
 
-```APP_ENV=prod```
+```bash
+APP_ENV=prod
+DATABASE_URL=mysql://username:password@127.0.0.1:3306/database
+```
 
 Typically, the public folder will need to be moved or renamed. To do this,
 you need to start by replacing 'public/' to the new folder, in all files
@@ -105,6 +157,10 @@ After that, you can build the assets
 yarn build
 ```
 
+Now, you should deploy your database table structure. The means to do this
+differs wildly from environment to environment. For hints, look at the development
+guide.
+
 At this time, you should be good to go. Move the following folders and files to
 your deployment server:
 
@@ -119,23 +175,3 @@ If you deploy on the local machine or over SSH, it is recommended to run
 ```php bin/console cache:clear``` and deploy the var folder as well, otherwise
 skip this step. If everything went right, your server should now be running
 correctly!
-
-## Database
-To insert the tables, make sure you're running the program with a database
-configured. Then, run:
-
-```bash
-php bin/console doctrine:schema:update --force
-```
-
-To add a user, first register a person with:
-
-```bash
-php bin/console app:create-person [email] [name]
-```
-
-Then, add a login to that user with:
-
-```bash
-php bin/console app:set-auth --admin [email]
-```
