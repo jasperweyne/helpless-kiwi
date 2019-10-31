@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Group\Category;
+use App\Entity\Group\Group;
 use App\Template\Annotation\MenuItem;
 use App\Entity\Group\Taxonomy;
 use App\Entity\Group\Relation;
@@ -62,8 +64,8 @@ class GroupController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         if (!$taxonomy && $request->query->get('showall')) {
-            $children = $em->getRepository(Taxonomy::class)->findBy(['category' => true]);
-            $instances = $em->getRepository(Taxonomy::class)->findBy(['category' => false]);
+            $children = $em->getRepository(Category::class)->findAll();
+            $instances = $em->getRepository(Group::class)->findAll();
 
             return $this->render('admin/group/show.html.twig', [
                 'taxonomy' => null,
@@ -74,8 +76,8 @@ class GroupController extends AbstractController
             ]);
         }
 
-        $children = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => true]);
-        $instances = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy, 'category' => false]);
+        $children = $em->getRepository(Category::class)->findBy(['parent' => $taxonomy]);
+        $instances = $em->getRepository(Group::class)->findBy(['parent' => $taxonomy]);
         $relations = $em->getRepository(Relation::class)->findBy(['taxonomy' => $taxonomy]);
 
         return $this->render('admin/group/show.html.twig', [
@@ -90,58 +92,54 @@ class GroupController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $boards = new Taxonomy();
+        $boards = new Category();
         $boards
             ->setName('Besturen')
-            ->setCategory(true)
         ;
         $em->persist($boards);
 
-        $current = new Taxonomy();
+        $current = new Group();
         $current
             ->setName($defaultBoard)
             ->setParent($boards)
         ;
         $em->persist($current);
 
-        $committees = new Taxonomy();
+        $committees = new Category();
         $committees
             ->setName('Commissies')
-            ->setCategory(true)
             ->setHasInstances(false)
         ;
         $em->persist($committees);
 
-        $boards = new Taxonomy();
+        $boards = new Category();
         $boards
             ->setName('Disputen')
-            ->setCategory(true)
         ;
         $em->persist($boards);
 
-        $positions = new Taxonomy();
+        $positions = new Category();
         $positions
             ->setName('Functies')
-            ->setCategory(true)
             ->setHasChildren(false)
         ;
         $em->persist($positions);
 
-        $president = new Taxonomy();
+        $president = new Group();
         $president
             ->setName('Voorzitter')
             ->setParent($positions)
         ;
         $em->persist($president);
 
-        $secretary = new Taxonomy();
+        $secretary = new Group();
         $secretary
             ->setName('Secretaris')
             ->setParent($positions)
         ;
         $em->persist($secretary);
 
-        $treasurer = new Taxonomy();
+        $treasurer = new Group();
         $treasurer
             ->setName('Penningmeester')
             ->setParent($positions)

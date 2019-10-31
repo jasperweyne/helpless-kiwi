@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
  */
 class Taxonomy
 {
@@ -32,27 +33,12 @@ class Taxonomy
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Taxonomy", mappedBy="parent")
      */
-    private $children;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $category;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="taxonomy", orphanRemoval=true)
-     */
-    private $relations;
+    protected $children;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $hasChildren;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $hasInstances;
 
     /**
      * @ORM\Column(type="boolean")
@@ -116,49 +102,32 @@ class Taxonomy
     }
 
     /**
-     * @return Collection|Taxonomy[]
+     * @return Collection|Category[]
      */
-    public function getChildren(): Collection
+    public function getCategories(): Collection
     {
-        return $this->children;
+        return $this->children->filter(function ($x) { return $x instanceof Category; });
     }
 
-    public function addChild(Taxonomy $child): self
+    public function addCategory(Category $category): self
     {
-        if (!$this->children->contains($child)) {
-            $this->children[] = $child;
-            $child->setParent($this);
+        if (!$this->children->contains($category)) {
+            $this->children[] = $category;
+            $category->setParent($this);
         }
 
         return $this;
     }
 
-    public function removeChild(Taxonomy $child): self
+    public function removeCategory(Category $category): self
     {
-        if ($this->children->contains($child)) {
-            $this->children->removeElement($child);
+        if ($this->children->contains($category)) {
+            $this->children->removeElement($category);
             // set the owning side to null (unless already changed)
-            if ($child->getParent() === $this) {
-                $child->setParent(null);
+            if ($category->getParent() === $this) {
+                $category->setParent(null);
             }
         }
-
-        return $this;
-    }
-
-    public function isCategory(): bool
-    {
-        return $this->category ?? false;
-    }
-
-    public function getCategory(): ?bool
-    {
-        return $this->category;
-    }
-
-    public function setCategory(bool $category): self
-    {
-        $this->category = $category;
 
         return $this;
     }
@@ -166,40 +135,7 @@ class Taxonomy
     public function __construct()
     {
         $this->children = new ArrayCollection();
-        $this->relations = new ArrayCollection();
-        $this->category = false;
         $this->readonly = false;
-    }
-
-    /**
-     * @return Collection|Relation[]
-     */
-    public function getRelations(): Collection
-    {
-        return $this->relations;
-    }
-
-    public function addRelation(Relation $relation): self
-    {
-        if (!$this->relations->contains($relation)) {
-            $this->relations[] = $relation;
-            $relation->setTaxonomy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRelation(Relation $relation): self
-    {
-        if ($this->relations->contains($relation)) {
-            $this->relations->removeElement($relation);
-            // set the owning side to null (unless already changed)
-            if ($relation->getTaxonomy() === $this) {
-                $relation->setTaxonomy(null);
-            }
-        }
-
-        return $this;
     }
 
     public function getNoChildren(): ?bool
@@ -215,23 +151,6 @@ class Taxonomy
     public function setHasChildren(bool $hasChildren): self
     {
         $this->hasChildren = $hasChildren;
-
-        return $this;
-    }
-
-    public function getNoInstances(): ?bool
-    {
-        return null === $this->hasInstances ? null : !$this->hasInstances;
-    }
-
-    public function getHasInstances(): ?bool
-    {
-        return $this->hasInstances;
-    }
-
-    public function setHasInstances(bool $hasInstances): self
-    {
-        $this->hasInstances = $hasInstances;
 
         return $this;
     }

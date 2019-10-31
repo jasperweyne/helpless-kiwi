@@ -17,8 +17,8 @@
 {% endif %}
 
 {% set show_categories = show_categories ?? taxonomy.hasChildren  ?? true %}
-{% set show_instances  = show_instances  ?? taxonomy.hasInstances ?? (taxonomy and taxonomy.category) %}
-{% set show_relations  = show_relations  ?? (taxonomy and not taxonomy.category) %}
+{% set show_instances  = show_instances  ?? taxonomy.hasInstances ?? (taxonomy and taxonomy.instances is defined) %}
+{% set show_relations  = show_relations  ?? (taxonomy and taxonomy.relations is defined) %}
 
 {% block body %}
     {% if show_categories %}{% block categories_block %}
@@ -52,7 +52,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Instanties</th>
+                    <th>Groepen</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,7 +62,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td>Geen instanties.</td>
+                    <td>Geen groepen.</td>
                 </tr>
             {% endfor %}
             </tbody>

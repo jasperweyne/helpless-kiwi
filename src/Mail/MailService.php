@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use App\Entity\Group\Taxonomy;
 use App\Entity\Mail\Mail;
@@ -99,7 +100,7 @@ class MailService
 
     private function buildTaxonomy(array $to): ?Taxonomy
     {
-        $recipients = new Taxonomy();
+        $recipients = new Group();
 
         foreach ($to as $person) {
             $recipient = new Relation();
