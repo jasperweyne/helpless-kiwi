@@ -56,7 +56,10 @@ class ActivityController extends AbstractController
                 $registration = $em->getRepository(Registration::class)->find($data['registration_single']);
 
                 if (null !== $registration) {
-                    $em->remove($registration);
+                    $now = new \DateTime('now');
+                    $registration->setDeleteTime($now);
+
+                    //$em->remove($registration);
                     $em->flush();
 
                     $this->addFlash('success', 'Afmelding gelukt!');
@@ -102,6 +105,9 @@ class ActivityController extends AbstractController
                     $reg = new Registration();
                     $reg->setActivity($activity);
                     $reg->setOption($option);
+
+                    $now = new \DateTime('now');
+                    $reg->setNewTime($now);
                     $reg->setPerson($this->getUser()->getPerson());
 
                     $em->persist($reg);
@@ -148,8 +154,13 @@ class ActivityController extends AbstractController
         $unregister = null;
         if (null !== $this->getUser()) {
             $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson()]);
+
             if (null !== $registration) {
-                $unregister = $this->singleUnregistrationForm($registration)->createView();
+                $deldate = $registration->getDeleteTime();
+
+                if (null == $deldate) {
+                    $unregister = $this->singleUnregistrationForm($registration)->createView();
+                }
             }
         }
 

@@ -3,6 +3,7 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Person\Person;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,6 +34,20 @@ class Registration
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      */
     private $activity;
+
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="newdate", type="datetime", nullable=true)
+     */
+    private $newdate;
+
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="deletedate", type="datetime", nullable=true)
+     */
+    private $deletedate;
 
     /**
      * Get id.
@@ -88,6 +103,40 @@ class Registration
     public function setActivity(?Activity $activity): self
     {
         $this->activity = $activity;
+
+        return $this;
+    }
+
+    /**
+     * Get date and time of registration.
+     *
+     * @return DateTime
+     */
+    public function getNewTime()
+    {
+        return $this->newdate;
+    }
+
+    public function setNewTime(DateTime $date): self
+    {
+        $this->newdate = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date and time of deregistration.
+     *
+     * @return DateTime
+     */
+    public function getDeleteTime()
+    {
+        return $this->deletedate;
+    }
+
+    public function setDeleteTime(DateTime $date): self
+    {
+        $this->deletedate = $date;
 
         return $this;
     }

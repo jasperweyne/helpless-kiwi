@@ -57,6 +57,16 @@ class Person
     private $address;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $newdate;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $deletedate;
+
+    /**
      * Get id.
      *
      * @return string
