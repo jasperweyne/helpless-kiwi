@@ -22,7 +22,7 @@ class GroupController extends AbstractController
     /**
      * Generate default groups.
      *
-     * @Route("/generate", name="generate_default", methods={"GET", "POST"})
+     * @ Route("/generate", name="generate_default", methods={"GET", "POST"})
      */
     public function generateAction(Request $request)
     {
