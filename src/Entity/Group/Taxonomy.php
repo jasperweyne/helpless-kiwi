@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
  */
 class Taxonomy
 {
@@ -32,7 +33,17 @@ class Taxonomy
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Taxonomy", mappedBy="parent")
      */
-    private $children;
+    protected $children;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $hasChildren;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $readonly;
 
     /**
      * Get id.
@@ -91,30 +102,30 @@ class Taxonomy
     }
 
     /**
-     * @return Collection|Taxonomy[]
+     * @return Collection|Category[]
      */
-    public function getChildren(): Collection
+    public function getCategories(): Collection
     {
-        return $this->children;
+        return $this->children->filter(function ($x) { return $x instanceof Category; });
     }
 
-    public function addChild(Taxonomy $child): self
+    public function addCategory(Category $category): self
     {
-        if (!$this->children->contains($child)) {
-            $this->children[] = $child;
-            $child->setParent($this);
+        if (!$this->children->contains($category)) {
+            $this->children[] = $category;
+            $category->setParent($this);
         }
 
         return $this;
     }
 
-    public function removeChild(Taxonomy $child): self
+    public function removeCategory(Category $category): self
     {
-        if ($this->children->contains($child)) {
-            $this->children->removeElement($child);
+        if ($this->children->contains($category)) {
+            $this->children->removeElement($category);
             // set the owning side to null (unless already changed)
-            if ($child->getParent() === $this) {
-                $child->setParent(null);
+            if ($category->getParent() === $this) {
+                $category->setParent(null);
             }
         }
 
@@ -124,5 +135,35 @@ class Taxonomy
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->readonly = false;
+    }
+
+    public function getNoChildren(): ?bool
+    {
+        return null === $this->hasChildren ? null : !$this->hasChildren;
+    }
+
+    public function getHasChildren(): ?bool
+    {
+        return $this->hasChildren;
+    }
+
+    public function setHasChildren(bool $hasChildren): self
+    {
+        $this->hasChildren = $hasChildren;
+
+        return $this;
+    }
+
+    public function getReadonly(): ?bool
+    {
+        return $this->readonly;
+    }
+
+    public function setReadonly(bool $readonly): self
+    {
+        $this->readonly = $readonly;
+
+        return $this;
     }
 }

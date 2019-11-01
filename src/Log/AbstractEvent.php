@@ -2,7 +2,7 @@
 
 namespace App\Log;
 
-abstract class AbstractEvent
+class AbstractEvent
 {
     private $time;
 
@@ -11,6 +11,8 @@ abstract class AbstractEvent
     private $entity;
 
     private $entityCb;
+
+    private $entityType = '';
 
     public function getTime()
     {
@@ -44,7 +46,25 @@ abstract class AbstractEvent
     {
         $this->entityCb = null;
         $this->entity = $entity;
+        $this->entityType = \get_class($entity);
 
         return $this;
+    }
+
+    public function getEntityType()
+    {
+        return $this->entityType;
+    }
+
+    public function setEntityType($type)
+    {
+        $this->entityType = $type;
+
+        return $this;
+    }
+
+    public function getTitle()
+    {
+        return 'Unknown event type';
     }
 }

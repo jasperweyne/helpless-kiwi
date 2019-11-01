@@ -1,0 +1,47 @@
+#!/bin/bash
+
+if [[ $1 == "--recurse" && $(git diff HEAD@{1}..HEAD@{0} -- ".hooks\\*" | wc -l) -gt 0 ]]; then
+  if [ -x "$(which php)" ]; then
+    echo -e ".hooks changed! Reinstalling .hooks"
+    echo 
+    php .hooks/install.php
+  else
+    echo -e ".hooks changed! Could not find php, please run php .hooks/install.php"
+    echo -e "Continuing.."
+    echo 
+  fi
+  .hooks/after-modif
+  exit $?
+fi
+
+if [[ $(git diff HEAD@{1}..HEAD@{0} -- "composer.lock" "symfony.lock" | wc -l) -gt 0 ]]; then
+  if [ -x "$(which composer)" ]; then
+    echo -e "composer.lock changed! Running composer install"
+    echo 
+    composer install
+  else
+    echo -e "composer.lock changed! Could not find composer, please run composer install"
+  fi
+fi
+
+if [[ $(git diff HEAD@{1}..HEAD@{0} -- "yarn.lock" | wc -l) -gt 0 ]]; then
+  if [ -x "$(which yarn)" ]; then
+    echo -e "yarn.lock changed! Running yarn install"
+    echo 
+    yarn install
+  else
+    echo -e "yarn.lock changed! Could not find yarn, please run yarn install"
+  fi
+fi
+
+if [[ $(git diff HEAD@{1}..HEAD@{0} -- "assets\\*" "postcss.config.js" "webpack.config.js" | wc -l) -gt 0 ]]; then
+  if [ -x "$(which yarn)" ]; then
+    echo -e "assets changed! Running yarn install"
+    echo 
+    yarn dev
+  else
+    echo -e "assets changed! Could not find yarn, please run yarn dev"
+  fi
+fi
+
+exit 0

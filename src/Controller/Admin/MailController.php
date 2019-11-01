@@ -17,14 +17,14 @@ class MailController extends AbstractController
     /**
      * Lists all mails.
      *
-     * @MenuItem(title="Mails", menu="admin", role="ROLE_DISABLED")
+     * @MenuItem(title="Mails", menu="admin")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
-        $mails = $em->getRepository(Mail::class)->findAll();
+        $mails = $em->getRepository(Mail::class)->findBy([], ['sentAt' => 'DESC']);
 
         return $this->render('admin/mail/index.html.twig', [
             'mails' => $mails,

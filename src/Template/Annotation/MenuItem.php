@@ -38,6 +38,11 @@ class MenuItem
     public $activeCriteria;
 
     /**
+     * @var int
+     */
+    public $order;
+
+    /**
      * @var string
      */
     private $path;
@@ -80,6 +85,14 @@ class MenuItem
     public function getActiveCriteria()
     {
         return $this->activeCriteria;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder()
+    {
+        return $this->order;
     }
 
     public function getPath()

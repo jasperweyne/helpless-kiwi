@@ -23,7 +23,8 @@ class ActivityType extends AbstractType
             ->add('deadline')
             ->add('author', EntityType::class, [
                 'label' => 'Georganiseerd door',
-                'class' => 'App\Entity\Group\Taxonomy',
+                'class' => 'App\Entity\Group\Group',
+                'required' => false,
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
@@ -35,7 +36,7 @@ class ActivityType extends AbstractType
                 'allow_delete' => false,
             ])
             ->add('color', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     '' => null,
                     'Rood' => 'red',
                     'Oranje' => 'orange',
