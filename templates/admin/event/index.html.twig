@@ -2,6 +2,12 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Gebeurtenislog' %}
+    
+    {% block top %}
+        {% embed 'admin/listview.html.twig' %}
+            {% set resultcount = log|length %}
+        {% endembed %}
+    {% endblock %}
 {% endif %}
 
 {% block body %}

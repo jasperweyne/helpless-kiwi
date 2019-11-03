@@ -1,13 +1,30 @@
 main {
     .top {
-        @include flex;
+        display: table;
+        width: 100%;
+        margin-bottom: 0.25rem;
+
+        .subtop {
+            display: table-row;
+        }
+
+        * {
+            display: table-cell;
+            vertical-align: middle;
+        }
 
         h3 {
-            @include xy-cell-base(auto);
+            margin-right: 0;
+        }
+
+        .subtitle {
+            color: darkgray;
         }
 
         .buttons {
-            @include flex-align-self(middle);
+            margin-left: auto;
+            width: 1px;
+            white-space: nowrap;
         }
     }
 }
