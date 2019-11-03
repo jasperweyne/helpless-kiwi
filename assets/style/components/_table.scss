@@ -10,11 +10,11 @@ table {
     }
 
     thead {
-        border-bottom: 1px solid smart-scale($table-background, $table-color-scale);
+        border-bottom: 2px solid smart-scale($table-background, $table-color-scale);
     }
     
     tfoot {
-        border-top: 1px solid smart-scale($table-background, $table-color-scale);
+        border-top: 2px solid smart-scale($table-background, $table-color-scale);
     }
 
     // Table head and foot
@@ -51,6 +51,10 @@ table {
         @include table-stack();
         tr {
             padding: 4px 0;
+            
+            &:not(:last-child) {
+                border-bottom: 1px solid smart-scale($table-background, $table-color-scale);
+            }
         }
         td, th {
             padding-top: 0;
