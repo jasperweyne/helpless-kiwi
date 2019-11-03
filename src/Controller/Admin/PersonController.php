@@ -39,7 +39,7 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $persons = $em->getRepository(Person::class)->findAll();
+        $persons = $em->getRepository(Person::class)->findBy([], ['firstname' => 'ASC', 'lastname' => 'ASC']);
 
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
