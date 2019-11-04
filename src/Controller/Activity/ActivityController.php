@@ -57,7 +57,7 @@ class ActivityController extends AbstractController
 
                 if (null !== $registration) {
                     $now = new \DateTime('now');
-                    $registration->setDeleteTime($now);
+                    $registration->setDeleteDate($now);
 
                     //$em->remove($registration);
                     $em->flush();
@@ -107,7 +107,7 @@ class ActivityController extends AbstractController
                     $reg->setOption($option);
 
                     $now = new \DateTime('now');
-                    $reg->setNewTime($now);
+                    $reg->setNewDate($now);
                     $reg->setPerson($this->getUser()->getPerson());
 
                     $em->persist($reg);
@@ -153,10 +153,10 @@ class ActivityController extends AbstractController
 
         $unregister = null;
         if (null !== $this->getUser()) {
-            $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson()]);
+            $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson(), 'deletedate' => null]);
 
             if (null !== $registration) {
-                $deldate = $registration->getDeleteTime();
+                $deldate = $registration->getDeleteDate();
 
                 if (null == $deldate) {
                     $unregister = $this->singleUnregistrationForm($registration)->createView();
@@ -164,8 +164,11 @@ class ActivityController extends AbstractController
             }
         }
 
+        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
+
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
+            'registrations' => $regs,
             'options' => $forms,
             'unregister' => $unregister,
         ]);

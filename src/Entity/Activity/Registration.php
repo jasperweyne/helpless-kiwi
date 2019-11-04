@@ -7,7 +7,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\RegistrationRepository")
  */
 class Registration
 {
@@ -112,12 +112,12 @@ class Registration
      *
      * @return DateTime
      */
-    public function getNewTime()
+    public function getNewDate()
     {
         return $this->newdate;
     }
 
-    public function setNewTime(DateTime $date): self
+    public function setNewDate(DateTime $date): self
     {
         $this->newdate = $date;
 
@@ -129,12 +129,12 @@ class Registration
      *
      * @return DateTime
      */
-    public function getDeleteTime()
+    public function getDeleteDate()
     {
         return $this->deletedate;
     }
 
-    public function setDeleteTime(DateTime $date): self
+    public function setDeleteDate(DateTime $date): self
     {
         $this->deletedate = $date;
 

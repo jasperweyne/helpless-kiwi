@@ -26,7 +26,7 @@
         {% else %}
             <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span>
         {% endif %}
-        <span>{{ activity.registrations|length }} {{ activity.registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }} - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
+        <span>{{ registrations|length }} {{ registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }} - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
         <div class="buttons">
             {% if not is_granted('ROLE_USER') %}
                 <span class="button confirm disabled">Niet ingelogd</span>
@@ -78,7 +78,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in activity.registrations|sort((a, b) => a.person.fullname <=> b.person.fullname) %}
+                        {% for registration in registrations|sort((a, b) => a.person.fullname <=> b.person.fullname) %}
                             <tr>
                                 <td>{{ registration.person.fullname }}</td>
                             </tr>

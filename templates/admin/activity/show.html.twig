@@ -114,13 +114,27 @@
                             <tr>
                                 <th>Naam</th>
                                 <th>Optie</th>
+                                <th>Aanmelddatum </th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in activity.registrations %}
+                        {% for registration in deregistrations %}
+                            <tr>
+                                <td> <strike>{{ registration.person.fullname }} </strike> </td>
+                                <td> <strike> {{ registration.option.name }}   </strike> </td> 
+                                <td> Afgemeld </td> 
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen afmeldingen.</td>
+                            </tr>
+                        {% endfor %}
+
+                        {% for registration in registrations %}
                             <tr>
                                 <td>{{ registration.person.fullname }}</td>
                                 <td>{{ registration.option.name }}</td>
+                                <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                             </tr>
                         {% else %}
                             <tr>
