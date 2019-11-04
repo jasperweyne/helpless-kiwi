@@ -85,7 +85,7 @@ class ActivityController extends AbstractController
 
         $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
 
-        $deregs = $em->getRepository(Registration::class)->findByUniqueDeregistrations();
+        $deregs = $em->getRepository(Registration::class)->findDeregistrations($activity);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,

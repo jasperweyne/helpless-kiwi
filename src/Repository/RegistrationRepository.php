@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -22,33 +23,28 @@ class RegistrationRepository extends ServiceEntityRepository
     /**
      * @return Registration[] Returns an array of Activity objects
      */
-    public function findByUniqueDeregistrations()
+    public function findDeregistrations(Activity $activity)
     {
-        $qb = $this->createQueryBuilder('p');
+        $qb = $this->createQueryBuilder('r');
 
-        $subq = $this->createQueryBuilder('ps')
-        ->Where('ps.deletedate IS NULL')
+        return $qb
+            ->where(
+                $qb->expr()->notIn(
+                    'r.person',
+                    $this->createQueryBuilder('b')
+                        ->select('IDENTITY(b.person)')
+                        ->where('b.deletedate IS NULL')
+                        ->andWhere('b.activity = :val')
+                        ->setParameter('val', $activity)
+                        ->getDQL()
+                )
+            )
+            ->andWhere('r.activity = :val')
+            ->setParameter('val', $activity)
+            ->orderBy('r.deletedate', 'DESC')
+            ->groupBy('r.person')
+            ->getQuery()
+            ->getResult()
         ;
-
-        $subq2 = $this->createQueryBuilder('ps')
-        ->select('ps.person')
-        ->Where('ps.deletedate IS NULL')
-        ->groupBy('ps.person')
-        ;
-
-        $mqb = $this->createQueryBuilder('p');
-
-        $mqb->where($mqb->expr()->notIn('p.person', $subq->getDQL()));
-
-        $res2 = $mqb->getQuery()->getResult();
-
-        $res1 = $this->createQueryBuilder('p')
-        ->andWhere('p.deletedate IS NOT NULL')
-        ->groupBy('p.person')
-        ->getQuery()
-        ->getResult()
-        ;
-
-        return $res2;
     }
 }
