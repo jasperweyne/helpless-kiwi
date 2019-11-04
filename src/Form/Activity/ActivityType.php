@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -20,7 +21,10 @@ class ActivityType extends AbstractType
             ->add('name')
             ->add('description', TextareaType::class)
             ->add('location', LocationType::class)
-            ->add('deadline')
+            ->add('deadline', DateTimeType::class, [
+                'date_widget' => 'single_text',
+                'time_widget' => 'single_text',
+            ])
             ->add('author', EntityType::class, [
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
@@ -29,13 +33,20 @@ class ActivityType extends AbstractType
                     return $ref->getName();
                 },
             ])
-            ->add('start')
-            ->add('end')
+            ->add('start', DateTimeType::class, [
+                'date_widget' => 'single_text',
+                'time_widget' => 'single_text',
+            ])
+            ->add('end', DateTimeType::class, [
+                'date_widget' => 'single_text',
+                'time_widget' => 'single_text',
+            ])
             ->add('imageFile', VichImageType::class, [
                 'required' => true,
                 'allow_delete' => false,
             ])
             ->add('color', ChoiceType::class, [
+                'attr' => ['data-select' => 'true'],
                 'choices' => [
                     '' => null,
                     'Rood' => 'red',
