@@ -35,6 +35,11 @@ class Registration
     private $activity;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $reserve_position;
+
+    /**
      * Get id.
      *
      * @return string
@@ -88,6 +93,23 @@ class Registration
     public function setActivity(?Activity $activity): self
     {
         $this->activity = $activity;
+
+        return $this;
+    }
+
+    public function isReserve(): bool
+    {
+        return !\is_null($this->reserve_position);
+    }
+
+    public function getReservePosition(): ?string
+    {
+        return $this->reserve_position;
+    }
+
+    public function setReservePosition(?string $reserve_position): self
+    {
+        $this->reserve_position = $reserve_position;
 
         return $this;
     }
