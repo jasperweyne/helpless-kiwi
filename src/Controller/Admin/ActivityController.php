@@ -11,6 +11,7 @@ use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
 
 /**
  * Activity controller.
@@ -167,6 +168,37 @@ class ActivityController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays a form to edit an existing activity entity.
+     *
+     * @Route("/{id}/register/new", name="registration_new", methods={"GET", "POST"})
+     */
+    public function registrationNewAction(Request $request, Activity $activity)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $registration = new Registration();
+        $registration->setActivity($activity);
+
+        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
+            'allowed_options' => $activity->getOptions(),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($registration);
+            $em->flush();
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/registration/new.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+  
     /**
      * Finds and displays a activity entity.
      *

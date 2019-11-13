@@ -4,8 +4,9 @@ main, .bottom {
 }
 
 .bottom, .container {
-	@include flex-grid-row();
-    flex-direction: column;
+    max-width: 75rem;
+    margin-right: auto;
+    margin-left: auto;
     padding: 0 $padding;
 }
 
