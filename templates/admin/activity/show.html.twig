@@ -77,6 +77,10 @@
                 <td>{{ activity.color ?? '' }}</td>
             </tr>
             <tr>
+                <th>Maximaal aantal deelnemers</th>
+                <td>{{ activity.hasCapacity ? activity.capacity ~ ' deelnemers.' : 'Geen maximum.' }}</td>
+            </tr>
+            <tr>
                 <th>Prijzen</th>
                 <td>
                     <table>
@@ -141,6 +145,34 @@
                             <tr>
                                 <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
                             </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th>Reservelijst</th>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Optie</th>
+                                <th>Laatst bewerkt</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for registration in reserve %}
+                            <tr>
+                                <td>{{ registration.person.fullname }}</td>
+                                <td>{{ registration.option.name }}</td>
+                                <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen aanmeldingen.</td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </td>

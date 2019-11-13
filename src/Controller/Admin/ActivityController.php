@@ -84,9 +84,9 @@ class ActivityController extends AbstractController
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
-        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
-
+        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $deregs = $em->getRepository(Registration::class)->findDeregistrations($activity);
+        $reserve = $em->getRepository(Registration::class)->findReserve($activity);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,
@@ -94,6 +94,7 @@ class ActivityController extends AbstractController
             'activity' => $activity,
             'registrations' => $regs,
             'deregistrations' => $deregs,
+            'reserve' => $reserve,
         ]);
     }
 
@@ -104,7 +105,7 @@ class ActivityController extends AbstractController
      */
     public function editAction(Request $request, Activity $activity)
     {
-        $form = $this->createForm('App\Form\Activity\ActivityType', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityEditType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

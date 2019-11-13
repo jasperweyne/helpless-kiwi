@@ -111,19 +111,31 @@ class ActivityController extends AbstractController
 
                     $reg->setPerson($this->getUser()->getPerson());
 
+                    $registrations = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'reserve_position' => null, 'deletedate' => null]);
+                    $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($em->getRepository(Registration::class)->findReserve($activity)) > 0);
+                    if ($reserve) {
+                        $reg->setReservePosition($em->getRepository(Registration::class)->findAppendPosition($activity));
+                    }
+
                     $em->persist($reg);
                     $em->flush();
 
-                    $this->addFlash('success', 'Aangemelding gelukt!');
+                    if ($reserve) {
+                        $this->addFlash('success', 'Aanmelding op reservelijst!');
 
-                    $title = 'Aanmeldbevestiging '.$activity->getName();
-                    $body = $this->renderView('email/newregistration.html.twig', [
-                        'person' => $this->getUser()->getPerson(),
-                        'activity' => $activity,
-                        'title' => $title,
-                    ]);
+                    //todo
+                    } else {
+                        $this->addFlash('success', 'Aanmelding gelukt!');
 
-                    $mailer->message($this->getUser()->getPerson(), $title, $body);
+                        $title = 'Aanmeldbevestiging '.$activity->getName();
+                        $body = $this->renderView('email/newregistration.html.twig', [
+                            'person' => $this->getUser()->getPerson(),
+                            'activity' => $activity,
+                            'title' => $title,
+                        ]);
+
+                        $mailer->message($this->getUser()->getPerson(), $title, $body);
+                    }
 
                     return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
                 }
@@ -144,11 +156,15 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $registrations = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'reserve_position' => null, 'deletedate' => null]);
+        $reserve = $em->getRepository(Registration::class)->findReserve($activity);
+        $hasReserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($reserve) > 0);
+
         $forms = [];
         foreach ($activity->getOptions() as $option) {
             $forms[] = [
                 'data' => $option,
-                'form' => $this->singleRegistrationForm($option)->createView(),
+                'form' => $this->singleRegistrationForm($option, $hasReserve)->createView(),
             ];
         }
 
@@ -157,21 +173,18 @@ class ActivityController extends AbstractController
             $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson(), 'deletedate' => null]);
 
             if (null !== $registration) {
-                $deldate = $registration->getDeleteDate();
-
-                if (null == $deldate) {
-                    $unregister = $this->singleUnregistrationForm($registration)->createView();
-                }
+                $unregister = $this->singleUnregistrationForm($registration)->createView();
             }
         }
 
-        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
+        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
 
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
             'registrations' => $regs,
             'options' => $forms,
             'unregister' => $unregister,
+            'reserve' => $reserve,
         ]);
     }
 
@@ -183,9 +196,9 @@ class ActivityController extends AbstractController
         return $form;
     }
 
-    public function singleRegistrationForm(PriceOption $option)
+    public function singleRegistrationForm(PriceOption $option, bool $reserve)
     {
-        $form = $this->createRegisterForm($option->getActivity());
+        $form = $this->createRegisterForm($option->getActivity(), $reserve);
         $form->get('single_option')->setData($option->getId());
 
         return $form;
@@ -204,14 +217,14 @@ class ActivityController extends AbstractController
         ;
     }
 
-    private function createRegisterForm(Activity $activity)
+    private function createRegisterForm(Activity $activity, bool $reserve = false)
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('activity_register', ['id' => $activity->getId()]))
             ->add('single_option', HiddenType::class)
             ->add('submit', SubmitType::class, [
-                'attr' => ['class' => 'button confirm'],
-                'label' => 'Aanmelden',
+                'attr' => ['class' => 'button '.($reserve ? 'warning' : 'confirm')],
+                'label' => 'Aanmelden'.($reserve ? ' reserve' : ''),
             ])
             ->getForm()
         ;

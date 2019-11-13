@@ -59,7 +59,7 @@ class RegistrationRepository extends ServiceEntityRepository
             return Order::avg(self::MINORDER(), self::MAXORDER());
         }
 
-        $current = Order::create($val);
+        $current = Order::create($val->getReservePosition());
 
         // Six orders of magnitude removed
         return Order::avg($current,
@@ -86,7 +86,7 @@ class RegistrationRepository extends ServiceEntityRepository
             return Order::avg(self::MINORDER(), self::MAXORDER());
         }
 
-        $current = Order::create($val);
+        $current = Order::create($val->getReservePosition());
 
         // Six orders of magnitude removed
         return Order::avg($current,
@@ -111,15 +111,32 @@ class RegistrationRepository extends ServiceEntityRepository
                     $this->createQueryBuilder('b')
                         ->select('IDENTITY(b.person)')
                         ->where('b.deletedate IS NULL')
+                        ->andWhere('b.reserve_position IS NULL')
                         ->andWhere('b.activity = :val')
                         ->setParameter('val', $activity)
                         ->getDQL()
                 )
             )
             ->andWhere('r.activity = :val')
+            ->andWhere('r.reserve_position IS NULL')
             ->setParameter('val', $activity)
             ->orderBy('r.deletedate', 'DESC')
             ->groupBy('r.person')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Registration[] Returns an array of Registration objects
+     */
+    public function findReserve(Activity $activity)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.reserve_position IS NOT NULL')
+            ->andWhere('p.activity = :activity')
+            ->setParameter('activity', $activity)
+            ->orderBy('p.reserve_position', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -136,6 +153,8 @@ class RegistrationRepository extends ServiceEntityRepository
             ->setParameter('val', $value)
             ->orderBy('p.id', 'ASC')
             ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
         ;
     }
     */
