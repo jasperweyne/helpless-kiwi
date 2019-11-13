@@ -15,6 +15,7 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('person', EntityType::class, [
+                'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
                 'class' => 'App\Entity\Person\Person',
                 'query_builder' => function (EntityRepository $er) {
@@ -24,6 +25,7 @@ class RegistrationType extends AbstractType
                 'choice_label' => function ($ref) {
                     return $ref;
                 },
+                'required' => true,
             ])
             ->add('option', EntityType::class, [
                 'label' => 'Optie',
@@ -32,6 +34,7 @@ class RegistrationType extends AbstractType
                 'choice_label' => function ($ref) {
                     return $ref;
                 },
+                'required' => true,
             ])
 
         ;
