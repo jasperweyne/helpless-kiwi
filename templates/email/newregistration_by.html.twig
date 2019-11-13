@@ -1,0 +1,9 @@
+<h2>{{ title }}</h2>
+<p>Hallo {{ person.firstname }},<br />
+Je bent aangemeld voor {{ activity.name }}, wat leuk!<br />
+Je wordt verwacht op {{ activity.start|date('d-m-Y') }} om {{ activity.start|date('H:i') }} bij {{ activity.location.address }}.<br />
+De activiteit duurt ongeveer tot {{ activity.end|date('H:i') }}. Afmelden is mogelijk tot {{ activity.deadline|date('d-m-Y') }}.<br />
+Je bent aangemeld door {{ by.fullname }}. Klopt dit niet? Neem dan contact met deze persoon op.<br />
+<br />
+Tot dan!<br />
+Groetjes van {{ org }}<p>

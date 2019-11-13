@@ -26,6 +26,7 @@ table {
             padding: $table-padding;
             font-weight: $global-weight-bold;
             text-align: #{$global-left};
+            white-space: nowrap;
         }
     }
 

@@ -57,6 +57,16 @@ class Person
     private $address;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $newdate;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $deletedate;
+
+    /**
      * Get id.
      *
      * @return string
@@ -234,5 +244,10 @@ class Person
         $this->address = $address;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getFirstname().' '.$this->getLastname();
     }
 }
