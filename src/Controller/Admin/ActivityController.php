@@ -12,7 +12,6 @@ use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Entity\Activity\PriceOption;
-use App\Entity\Activity\Registration;
 
 /**
  * Activity controller.
@@ -187,6 +186,12 @@ class ActivityController extends AbstractController
         $registration = new Registration();
         $registration->setActivity($activity);
 
+        $tz = 'Europe/Amsterdam';
+        $timestamp = time();
+        $now = new \DateTime('now', new \DateTimeZone($tz));
+        $now->setTimestamp($timestamp);
+        $registration->setNewDate($now);
+
         $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
             'allowed_options' => $activity->getOptions(),
         ]);
@@ -205,7 +210,7 @@ class ActivityController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-  
+
     /**
      * Finds and displays a activity entity.
      *
