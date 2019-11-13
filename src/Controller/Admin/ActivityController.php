@@ -12,6 +12,7 @@ use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Entity\Activity\PriceOption;
+use App\Mail\MailService;
 
 /**
  * Activity controller.
@@ -211,7 +212,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/register/new/{id}", name="registration_new", methods={"GET", "POST"})
      */
-    public function registrationNewAction(Request $request, Activity $activity)
+    public function registrationNewAction(Request $request, Activity $activity, MailService $mailer)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -234,6 +235,18 @@ class ActivityController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
+            $this->addFlash('success', $registration->getPerson()->getFullname().' aangemeld!');
+
+            $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
+            $body = $this->renderView('email/newregistration_by.html.twig', [
+                'person' => $this->getUser()->getPerson(),
+                'activity' => $registration->getActivity(),
+                'title' => $title,
+                'by' => $this->getUser()->getPerson(),
+            ]);
+
+            $mailer->message($this->getUser()->getPerson(), $title, $body);
+
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
 
@@ -248,7 +261,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/registration/delete/{id}", name="registration_delete")
      */
-    public function registrationDeleteAction(Request $request, Registration $registration)
+    public function registrationDeleteAction(Request $request, Registration $registration, MailService $mailer)
     {
         $form = $this->createRegistrationDeleteForm($registration);
         $form->handleRequest($request);
@@ -263,6 +276,18 @@ class ActivityController extends AbstractController
             $registration->setDeleteDate($now);
 
             $em->flush();
+
+            $this->addFlash('success', $registration->getPerson()->getFullname().' afgemeld!');
+
+            $title = 'Afmeldbericht '.$registration->getActivity()->getName();
+            $body = $this->renderView('email/removedregistration_by.html.twig', [
+                'person' => $this->getUser()->getPerson(),
+                'activity' => $registration->getActivity(),
+                'title' => $title,
+                'by' => $this->getUser()->getPerson(),
+            ]);
+
+            $mailer->message($this->getUser()->getPerson(), $title, $body);
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
         }
