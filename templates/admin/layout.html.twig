@@ -51,17 +51,21 @@
 {% block body_root %}
     <div class="container row">
         <span class="top">
+            {% block top %}
             <h3>{{ page_title }}</h3>
             <span class="buttons">
             {% block buttons %}
             {% endblock %}
             </span>
+            {% endblock %}
         </span>
         <div class="card">
         {% block body %}
         {% endblock %}
         </div>
     </div>
+    {% block pagination %}
+    {% endblock %}
 {% endblock %}
 
 {% block footer %}
