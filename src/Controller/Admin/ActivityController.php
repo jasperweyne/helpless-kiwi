@@ -219,10 +219,7 @@ class ActivityController extends AbstractController
         $registration = new Registration();
         $registration->setActivity($activity);
 
-        $tz = 'Europe/Amsterdam';
-        $timestamp = time();
-        $now = new \DateTime('now', new \DateTimeZone($tz));
-        $now->setTimestamp($timestamp);
+        $now = new \DateTime('now');
         $registration->setNewDate($now);
 
         $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
@@ -269,10 +266,7 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $tz = 'Europe/Amsterdam';
-            $timestamp = time();
-            $now = new \DateTime('now', new \DateTimeZone($tz));
-            $now->setTimestamp($timestamp);
+            $now = new \DateTime('now');
             $registration->setDeleteDate($now);
 
             $em->flush();
