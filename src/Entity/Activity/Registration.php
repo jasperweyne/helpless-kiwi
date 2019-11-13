@@ -102,14 +102,14 @@ class Registration
         return !\is_null($this->reserve_position);
     }
 
-    public function getReservePosition(): ?string
+    public function getReservePosition(): ?Order
     {
-        return $this->reserve_position;
+        return $this->reserve_position ? Order::create($this->reserve_position) : null;
     }
 
-    public function setReservePosition(?string $reserve_position): self
+    public function setReservePosition(?Order $reserve_position): self
     {
-        $this->reserve_position = $reserve_position;
+        $this->reserve_position = ($reserve_position ? strval($reserve_position) : null);
 
         return $this;
     }
