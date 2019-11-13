@@ -56,7 +56,13 @@ class ActivityController extends AbstractController
                 $registration = $em->getRepository(Registration::class)->find($data['registration_single']);
 
                 if (null !== $registration) {
-                    $em->remove($registration);
+                    $tz = 'Europe/Amsterdam';
+                    $timestamp = time();
+                    $now = new \DateTime('now', new \DateTimeZone($tz));
+                    $now->setTimestamp($timestamp);
+                    $registration->setDeleteDate($now);
+
+                    //$em->remove($registration);
                     $em->flush();
 
                     $this->addFlash('success', 'Afmelding gelukt!');
@@ -102,6 +108,13 @@ class ActivityController extends AbstractController
                     $reg = new Registration();
                     $reg->setActivity($activity);
                     $reg->setOption($option);
+
+                    $tz = 'Europe/Amsterdam';
+                    $timestamp = time();
+                    $now = new \DateTime('now', new \DateTimeZone($tz));
+                    $now->setTimestamp($timestamp);
+                    $reg->setNewDate($now);
+
                     $reg->setPerson($this->getUser()->getPerson());
 
                     $em->persist($reg);
@@ -147,14 +160,22 @@ class ActivityController extends AbstractController
 
         $unregister = null;
         if (null !== $this->getUser()) {
-            $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson()]);
+            $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson(), 'deletedate' => null]);
+
             if (null !== $registration) {
-                $unregister = $this->singleUnregistrationForm($registration)->createView();
+                $deldate = $registration->getDeleteDate();
+
+                if (null == $deldate) {
+                    $unregister = $this->singleUnregistrationForm($registration)->createView();
+                }
             }
         }
 
+        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
+
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
+            'registrations' => $regs,
             'options' => $forms,
             'unregister' => $unregister,
         ]);

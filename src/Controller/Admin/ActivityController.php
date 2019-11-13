@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\Registration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -83,10 +84,16 @@ class ActivityController extends AbstractController
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
+        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
+
+        $deregs = $em->getRepository(Registration::class)->findDeregistrations($activity);
+
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,
             'modifs' => $modifs,
             'activity' => $activity,
+            'registrations' => $regs,
+            'deregistrations' => $deregs,
         ]);
     }
 
