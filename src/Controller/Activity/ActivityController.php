@@ -56,10 +56,7 @@ class ActivityController extends AbstractController
                 $registration = $em->getRepository(Registration::class)->find($data['registration_single']);
 
                 if (null !== $registration) {
-                    $tz = 'Europe/Amsterdam';
-                    $timestamp = time();
-                    $now = new \DateTime('now', new \DateTimeZone($tz));
-                    $now->setTimestamp($timestamp);
+                    $now = new \DateTime('now');
                     $registration->setDeleteDate($now);
 
                     //$em->remove($registration);
@@ -109,10 +106,7 @@ class ActivityController extends AbstractController
                     $reg->setActivity($activity);
                     $reg->setOption($option);
 
-                    $tz = 'Europe/Amsterdam';
-                    $timestamp = time();
-                    $now = new \DateTime('now', new \DateTimeZone($tz));
-                    $now->setTimestamp($timestamp);
+                    $now = new \DateTime('now');
                     $reg->setNewDate($now);
 
                     $reg->setPerson($this->getUser()->getPerson());
