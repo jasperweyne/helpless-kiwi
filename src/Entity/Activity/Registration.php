@@ -3,7 +3,6 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Person\Person;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,7 +37,7 @@ class Registration
     /**
      * @var date
      *
-     * @ORM\Column(name="newdate", type="datetime", nullable=true)
+     * @ORM\Column(name="newdate", type="datetime", nullable=false)
      */
     private $newdate;
 
@@ -117,7 +116,7 @@ class Registration
         return $this->newdate;
     }
 
-    public function setNewDate(DateTime $date): self
+    public function setNewDate(\DateTime $date): self
     {
         $this->newdate = $date;
 
@@ -134,7 +133,7 @@ class Registration
         return $this->deletedate;
     }
 
-    public function setDeleteDate(DateTime $date): self
+    public function setDeleteDate(\DateTime $date): self
     {
         $this->deletedate = $date;
 
