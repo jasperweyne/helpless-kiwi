@@ -3,6 +3,7 @@
 {% set page_title = 'Welkom bij jouw ' ~ org ~ ' account!' %}
 
 {% block body %}
+<div class="container row">
     <h1>{{ page_title }}</h1>
     <p>Welkom bij jouw {{ org }} account! Om je account te activeren, maak hier je wachtwoord aan en log in.</p>
     {{ form_start(form) }}
@@ -11,4 +12,5 @@
             <button type="submit">Account activeren</button>
         </div>
     {{ form_end(form) }}
+</div>
 {% endblock body %}

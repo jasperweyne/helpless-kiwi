@@ -1,0 +1,50 @@
+form {
+    width: 100%;
+
+    select {
+        width: initial;
+    }
+
+    & > div[id] {
+        & > div {
+            overflow: hidden;
+    
+            & > label {
+                padding: $table-padding;
+                font-weight: $global-weight-bold;
+                text-align: #{$global-left};
+                width: 40%;
+                float: left;
+            }
+        
+            & > :not(label) {
+                overflow: hidden;
+            }
+
+            input, select, textarea {
+                padding: $table-padding;
+            }
+        }
+    }
+}
+
+
+@include breakpoint(small only) {
+    form {
+        @include table-stack();
+    }
+    
+    div[id] div {
+        padding: 4px 0;
+        * {
+            padding-top: 0;
+            padding-bottom: 0;
+            width: 100%;
+        }
+    }
+}
+@include breakpoint(medium) {
+    .form {
+        @include table-scroll;
+    }
+}

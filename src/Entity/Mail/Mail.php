@@ -19,7 +19,7 @@ class Mail
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Security\Auth")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\Auth")
      * @ORM\JoinColumn(name="auth", referencedColumnName="person")
      */
     private $auth;
@@ -36,9 +36,19 @@ class Mail
     private $title;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     private $content;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $sender;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $sentAt;
 
     public function getId(): ?string
     {
@@ -89,6 +99,30 @@ class Mail
     public function setTarget(?Taxonomy $target): self
     {
         $this->target = $target;
+
+        return $this;
+    }
+
+    public function getSender(): ?string
+    {
+        return $this->sender;
+    }
+
+    public function setSender(string $sender): self
+    {
+        $this->sender = $sender;
+
+        return $this;
+    }
+
+    public function getSentAt(): ?\DateTimeInterface
+    {
+        return $this->sentAt;
+    }
+
+    public function setSentAt(\DateTimeInterface $sentAt): self
+    {
+        $this->sentAt = $sentAt;
 
         return $this;
     }

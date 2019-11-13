@@ -28,13 +28,10 @@
         margin-top: $padding * 0.5;
     }
 
-    a {
-        margin-top: auto;
-    }
-
     button {
         margin-top: $padding;
         background-color: white;
         padding: $padding * 0.5 $padding;
+        margin-bottom: auto;
     }
 }

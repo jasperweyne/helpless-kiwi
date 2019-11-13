@@ -84,6 +84,7 @@
                             <tr>
                                 <th>Naam</th>
                                 <th>Prijs</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,6 +92,7 @@
                             <tr>
                                 <td>{{ option.name }}</td>
                                 <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
+                                <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
                             </tr>
                         {% else %}
                             <tr>

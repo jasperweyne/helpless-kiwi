@@ -2,11 +2,18 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Personen' %}
+    
+    {% block top %}
+        {% embed 'admin/listview.html.twig' %}
+            {% set resultcount = persons|length %}
+            
+            {% block buttons %}
+            <a href="{{ path("admin_person_new") }} ">Nieuw</a>
+            {% endblock %}
+        {% endembed %}
+    {% endblock %}
 {% endif %}
 
-{% block buttons %}
-<a href="{{ path("admin_person_new") }} ">Nieuw</a>
-{% endblock %}
 
 {% block body %}
     <div class="table">

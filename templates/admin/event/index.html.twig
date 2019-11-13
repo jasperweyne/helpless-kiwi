@@ -2,6 +2,12 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Gebeurtenislog' %}
+    
+    {% block top %}
+        {% embed 'admin/listview.html.twig' %}
+            {% set resultcount = log|length %}
+        {% endembed %}
+    {% endblock %}
 {% endif %}
 
 {% block body %}
@@ -9,13 +15,17 @@
         <table>
             <thead>
                 <tr>
+                    <th>Naam</th>
                     <th>Tijd</th>
+                    <th>Gebruiker</th>
                 </tr>
             </thead>
             <tbody>
             {% for event in log %}
                 <tr>
+                    <td>{{ event.title }}</td>
                     <td>{{ event.time|date('d-m-Y H:i') }}</td>
+                    <td>{{ event.auth.person.canonical ?? 'Onbekend' }}</td>
                 </tr>
             {% else %}
                 <tr>

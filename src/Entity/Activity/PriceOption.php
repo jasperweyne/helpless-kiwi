@@ -2,6 +2,8 @@
 
 namespace App\Entity\Activity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class PriceOption
      * @ORM\Column(type="string")
      */
     private $confirmationMsg;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="option")
+     */
+    private $registrations;
+
+    public function __construct()
+    {
+        $this->registrations = new ArrayCollection();
+    }
 
     /**
      * Get id.
@@ -137,5 +149,36 @@ class PriceOption
     public function __toString()
     {
         return $this->name.' €'.number_format($this->price / 100, 2, '.', '');
+    }
+  
+    /**
+     * @return Collection|Registration[]
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setPrice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            // set the owning side to null (unless already changed)
+            if ($registration->getPrice() === $this) {
+                $registration->setPrice(null);
+            }
+        }
+
+        return $this;
     }
 }

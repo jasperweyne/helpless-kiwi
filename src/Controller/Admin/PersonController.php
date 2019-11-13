@@ -7,6 +7,7 @@ use App\Entity\Person\Person;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
+use App\Mail\MailService;
 use App\Template\Annotation\MenuItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,7 +39,7 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $persons = $em->getRepository(Person::class)->findAll();
+        $persons = $em->getRepository(Person::class)->findBy([], ['firstname' => 'ASC', 'lastname' => 'ASC']);
 
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
@@ -95,7 +96,7 @@ class PersonController extends AbstractController
      *
      * @Route("/{id}/auth", name="auth", methods={"GET"})
      */
-    public function authAction(Request $request, Person $person, PasswordResetService $passwordReset, AuthUserProvider $authProvider, \Swift_Mailer $mailer)
+    public function authAction(Request $request, Person $person, PasswordResetService $passwordReset, AuthUserProvider $authProvider, MailService $mailer)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -125,14 +126,7 @@ class PersonController extends AbstractController
             'token' => $token,
         ]);
 
-        $message = (new \Swift_Message('Jouw account'))
-            ->setFrom($_ENV['DEFAULT_FROM'])
-            ->setTo($person->getEmail())
-            ->setBody($body, 'text/html')
-            ->addPart(html_entity_decode(strip_tags($body)), 'text/plain')
-        ;
-
-        $mailer->send($message);
+        $mailer->message($person, 'Jouw account', $body);
 
         return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
     }

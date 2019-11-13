@@ -16,7 +16,7 @@ class AdminController extends AbstractController
     /**
      * Lists all activities.
      *
-     * @MenuItem(title="Overzicht", menu="admin", activeCriteria="admin_index")
+     * @MenuItem(title="Overzicht", menu="admin", activeCriteria="admin_index", order=-1)
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()

@@ -25,7 +25,7 @@ class ActivityRepository extends ServiceEntityRepository
     public function findUpcoming()
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.start > CURRENT_TIMESTAMP()')
+            ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->orderBy('p.start', 'ASC')
             ->getQuery()
             ->getResult()

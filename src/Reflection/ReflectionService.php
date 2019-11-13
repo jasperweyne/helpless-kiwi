@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Log;
+namespace App\Reflection;
 
 use Doctrine\Instantiator\Instantiator;
 use Doctrine\Common\Persistence\Mapping\RuntimeReflectionService;
@@ -20,7 +20,9 @@ class ReflectionService extends RuntimeReflectionService
         $reflFields = $this->getAllProperties($classname);
 
         foreach ($fieldValues as $field => $value) {
-            $reflFields[$field]->setValue($object, $value);
+            if (array_key_exists($field, $reflFields)) {
+                $reflFields[$field]->setValue($object, $value);
+            }
         }
 
         return $object;

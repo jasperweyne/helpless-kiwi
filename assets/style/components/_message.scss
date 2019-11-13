@@ -1,0 +1,27 @@
+.messages {
+    &.messages_overlay {
+        position: absolute;
+        top: $padding;
+        left: 0;
+        right: 0;
+        z-index: 9;
+
+        .flash {
+            backdrop-filter: blur(2px);
+        }
+    }
+
+    .flash {
+        width: 100%;
+        position: relative;
+        padding: $padding;
+        background-color: rgba(125,125,235,0.65);
+
+        &.flash-error {
+            background-color: rgba(235,125,125,0.65);
+        }
+        &.flash-success {
+            background-color: rgba(125,235,125,0.65);
+        }
+    }
+}

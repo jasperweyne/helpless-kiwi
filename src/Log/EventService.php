@@ -3,6 +3,7 @@
 namespace App\Log;
 
 use App\Entity\Log\Event as EventEntity;
+use App\Reflection\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -38,7 +39,7 @@ class EventService
 
     public function hydrate(?AbstractEvent $event)
     {
-        if ($event === null) {
+        if (null === $event) {
             return null;
         }
 
@@ -63,10 +64,11 @@ class EventService
         $object = $event->getEntity();
         if (null !== $object) {
             if (!is_string($this->getIdentifier($object))) {
-                @trigger_error("Entities with identifiers that are not of type string, are not supported yet.", E_USER_WARNING);
+                @trigger_error('Entities with identifiers that are not of type string, are not supported yet.', E_USER_WARNING);
+
                 return null;
             }
-                
+
             $entity
                 ->setObjectId($this->getIdentifier($object)) // todo: assumes id is string without assertion, fix this
                 ->setObjectType($this->getClassName($object))
@@ -78,11 +80,9 @@ class EventService
 
     public function populate(?EventEntity $entity)
     {
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
-
-        $reflFields = $this->refl->getAllProperties($entity->getDiscr());
 
         $objectType = $entity->getObjectType();
         $objectId = $entity->getObjectId();
@@ -96,8 +96,11 @@ class EventService
         $fields['time'] = $entity->getTime();
         $fields['auth'] = $entity->getAuth();
         $fields['entityCb'] = $objectClosure;
+        $fields['entityType'] = $objectType;
 
-        return $this->refl->instantiate($entity->getDiscr(), $fields);
+        $class = class_exists($entity->getDiscr()) ? $entity->getDiscr() : AbstractEvent::class;
+
+        return $this->refl->instantiate($class, $fields);
     }
 
     public function populateAll(array $entities)

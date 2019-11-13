@@ -18,7 +18,8 @@ class Registration
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $option;
 

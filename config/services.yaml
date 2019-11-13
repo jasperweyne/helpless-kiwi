@@ -36,10 +36,21 @@ services:
         class: App\Security\AuthUserProvider
         arguments: ['@doctrine', '%env(USERPROVIDER_KEY)%', '%doctrine.default_entity_manager%']
 
-    App\Template\MenuDiscovery:
-        class: App\Template\MenuDiscovery
+    App\Template\AnnotationMenuExtension:
+        class: App\Template\AnnotationMenuExtension
         arguments: ["App\\Controller", "../src/Controller", "%kernel.root_dir%", "@annotation_reader"]
 
     App\Log\Doctrine\EntityEventListener:
         tags:
             - { name: doctrine.event_listener, event: onFlush }
+
+    App\DataCollector\AuthSecurityDataCollector:
+        decorates: data_collector.security
+
+    App\Template\MenuBuilder:
+        arguments:
+            - !tagged app.menu_extension
+
+    _instanceof:
+        App\Template\MenuExtensionInterface:
+            tags: ['app.menu_extension']

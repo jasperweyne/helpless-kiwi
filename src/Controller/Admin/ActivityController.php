@@ -139,7 +139,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      *
-     * @Route("/{id}/price/new", name="price_new", methods={"GET", "POST"})
+     * @Route("/price/new/{id}", name="price_new", methods={"GET", "POST"})
      */
     public function priceNewAction(Request $request, Activity $activity)
     {
@@ -195,6 +195,38 @@ class ActivityController extends AbstractController
 
         return $this->render('admin/activity/registration/new.html.twig', [
             'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+  
+    /**
+     * Finds and displays a activity entity.
+     *
+     * @Route("/price/{id}", name="price_edit", methods={"GET", "POST"})
+     */
+    public function priceEditAction(Request $request, PriceOption $price)
+    {
+        $originalPrice = $price->getPrice();
+        $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (count($price->getRegistrations()) > 0 && $originalPrice < $price->getPrice()) {
+                $this->addFlash('error', 'Prijs kan niet verhoogd worden als er al deelnemers geregistreerd zijn');
+
+                return $this->render('admin/activity/price/edit.html.twig', [
+                    'option' => $price,
+                    'form' => $form->createView(),
+                ]);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $price->getActivity()->getId()]);
+        }
+
+        return $this->render('admin/activity/price/edit.html.twig', [
+            'option' => $price,
             'form' => $form->createView(),
         ]);
     }

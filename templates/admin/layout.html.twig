@@ -27,7 +27,7 @@
         {% for item in menu.getItems('admin') %}
             {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
                 {% set item_type = (item.path is defined) ? "a"                          : "span" %}
-                {% set item_path = (item.path is defined) ? "href="~path(item.path) : "" %}
+                {% set item_path = (item.path is defined) ? "href="~(item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)) : "" %}
                 {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "active " : "" %}
                 {% if item.path is defined %}
                 <div class="{{ (item_active ~ " " ~ item.class ?? "")|trim }}">
@@ -51,17 +51,21 @@
 {% block body_root %}
     <div class="container row">
         <span class="top">
+            {% block top %}
             <h3>{{ page_title }}</h3>
             <span class="buttons">
             {% block buttons %}
             {% endblock %}
             </span>
+            {% endblock %}
         </span>
         <div class="card">
         {% block body %}
         {% endblock %}
         </div>
     </div>
+    {% block pagination %}
+    {% endblock %}
 {% endblock %}
 
 {% block footer %}

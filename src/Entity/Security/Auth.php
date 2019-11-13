@@ -117,7 +117,7 @@ class Auth implements UserInterface, EquatableInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->person->getCanonical();
+        return $this->getAuthId();
     }
 
     public function getPerson(): Person
@@ -345,11 +345,7 @@ class Auth implements UserInterface, EquatableInterface
      */
     public function isEqualTo(UserInterface $user)
     {
-        if ($user instanceof self) {
-            return $this->getAuthId() === $user->getAuthId();
-        }
-
-        return $this->getUsername === $user->getUsername();
+        return $this->getUsername() === $user->getUsername();
     }
 
     public function getPasswordRequestToken(): ?string
