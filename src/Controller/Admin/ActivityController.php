@@ -175,9 +175,41 @@ class ActivityController extends AbstractController
     }
 
     /**
+     * Finds and displays a activity entity.
+     *
+     * @Route("/price/{id}", name="price_edit", methods={"GET", "POST"})
+     */
+    public function priceEditAction(Request $request, PriceOption $price)
+    {
+        $originalPrice = $price->getPrice();
+        $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (count($price->getRegistrations()) > 0 && $originalPrice < $price->getPrice()) {
+                $this->addFlash('error', 'Prijs kan niet verhoogd worden als er al deelnemers geregistreerd zijn');
+
+                return $this->render('admin/activity/price/edit.html.twig', [
+                    'option' => $price,
+                    'form' => $form->createView(),
+                ]);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $price->getActivity()->getId()]);
+        }
+
+        return $this->render('admin/activity/price/edit.html.twig', [
+            'option' => $price,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * Displays a form to edit an existing activity entity.
      *
-     * @Route("/{id}/register/new", name="registration_new", methods={"GET", "POST"})
+     * @Route("/register/new/{id}", name="registration_new", methods={"GET", "POST"})
      */
     public function registrationNewAction(Request $request, Activity $activity)
     {
@@ -212,35 +244,47 @@ class ActivityController extends AbstractController
     }
 
     /**
-     * Finds and displays a activity entity.
+     * Deletes a person entity.
      *
-     * @Route("/price/{id}", name="price_edit", methods={"GET", "POST"})
+     * @Route("/registration/delete/{id}", name="registration_delete")
      */
-    public function priceEditAction(Request $request, PriceOption $price)
+    public function registrationDeleteAction(Request $request, Registration $registration)
     {
-        $originalPrice = $price->getPrice();
-        $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
+        $form = $this->createRegistrationDeleteForm($registration);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (count($price->getRegistrations()) > 0 && $originalPrice < $price->getPrice()) {
-                $this->addFlash('error', 'Prijs kan niet verhoogd worden als er al deelnemers geregistreerd zijn');
-
-                return $this->render('admin/activity/price/edit.html.twig', [
-                    'option' => $price,
-                    'form' => $form->createView(),
-                ]);
-            }
             $em = $this->getDoctrine()->getManager();
+
+            $tz = 'Europe/Amsterdam';
+            $timestamp = time();
+            $now = new \DateTime('now', new \DateTimeZone($tz));
+            $now->setTimestamp($timestamp);
+            $registration->setDeleteDate($now);
+
             $em->flush();
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $price->getActivity()->getId()]);
+            return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
         }
 
-        return $this->render('admin/activity/price/edit.html.twig', [
-            'option' => $price,
+        return $this->render('admin/activity/registration/delete.html.twig', [
+            'registration' => $registration,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Creates a form to check out all checked in users.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createRegistrationDeleteForm(Registration $registration)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('admin_activity_registration_delete', ['id' => $registration->getId()]))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
     }
 
     /**

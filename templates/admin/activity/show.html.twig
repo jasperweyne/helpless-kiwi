@@ -114,7 +114,8 @@
                             <tr>
                                 <th>Naam</th>
                                 <th>Optie</th>
-                                <th>Laatste edit</th>
+                                <th>Laatst bewerkt</th>
+                                <th>Acties</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,12 +126,12 @@
                                 <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
                             </tr>
                         {% endfor %}
-
                         {% for registration in registrations %}
                             <tr>
                                 <td>{{ registration.person.fullname }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                                <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
                             </tr>
                         {% else %}
                             <tr>
