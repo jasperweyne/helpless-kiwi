@@ -32,14 +32,14 @@ class Order
     {
         // Pad arrays to have equal length
         $length = max(count($a->data), count($b->data));
-        $i = array_pad($a->data, $length, 0);
-        $ia = array_pad($b->data, $length, 0);
+        $ia = array_pad($a->data, $length, 0);
+        $ib = array_pad($b->data, $length, 0);
 
         // Apply $fn, carrying decimal value to next element
         $carry = 0;
         $interm = [];
         for ($i = 0; $i < $length; ++$i) {
-            $val = ($fn)($ia[$i], $ia[$i]);
+            $val = ($fn)($ia[$i], $ib[$i]);
 
             // Calculate result
             $interm[$i] = floor($val) + $carry;
