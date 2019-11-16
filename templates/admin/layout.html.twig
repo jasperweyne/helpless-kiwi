@@ -59,10 +59,12 @@
             </span>
             {% endblock %}
         </span>
+        {% block body_wrap %}
         <div class="card">
         {% block body %}
         {% endblock %}
         </div>
+        {% endblock %}
     </div>
     {% block pagination %}
     {% endblock %}

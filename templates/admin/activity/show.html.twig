@@ -2,117 +2,159 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Activiteit ' ~ activity.name %}
-
+    
     {% block buttons %}
         <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Bewerken</a>
         <a href="{{ path('admin_activity_delete', { 'id': activity.id }) }}">Verwijderen</a>
     {% endblock %}
 {% endif %}
 
-{% block body %}
-    <div class="table">
-    <table>
-        <tbody>
-            <tr>
-                <th>Titel</th>
-                <td>{{ activity.name }}</td>
-            </tr>
-            <tr>
-                <th>Beschrijving</th>
-                <td>{{ activity.description }}</td>
-            </tr>
-            <tr>
-                <th>Aanmelddeadline</th>
-                <td>{{ activity.deadline|date('d-m-Y') }}</td>
-            </tr>
-            <tr>
-                <th>Georganiseerd door</th>
-                <td>{{ activity.author.name ?? '' }}</td>
-            </tr>
-            {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
-                <tr>
-                    <th>Datum</th>
-                    <td>
-                        {{ activity.start|date('d-m-Y') }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Tijd</th>
-                    <td>
-                        {{ activity.start|date('H:i') }} - {{ activity.end|date('H:i') }}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <th>Begint</th>
-                    <td>
-                        {{ activity.start|date('d-m-Y - H:i') }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Eindigt</th>
-                    <td>
-                        {{ activity.end|date('d-m-Y - H:i') }}
-                    </td>
-                </tr>
-            {% endif %}
-            <tr>
-                <th>Gemaakt op</th>
-                <td>
-                    {{ createdAt.time|date('d-m-Y - H:i') }}
-                </td>
-            </tr>
-            <tr>
-                <th>Gemaakt door</th>
-                <td>
-                    {{ createdAt.auth.person.fullname ?? '' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Afbeelding</th>
-                <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Kleur</th>
-                <td>{{ activity.color ?? '' }}</td>
-            </tr>
-            <tr>
-                <th>Prijzen</th>
-                <td>
+{% block body_wrap %}
+    <div class="tabs">
+        <input type="radio" name="tabs" id="details" checked>
+        <label for="details" class="tab active">
+            <span>Details</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>Naam</th>
-                                <th>Prijs</th>
-                                <th></th>
-                            </tr>
-                        </thead>
                         <tbody>
-                        {% for option in activity.options %}
                             <tr>
-                                <td>{{ option.name }}</td>
-                                <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
-                                <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
+                                <th>Titel</th>
+                                <td>{{ activity.name }}</td>
                             </tr>
-                        {% else %}
                             <tr>
-                                <td>Geen opties.</td>
+                                <th>Beschrijving</th>
+                                <td>{{ activity.description }}</td>
                             </tr>
-                        {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_activity_price_new', { 'id': activity.id }) }}">Prijs toevoegen</a></td>
+                                <th>Aanmelddeadline</th>
+                                <td>{{ activity.deadline|date('d-m-Y') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Georganiseerd door</th>
+                                <td>{{ activity.author.name ?? '' }}</td>
+                            </tr>
+                            {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
+                                <tr>
+                                    <th>Datum</th>
+                                    <td>
+                                        {{ activity.start|date('d-m-Y') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Tijd</th>
+                                    <td>
+                                        {{ activity.start|date('H:i') }} - {{ activity.end|date('H:i') }}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <th>Begint</th>
+                                    <td>
+                                        {{ activity.start|date('d-m-Y - H:i') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Eindigt</th>
+                                    <td>
+                                        {{ activity.end|date('d-m-Y - H:i') }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Gemaakt op</th>
+                                <td>
+                                    {{ createdAt.time|date('d-m-Y - H:i') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Gemaakt door</th>
+                                <td>
+                                    {{ createdAt.auth.person.fullname ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Afbeelding</th>
+                                <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th>Kleur</th>
+                                <td>{{ activity.color ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Prijzen</th>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Naam</th>
+                                                <th>Prijs</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for option in activity.options %}
+                                            <tr>
+                                                <td>{{ option.name }}</td>
+                                                <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
+                                                <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>Geen opties.</td>
+                                            </tr>
+                                        {% endfor %}
+                                            <tr>
+                                                <td><a href="{{ path('admin_activity_price_new', { 'id': activity.id }) }}">Prijs toevoegen</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Aanpassingen</th>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Door</th>
+                                                <th>Tijdstip</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for modif in modifs %}
+                                            <tr>
+                                                <td>{{ modif.auth.person.fullname }}</td>
+                                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>Geen aanpassingen.</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
-                </td>
-            </tr>
-            <tr>
-                <th>Aanmeldingen</th>
-                <td>
+                </div>
+            </div>
+        </div>
+
+        <input type="radio" name="tabs" id="participants">
+        <label for="participants" class="tab">
+            <span>Deelnemers</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
                     <table>
                         <thead>
                             <tr>
-                                <th>Naam</th>
+                                <th>Aanmelding</th>
                                 <th>Optie</th>
                                 <th>Laatst bewerkt</th>
                                 <th>Acties</th>
@@ -143,34 +185,8 @@
                             </tr>
                         </tbody>
                     </table>
-                </td>
-            </tr>
-            <tr>
-                <th>Aanpassingen</th>
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Door</th>
-                                <th>Tijdstip</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for modif in modifs %}
-                            <tr>
-                                <td>{{ modif.auth.person.fullname }}</td>
-                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td>Geen aanpassingen.</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
