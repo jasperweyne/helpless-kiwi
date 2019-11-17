@@ -23,6 +23,7 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities.
      *
+     * @MenuItem(title="Terug naar frontend", menu="admin-profile", class="mobile")
      * @MenuItem(title="Activiteiten")
      * @Route("/", name="index", methods={"GET"})
      */
