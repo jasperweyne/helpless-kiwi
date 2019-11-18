@@ -5,7 +5,14 @@
     
     {% block top %}
         {% embed 'admin/listview.html.twig' %}
-            {% set resultcount = log|length %}
+            {% block results %}
+                <span class="subtitle">
+                {% if pagination %}
+                Resultaten {{ pagination.index }}{% if pagination.results|length > 1 %}-{{ pagination.index + pagination.results|length - 1 }}{% endif %} -
+                {% endif %}
+                {{ pagination.total ?? log|length }} resultaten gevonden
+                </span>
+            {% endblock %}
         {% endembed %}
     {% endblock %}
 {% endif %}
@@ -36,3 +43,13 @@
         </table>
     </div>
 {% endblock %}
+
+{% block pagination %}
+<div class="container row">
+    <div class="button" style="margin: 0 auto">
+        <a href="{{ pagination.hasPrev ? path('admin_event_index', { 'index': pagination.prev }) : '' }}">Prev</a>
+        <a href="{{ pagination.hasNext ? path('admin_event_index', { 'index': pagination.next }) : '' }}">Next</a>
+    </div>
+</div>
+{% endblock %}
+
