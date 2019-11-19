@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
+use App\Entity\Person\PersonField;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Security\PasswordResetService;
 use App\Security\AuthUserProvider;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**
  * Person controller.
@@ -39,10 +41,11 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $persons = $em->getRepository(Person::class)->findBy([], ['firstname' => 'ASC', 'lastname' => 'ASC']);
+        $persons = $em->getRepository(Person::class)->findAll();
 
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
+            'fields' => [],
         ]);
     }
 
@@ -55,7 +58,7 @@ class PersonController extends AbstractController
     {
         $person = new Person();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person);
+        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -140,7 +143,7 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person);
+        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -193,5 +196,26 @@ class PersonController extends AbstractController
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    private function buildFormFields()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $nameFlds = $em->getRepository(PersonField::class)->findNameFields();
+        $fields = $em->getRepository(PersonField::class)->findFields();
+
+        $parse = function ($field) {
+            return [
+                'name' => $field->getName(),
+                'type' => TextType::class,
+                'options' => [],
+            ];
+        };
+
+        return [
+            'nameFields' => array_map($parse, $nameFlds),
+            'fields' => array_map($parse, $fields),
+        ];
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Entity\Person;
 
-use App\Entity\Location\Location;
 use App\Entity\Security\Auth;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,37 +25,19 @@ class Person
     private $auth;
 
     /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $firstname;
-
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $lastname;
-
-    /**
-     * @var date
-     *
-     * @ORM\Column(name="birthday", type="date", nullable=true)
-     */
-    private $birthday;
-
-    /**
-     * @ORM\Column(type="array")
-     */
-    private $labels;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $email;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
-     * @ORM\JoinColumn(name="location", referencedColumnName="id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true)
      */
-    private $address;
+    private $fieldValues;
+
+    public function __construct()
+    {
+        $this->fieldValues = new ArrayCollection();
+    }
 
     /**
      * Get id.
@@ -101,92 +84,6 @@ class Person
     }
 
     /**
-     * Get first name.
-     *
-     * @return string
-     */
-    public function getFirstname(): ?string
-    {
-        return $this->firstname;
-    }
-
-    /**
-     * Set first name.
-     *
-     * @param string $firstname
-     */
-    public function setFirstname(string $firstname): self
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    /**
-     * Get last name.
-     *
-     * @return string
-     */
-    public function getLastname(): ?string
-    {
-        return $this->lastname;
-    }
-
-    /**
-     * Set last name.
-     *
-     * @param string $lastname
-     */
-    public function setLastname(string $lastname): self
-    {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    /**
-     * Get full name.
-     *
-     * @return string
-     */
-    public function getFullname(): ?string
-    {
-        return $this->getFirstname().' '.$this->getLastname();
-    }
-
-    /**
-     * Set birthday.
-     *
-     * @param date $birthday
-     */
-    public function setBirthday($birthday)
-    {
-        $this->birthday = $birthday;
-    }
-
-    /**
-     * Get birthday.
-     *
-     * @return date
-     */
-    public function getBirthday()
-    {
-        return $this->birthday;
-    }
-
-    public function getLabels(): ?array
-    {
-        return $this->labels;
-    }
-
-    public function setLabels(?array $labels): self
-    {
-        $this->labels = $labels;
-
-        return $this;
-    }
-
-    /**
      * Get email address.
      *
      * @return string
@@ -208,36 +105,82 @@ class Person
         return $this;
     }
 
-    public function getCanonical(): ?string
+    /**
+     * @return Collection|PersonValue[]
+     */
+    public function getFieldValues(): Collection
     {
-        $name = sprintf('pseudonymized (%s...)', substr($this->getFullname(), 0, 8));
+        return $this->fieldValues;
+    }
 
-        if (' ' !== $this->getFullname()) {
-            $name = $this->getFullname();
+    public function addFieldValue(PersonValue $fieldValue): self
+    {
+        if (!$this->fieldValues->contains($fieldValue)) {
+            $this->fieldValues[] = $fieldValue;
+            $fieldValue->setPerson($this);
         }
-
-        return $name;
-    }
-
-    public function getType(): ?string
-    {
-        return 'Lid'; // ToDo: combine with labels
-    }
-
-    public function getAddress(): ?Location
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?Location $address): self
-    {
-        $this->address = $address;
 
         return $this;
     }
 
+    public function removeFieldValue(PersonValue $fieldValue): self
+    {
+        if ($this->fieldValues->contains($fieldValue)) {
+            $this->fieldValues->removeElement($fieldValue);
+            // set the owning side to null (unless already changed)
+            if ($fieldValue->getPerson() === $this) {
+                $fieldValue->setPerson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getFullname(): ?string
+    {
+        // Get all items that are part of the name
+        $nameFields = $this->getFieldValues()->filter(function ($val) {
+            return !is_null($val->getField()->getFullnameOrder());
+        });
+
+        // If no name fields, return null
+        if (0 == count($nameFields)) {
+            return null;
+        }
+
+        // Order them
+        $nameValues = [];
+        foreach ($nameFields as $field) {
+            $key = $field->getField()->getFullnameOrder();
+            $val = $field->getValue();
+
+            if (!empty($nameValues[$key])) {
+                $nameValues[$key] = [];
+            }
+            $nameValues[$key][] = $val;
+        }
+
+        // Build name
+        $name = '';
+        foreach ($nameValues as $vals) {
+            foreach ($vals as $val) {
+                $name = $name.$val.' ';
+            }
+        }
+
+        // Return name
+        return trim($name);
+    }
+
+    public function getCanonical(): ?string
+    {
+        $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
+
+        return $this->getFullname() ?? $this->getEmail() ?? $pseudo;
+    }
+
     public function __toString()
     {
-        return $this->getFirstname().' '.$this->getLastname();
+        return $this->getCanonical();
     }
 }
