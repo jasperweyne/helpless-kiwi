@@ -42,10 +42,11 @@ class PersonController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $persons = $em->getRepository(Person::class)->findAll();
+        $fields = $em->getRepository(PersonField::class)->findAll();
 
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
-            'fields' => [],
+            'fields' => $fields,
         ]);
     }
 
