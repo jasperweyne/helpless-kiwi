@@ -12,6 +12,11 @@ class PersonType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // Person entity fields
+        $builder
+            ->add('email', EmailType::class)
+        ;
+
         $resolver = new OptionsResolver();
         $resolver
             ->setDefined('name')
@@ -19,30 +24,16 @@ class PersonType extends AbstractType
             ->setDefault('options', [])
         ;
 
-        // Name fields
-        foreach ($options['nameFields'] as $option) {
-            $field = $resolver->resolve($option);
-            $builder->add($field['name'], $field['type'], $field['options']);
-        }
-
-        // Person entity fields
-        $builder
-            ->add('email', EmailType::class)
-        ;
-
         // Other fields
         foreach ($options['fields'] as $option) {
             $field = $resolver->resolve($option);
+            $field['options']['mapped'] = false;
             $builder->add($field['name'], $field['type'], $field['options']);
         }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Person::class,
-            'fields' => [],
-            'nameFields' => [],
-        ]);
+        $resolver->setDefault('fields', []);
     }
 }

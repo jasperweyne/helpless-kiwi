@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonField;
+use App\Entity\Person\PersonValue;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -57,14 +58,27 @@ class PersonController extends AbstractController
      */
     public function newAction(Request $request)
     {
-        $person = new Person();
+        $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields());
+        $person = new Person();
+        $fields = $em->getRepository(PersonField::class)->findAll();
+
+        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields($fields));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($person);
+
+            foreach ($fields as $field) {
+                $value = new PersonValue();
+                $value
+                    ->setPerson($person)
+                    ->setField($field)
+                    ->setValue($form[$field->getName()]->getData())
+                ;
+                $em->persist($value);
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -144,7 +158,8 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields());
+        $fields = $em->getRepository(PersonField::class)->findAll();
+        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields($fields));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -199,13 +214,8 @@ class PersonController extends AbstractController
         ;
     }
 
-    private function buildFormFields()
+    private function buildFormFields($fields)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $nameFlds = $em->getRepository(PersonField::class)->findNameFields();
-        $fields = $em->getRepository(PersonField::class)->findFields();
-
         $parse = function ($field) {
             return [
                 'name' => $field->getName(),
@@ -215,7 +225,6 @@ class PersonController extends AbstractController
         };
 
         return [
-            'nameFields' => array_map($parse, $nameFlds),
             'fields' => array_map($parse, $fields),
         ];
     }

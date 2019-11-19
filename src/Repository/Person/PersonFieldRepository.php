@@ -19,30 +19,6 @@ class PersonFieldRepository extends ServiceEntityRepository
         parent::__construct($registry, PersonField::class);
     }
 
-    /**
-     * @return PersonField[] Returns an array of PersonField objects
-     */
-    public function findNameFields($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.fullnameOrder IS NOT NULL')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return PersonField[] Returns an array of PersonField objects
-     */
-    public function findFields($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.fullnameOrder IS NULL')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
     // /**
     //  * @return PersonField[] Returns an array of PersonField objects
     //  */
