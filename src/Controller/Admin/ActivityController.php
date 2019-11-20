@@ -3,15 +3,15 @@
 namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
-use App\Entity\Activity\Activity;
-use App\Entity\Activity\Registration;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Group\Activity\Activity;
+use App\Entity\Group\Activity\Registration;
+use App\Entity\Group\Activity\PriceOption;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
-use App\Entity\Activity\PriceOption;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Mail\MailService;
 
 /**
@@ -59,6 +59,8 @@ class ActivityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $activity->setReadonly(false);
+
             $em->persist($activity);
             $em->persist($activity->getLocation());
             $em->flush();
@@ -84,7 +86,7 @@ class ActivityController extends AbstractController
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
-        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
+        $regs = $em->getRepository(Registration::class)->findBy(['deletedate' => null]);
 
         $deregs = $em->getRepository(Registration::class)->findDeregistrations($activity);
 
@@ -152,6 +154,7 @@ class ActivityController extends AbstractController
     {
         $price = new PriceOption();
         $price->setActivity($activity);
+        $price->setReadonly(false);
 
         $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
         $form->handleRequest($request);
@@ -164,6 +167,9 @@ class ActivityController extends AbstractController
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($price);
+            $activity->addOption($price);
+            $em->persist($activity);
+
             $em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
@@ -217,7 +223,7 @@ class ActivityController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $registration = new Registration();
-        $registration->setActivity($activity);
+        //$registration->setActivity($activity);
 
         $now = new \DateTime('now');
         $registration->setNewDate($now);

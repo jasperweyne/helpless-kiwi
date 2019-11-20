@@ -2,7 +2,7 @@
 
 namespace App\Form\Activity;
 
-use App\Entity\Activity\Registration;
+use App\Entity\Group\Activity\Registration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,7 +29,7 @@ class RegistrationType extends AbstractType
             ])
             ->add('option', EntityType::class, [
                 'label' => 'Optie',
-                'class' => 'App\Entity\Activity\PriceOption',
+                'class' => 'App\Entity\Group\Activity\PriceOption',
                 'choices' => $options['allowed_options'],
                 'choice_label' => function ($ref) {
                     return $ref;

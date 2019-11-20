@@ -3,7 +3,7 @@
 namespace App\Form\Activity;
 
 use App\Form\Location\LocationType;
-use App\Entity\Activity\Activity;
+use App\Entity\Group\Activity\Activity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -60,6 +60,7 @@ class ActivityType extends AbstractType
                     'Roze' => 'pink',
                 ],
             ])
+
         ;
     }
 

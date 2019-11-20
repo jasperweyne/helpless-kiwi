@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
  */
 class Relation
 {
@@ -22,7 +23,7 @@ class Relation
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $description;
+    private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
@@ -60,14 +61,14 @@ class Relation
         return $this->id;
     }
 
-    public function getDescription(): ?string
+    public function getName(): ?string
     {
-        return $this->description;
+        return $this->name;
     }
 
-    public function setDescription(string $description): self
+    public function setName(string $name): self
     {
-        $this->description = $description;
+        $this->name = $name;
 
         return $this;
     }

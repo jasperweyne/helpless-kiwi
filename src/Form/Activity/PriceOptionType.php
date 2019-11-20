@@ -2,7 +2,7 @@
 
 namespace App\Form\Activity;
 
-use App\Entity\Activity\PriceOption;
+use App\Entity\Group\Activity\PriceOption;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,7 +15,7 @@ class PriceOptionType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'empty_data' => 'Standaard'
+                'empty_data' => 'Standaard',
             ])
             ->add('price', MoneyType::class, [
                 'divisor' => 100,

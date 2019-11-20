@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\Activity\Activity;
-use App\Entity\Activity\Registration;
+use App\Entity\Group\Activity\Activity;
+use App\Entity\Group\Activity\Registration;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -34,13 +34,13 @@ class RegistrationRepository extends ServiceEntityRepository
                     $this->createQueryBuilder('b')
                         ->select('IDENTITY(b.person)')
                         ->where('b.deletedate IS NULL')
-                        ->andWhere('b.activity = :val')
-                        ->setParameter('val', $activity)
+                        ->andWhere('b.taxonomy IN (:val)')
+                        ->setParameter('val', $activity->getOptions())
                         ->getDQL()
                 )
             )
-            ->andWhere('r.activity = :val')
-            ->setParameter('val', $activity)
+            ->andWhere('r.taxonomy IN (:val)')
+            ->setParameter('val', $activity->getOptions())
             ->orderBy('r.deletedate', 'DESC')
             ->groupBy('r.person')
             ->getQuery()

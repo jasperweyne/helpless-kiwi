@@ -3,15 +3,15 @@
 namespace App\Controller\Activity;
 
 use App\Template\Annotation\MenuItem;
-use App\Entity\Activity\Activity;
+use App\Entity\Group\Activity\Activity;
+use App\Entity\Group\Activity\PriceOption;
+use App\Entity\Group\Activity\Registration;
 use App\Mail\MailService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Activity\PriceOption;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use App\Entity\Activity\Registration;
 
 /**
  * Activity controller.
