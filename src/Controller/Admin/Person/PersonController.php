@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\Person;
 
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Security\PasswordResetService;
 use App\Security\AuthUserProvider;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**
@@ -25,6 +26,17 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  */
 class PersonController extends AbstractController
 {
+    const TYPES = [
+        "string" => [
+            "type" => TextType::class,
+            "defs" => [],
+        ],
+        "switch" => [
+            "type" => CheckboxType::class,
+            "defs" => [],
+        ],
+    ];
+
     private $events;
 
     public function __construct(EventService $events)
@@ -217,10 +229,20 @@ class PersonController extends AbstractController
     private function buildFormFields($fields)
     {
         $parse = function ($field) {
+            $type = TextType::class; 
+            $opts = array();
+
+            if (array_key_exists($field->getValueType(), self::TYPES)) {
+                $type = self::TYPES[$field->getValueType()]['type'] ?? TextType::class;
+                $opts = self::TYPES[$field->getValueType()]['defs'] ?? [];
+            } else {
+                throw new \UnexpectedValueException("Unknown person field type '"  . $field->getValueType() . "'");
+            }
+
             return [
                 'name' => $field->getName(),
-                'type' => TextType::class,
-                'options' => [],
+                'type' => $type,
+                'options' => $opts,
             ];
         };
 
