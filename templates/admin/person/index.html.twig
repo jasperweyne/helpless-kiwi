@@ -66,13 +66,13 @@
                                 <td>{{ field.name }}</td>
                                 <td>{{ field.valueType }}</td>
                                 <td>
-                                    <a href="{#{ path('admin_person_field_edit', { 'id': field.id }) }#}">Bewerken</a>
-                                    <a href="{#{ path('admin_person_field_delete', { 'id': field.id }) }#}">Verwijderen</a>
+                                    <a href="{{ path('admin_person_field_edit', { 'id': field.id }) }}">Bewerken</a>
+                                    <a href="{{ path('admin_person_field_delete', { 'id': field.id }) }}">Verwijderen</a>
                                 </td>
                             </tr>
                         {% endfor %}
                             <tr>
-                                <td><a href="{#{ path('admin_person_field_add') }#}">Veld toevoegen</a></td>
+                                <td><a href="{{ path('admin_person_field_new') }}">Veld toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>
