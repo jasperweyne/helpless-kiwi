@@ -30,7 +30,7 @@ class Person
     private $email;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, fetch="EAGER")
      */
     private $fieldValues;
 

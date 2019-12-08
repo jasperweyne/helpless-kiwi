@@ -17,13 +17,13 @@ class PersonValue
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person\PersonField")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\PersonField", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $field;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="fieldValues")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="fieldValues", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $person;
