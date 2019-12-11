@@ -4,6 +4,7 @@
     {% set page_title = taxonomy.name ?? 'Groepen' %}
     
     {% block buttons %}
+        <a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuw</a>
         {% if taxonomy %}
             <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }}</a>
         {% else %}
@@ -16,59 +17,52 @@
     {% endblock %}
 {% endif %}
 
-{% set show_categories = show_categories ?? taxonomy.hasChildren  ?? true %}
-{% set show_instances  = show_instances  ?? taxonomy.hasInstances ?? (taxonomy and taxonomy.instances is defined) %}
+{% set show_taxonomies = show_taxonomies ?? taxonomy.hasChildren  ?? true %}
 {% set show_relations  = show_relations  ?? (taxonomy and taxonomy.relations is defined) %}
 
 {% block body %}
-    {% if show_categories %}{% block categories_block %}
+    {% if show_taxonomies %}{% block taxonomies_block %}
     <div class="table">
         <table>
             <thead>
                 <tr>
-                    <th>{{ taxonomy ? 'Subcategorie' : 'Categorie' }}</th>
+                    <th>{{ taxonomy ? 'Subgroepen' : 'Groepen' }}</th>
+                    <th>Aantal leden</th>
                 </tr>
             </thead>
             <tbody>
             {% for group in children %}
                 <tr>
                     <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                    {% if group.relationcount == 1 %}
+                        <td> {{group.relationcount}} lid </td>
+                    {% else %}
+                        <td> {{group.relationcount}} leden</td>
+                    {% endif %}
                 </tr>
             {% else %}
                 <tr>
                     {% if taxonomy %}
-                    <td>Geen subcategorieen.</td>
+                    <td>Geen subgroepen.</td>
+                    <td>n.v.t.</td>
                     {% else %}
-                    <td>Geen categorieen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
+                    <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
+                    <td>n.v.t.</td>
                     {% endif %}
                 </tr>
             {% endfor %}
+            <tr>
+                {% if taxonomy %}
+                    <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe subgroep toevoegen</a></td>
+                {% else %}
+                    <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe groep toevoegen</a></td>
+                {% endif %}            
+            </tr>
             </tbody>
         </table>
     </div>
     {% endblock %}{% endif %}
-    {% if show_instances %}{% block instances_block %}
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Groepen</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for group in instances %}
-                <tr>
-                    <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td>Geen groepen.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endblock %}{% endif %}
+   
     {% if show_relations %}{% block relations_block %}
     <div class="table">
         <table>
@@ -87,6 +81,9 @@
                     <td>Geen leden.</td>
                 </tr>
             {% endfor %}
+            <tr>
+                <td><a href="{{ path('admin_group_relation_new', { 'id': taxonomy.id }) }}">Lid toevoegen</a></td>
+            </tr>
             </tbody>
         </table>
     </div>
