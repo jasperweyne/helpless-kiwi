@@ -150,7 +150,7 @@ class PriceOption
     {
         return $this->name.' €'.number_format($this->price / 100, 2, '.', '');
     }
-  
+
     /**
      * @return Collection|Registration[]
      */
@@ -163,7 +163,7 @@ class PriceOption
     {
         if (!$this->registrations->contains($registration)) {
             $this->registrations[] = $registration;
-            $registration->setPrice($this);
+            $registration->setOption($this);
         }
 
         return $this;
@@ -174,8 +174,8 @@ class PriceOption
         if ($this->registrations->contains($registration)) {
             $this->registrations->removeElement($registration);
             // set the owning side to null (unless already changed)
-            if ($registration->getPrice() === $this) {
-                $registration->setPrice(null);
+            if ($registration->getOption() === $this) {
+                $registration->setOption(null);
             }
         }
 
