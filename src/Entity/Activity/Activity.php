@@ -208,7 +208,7 @@ class Activity
     {
         if (!$this->registrations->contains($registration)) {
             $this->registrations[] = $registration;
-            $registration->setParent($this);
+            $registration->setActivity($this);
         }
 
         return $this;
@@ -219,8 +219,8 @@ class Activity
         if ($this->registrations->contains($registration)) {
             $this->registrations->removeElement($registration);
             // set the owning side to null (unless already changed)
-            if ($registration->getParent() === $this) {
-                $registration->setParent(null);
+            if ($registration->getActivity() === $this) {
+                $registration->setActivity(null);
             }
         }
 
