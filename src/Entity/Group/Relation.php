@@ -25,7 +25,7 @@ class Relation
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Taxonomy", inversedBy="relations")
      * @ORM\JoinColumn(nullable=false)
      */
     private $taxonomy;
@@ -72,12 +72,12 @@ class Relation
         return $this;
     }
 
-    public function getTaxonomy(): ?Group
+    public function getTaxonomy(): ?Taxonomy
     {
         return $this->taxonomy;
     }
 
-    public function setTaxonomy(?Group $taxonomy): self
+    public function setTaxonomy(?Taxonomy $taxonomy): self
     {
         $this->taxonomy = $taxonomy;
 

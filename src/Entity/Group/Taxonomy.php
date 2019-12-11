@@ -46,6 +46,26 @@ class Taxonomy
     private $readonly;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isGroup;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="taxonomy", orphanRemoval=true)
+     */
+    private $relations;
+
+    public function __construct()
+    {
+        
+
+        $this->relations = new ArrayCollection();
+        $this->children = new ArrayCollection();
+        $this->readonly = false;
+
+    }
+
+    /**
      * Get id.
      *
      * @return string
@@ -101,60 +121,6 @@ class Taxonomy
         return $this;
     }
 
-    /**
-     * @return Collection|Category[]
-     */
-    public function getCategories(): Collection
-    {
-        return $this->children->filter(function ($x) { return $x instanceof Category; });
-    }
-
-    public function addCategory(Category $category): self
-    {
-        if (!$this->children->contains($category)) {
-            $this->children[] = $category;
-            $category->setParent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(Category $category): self
-    {
-        if ($this->children->contains($category)) {
-            $this->children->removeElement($category);
-            // set the owning side to null (unless already changed)
-            if ($category->getParent() === $this) {
-                $category->setParent(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function __construct()
-    {
-        $this->children = new ArrayCollection();
-        $this->readonly = false;
-    }
-
-    public function getNoChildren(): ?bool
-    {
-        return null === $this->hasChildren ? null : !$this->hasChildren;
-    }
-
-    public function getHasChildren(): ?bool
-    {
-        return $this->hasChildren;
-    }
-
-    public function setHasChildren(bool $hasChildren): self
-    {
-        $this->hasChildren = $hasChildren;
-
-        return $this;
-    }
-
     public function getReadonly(): ?bool
     {
         return $this->readonly;
@@ -166,4 +132,120 @@ class Taxonomy
 
         return $this;
     }
+
+
+
+    public function getNoChildren(): ?bool
+    {
+        return null === $this->hasChildren ? null : !$this->hasChildren;
+    }
+
+    public function getNode(): ?bool
+    {
+        return $this->hasChildren;
+    }
+
+    public function setHasChildren(bool $hasChildren): self
+    {
+        $this->hasChildren = $hasChildren;
+
+        return $this;
+    }
+
+    public function getNoInstances(): ?bool
+    {
+        return null === $this->hasInstances ? null : !$this->hasInstances;
+    }
+
+    public function getHasInstances(): ?bool
+    {
+        return $this->hasInstances;
+    }
+
+    public function setHasInstances(bool $hasInstances): self
+    {
+        $this->hasInstances = $hasInstances;
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return Collection|Relation[]
+     */
+    public function getRelations(): Collection
+    {
+        return $this->relations;
+    }
+
+    public function addRelation(Relation $relation): self
+    {
+        if (!$this->relations->contains($relation)) {
+            $this->relations[] = $relation;
+            $relation->setTaxonomy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Relation $relation): self
+    {
+        if ($this->relations->contains($relation)) {
+            $this->relations->removeElement($relation);
+            // set the owning side to null (unless already changed)
+            if ($relation->getTaxonomy() === $this) {
+                $relation->setTaxonomy(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection|Taxonomy[]
+     */
+    public function getGroups(): Collection
+    {
+        return $this->children->filter(function ($x) { return $x instanceof Group; });
+    }
+
+    /**
+     * @return Collection|Taxonomy[]
+     */
+    public function getSubCategories(): Collection
+    {
+        return $this->children->filter(function ($x) { return $x instanceof Category; });
+    }
+
+
+    public function addTaxonomy(Taxonomy $taxonomy): self
+    {
+        if (!$this->children->contains($taxonomy)) {
+            $this->children[] = $taxonomy;
+            $taxonomy->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTaxonomy(Taxonomy $taxonomy): self
+    {
+        if ($this->children->contains($taxonomy)) {
+            $this->children->removeElement($taxonomy);
+            // set the owning side to null (unless already changed)
+            if ($taxonomy->getParent() === $this) {
+                $taxonomy->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+   
+
+
+ 
 }
