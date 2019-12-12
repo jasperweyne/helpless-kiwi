@@ -22,14 +22,14 @@ class PersonField
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=255, unique=true)
+     */
+    private $slug;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $valueType;
-
-    /**
-     * @ORM\Column(type="smallint", nullable=true)
-     */
-    private $fullnameOrder;
 
     /**
      * Get id.
@@ -65,6 +65,18 @@ class PersonField
         return $this;
     }
 
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
     public function getValueType(): ?string
     {
         return $this->valueType;
@@ -73,18 +85,6 @@ class PersonField
     public function setValueType(string $valueType): self
     {
         $this->valueType = $valueType;
-
-        return $this;
-    }
-
-    public function getFullnameOrder(): ?int
-    {
-        return $this->fullnameOrder;
-    }
-
-    public function setFullnameOrder(?int $fullnameOrder): self
-    {
-        $this->fullnameOrder = $fullnameOrder;
 
         return $this;
     }

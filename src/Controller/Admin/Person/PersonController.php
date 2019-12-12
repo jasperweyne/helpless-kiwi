@@ -27,13 +27,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 class PersonController extends AbstractController
 {
     const TYPES = [
-        "string" => [
-            "type" => TextType::class,
-            "defs" => [],
+        'string' => [
+            'type' => TextType::class,
+            'defs' => [],
         ],
-        "switch" => [
-            "type" => CheckboxType::class,
-            "defs" => [],
+        'switch' => [
+            'type' => CheckboxType::class,
+            'defs' => [],
         ],
     ];
 
@@ -86,7 +86,7 @@ class PersonController extends AbstractController
                 $value
                     ->setPerson($person)
                     ->setField($field)
-                    ->setValue($form[$field->getName()]->getData())
+                    ->setValue($form[$field->getSlug()]->getData())
                 ;
                 $em->persist($value);
             }
@@ -151,7 +151,7 @@ class PersonController extends AbstractController
         $em->flush();
 
         $body = $this->renderView('email/newaccount.html.twig', [
-            'name' => $person->getFirstname(),
+            'name' => $person->getShortname(),
             'auth' => $auth,
             'token' => $token,
         ]);
@@ -229,18 +229,21 @@ class PersonController extends AbstractController
     private function buildFormFields($fields)
     {
         $parse = function ($field) {
-            $type = TextType::class; 
-            $opts = array();
+            $type = TextType::class;
+            $opts = [];
 
             if (array_key_exists($field->getValueType(), self::TYPES)) {
                 $type = self::TYPES[$field->getValueType()]['type'] ?? TextType::class;
                 $opts = self::TYPES[$field->getValueType()]['defs'] ?? [];
             } else {
-                throw new \UnexpectedValueException("Unknown person field type '"  . $field->getValueType() . "'");
+                throw new \UnexpectedValueException("Unknown person field type '".$field->getValueType()."'");
             }
 
+            // Set label
+            $opts['label'] = $opts['label'] ?? $field->getName();
+
             return [
-                'name' => $field->getName(),
+                'name' => $field->getSlug(),
                 'type' => $type,
                 'options' => $opts,
             ];

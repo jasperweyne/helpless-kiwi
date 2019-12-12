@@ -6,6 +6,7 @@ use App\Entity\Security\Auth;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
@@ -33,6 +34,20 @@ class Person
      * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, fetch="EAGER")
      */
     private $fieldValues;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $shortname_expr;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $name_expr;
+
+    private $shortname;
+
+    private $name;
 
     public function __construct()
     {
@@ -136,51 +151,99 @@ class Person
         return $this;
     }
 
-    public function getFullname(): ?string
+    public function getFields(): array
     {
-        // Get all items that are part of the name
-        $nameFields = $this->getFieldValues()->filter(function ($val) {
-            return !is_null($val->getField()->getFullnameOrder());
-        });
-
-        // If no name fields, return null
-        if (0 == count($nameFields)) {
-            return null;
+        $fields = [];
+        foreach ($this->getFieldValues() as $field) {
+            $name = $field->getBuiltin() ?? $field->getField()->getSlug();
+            $fields[$name] = $field->getValue();
         }
 
-        // Order them
-        $nameValues = [];
-        foreach ($nameFields as $field) {
-            $key = $field->getField()->getFullnameOrder();
-            $val = $field->getValue();
+        return $fields;
+    }
 
-            if (!empty($nameValues[$key])) {
-                $nameValues[$key] = [];
-            }
-            $nameValues[$key][] = $val;
+    public function getShortnameExpr(): ?string
+    {
+        return $this->shortname_expr;
+    }
+
+    public function setShortnameExpr(?string $shortname_expr): self
+    {
+        $this->shortname = null;
+        $this->shortname_expr = $shortname_expr;
+
+        return $this;
+    }
+
+    public function getNameExpr(): ?string
+    {
+        return $this->name_expr;
+    }
+
+    public function setNameExpr(?string $name_expr): self
+    {
+        $this->name = null;
+        $this->name_expr = $name_expr;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        if (is_null($this->name)) {
+            $this->name = $this->evalExpr($this->getNameExpr());
         }
 
-        // Build name
-        $name = '';
-        foreach ($nameValues as $vals) {
-            foreach ($vals as $val) {
-                $name = $name.$val.' ';
-            }
+        return $this->name;
+    }
+
+    public function getShortname(): ?string
+    {
+        if (is_null($this->shortname)) {
+            $this->shortname = $this->evalExpr($this->getShortnameExpr());
         }
 
-        // Return name
-        return trim($name);
+        return $this->shortname;
     }
 
     public function getCanonical(): ?string
     {
         $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
 
-        return $this->getFullname() ?? $this->getEmail() ?? $pseudo;
+        return $this->getName() ?? $this->getShortname() ?? $this->getEmail() ?? $pseudo;
     }
 
     public function __toString()
     {
         return $this->getCanonical();
+    }
+
+    private function evalExpr(?string $expr)
+    {
+        if (is_null($expr)) {
+            return null;
+        }
+
+        $lang = new ExpressionLanguage();
+        $lang->register('has', function ($str) {
+            return 'isset(${'.$str.'})';
+        }, function ($arguments, $str) {
+            return array_key_exists($str, $arguments);
+        });
+
+        $lang->register('get', function ($str) {
+            return '(${'.$str.'} ?? null)';
+        }, function ($arguments, $str) {
+            return $arguments[$str] ?? null;
+        });
+
+        $vars = $this->getFields();
+        $vars['auth'] = $this->getAuth();
+
+        try {
+            return $lang->evaluate($expr, $vars);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

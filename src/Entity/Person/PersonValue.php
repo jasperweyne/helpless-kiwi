@@ -18,7 +18,7 @@ class PersonValue
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Person\PersonField", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn()
      */
     private $field;
 
@@ -32,6 +32,11 @@ class PersonValue
      * @ORM\Column(type="text")
      */
     private $value;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $builtin;
 
     /**
      * Get id.
@@ -87,6 +92,18 @@ class PersonValue
     public function setValue(string $value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getBuiltin(): ?string
+    {
+        return $this->builtin;
+    }
+
+    public function setBuiltin(?string $builtin): self
+    {
+        $this->builtin = $builtin;
 
         return $this;
     }

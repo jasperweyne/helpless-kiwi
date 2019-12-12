@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = person.fullname %}
+    {% set page_title = person.canonical %}
 
     {% block buttons %}
         <a href="{{ path('admin_person_edit', { 'id': person.id }) }}">Bewerken</a>
@@ -19,7 +19,7 @@
             </tr>
             {% for value in person.fieldValues %}
             <tr>
-                <th>{{ value.field.name }}</th>
+                <th>{{ value.field.name ?? value.builtin }}</th>
                 <td>{{ value.value }}</td>
             </tr>
             {% endfor %}
@@ -42,7 +42,7 @@
             <tr>
                 <th>Gemaakt door</th>
                 <td>
-                    {{ createdAt.auth.person.fullname ?? '' }}
+                    {{ createdAt.auth.person.canonical ?? '' }}
                 </td>
             </tr>
             <tr>
@@ -58,7 +58,7 @@
                         <tbody>
                         {% for modif in modifs %}
                             <tr>
-                                <td>{{ modif.auth.person.fullname }}</td>
+                                <td>{{ modif.auth.person.canonical }}</td>
                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                             </tr>
                         {% else %}

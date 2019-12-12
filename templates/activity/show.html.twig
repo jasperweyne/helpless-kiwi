@@ -78,9 +78,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in registrations|sort((a, b) => a.person.fullname <=> b.person.fullname) %}
+                        {% for registration in registrations|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
                             <tr>
-                                <td>{{ registration.person.fullname }}</td>
+                                <td>{{ registration }}</td>
                             </tr>
                         {% else %}
                             <tr>

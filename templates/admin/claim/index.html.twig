@@ -32,7 +32,7 @@
             <tbody>
             {% for claim in claims %}
                 <tr>
-                    <td>{{ claim.author.person.fullname ?? '' }}</td>
+                    <td>{{ claim.author.person.canonical ?? '' }}</td>
                     <td>{{ claim.description }}</td>
                     <td>{{ claim.purpose }}</td>
                     <td>{{ claim.price }}</td>
