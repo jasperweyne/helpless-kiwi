@@ -25,10 +25,10 @@
             <tbody>
             {% for mail in mails %}
                 <tr>
-                    <td>{{ mail.title }}</td>
+                    <td><a href="{{ path("admin_mail_show", { 'id': mail.id }) }}"> {{ mail.title }} </a></td>
                     <td>{{ mail.auth.person.canonical }}</td>
                     <td>{{ mail.sender }}</td>
-                    <td><a href="{{ path('admin_group_show', { 'id': mail.target.id }) }}">{{ mail.target.relations|length }} {{ mail.target.relations|length == 1 ? 'ontvanger' : 'ontvangers' }}</td>
+                    <td> placeholder </td> 
                     <td>{{ mail.sentAt|date('d-m-Y') }}</td>
                 </tr>
             {% else %}

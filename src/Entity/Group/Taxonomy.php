@@ -26,6 +26,11 @@ class Taxonomy
     private $name;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private $description;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Taxonomy", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
      */
@@ -49,7 +54,13 @@ class Taxonomy
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $isGroup;
+    private $relationable;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $subgroupable;
+
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="taxonomy", orphanRemoval=true)
@@ -110,6 +121,29 @@ class Taxonomy
         return $this;
     }
 
+
+    /**
+     * Get description.
+     *
+     * @return string
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set description.
+     *
+     * @param string $description
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getParent(): ?self
     {
         return $this->parent;
@@ -135,7 +169,7 @@ class Taxonomy
     }
 
 
-
+    //Useless functions
     public function getNoChildren(): ?bool
     {
         return null === $this->hasChildren ? null : !$this->hasChildren;
@@ -169,13 +203,46 @@ class Taxonomy
 
         return $this;
     }
+    
+    //usefull functions again
+    public function getRelationable(): ?bool
+    {   
+        //If true, then the group is allowed members. 
+        //Otherwise no member, but only subgroups are allowed. 
+        return $this->relationable;
+    }
 
+    public function setRelationable(bool $relationable): self
+    {
+        $this->relationable = $relationable;
+
+        return $this;
+    }
+
+    public function getSubgroupable(): ?bool
+    {   
+        //If true, then the group is allowed members. 
+        //Otherwise no member, but only subgroups are allowed. 
+        return $this->subgroupable;
+    }
+
+    public function setSubgroupable(bool $subgroupable): self
+    {
+        $this->subgroupable = $subgroupable;
+
+        return $this;
+    }
+    
+    
     public function getRelationCount(): int
     {
         return count($this->getRelations());
     }
 
-
+    public function getSubgroupCount(): int
+    {
+        return count($this->children);
+    }
 
 
     /**
@@ -209,7 +276,8 @@ class Taxonomy
         return $this;
     }
 
-
+    
+    //Broken at the moment.
     /**
      * @return Collection|Taxonomy[]
      */

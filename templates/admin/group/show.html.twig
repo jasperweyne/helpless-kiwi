@@ -4,14 +4,15 @@
     {% set page_title = taxonomy.name ?? 'Groepen' %}
     
     {% block buttons %}
-        <a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuw</a>
         {% if taxonomy %}
             <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }}</a>
+            <a href="{{ path('admin_group_edit', { 'id': taxonomy.id }) }}">Bewerken</a>
         {% else %}
+            <a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuw</a>
             {% if show_instances ?? false %}
-            <a href="{{ path('admin_group_show') }}">Terug</a>
+                <a href="{{ path('admin_group_show') }}">Terug</a>
             {% else %}
-            <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
+                <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
             {% endif %}
         {% endif %}
     {% endblock %}
@@ -20,72 +21,214 @@
 {% set show_taxonomies = show_taxonomies ?? taxonomy.hasChildren  ?? true %}
 {% set show_relations  = show_relations  ?? (taxonomy and taxonomy.relations is defined) %}
 
-{% block body %}
-    {% if show_taxonomies %}{% block taxonomies_block %}
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>{{ taxonomy ? 'Subgroepen' : 'Groepen' }}</th>
-                    <th>Aantal leden</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for group in children %}
-                <tr>
-                    <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
-                    {% if group.relationcount == 1 %}
-                        <td> {{group.relationcount}} lid </td>
-                    {% else %}
-                        <td> {{group.relationcount}} leden</td>
-                    {% endif %}
-                </tr>
-            {% else %}
-                <tr>
-                    {% if taxonomy %}
-                    <td>Geen subgroepen.</td>
-                    <td>n.v.t.</td>
-                    {% else %}
-                    <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
-                    <td>n.v.t.</td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            <tr>
-                {% if taxonomy %}
-                    <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe subgroep toevoegen</a></td>
-                {% else %}
-                    <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe groep toevoegen</a></td>
-                {% endif %}            
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    {% endblock %}{% endif %}
-   
-    {% if show_relations %}{% block relations_block %}
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Leden</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for relation in relations %}
-                <tr>
-                    <td>{{ relation.root.person.canonical }}</td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td>Geen leden.</td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <td><a href="{{ path('admin_group_relation_new', { 'id': taxonomy.id }) }}">Lid toevoegen</a></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    {% endblock %}{% endif %}
+{% block body_wrap %}
+    {% if taxonomy is null %} 
+        <div class="panel">
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ taxonomy ? 'Subgroepen' : 'Groepen' }}</th>
+                                <th>Aantal leden</th>
+                                <th>Aantal subgroepen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for group in children %}
+                            <tr>
+                                <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                                {% if group.relationcount == 1 %}
+                                    <td> {{group.relationcount}} lid </td>
+                                {% else %}
+                                    <td> {{group.relationcount}} leden</td>
+                                {% endif %}
+                                {% if group.subgroupcount == 1 %}
+                                    <td> {{group.subgroupcount}} subgroep </td>
+                                {% else %}
+                                    <td> {{group.subgroupcount}} subgroepen </td>
+                                {% endif %}
+                            </tr>
+                        {% else %}
+                            <tr>
+                                {% if taxonomy %}
+                                <td>Geen subgroepen.</td>
+                                <td>n.v.t.</td>
+                                {% else %}
+                                <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
+                                <td>n.v.t.</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            {% if taxonomy %}
+                                <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe subgroep toevoegen</a></td>
+                            {% else %}
+                                <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe groep toevoegen</a></td>
+                            {% endif %}            
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+       
+        <div class="tabs">
+            <input type="radio" name="tabs" id="details" checked>
+            <label for="details" class="tab active">
+                <span>Details</span>
+            </label>
+            <div class="panel">
+                <div class="card">
+                    <div class="table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Titel</th>
+                                    <td>{{ taxonomy.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Beschrijving</th>
+                                    <td>{{ taxonomy.description }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mag groepsleden bevatten</th>
+                                    <td>{{ not taxonomy.relationable ? "Nee" : "Ja"}}</td>
+                                </tr>
+                                <tr> 
+                                    <th>Mag subgroepen bevatten</th>
+                                    <td>{{ not taxonomy.subgroupable ? "Nee" : "Ja"}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Aanpassingen</th>
+                                    <td>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Door</th>
+                                                    <th>Tijdstip</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for modif in modifs %}
+                                                <tr>
+                                                    <td>{{ modif.auth.person.fullname }}</td>
+                                                    <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td>Geen aanpassingen.</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    
+                                </tr>
+                                
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            {% if taxonomy.subgroupable %} 
+                <input type="radio" name="tabs" id="subgroups" >
+                <label for="subgroups" class="tab">
+                    <span>Subgroepen</span> 
+                </label>
+                <div class="panel">
+                    <div class="card">
+                        <div class="table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>{{ taxonomy ? 'Subgroepen' : 'Groepen' }}</th>
+                                        <th>Aantal leden</th>
+                                        <th>Aantal subgroepen</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for group in children %}
+                                    <tr>
+                                        <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                                        {% if group.relationcount == 1 %}
+                                            <td> {{group.relationcount}} lid </td>
+                                        {% else %}
+                                            <td> {{group.relationcount}} leden</td>
+                                        {% endif %}
+                                        {% if group.subgroupcount == 1 %}
+                                            <td> {{group.subgroupcount}} subgroep </td>
+                                        {% else %}
+                                            <td> {{group.subgroupcount}} subgroepen </td>
+                                        {% endif %}
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        {% if taxonomy %}
+                                        <td>Geen subgroepen.</td>
+                                        <td>n.v.t.</td>
+                                        {% else %}
+                                        <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
+                                        <td>n.v.t.</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    {% if taxonomy %}
+                                        <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe subgroep toevoegen</a></td>
+                                    {% else %}
+                                        <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe groep toevoegen</a></td>
+                                    {% endif %}            
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+
+
+            {% if taxonomy.relationable %} 
+                <input type="radio" name="tabs" id="groupsmembers">
+                <label for="groupsmembers" class="tab">
+                    <span>Groepsleden</span>
+                </label>
+                <div class="panel">
+                    <div class="card">
+                        <div class="table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Leden</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for relation in relations %}
+                                    <tr>
+                                        <td>{{ relation.root.person.canonical }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td>Geen leden.</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td><a href="{{ path('admin_group_relation_new', { 'id': taxonomy.id }) }}">Lid toevoegen</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+        
+    {% endif %}
 {% endblock %}

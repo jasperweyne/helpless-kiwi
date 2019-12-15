@@ -2,10 +2,10 @@
 
 namespace App\Mail;
 
-use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use App\Entity\Group\Taxonomy;
 use App\Entity\Mail\Mail;
+use App\Entity\Mail\Recipient;
 use App\Entity\Security\Auth;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,13 +40,6 @@ class MailService
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
 
-        $recipients = $this->buildTaxonomy($to);
-        $recipients
-            ->setReadonly(true)
-            ->setName('Mail\\'.date('YmdHis').'-'.$title)
-        ;
-        $this->em->persist($recipients);
-
         $addresses = [];
         foreach ($to as $person) {
             if ('' == trim($person->getFullname() ?? '')) {
@@ -71,14 +64,23 @@ class MailService
         $msgEntity = new Mail();
         $msgEntity
             ->setSender($from)
-            ->setTarget($recipients)
             ->setAuth($this->getUser())
             ->setTitle($title)
-            ->setContent($content)
+            ->setContent($body)
             ->setSentAt(new DateTime())
         ;
-
         $this->em->persist($msgEntity);
+
+        foreach ($to as $person) {
+            $recipient = new Recipient();
+            $recipient
+                ->setPerson($person)
+                ->setMail($msgEntity)
+            ;
+
+            $this->em->persist($recipient);
+        }
+
         $this->em->flush();
 
         $this->mailer->send($message);
@@ -100,17 +102,23 @@ class MailService
 
     private function buildTaxonomy(array $to): ?Taxonomy
     {
-        $recipients = new Group();
+        $recipients = new Taxonomy();
 
         foreach ($to as $person) {
             $recipient = new Relation();
             $recipient
                 ->setTaxonomy($recipients)
                 ->setPerson($person)
+                
             ;
 
             $this->em->persist($recipient);
         }
+
+        $emailgroup = $this->em->getRepository(Taxonomy::class)->findOneBy( ['name' => "Emails" ]);
+        if ($emailgroup) {
+            $recipients->setParent($emailgroup);
+        } 
 
         return $recipients;
     }

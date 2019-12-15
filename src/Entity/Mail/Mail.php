@@ -5,6 +5,9 @@ namespace App\Entity\Mail;
 use App\Entity\Group\Taxonomy;
 use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 
 /**
  * @ORM\Entity
@@ -25,10 +28,9 @@ class Mail
     private $auth;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Taxonomy")
-     * @ORM\JoinColumn(name="target", referencedColumnName="id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Mail\Recipient", mappedBy="mail")
      */
-    private $target;
+    private $recipients;
 
     /**
      * @ORM\Column(type="string")
@@ -91,17 +93,40 @@ class Mail
         return $this;
     }
 
-    public function getTarget(): ?Taxonomy
+
+    /**
+     * Get price options.
+     *
+     * @return Collection|Recipient[]
+     */
+    public function getRecipients(): Collection
     {
-        return $this->target;
+        return $this->recipients;
     }
 
-    public function setTarget(?Taxonomy $target): self
+    public function addRecipient(Recipient $recipient): self
     {
-        $this->target = $target;
+        if (!$this->recipients->contains($recipient)) {
+            $this->recipients[] = $recipient;
+            $recipient->setMail($this);
+        }
 
         return $this;
     }
+
+    public function removeRecipient(Recipient $recipient): self
+    {
+        if ($this->recipients->contains($recipient)) {
+            $this->recipients->removeElement($recipient);
+            // set the owning side to null (unless already changed)
+            if ($recipient->getMail() === $this) {
+                $recipient->setMail(null);
+            }
+        }
+
+        return $this;
+    }
+
 
     public function getSender(): ?string
     {

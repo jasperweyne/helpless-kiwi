@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Mail\Mail;
+use App\Entity\Mail\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -30,4 +31,29 @@ class MailController extends AbstractController
             'mails' => $mails,
         ]);
     }
+
+    
+    /**
+     * Finds and displays a mail entity.
+     *
+     * @Route("/{id}", name="show", methods={"GET"})
+     */
+    public function showAction(Mail $mail)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        //$createdAt = $this->events->findOneBy($mail, EntityNewEvent::class);
+        //$modifs = $this->events->findBy($mail, EntityUpdateEvent::class);
+
+        $recipients = $em->getRepository(Recipient::class)->findBy(['mail' => $mail]);
+        //$mail->getRecipients();
+
+        //$deregs = $em->getRepository(Mail::class)->findDeregistrations($activity);
+
+        return $this->render('admin/mail/show.html.twig', [
+            'mail' => $mail,
+            'recipients' => $recipients
+        ]);
+    }
+
 }

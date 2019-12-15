@@ -10,6 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use App\Log\EventService;
+use App\Log\Doctrine\EntityNewEvent;
+use App\Log\Doctrine\EntityUpdateEvent;
 
 /**
  * Group category controller.
@@ -18,6 +21,15 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class GroupController extends AbstractController
 {
+    
+    private $events;
+
+    public function __construct(EventService $events)
+    {
+        $this->events = $events;
+    }
+    
+    
     /**
      * Generate default groups.
      *
@@ -62,6 +74,8 @@ class GroupController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        
+
         if (!$taxonomy && $request->query->get('showall')) {
             $children = $em->getRepository(Taxonomy::class)->findAll();
             $instances = null;
@@ -76,13 +90,13 @@ class GroupController extends AbstractController
         }
 
         $children = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy]);
-        $instances = null;
         $relations = $em->getRepository(Relation::class)->findBy(['taxonomy' => $taxonomy]);
+        $modifs = $this->events->findBy($taxonomy, EntityUpdateEvent::class);
 
         return $this->render('admin/group/show.html.twig', [
             'taxonomy' => $taxonomy,
             'children' => $children,
-            'instances' => $instances,
+            'modifs' => $modifs,
             'relations' => $relations,
         ]);
     }
@@ -118,6 +132,28 @@ class GroupController extends AbstractController
         }
 
         return $this->render('admin/group/new.html.twig', [
+            'taxonomy' => $taxonomy,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing taxonomy entity.
+     *
+     * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
+     */
+    public function editAction(Request $request, Taxonomy $taxonomy)
+    {
+        $form = $this->createForm('App\Form\Group\TaxonomyType', $taxonomy);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('admin_group_show', ['id' => $taxonomy->getId()]);
+        }
+
+        return $this->render('admin/group/edit.html.twig', [
             'taxonomy' => $taxonomy,
             'form' => $form->createView(),
         ]);
