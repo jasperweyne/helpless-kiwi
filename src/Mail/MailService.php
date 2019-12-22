@@ -56,7 +56,7 @@ class MailService
             ->addPart($body_plain, 'text/plain')
         ;
 
-        $content = serialize([
+        $content = json_encode([
             'html' => $body,
             'plain' => $body_plain,
         ]);
@@ -66,7 +66,7 @@ class MailService
             ->setSender($from)
             ->setAuth($this->getUser())
             ->setTitle($title)
-            ->setContent($body)
+            ->setContent($content)
             ->setSentAt(new DateTime())
         ;
         $this->em->persist($msgEntity);

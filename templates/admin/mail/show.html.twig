@@ -43,14 +43,14 @@
         </div>
         
         
-        <input type="radio" name="tabs" id="content" checked>
+        <input type="radio" name="tabs" id="content" >
         <label for="content" class="tab active">
             <span>Bericht</span>
         </label>
         <div class="panel">
             <div class="card">
                 
-                {{ mail.content | raw }}  
+                {{ content | raw }}  
                      
             </div>
         </div>

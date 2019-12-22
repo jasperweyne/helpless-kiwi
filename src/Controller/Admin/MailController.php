@@ -42,17 +42,14 @@ class MailController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        //$createdAt = $this->events->findOneBy($mail, EntityNewEvent::class);
-        //$modifs = $this->events->findBy($mail, EntityUpdateEvent::class);
-
         $recipients = $em->getRepository(Recipient::class)->findBy(['mail' => $mail]);
-        //$mail->getRecipients();
-
-        //$deregs = $em->getRepository(Mail::class)->findDeregistrations($activity);
+        $content = json_decode($mail->getContent());
+        $s = $content->{'html'};
 
         return $this->render('admin/mail/show.html.twig', [
             'mail' => $mail,
-            'recipients' => $recipients
+            'recipients' => $recipients,
+            'content' => $s
         ]);
     }
 
