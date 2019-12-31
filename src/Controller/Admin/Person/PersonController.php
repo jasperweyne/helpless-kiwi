@@ -6,6 +6,7 @@ use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonField;
 use App\Entity\Person\PersonValue;
+use App\Entity\Settings\Settings;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -48,18 +49,63 @@ class PersonController extends AbstractController
      * Lists all Contact entities.
      *
      * @MenuItem(title="Personen", menu="admin", activeCriteria="admin_person_")
-     * @Route("/", name="index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET", "POST"})
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
         $persons = $em->getRepository(Person::class)->findAll();
         $fields = $em->getRepository(PersonField::class)->findAll();
 
+        $form = $this->createForm('App\Form\Settings\PersonSettingsType');
+
+        $data = [];
+        foreach ($form->all() as $input) {
+            $field = $input->getName();
+            $value = $em->getRepository(Settings::class)->findOneBy(['name' => $field]);
+
+            if ($value) {
+                $data[$field] = $value->getValue();
+            }
+        }
+
+        $form->setData($data);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            foreach ($form->all() as $input) {
+                $field = $input->getName();
+                $value = $em->getRepository(Settings::class)->findOneBy(['name' => $field]);
+
+                if (!array_key_exists($field, $data)) {
+                    if ($value) {
+                        $em->remove($value);
+                    }
+                    continue;
+                }
+
+                if (!$value) {
+                    $value = new Settings();
+                    $value->setName($field);
+
+                    $em->persist($value);
+                }
+
+                $value->setValue($data[$field] ?? null);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('admin_person_index');
+        }
+
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
             'fields' => $fields,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -79,6 +125,10 @@ class PersonController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $person
+                ->setNameExpr($em->getRepository(Settings::class)->findValue('person_name_expr_default'))
+                ->setShortnameExpr($em->getRepository(Settings::class)->findValue('person_shortname_expr_default'))
+            ;
             $em->persist($person);
 
             foreach ($fields as $field) {
@@ -105,19 +155,29 @@ class PersonController extends AbstractController
     /**
      * Finds and displays a person entity.
      *
-     * @Route("/{id}", name="show", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET", "POST"})
      */
-    public function showAction(Person $person)
+    public function showAction(Request $request, Person $person)
     {
         $em = $this->getDoctrine()->getManager();
 
         $createdAt = $this->events->findOneBy($person, EntityNewEvent::class);
         $modifs = $this->events->findBy($person, EntityUpdateEvent::class);
 
+        $form = $this->createForm('App\Form\Person\PersonAdvancedType', $person);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
+        }
+
         return $this->render('admin/person/show.html.twig', [
             'createdAt' => $createdAt,
             'modifs' => $modifs,
             'person' => $person,
+            'form' => $form->createView(),
         ]);
     }
 

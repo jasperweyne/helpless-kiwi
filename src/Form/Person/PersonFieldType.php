@@ -17,6 +17,7 @@ class PersonFieldType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
+            ->add('slug', TextType::class)
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
                     $vals = array_keys(PersonController::TYPES);
