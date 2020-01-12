@@ -28,7 +28,7 @@
                     <td><a href="{{ path("admin_mail_show", { 'id': mail.id }) }}"> {{ mail.title }} </a></td>
                     <td>{{ mail.auth.person.canonical }}</td>
                     <td>{{ mail.sender }}</td>
-                    <td> placeholder </td> 
+                    <td>{{ mail.recipients|length }} afzender{{ mail.recipients|length == 1 ? '' : 's' }}</td> 
                     <td>{{ mail.sentAt|date('d-m-Y') }}</td>
                 </tr>
             {% else %}

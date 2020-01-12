@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Mail\Mail;
-use App\Entity\Mail\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -32,7 +31,6 @@ class MailController extends AbstractController
         ]);
     }
 
-    
     /**
      * Finds and displays a mail entity.
      *
@@ -40,17 +38,11 @@ class MailController extends AbstractController
      */
     public function showAction(Mail $mail)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $recipients = $em->getRepository(Recipient::class)->findBy(['mail' => $mail]);
-        $content = json_decode($mail->getContent());
-        $s = $content->{'html'};
+        $content = json_decode($mail->getContent(), true);
 
         return $this->render('admin/mail/show.html.twig', [
             'mail' => $mail,
-            'recipients' => $recipients,
-            'content' => $s
+            'content' => $content['html'],
         ]);
     }
-
 }

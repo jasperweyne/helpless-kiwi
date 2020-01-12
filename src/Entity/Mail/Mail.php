@@ -2,12 +2,9 @@
 
 namespace App\Entity\Mail;
 
-use App\Entity\Group\Taxonomy;
 use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
 
 /**
  * @ORM\Entity
@@ -93,7 +90,6 @@ class Mail
         return $this;
     }
 
-
     /**
      * Get price options.
      *
@@ -126,7 +122,6 @@ class Mail
 
         return $this;
     }
-
 
     public function getSender(): ?string
     {

@@ -2,12 +2,9 @@
 
 namespace App\Mail;
 
-use App\Entity\Group\Relation;
-use App\Entity\Group\Taxonomy;
 use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
 use App\Entity\Security\Auth;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -67,7 +64,7 @@ class MailService
             ->setAuth($this->getUser())
             ->setTitle($title)
             ->setContent($content)
-            ->setSentAt(new DateTime())
+            ->setSentAt(new \DateTime())
         ;
         $this->em->persist($msgEntity);
 
@@ -98,28 +95,5 @@ class MailService
         }
 
         return $user;
-    }
-
-    private function buildTaxonomy(array $to): ?Taxonomy
-    {
-        $recipients = new Taxonomy();
-
-        foreach ($to as $person) {
-            $recipient = new Relation();
-            $recipient
-                ->setTaxonomy($recipients)
-                ->setPerson($person)
-                
-            ;
-
-            $this->em->persist($recipient);
-        }
-
-        $emailgroup = $this->em->getRepository(Taxonomy::class)->findOneBy( ['name' => "Emails" ]);
-        if ($emailgroup) {
-            $recipients->setParent($emailgroup);
-        } 
-
-        return $recipients;
     }
 }

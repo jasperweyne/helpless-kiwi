@@ -23,12 +23,10 @@ class RelationType extends AbstractType
                         ->orderBy('u.firstname', 'ASC');
                 },
                 'choice_label' => function ($ref) {
-                    return $ref;
+                    return $ref->getCanonical();
                 },
                 'required' => true,
             ])
-            
-
         ;
     }
 

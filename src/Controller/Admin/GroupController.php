@@ -5,13 +5,11 @@ namespace App\Controller\Admin;
 use App\Template\Annotation\MenuItem;
 use App\Entity\Group\Taxonomy;
 use App\Entity\Group\Relation;
-use SebastianBergmann\Environment\Console;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Log\EventService;
-use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 
 /**
@@ -21,15 +19,13 @@ use App\Log\Doctrine\EntityUpdateEvent;
  */
 class GroupController extends AbstractController
 {
-    
     private $events;
 
     public function __construct(EventService $events)
     {
         $this->events = $events;
     }
-    
-    
+
     /**
      * Generate default groups.
      *
@@ -65,6 +61,38 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Creates a new group entity.
+     *
+     * @Route("/new/{id?}", name="new", methods={"GET", "POST"})
+     */
+    public function newAction(Request $request, ?Taxonomy $parent)
+    {
+        $taxonomy = new Taxonomy();
+
+        $form = $this->createForm('App\Form\Group\TaxonomyType', $taxonomy);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($taxonomy);
+
+            if ($parent) {
+                $parent->addChild($taxonomy);
+                $em->persist($parent);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('admin_group_show', ['id' => $taxonomy->getId()]);
+        }
+
+        return $this->render('admin/group/new.html.twig', [
+            'taxonomy' => $taxonomy,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * Lists all groups.
      *
      * @MenuItem(title="Groepen", menu="admin")
@@ -74,66 +102,24 @@ class GroupController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        
-
-        if (!$taxonomy && $request->query->get('showall')) {
-            $children = $em->getRepository(Taxonomy::class)->findAll();
-            $instances = null;
-
-            return $this->render('admin/group/show.html.twig', [
-                'taxonomy' => null,
-                'children' => $children,
-                'instances' => $instances,
-                'relations' => [],
-                'show_instances' => true,
-            ]);
+        if (!$taxonomy) {
+            if ($request->query->get('showall')) {
+                return $this->render('admin/group/show.html.twig', [
+                    'taxonomy' => null,
+                    'all_groups' => true,
+                    'groups' => $em->getRepository(Taxonomy::class)->findAll(),
+                ]);
+            } else {
+                return $this->render('admin/group/show.html.twig', [
+                    'taxonomy' => null,
+                    'groups' => $em->getRepository(Taxonomy::class)->findBy(['parent' => null]),
+                ]);
+            }
         }
-
-        $children = $em->getRepository(Taxonomy::class)->findBy(['parent' => $taxonomy]);
-        $relations = $em->getRepository(Relation::class)->findBy(['taxonomy' => $taxonomy]);
-        $modifs = $this->events->findBy($taxonomy, EntityUpdateEvent::class);
 
         return $this->render('admin/group/show.html.twig', [
             'taxonomy' => $taxonomy,
-            'children' => $children,
-            'modifs' => $modifs,
-            'relations' => $relations,
-        ]);
-    }
-
-
-    /**
-     * Creates a new group entity.
-     *
-     * @Route("/new/{id?}", name="new", methods={"GET", "POST"})
-     */
-    public function newAction(Request $request, ?Taxonomy $parent)
-    {
-        
-        $taxonomy = new Taxonomy();
-        
-        $form = $this->createForm('App\Form\Group\TaxonomyType', $taxonomy);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($taxonomy);
-            
-            if ($parent) {
-                $parent->addTaxonomy($taxonomy);
-                $em->persist($parent);
-
-            };
-            
-            
-            $em->flush();
-
-            return $this->redirectToRoute('admin_group_show', ['id' => $taxonomy->getId()]);
-        }
-
-        return $this->render('admin/group/new.html.twig', [
-            'taxonomy' => $taxonomy,
-            'form' => $form->createView(),
+            'modifs' => $this->events->findBy($taxonomy, EntityUpdateEvent::class),
         ]);
     }
 
@@ -159,7 +145,6 @@ class GroupController extends AbstractController
         ]);
     }
 
-
     /**
      * Displays a form to generate a new relation to a taxonomy entity.
      *
@@ -172,7 +157,6 @@ class GroupController extends AbstractController
         $relation = new Relation();
         $relation->setTaxonomy($taxonomy);
 
-
         $form = $this->createForm('App\Form\Group\RelationType', $relation);
 
         $form->handleRequest($request);
@@ -183,7 +167,6 @@ class GroupController extends AbstractController
 
             $this->addFlash('success', $relation->getPerson()->getFullname().' toegevoegd!');
 
-           
             return $this->redirectToRoute('admin_group_show', ['id' => $taxonomy->getId()]);
         }
 
@@ -192,7 +175,6 @@ class GroupController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
     private function generateStructure($defaultBoard)
     {
@@ -213,7 +195,7 @@ class GroupController extends AbstractController
 
         $committees = new Taxonomy();
         $committees
-            ->setName('Commissies')     
+            ->setName('Commissies')
         ;
         $em->persist($committees);
 
@@ -225,7 +207,7 @@ class GroupController extends AbstractController
 
         $positions = new Taxonomy();
         $positions
-            ->setName('Functies')   
+            ->setName('Functies')
         ;
         $em->persist($positions);
 

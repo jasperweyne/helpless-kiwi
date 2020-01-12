@@ -1,15 +1,23 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = taxonomy.name ?? 'Groepen' %}
+    {% if taxonomy is null %}
+        {% if all_groups is defined %}
+            {% set page_title = 'Alle groepen' %}
+        {% else %}
+            {% set page_title = 'Groepen' %}
+            {% set all_groups = false %}
+        {% endif %}
+    {% else %}
+        {% set page_title = taxonomy.name %}
+    {% endif %}
     
     {% block buttons %}
         {% if taxonomy %}
-            <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }}</a>
             <a href="{{ path('admin_group_edit', { 'id': taxonomy.id }) }}">Bewerken</a>
+            <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }}</a>
         {% else %}
-            <a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuw</a>
-            {% if show_instances ?? false %}
+            {% if all_groups %}
                 <a href="{{ path('admin_group_show') }}">Terug</a>
             {% else %}
                 <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
@@ -18,11 +26,24 @@
     {% endblock %}
 {% endif %}
 
-{% set show_taxonomies = show_taxonomies ?? taxonomy.hasChildren  ?? true %}
-{% set show_relations  = show_relations  ?? (taxonomy and taxonomy.relations is defined) %}
-
 {% block body_wrap %}
-    {% if taxonomy is null %} 
+    {% if taxonomy %}
+        <div class="tabs">
+            {{ block('body_content') }}
+        </div
+    {% else %}
+        {{ block('body_content') }}
+    {% endif %}
+{% endblock %}
+
+{% block body_content %}
+    {% if not taxonomy or taxonomy.subgroupable %}
+        {% if taxonomy %}
+            <input type="radio" name="tabs" id="subgroups" checked>
+            <label for="subgroups" class="tab active">
+                <span>Subgroepen</span> 
+            </label>
+        {% endif %}
         <div class="panel">
             <div class="card">
                 <div class="table">
@@ -35,200 +56,118 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for group in children %}
+                        {% for group in groups ?? taxonomy.children %}
                             <tr>
                                 <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
-                                {% if group.relationcount == 1 %}
-                                    <td> {{group.relationcount}} lid </td>
-                                {% else %}
-                                    <td> {{group.relationcount}} leden</td>
-                                {% endif %}
-                                {% if group.subgroupcount == 1 %}
-                                    <td> {{group.subgroupcount}} subgroep </td>
-                                {% else %}
-                                    <td> {{group.subgroupcount}} subgroepen </td>
-                                {% endif %}
+                                <td>{{ group.relations|length }} {{ group.relations|length == 1 ? 'lid' : 'leden' }}</td>
+                                <td>{{ group.children|length }} subgroep{{ group.children|length != 1 ? 'en' : '' }}</td>
                             </tr>
                         {% else %}
                             <tr>
                                 {% if taxonomy %}
                                 <td>Geen subgroepen.</td>
-                                <td>n.v.t.</td>
                                 {% else %}
                                 <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
-                                <td>n.v.t.</td>
                                 {% endif %}
                             </tr>
                         {% endfor %}
                         <tr>
-                            {% if taxonomy %}
-                                <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe subgroep toevoegen</a></td>
-                            {% else %}
-                                <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe groep toevoegen</a></td>
-                            {% endif %}            
+                            <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? '' }) }}">Nieuwe {{ taxonomy ? 'sub' : '' }}groep toevoegen</a></td>  
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    {% else %}
-       
-        <div class="tabs">
-            <input type="radio" name="tabs" id="details" checked>
-            <label for="details" class="tab active">
-                <span>Details</span>
+    {% endif %}
+    {% if taxonomy %}
+        {% if taxonomy.relationable %}
+            <input type="radio" name="tabs" id="groupsmembers" {{ taxonomy.subgroupable ? '' : 'checked' }}>
+            <label for="groupsmembers" class="tab {{ taxonomy.subgroupable ? '' : 'active' }}">
+                <span>Groepsleden</span>
             </label>
             <div class="panel">
                 <div class="card">
                     <div class="table">
                         <table>
+                            <thead>
+                                <tr>
+                                    <th>Leden</th>
+                                </tr>
+                            </thead>
                             <tbody>
+                            {% for relation in taxonomy.relations %}
                                 <tr>
-                                    <th>Titel</th>
-                                    <td>{{ taxonomy.name }}</td>
+                                    <td>{{ relation.root.person.canonical }}</td>
                                 </tr>
+                            {% else %}
                                 <tr>
-                                    <th>Beschrijving</th>
-                                    <td>{{ taxonomy.description }}</td>
+                                    <td>Geen leden.</td>
                                 </tr>
-                                <tr>
-                                    <th>Mag groepsleden bevatten</th>
-                                    <td>{{ not taxonomy.relationable ? "Nee" : "Ja"}}</td>
-                                </tr>
-                                <tr> 
-                                    <th>Mag subgroepen bevatten</th>
-                                    <td>{{ not taxonomy.subgroupable ? "Nee" : "Ja"}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Aanpassingen</th>
-                                    <td>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th>Door</th>
-                                                    <th>Tijdstip</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% for modif in modifs %}
-                                                <tr>
-                                                    <td>{{ modif.auth.person.fullname }}</td>
-                                                    <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
-                                                </tr>
-                                            {% else %}
-                                                <tr>
-                                                    <td>Geen aanpassingen.</td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                    
-                                </tr>
-                                
-
+                            {% endfor %}
+                            <tr>
+                                <td><a href="{{ path('admin_group_relation_new', { 'id': taxonomy.id }) }}">Lid toevoegen</a></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            
-            
-            
-            {% if taxonomy.subgroupable %} 
-                <input type="radio" name="tabs" id="subgroups" >
-                <label for="subgroups" class="tab">
-                    <span>Subgroepen</span> 
-                </label>
-                <div class="panel">
-                    <div class="card">
-                        <div class="table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>{{ taxonomy ? 'Subgroepen' : 'Groepen' }}</th>
-                                        <th>Aantal leden</th>
-                                        <th>Aantal subgroepen</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for group in children %}
-                                    <tr>
-                                        <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
-                                        {% if group.relationcount == 1 %}
-                                            <td> {{group.relationcount}} lid </td>
+        {% endif %}
+        <input type="radio" name="tabs" id="details" {{ taxonomy.relationable or taxonomy.subgroupable ? '' : 'checked' }}>
+        <label for="details" class="tab {{ taxonomy.relationable or taxonomy.subgroupable ? '' : 'active' }}">
+            <span>Details</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Titel</th>
+                                <td>{{ taxonomy.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Beschrijving</th>
+                                <td>{{ taxonomy.description }}</td>
+                            </tr>
+                            <tr>
+                                <th>Mag groepsleden bevatten</th>
+                                <td>{{ taxonomy.relationable ? "Ja" : "Nee" }}</td>
+                            </tr>
+                            <tr> 
+                                <th>Mag subgroepen bevatten</th>
+                                <td>{{ taxonomy.subgroupable ? "Ja" : "Nee" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Aanpassingen</th>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Door</th>
+                                                <th>Tijdstip</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for modif in modifs %}
+                                            <tr>
+                                                <td>{{ modif.auth.person.fullname }}</td>
+                                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                            </tr>
                                         {% else %}
-                                            <td> {{group.relationcount}} leden</td>
-                                        {% endif %}
-                                        {% if group.subgroupcount == 1 %}
-                                            <td> {{group.subgroupcount}} subgroep </td>
-                                        {% else %}
-                                            <td> {{group.subgroupcount}} subgroepen </td>
-                                        {% endif %}
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        {% if taxonomy %}
-                                        <td>Geen subgroepen.</td>
-                                        <td>n.v.t.</td>
-                                        {% else %}
-                                        <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
-                                        <td>n.v.t.</td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
-                                <tr>
-                                    {% if taxonomy %}
-                                        <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe subgroep toevoegen</a></td>
-                                    {% else %}
-                                        <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? 'root' }) }}">Nieuwe groep toevoegen</a></td>
-                                    {% endif %}            
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                            <tr>
+                                                <td>Geen aanpassingen.</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            {% endif %}
-
-
-
-            {% if taxonomy.relationable %} 
-                <input type="radio" name="tabs" id="groupsmembers">
-                <label for="groupsmembers" class="tab">
-                    <span>Groepsleden</span>
-                </label>
-                <div class="panel">
-                    <div class="card">
-                        <div class="table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Leden</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for relation in relations %}
-                                    <tr>
-                                        <td>{{ relation.root.person.canonical }}</td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td>Geen leden.</td>
-                                    </tr>
-                                {% endfor %}
-                                <tr>
-                                    <td><a href="{{ path('admin_group_relation_new', { 'id': taxonomy.id }) }}">Lid toevoegen</a></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
+            </div>
         </div>
-        
     {% endif %}
 {% endblock %}

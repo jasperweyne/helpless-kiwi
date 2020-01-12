@@ -2,9 +2,7 @@
 
 namespace App\Entity\Mail;
 
-use App\Entity\Mail\Mail;
 use App\Entity\Person\Person;
-use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,7 +28,6 @@ class Recipient
      */
     private $mail;
 
-    
     public function getId(): ?string
     {
         return $this->id;
@@ -59,6 +56,4 @@ class Recipient
 
         return $this;
     }
-
-    
 }

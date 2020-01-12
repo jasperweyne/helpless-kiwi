@@ -5,7 +5,6 @@ namespace App\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * @ORM\Entity
@@ -42,11 +41,6 @@ class Taxonomy
     protected $children;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $hasChildren;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $readonly;
@@ -61,7 +55,6 @@ class Taxonomy
      */
     private $subgroupable;
 
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="taxonomy", orphanRemoval=true)
      */
@@ -69,12 +62,9 @@ class Taxonomy
 
     public function __construct()
     {
-        
-
         $this->relations = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->readonly = false;
-
     }
 
     /**
@@ -120,7 +110,6 @@ class Taxonomy
 
         return $this;
     }
-
 
     /**
      * Get description.
@@ -168,47 +157,10 @@ class Taxonomy
         return $this;
     }
 
-
-    //Useless functions
-    public function getNoChildren(): ?bool
-    {
-        return null === $this->hasChildren ? null : !$this->hasChildren;
-    }
-
-    public function getNode(): ?bool
-    {
-        return $this->hasChildren;
-    }
-
-    public function setHasChildren(bool $hasChildren): self
-    {
-        $this->hasChildren = $hasChildren;
-
-        return $this;
-    }
-
-    public function getNoInstances(): ?bool
-    {
-        return null === $this->hasInstances ? null : !$this->hasInstances;
-    }
-
-    public function getHasInstances(): ?bool
-    {
-        return $this->hasInstances;
-    }
-
-    public function setHasInstances(bool $hasInstances): self
-    {
-        $this->hasInstances = $hasInstances;
-
-        return $this;
-    }
-    
-    //usefull functions again
     public function getRelationable(): ?bool
-    {   
-        //If true, then the group is allowed members. 
-        //Otherwise no member, but only subgroups are allowed. 
+    {
+        //If true, then the group is allowed members.
+        //Otherwise no member, but only subgroups are allowed.
         return $this->relationable;
     }
 
@@ -220,9 +172,9 @@ class Taxonomy
     }
 
     public function getSubgroupable(): ?bool
-    {   
-        //If true, then the group is allowed members. 
-        //Otherwise no member, but only subgroups are allowed. 
+    {
+        //If true, then the group is allowed members.
+        //Otherwise no member, but only subgroups are allowed.
         return $this->subgroupable;
     }
 
@@ -232,18 +184,6 @@ class Taxonomy
 
         return $this;
     }
-    
-    
-    public function getRelationCount(): int
-    {
-        return count($this->getRelations());
-    }
-
-    public function getSubgroupCount(): int
-    {
-        return count($this->children);
-    }
-
 
     /**
      * @return Collection|Relation[]
@@ -276,26 +216,15 @@ class Taxonomy
         return $this;
     }
 
-    
-    //Broken at the moment.
     /**
      * @return Collection|Taxonomy[]
      */
-    public function getGroups(): Collection
+    public function getChildren(): Collection
     {
-        return $this->children->filter(function ($x) { return $x instanceof Group; });
+        return $this->children;
     }
 
-    /**
-     * @return Collection|Taxonomy[]
-     */
-    public function getSubCategories(): Collection
-    {
-        return $this->children->filter(function ($x) { return $x instanceof Category; });
-    }
-
-
-    public function addTaxonomy(Taxonomy $taxonomy): self
+    public function addChild(Taxonomy $taxonomy): self
     {
         if (!$this->children->contains($taxonomy)) {
             $this->children[] = $taxonomy;
@@ -305,7 +234,7 @@ class Taxonomy
         return $this;
     }
 
-    public function removeTaxonomy(Taxonomy $taxonomy): self
+    public function removeChild(Taxonomy $taxonomy): self
     {
         if ($this->children->contains($taxonomy)) {
             $this->children->removeElement($taxonomy);
@@ -317,10 +246,4 @@ class Taxonomy
 
         return $this;
     }
-
-
-   
-
-
- 
 }
