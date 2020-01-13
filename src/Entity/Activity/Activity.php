@@ -2,7 +2,7 @@
 
 namespace App\Entity\Activity;
 
-use App\Entity\Group\Taxonomy;
+use App\Entity\Group\Group;
 use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -52,7 +52,7 @@ class Activity
     private $location;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Taxonomy")
+     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id")
      */
     private $author;
@@ -230,9 +230,9 @@ class Activity
     /**
      * Get author.
      *
-     * @return Taxonomy
+     * @return Group
      */
-    public function getAuthor(): ?Taxonomy
+    public function getAuthor(): ?Group
     {
         return $this->author;
     }
@@ -240,9 +240,9 @@ class Activity
     /**
      * Set author.
      *
-     * @param Taxonomy $author
+     * @param Group $author
      */
-    public function setAuthor(Taxonomy $author): self
+    public function setAuthor(Group $author): self
     {
         $this->author = $author;
 
