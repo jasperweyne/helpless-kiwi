@@ -4,25 +4,71 @@
 
 {% block body_root %}
 <div class="container row">
-    {% if activities %}
-        <div class="cardholder">
-            <div class="grid-x">
+    <div class="cardholder">
+        <div class="grid-x">
+            <div class="cell small-12 large-8">
                 {% for activity in activities %}
-                    <div class="cell">
-                        <a href="{{ path("organise_activity", { 'id': activity.id }) }}" class="organise activity">
-                            {% if activity.image.name %}
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="bw">
-                            {% endif %}
-                            <div class="container">
-                                <h2>{{ activity.name }}</h2>
-                            </div>
-                        </a>
-                    </div>
+                    <a href="{{ path("organise_activity", { 'id': activity.id }) }}" class="organise activity">
+                        {% if activity.image.name %}
+                            <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="bw">
+                        {% endif %}
+                        <div class="container">
+                            <h2>{{ activity.name }}</h2>
+                        </div>
+                    </a>
+                {% else %}
+                    <p>Geen activiteiten.</p>
                 {% endfor %}
             </div>
+            <div class="sidebar cell small-12 large-4">
+                <div class="card">
+                    {% if group.subgroupable %}
+                        <div class="table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Subgroepen</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for group in group.children %}
+                                    <tr>
+                                        <td>{{ group.name }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td>Geen subgroepen.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                    {% if group.relationable %}
+                        <div class="table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Leden</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for relation in group.relations %}
+                                    <tr>
+                                        <td>{{ relation.root.person.canonical }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td>Geen leden.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    {% else %}
-        <p>Geen activiteiten, kom later terug!</p>
-    {% endif %}
+    </div>
 </div>
 {% endblock %}
