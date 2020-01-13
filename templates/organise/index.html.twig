@@ -55,7 +55,8 @@
                                 <tbody>
                                 {% for relation in group.relations %}
                                     <tr>
-                                        <td>{{ relation.root.person.canonical }}</td>
+                                        {% set relgroups = relation.allTaxonomies|filter(a => a != group)|map(a => a.name) %}
+                                        <td>{{ relation.root.person.canonical }} <i>{{ relgroups ? '(%s)'|format(relgroups|join(', ')) : '' }}</i></td>
                                     </tr>
                                 {% else %}
                                     <tr>

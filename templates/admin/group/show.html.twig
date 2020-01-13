@@ -93,12 +93,14 @@
                             <thead>
                                 <tr>
                                     <th>Leden</th>
+                                    <th>Aanvullende groepen</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {% for relation in group.relations %}
                                 <tr>
                                     <td>{{ relation.root.person.canonical }}</td>
+                                    <td>{{ relation.allTaxonomies|filter(a => a != group)|map(a => a.name)|join(', ') }}</td>
                                 </tr>
                             {% else %}
                                 <tr>
