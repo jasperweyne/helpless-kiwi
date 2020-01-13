@@ -4,6 +4,7 @@ namespace App\Form\Activity;
 
 use App\Form\Location\LocationType;
 use App\Entity\Activity\Activity;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,6 +30,10 @@ class ActivityType extends AbstractType
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('t')
+                        ->andWhere('t.active = TRUE');
+                },
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },

@@ -60,6 +60,11 @@ class Group
      */
     private $relations;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
+
     public function __construct()
     {
         $this->relations = new ArrayCollection();
@@ -243,6 +248,18 @@ class Group
                 $group->setParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

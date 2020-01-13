@@ -24,6 +24,11 @@ class GroupType extends AbstractType
                 'label' => 'Mag subgroepen hebben',
                 'required' => false,
             ])
+            ->add('active', CheckboxType::class, [
+                'label' => 'Is actief',
+                'help' => 'Actieve groepen kunnen activiteiten organiseren en meer!',
+                'required' => false,
+            ])
         ;
     }
 
