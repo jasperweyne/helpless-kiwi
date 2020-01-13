@@ -4,114 +4,118 @@
 
 {% block body_root %}
 <div class="container row">
-    <div class="table">
-        <table>
-            <tbody>
-                <tr>
-                    <th>Titel</th>
-                    <td>{{ activity.name }}</td>
-                </tr>
-                <tr>
-                    <th>Beschrijving</th>
-                    <td>{{ activity.description }}</td>
-                </tr>
-                <tr>
-                    <th>Aanmelddeadline</th>
-                    <td>{{ activity.deadline|date('d-m-Y') }}</td>
-                </tr>
-                {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
-                    <tr>
-                        <th>Datum</th>
-                        <td>
-                            {{ activity.start|date('d-m-Y') }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Tijd</th>
-                        <td>
-                            {{ activity.start|date('H:i') }} - {{ activity.end|date('H:i') }}
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <th>Begint</th>
-                        <td>
-                            {{ activity.start|date('d-m-Y - H:i') }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Eindigt</th>
-                        <td>
-                            {{ activity.end|date('d-m-Y - H:i') }}
-                        </td>
-                    </tr>
-                {% endif %}
-                <tr>
-                    <th>Afbeelding</th>
-                    <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
-                </tr>
-                <tr>
-                    <th>Kleur</th>
-                    <td>{{ activity.color ?? '' }}</td>
-                </tr>
-                <tr>
-                    <th>Prijzen</th>
-                    <td>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Naam</th>
-                                    <th>Prijs</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for option in activity.options %}
-                                <tr>
-                                    <td>{{ option.name }}</td>
-                                    <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td>Geen opties.</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Aanmelding</th>
-                    <th>Optie</th>
-                    <th>Laatst bewerkt</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for registration in deregistrations %}
-                <tr>
-                    <td> <strike>{{ registration.person.fullname }} </strike> </td>
-                    <td> <strike> {{ registration.option.name }}   </strike> </td> 
-                    <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
-                </tr>
-            {% endfor %}
-            {% for registration in activity.registrations|filter(a => a.deletedate is null) %}
-                <tr>
-                    <td>{{ registration.person.fullname }}</td>
-                    <td>{{ registration.option.name }}</td>
-                    <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td>Geen aanmeldingen.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="cardholder">
+        <div class="card">
+            <div class="table">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Titel</th>
+                            <td>{{ activity.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Beschrijving</th>
+                            <td>{{ activity.description }}</td>
+                        </tr>
+                        <tr>
+                            <th>Aanmelddeadline</th>
+                            <td>{{ activity.deadline|date('d-m-Y') }}</td>
+                        </tr>
+                        {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
+                            <tr>
+                                <th>Datum</th>
+                                <td>
+                                    {{ activity.start|date('d-m-Y') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Tijd</th>
+                                <td>
+                                    {{ activity.start|date('H:i') }} - {{ activity.end|date('H:i') }}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <th>Begint</th>
+                                <td>
+                                    {{ activity.start|date('d-m-Y - H:i') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Eindigt</th>
+                                <td>
+                                    {{ activity.end|date('d-m-Y - H:i') }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Afbeelding</th>
+                            <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Kleur</th>
+                            <td>{{ activity.color ?? '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Prijzen</th>
+                            <td>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Naam</th>
+                                            <th>Prijs</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for option in activity.options %}
+                                        <tr>
+                                            <td>{{ option.name }}</td>
+                                            <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td>Geen opties.</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aanmelding</th>
+                            <th>Optie</th>
+                            <th>Laatst bewerkt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for registration in deregistrations %}
+                        <tr>
+                            <td> <strike>{{ registration.person.fullname }} </strike> </td>
+                            <td> <strike> {{ registration.option.name }}   </strike> </td> 
+                            <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
+                        </tr>
+                    {% endfor %}
+                    {% for registration in activity.registrations|filter(a => a.deletedate is null) %}
+                        <tr>
+                            <td>{{ registration.person.fullname }}</td>
+                            <td>{{ registration.option.name }}</td>
+                            <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>Geen aanmeldingen.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
