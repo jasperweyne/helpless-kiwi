@@ -54,7 +54,7 @@ class ActivityController extends AbstractController
     {
         $activity = new Activity();
 
-        $form = $this->createForm('App\Form\Activity\ActivityType', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -104,7 +104,7 @@ class ActivityController extends AbstractController
      */
     public function editAction(Request $request, Activity $activity)
     {
-        $form = $this->createForm('App\Form\Activity\ActivityType', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityEditType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -114,6 +114,28 @@ class ActivityController extends AbstractController
         }
 
         return $this->render('admin/activity/edit.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing activity entity.
+     *
+     * @Route("/{id}/image", name="image", methods={"GET", "POST"})
+     */
+    public function imageAction(Request $request, Activity $activity)
+    {
+        $form = $this->createForm('App\Form\Activity\ActivityImageType', $activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/image.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);

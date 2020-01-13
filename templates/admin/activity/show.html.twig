@@ -4,6 +4,7 @@
     {% set page_title = 'Activiteit ' ~ activity.name %}
     
     {% block buttons %}
+        <a href="{{ path('admin_activity_image', { 'id': activity.id }) }}">Afbeelding aanpassen</a>
         <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Bewerken</a>
         <a href="{{ path('admin_activity_delete', { 'id': activity.id }) }}">Verwijderen</a>
     {% endblock %}
