@@ -25,6 +25,10 @@
     * {
         word-break: break-word;
     }
+
+    &.organise {
+        height: 130px;
+    }
     
     .cardholder & {
         width        : calc(100% - #{$padding});
@@ -93,7 +97,7 @@
         height: 100%;
     
         &.bw {
-            filter: grayscale(100%);
+            filter: blur(5px) grayscale(100%);
         }
 
         &.filter {

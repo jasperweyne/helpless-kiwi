@@ -6,10 +6,10 @@
 <div class="container row">
     {% if activities %}
         <div class="cardholder">
-            <div class="grid-x large-up-2">
+            <div class="grid-x">
                 {% for activity in activities %}
                     <div class="cell">
-                        <a href="{{ path("organise_activity", { 'id': activity.id }) }}" class="activity">
+                        <a href="{{ path("organise_activity", { 'id': activity.id }) }}" class="organise activity">
                             {% if activity.image.name %}
                                 <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="bw">
                             {% endif %}
