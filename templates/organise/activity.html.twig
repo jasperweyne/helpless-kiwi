@@ -1,0 +1,91 @@
+{% extends 'layout.html.twig' %}
+
+{% set page_title = activity.name %}
+
+{% block body_root %}
+<div class="container row">
+    <div class="table">
+        <table>
+            <tbody>
+                <tr>
+                    <th>Titel</th>
+                    <td>{{ activity.name }}</td>
+                </tr>
+                <tr>
+                    <th>Beschrijving</th>
+                    <td>{{ activity.description }}</td>
+                </tr>
+                <tr>
+                    <th>Aanmelddeadline</th>
+                    <td>{{ activity.deadline|date('d-m-Y') }}</td>
+                </tr>
+                {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
+                    <tr>
+                        <th>Datum</th>
+                        <td>
+                            {{ activity.start|date('d-m-Y') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tijd</th>
+                        <td>
+                            {{ activity.start|date('H:i') }} - {{ activity.end|date('H:i') }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <th>Begint</th>
+                        <td>
+                            {{ activity.start|date('d-m-Y - H:i') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Eindigt</th>
+                        <td>
+                            {{ activity.end|date('d-m-Y - H:i') }}
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <th>Afbeelding</th>
+                    <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
+                </tr>
+                <tr>
+                    <th>Kleur</th>
+                    <td>{{ activity.color ?? '' }}</td>
+                </tr>
+                <tr>
+                    <th>Prijzen</th>
+                    <td>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Naam</th>
+                                    <th>Prijs</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for option in activity.options %}
+                                <tr>
+                                    <td>{{ option.name }}</td>
+                                    <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
+                                    <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Geen opties.</td>
+                                </tr>
+                            {% endfor %}
+                                <tr>
+                                    <td><a href="{{ path('admin_activity_price_new', { 'id': activity.id }) }}">Prijs toevoegen</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
