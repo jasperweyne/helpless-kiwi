@@ -3,6 +3,7 @@
 namespace App\Controller\Organise;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\Registration;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Group\Group;
@@ -23,8 +24,11 @@ class OrganiseController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $deregs = $em->getRepository(Registration::class)->findDeregistrations($activity);
+
         return $this->render('organise/activity.html.twig', [
             'activity' => $activity,
+            'deregistrations' => $deregs,
         ]);
     }
 

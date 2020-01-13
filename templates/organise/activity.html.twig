@@ -62,7 +62,6 @@
                                 <tr>
                                     <th>Naam</th>
                                     <th>Prijs</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,20 +69,47 @@
                                 <tr>
                                     <td>{{ option.name }}</td>
                                     <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
-                                    <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
                                 </tr>
                             {% else %}
                                 <tr>
                                     <td>Geen opties.</td>
                                 </tr>
                             {% endfor %}
-                                <tr>
-                                    <td><a href="{{ path('admin_activity_price_new', { 'id': activity.id }) }}">Prijs toevoegen</a></td>
-                                </tr>
                             </tbody>
                         </table>
                     </td>
                 </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Aanmelding</th>
+                    <th>Optie</th>
+                    <th>Laatst bewerkt</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for registration in deregistrations %}
+                <tr>
+                    <td> <strike>{{ registration.person.fullname }} </strike> </td>
+                    <td> <strike> {{ registration.option.name }}   </strike> </td> 
+                    <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
+                </tr>
+            {% endfor %}
+            {% for registration in activity.registrations|filter(a => a.deletedate is null) %}
+                <tr>
+                    <td>{{ registration.person.fullname }}</td>
+                    <td>{{ registration.option.name }}</td>
+                    <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen aanmeldingen.</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
