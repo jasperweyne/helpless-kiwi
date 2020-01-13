@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% if taxonomy is null %}
+    {% if group is null %}
         {% if all_groups is defined %}
             {% set page_title = 'Alle groepen' %}
         {% else %}
@@ -9,13 +9,13 @@
             {% set all_groups = false %}
         {% endif %}
     {% else %}
-        {% set page_title = taxonomy.name %}
+        {% set page_title = group.name %}
     {% endif %}
     
     {% block buttons %}
-        {% if taxonomy %}
-            <a href="{{ path('admin_group_edit', { 'id': taxonomy.id }) }}">Bewerken</a>
-            <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }}</a>
+        {% if group %}
+            <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
+            <a href="{{ path('admin_group_show', { 'id': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
         {% else %}
             {% if all_groups %}
                 <a href="{{ path('admin_group_show') }}">Terug</a>
@@ -27,7 +27,7 @@
 {% endif %}
 
 {% block body_wrap %}
-    {% if taxonomy %}
+    {% if group %}
         <div class="tabs">
             {{ block('body_content') }}
         </div
@@ -37,8 +37,8 @@
 {% endblock %}
 
 {% block body_content %}
-    {% if not taxonomy or taxonomy.subgroupable %}
-        {% if taxonomy %}
+    {% if not group or group.subgroupable %}
+        {% if group %}
             <input type="radio" name="tabs" id="subgroups" checked>
             <label for="subgroups" class="tab active">
                 <span>Subgroepen</span> 
@@ -50,13 +50,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>{{ taxonomy ? 'Subgroepen' : 'Groepen' }}</th>
+                                <th>{{ group ? 'Subgroepen' : 'Groepen' }}</th>
                                 <th>Aantal leden</th>
                                 <th>Aantal subgroepen</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for group in groups ?? taxonomy.children %}
+                        {% for group in groups ?? group.children %}
                             <tr>
                                 <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
                                 <td>{{ group.relations|length }} {{ group.relations|length == 1 ? 'lid' : 'leden' }}</td>
@@ -64,7 +64,7 @@
                             </tr>
                         {% else %}
                             <tr>
-                                {% if taxonomy %}
+                                {% if group %}
                                 <td>Geen subgroepen.</td>
                                 {% else %}
                                 <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
@@ -72,7 +72,7 @@
                             </tr>
                         {% endfor %}
                         <tr>
-                            <td><a href="{{ path("admin_group_new", { 'id': taxonomy.id ?? '' }) }}">Nieuwe {{ taxonomy ? 'sub' : '' }}groep toevoegen</a></td>  
+                            <td><a href="{{ path("admin_group_new", { 'id': group.id ?? '' }) }}">Nieuwe {{ group ? 'sub' : '' }}groep toevoegen</a></td>  
                         </tr>
                         </tbody>
                     </table>
@@ -80,10 +80,10 @@
             </div>
         </div>
     {% endif %}
-    {% if taxonomy %}
-        {% if taxonomy.relationable %}
-            <input type="radio" name="tabs" id="groupsmembers" {{ taxonomy.subgroupable ? '' : 'checked' }}>
-            <label for="groupsmembers" class="tab {{ taxonomy.subgroupable ? '' : 'active' }}">
+    {% if group %}
+        {% if group.relationable %}
+            <input type="radio" name="tabs" id="groupsmembers" {{ group.subgroupable ? '' : 'checked' }}>
+            <label for="groupsmembers" class="tab {{ group.subgroupable ? '' : 'active' }}">
                 <span>Groepsleden</span>
             </label>
             <div class="panel">
@@ -96,7 +96,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for relation in taxonomy.relations %}
+                            {% for relation in group.relations %}
                                 <tr>
                                     <td>{{ relation.root.person.canonical }}</td>
                                 </tr>
@@ -106,7 +106,7 @@
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_group_relation_new', { 'id': taxonomy.id }) }}">Lid toevoegen</a></td>
+                                <td><a href="{{ path('admin_group_relation_new', { 'id': group.id }) }}">Lid toevoegen</a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -114,8 +114,8 @@
                 </div>
             </div>
         {% endif %}
-        <input type="radio" name="tabs" id="details" {{ taxonomy.relationable or taxonomy.subgroupable ? '' : 'checked' }}>
-        <label for="details" class="tab {{ taxonomy.relationable or taxonomy.subgroupable ? '' : 'active' }}">
+        <input type="radio" name="tabs" id="details" {{ group.relationable or group.subgroupable ? '' : 'checked' }}>
+        <label for="details" class="tab {{ group.relationable or group.subgroupable ? '' : 'active' }}">
             <span>Details</span>
         </label>
         <div class="panel">
@@ -125,19 +125,19 @@
                         <tbody>
                             <tr>
                                 <th>Titel</th>
-                                <td>{{ taxonomy.name }}</td>
+                                <td>{{ group.name }}</td>
                             </tr>
                             <tr>
                                 <th>Beschrijving</th>
-                                <td>{{ taxonomy.description }}</td>
+                                <td>{{ group.description }}</td>
                             </tr>
                             <tr>
                                 <th>Mag groepsleden bevatten</th>
-                                <td>{{ taxonomy.relationable ? "Ja" : "Nee" }}</td>
+                                <td>{{ group.relationable ? "Ja" : "Nee" }}</td>
                             </tr>
                             <tr> 
                                 <th>Mag subgroepen bevatten</th>
-                                <td>{{ taxonomy.subgroupable ? "Ja" : "Nee" }}</td>
+                                <td>{{ group.subgroupable ? "Ja" : "Nee" }}</td>
                             </tr>
                             <tr>
                                 <th>Aanpassingen</th>

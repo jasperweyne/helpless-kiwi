@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Taxonomy
+class Group
 {
     /**
      * @ORM\Id()
@@ -29,13 +29,13 @@ class Taxonomy
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Taxonomy", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
      */
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Group\Taxonomy", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Group\Group", mappedBy="parent")
      */
     protected $children;
 
@@ -55,7 +55,7 @@ class Taxonomy
     private $subgroupable;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="taxonomy", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="group", orphanRemoval=true)
      */
     private $relations;
 
@@ -196,7 +196,7 @@ class Taxonomy
     {
         if (!$this->relations->contains($relation)) {
             $this->relations[] = $relation;
-            $relation->setTaxonomy($this);
+            $relation->setGroup($this);
         }
 
         return $this;
@@ -207,8 +207,8 @@ class Taxonomy
         if ($this->relations->contains($relation)) {
             $this->relations->removeElement($relation);
             // set the owning side to null (unless already changed)
-            if ($relation->getTaxonomy() === $this) {
-                $relation->setTaxonomy(null);
+            if ($relation->getGroup() === $this) {
+                $relation->setGroup(null);
             }
         }
 
@@ -216,30 +216,30 @@ class Taxonomy
     }
 
     /**
-     * @return Collection|Taxonomy[]
+     * @return Collection|Group[]
      */
     public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    public function addChild(Taxonomy $taxonomy): self
+    public function addChild(Group $group): self
     {
-        if (!$this->children->contains($taxonomy)) {
-            $this->children[] = $taxonomy;
-            $taxonomy->setParent($this);
+        if (!$this->children->contains($group)) {
+            $this->children[] = $group;
+            $group->setParent($this);
         }
 
         return $this;
     }
 
-    public function removeChild(Taxonomy $taxonomy): self
+    public function removeChild(Group $group): self
     {
-        if ($this->children->contains($taxonomy)) {
-            $this->children->removeElement($taxonomy);
+        if ($this->children->contains($group)) {
+            $this->children->removeElement($group);
             // set the owning side to null (unless already changed)
-            if ($taxonomy->getParent() === $this) {
-                $taxonomy->setParent(null);
+            if ($group->getParent() === $this) {
+                $group->setParent(null);
             }
         }
 

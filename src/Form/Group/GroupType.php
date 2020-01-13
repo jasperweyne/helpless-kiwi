@@ -2,14 +2,14 @@
 
 namespace App\Form\Group;
 
-use App\Entity\Group\Taxonomy;
+use App\Entity\Group\Group;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
-class TaxonomyType extends AbstractType
+class GroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -30,7 +30,7 @@ class TaxonomyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Taxonomy::class,
+            'data_class' => Group::class,
         ]);
     }
 }

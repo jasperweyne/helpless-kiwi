@@ -27,7 +27,7 @@ class ActivityType extends AbstractType
             ])
             ->add('author', EntityType::class, [
                 'label' => 'Georganiseerd door',
-                'class' => 'App\Entity\Group\Taxonomy',
+                'class' => 'App\Entity\Group\Group',
                 'required' => false,
                 'choice_label' => function ($ref) {
                     return $ref->getName();

@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
-use App\Entity\Group\Taxonomy;
+use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,29 +65,29 @@ class GroupController extends AbstractController
      *
      * @Route("/new/{id?}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, ?Taxonomy $parent)
+    public function newAction(Request $request, ?Group $parent)
     {
-        $taxonomy = new Taxonomy();
+        $group = new Group();
 
-        $form = $this->createForm('App\Form\Group\TaxonomyType', $taxonomy);
+        $form = $this->createForm('App\Form\Group\GroupType', $group);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($taxonomy);
+            $em->persist($group);
 
             if ($parent) {
-                $parent->addChild($taxonomy);
+                $parent->addChild($group);
                 $em->persist($parent);
             }
 
             $em->flush();
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $taxonomy->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
         }
 
         return $this->render('admin/group/new.html.twig', [
-            'taxonomy' => $taxonomy,
+            'group' => $group,
             'form' => $form->createView(),
         ]);
     }
@@ -98,64 +98,64 @@ class GroupController extends AbstractController
      * @MenuItem(title="Groepen", menu="admin")
      * @Route("/{id?}", name="show", methods={"GET"})
      */
-    public function showAction(Request $request, ?Taxonomy $taxonomy)
+    public function showAction(Request $request, ?Group $group)
     {
         $em = $this->getDoctrine()->getManager();
 
-        if (!$taxonomy) {
+        if (!$group) {
             if ($request->query->get('showall')) {
                 return $this->render('admin/group/show.html.twig', [
-                    'taxonomy' => null,
+                    'group' => null,
                     'all_groups' => true,
-                    'groups' => $em->getRepository(Taxonomy::class)->findAll(),
+                    'groups' => $em->getRepository(Group::class)->findAll(),
                 ]);
             } else {
                 return $this->render('admin/group/show.html.twig', [
-                    'taxonomy' => null,
-                    'groups' => $em->getRepository(Taxonomy::class)->findBy(['parent' => null]),
+                    'group' => null,
+                    'groups' => $em->getRepository(Group::class)->findBy(['parent' => null]),
                 ]);
             }
         }
 
         return $this->render('admin/group/show.html.twig', [
-            'taxonomy' => $taxonomy,
-            'modifs' => $this->events->findBy($taxonomy, EntityUpdateEvent::class),
+            'group' => $group,
+            'modifs' => $this->events->findBy($group, EntityUpdateEvent::class),
         ]);
     }
 
     /**
-     * Displays a form to edit an existing taxonomy entity.
+     * Displays a form to edit an existing group entity.
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Taxonomy $taxonomy)
+    public function editAction(Request $request, Group $group)
     {
-        $form = $this->createForm('App\Form\Group\TaxonomyType', $taxonomy);
+        $form = $this->createForm('App\Form\Group\GroupType', $group);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $taxonomy->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
         }
 
         return $this->render('admin/group/edit.html.twig', [
-            'taxonomy' => $taxonomy,
+            'group' => $group,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * Displays a form to generate a new relation to a taxonomy entity.
+     * Displays a form to generate a new relation to a group entity.
      *
      * @Route("/relation/new/{id}", name="relation_new", methods={"GET", "POST"})
      */
-    public function relationNewAction(Request $request, Taxonomy $taxonomy)
+    public function relationNewAction(Request $request, Group $group)
     {
         $em = $this->getDoctrine()->getManager();
 
         $relation = new Relation();
-        $relation->setTaxonomy($taxonomy);
+        $relation->setGroup($group);
 
         $form = $this->createForm('App\Form\Group\RelationType', $relation);
 
@@ -167,11 +167,11 @@ class GroupController extends AbstractController
 
             $this->addFlash('success', $relation->getPerson()->getFullname().' toegevoegd!');
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $taxonomy->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
         }
 
         return $this->render('admin/group/relation/new.html.twig', [
-            'taxonomy' => $taxonomy,
+            'group' => $group,
             'form' => $form->createView(),
         ]);
     }
@@ -180,52 +180,52 @@ class GroupController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $boards = new Taxonomy();
+        $boards = new Group();
         $boards
             ->setName('Besturen')
         ;
         $em->persist($boards);
 
-        $current = new Taxonomy();
+        $current = new Group();
         $current
             ->setName($defaultBoard)
             ->setParent($boards)
         ;
         $em->persist($current);
 
-        $committees = new Taxonomy();
+        $committees = new Group();
         $committees
             ->setName('Commissies')
         ;
         $em->persist($committees);
 
-        $boards2 = new Taxonomy();
+        $boards2 = new Group();
         $boards2
             ->setName('Disputen')
         ;
         $em->persist($boards2);
 
-        $positions = new Taxonomy();
+        $positions = new Group();
         $positions
             ->setName('Functies')
         ;
         $em->persist($positions);
 
-        $president = new Taxonomy();
+        $president = new Group();
         $president
             ->setName('Voorzitter')
             ->setParent($positions)
         ;
         $em->persist($president);
 
-        $secretary = new Taxonomy();
+        $secretary = new Group();
         $secretary
             ->setName('Secretaris')
             ->setParent($positions)
         ;
         $em->persist($secretary);
 
-        $treasurer = new Taxonomy();
+        $treasurer = new Group();
         $treasurer
             ->setName('Penningmeester')
             ->setParent($positions)
