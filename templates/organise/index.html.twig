@@ -8,7 +8,7 @@
         <div class="grid-x">
             <div class="cell small-12 large-8">
                 {% for activity in activities %}
-                    <a href="{{ path("organise_activity", { 'id': activity.id }) }}" class="organise activity">
+                    <a href="{{ path("organise_activity_show", { 'id': activity.id }) }}" class="organise activity">
                         {% if activity.image.name %}
                             <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="bw">
                         {% endif %}
@@ -22,6 +22,20 @@
             </div>
             <div class="sidebar cell small-12 large-4">
                 <div class="card">
+                    <div class="table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Acties</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="{{ path("organise_activity_new", { 'id': group.id }) }}" class="button add">Nieuwe activiteit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     {% if group.subgroupable %}
                         <div class="table">
                             <table>
