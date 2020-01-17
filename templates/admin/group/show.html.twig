@@ -1,94 +1,173 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = taxonomy.name ?? 'Groepen' %}
+    {% if group is null %}
+        {% if all_groups is defined %}
+            {% set page_title = 'Alle groepen' %}
+        {% else %}
+            {% set page_title = 'Groepen' %}
+            {% set all_groups = false %}
+        {% endif %}
+    {% else %}
+        {% set page_title = group.name %}
+    {% endif %}
     
     {% block buttons %}
-        {% if taxonomy %}
-            <a href="{{ path('admin_group_show', { 'id': taxonomy.parent.id ?? null }) }}">Terug naar {{ taxonomy.parent.name ?? 'groepen' }}</a>
+        {% if group %}
+            <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
+            <a href="{{ path('admin_group_show', { 'id': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
         {% else %}
-            {% if show_instances ?? false %}
-            <a href="{{ path('admin_group_show') }}">Terug</a>
+            {% if all_groups %}
+                <a href="{{ path('admin_group_show') }}">Terug</a>
             {% else %}
-            <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
+                <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
             {% endif %}
         {% endif %}
     {% endblock %}
 {% endif %}
 
-{% set show_categories = show_categories ?? taxonomy.hasChildren  ?? true %}
-{% set show_instances  = show_instances  ?? taxonomy.hasInstances ?? (taxonomy and taxonomy.instances is defined) %}
-{% set show_relations  = show_relations  ?? (taxonomy and taxonomy.relations is defined) %}
+{% block body_wrap %}
+    {% if group %}
+        <div class="tabs">
+            {{ block('body_content') }}
+        </div
+    {% else %}
+        {{ block('body_content') }}
+    {% endif %}
+{% endblock %}
 
-{% block body %}
-    {% if show_categories %}{% block categories_block %}
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>{{ taxonomy ? 'Subcategorie' : 'Categorie' }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for group in children %}
-                <tr>
-                    <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
-                </tr>
-            {% else %}
-                <tr>
-                    {% if taxonomy %}
-                    <td>Geen subcategorieen.</td>
-                    {% else %}
-                    <td>Geen categorieen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endblock %}{% endif %}
-    {% if show_instances %}{% block instances_block %}
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Groepen</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for group in instances %}
-                <tr>
-                    <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td>Geen groepen.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endblock %}{% endif %}
-    {% if show_relations %}{% block relations_block %}
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Leden</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for relation in relations %}
-                <tr>
-                    <td>{{ relation.root.person.canonical }}</td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td>Geen leden.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endblock %}{% endif %}
+{% block body_content %}
+    {% if not group or group.subgroupable %}
+        {% if group %}
+            <input type="radio" name="tabs" id="subgroups" checked>
+            <label for="subgroups" class="tab active">
+                <span>Subgroepen</span> 
+            </label>
+        {% endif %}
+        <div class="panel">
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ group ? 'Subgroepen' : 'Groepen' }}</th>
+                                <th>Aantal leden</th>
+                                <th>Aantal subgroepen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for group in groups ?? group.children %}
+                            <tr>
+                                <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                                <td>{{ group.relations|length }} {{ group.relations|length == 1 ? 'lid' : 'leden' }}</td>
+                                <td>{{ group.children|length }} subgroep{{ group.children|length != 1 ? 'en' : '' }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                {% if group %}
+                                <td>Geen subgroepen.</td>
+                                {% else %}
+                                <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><a href="{{ path("admin_group_new", { 'id': group.id ?? '' }) }}">Nieuwe {{ group ? 'sub' : '' }}groep toevoegen</a></td>  
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if group %}
+        {% if group.relationable %}
+            <input type="radio" name="tabs" id="groupsmembers" {{ group.subgroupable ? '' : 'checked' }}>
+            <label for="groupsmembers" class="tab {{ group.subgroupable ? '' : 'active' }}">
+                <span>Groepsleden</span>
+            </label>
+            <div class="panel">
+                <div class="card">
+                    <div class="table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Leden</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for relation in group.relations %}
+                                <tr>
+                                    <td>{{ relation.root.person.canonical }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Geen leden.</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td><a href="{{ path('admin_group_relation_new', { 'id': group.id }) }}">Lid toevoegen</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <input type="radio" name="tabs" id="details" {{ group.relationable or group.subgroupable ? '' : 'checked' }}>
+        <label for="details" class="tab {{ group.relationable or group.subgroupable ? '' : 'active' }}">
+            <span>Details</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Titel</th>
+                                <td>{{ group.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Beschrijving</th>
+                                <td>{{ group.description }}</td>
+                            </tr>
+                            <tr>
+                                <th>Mag groepsleden bevatten</th>
+                                <td>{{ group.relationable ? "Ja" : "Nee" }}</td>
+                            </tr>
+                            <tr> 
+                                <th>Mag subgroepen bevatten</th>
+                                <td>{{ group.subgroupable ? "Ja" : "Nee" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Aanpassingen</th>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Door</th>
+                                                <th>Tijdstip</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for modif in modifs %}
+                                            <tr>
+                                                <td>{{ modif.auth.person.fullname }}</td>
+                                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>Geen aanpassingen.</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

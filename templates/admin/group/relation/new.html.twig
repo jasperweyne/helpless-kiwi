@@ -1,0 +1,17 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Lid toevoegen aan groep ' ~ group.name %}
+{% endif %}
+
+{% block body %}
+    <div class="form">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="button-group">
+                <button type="submit" class="button add icon">Toevoegen</button>
+                <a href="{{ path('admin_group_show', { 'id': group.id }) }}" class="button secondary">Annuleren</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

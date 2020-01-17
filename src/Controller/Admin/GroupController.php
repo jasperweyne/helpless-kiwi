@@ -2,15 +2,15 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Group\Category;
-use App\Entity\Group\Group;
 use App\Template\Annotation\MenuItem;
-use App\Entity\Group\Taxonomy;
+use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use App\Log\EventService;
+use App\Log\Doctrine\EntityUpdateEvent;
 
 /**
  * Group category controller.
@@ -19,6 +19,13 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class GroupController extends AbstractController
 {
+    private $events;
+
+    public function __construct(EventService $events)
+    {
+        $this->events = $events;
+    }
+
     /**
      * Generate default groups.
      *
@@ -54,37 +61,118 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Creates a new group entity.
+     *
+     * @Route("/new/{id?}", name="new", methods={"GET", "POST"})
+     */
+    public function newAction(Request $request, ?Group $parent)
+    {
+        $group = new Group();
+
+        $form = $this->createForm('App\Form\Group\GroupType', $group);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($group);
+
+            if ($parent) {
+                $parent->addChild($group);
+                $em->persist($parent);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
+        }
+
+        return $this->render('admin/group/new.html.twig', [
+            'group' => $group,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * Lists all groups.
      *
      * @MenuItem(title="Groepen", menu="admin")
      * @Route("/{id?}", name="show", methods={"GET"})
      */
-    public function showAction(Request $request, ?Taxonomy $taxonomy)
+    public function showAction(Request $request, ?Group $group)
     {
         $em = $this->getDoctrine()->getManager();
 
-        if (!$taxonomy && $request->query->get('showall')) {
-            $children = $em->getRepository(Category::class)->findAll();
-            $instances = $em->getRepository(Group::class)->findAll();
-
-            return $this->render('admin/group/show.html.twig', [
-                'taxonomy' => null,
-                'children' => $children,
-                'instances' => $instances,
-                'relations' => [],
-                'show_instances' => true,
-            ]);
+        if (!$group) {
+            if ($request->query->get('showall')) {
+                return $this->render('admin/group/show.html.twig', [
+                    'group' => null,
+                    'all_groups' => true,
+                    'groups' => $em->getRepository(Group::class)->findAll(),
+                ]);
+            } else {
+                return $this->render('admin/group/show.html.twig', [
+                    'group' => null,
+                    'groups' => $em->getRepository(Group::class)->findBy(['parent' => null]),
+                ]);
+            }
         }
 
-        $children = $em->getRepository(Category::class)->findBy(['parent' => $taxonomy]);
-        $instances = $em->getRepository(Group::class)->findBy(['parent' => $taxonomy]);
-        $relations = $em->getRepository(Relation::class)->findBy(['taxonomy' => $taxonomy]);
-
         return $this->render('admin/group/show.html.twig', [
-            'taxonomy' => $taxonomy,
-            'children' => $children,
-            'instances' => $instances,
-            'relations' => $relations,
+            'group' => $group,
+            'modifs' => $this->events->findBy($group, EntityUpdateEvent::class),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing group entity.
+     *
+     * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
+     */
+    public function editAction(Request $request, Group $group)
+    {
+        $form = $this->createForm('App\Form\Group\GroupType', $group);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
+        }
+
+        return $this->render('admin/group/edit.html.twig', [
+            'group' => $group,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to generate a new relation to a group entity.
+     *
+     * @Route("/relation/new/{id}", name="relation_new", methods={"GET", "POST"})
+     */
+    public function relationNewAction(Request $request, Group $group)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $relation = new Relation();
+        $relation->setGroup($group);
+
+        $form = $this->createForm('App\Form\Group\RelationType', $relation);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($relation);
+            $em->flush();
+
+            $this->addFlash('success', $relation->getPerson()->getFullname().' toegevoegd!');
+
+            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
+        }
+
+        return $this->render('admin/group/relation/new.html.twig', [
+            'group' => $group,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -92,7 +180,7 @@ class GroupController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $boards = new Category();
+        $boards = new Group();
         $boards
             ->setName('Besturen')
         ;
@@ -105,23 +193,21 @@ class GroupController extends AbstractController
         ;
         $em->persist($current);
 
-        $committees = new Category();
+        $committees = new Group();
         $committees
             ->setName('Commissies')
-            ->setHasInstances(false)
         ;
         $em->persist($committees);
 
-        $boards = new Category();
-        $boards
+        $boards2 = new Group();
+        $boards2
             ->setName('Disputen')
         ;
-        $em->persist($boards);
+        $em->persist($boards2);
 
-        $positions = new Category();
+        $positions = new Group();
         $positions
             ->setName('Functies')
-            ->setHasChildren(false)
         ;
         $em->persist($positions);
 
