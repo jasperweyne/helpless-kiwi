@@ -41,6 +41,11 @@ class Group
     protected $children;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="author")
+     */
+    private $activities;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $readonly;
@@ -136,6 +141,16 @@ class Group
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * Get activities organized by group.
+     *
+     * @return string
+     */
+    public function getActivities()
+    {
+        return $this->activities;
     }
 
     public function getParent(): ?self

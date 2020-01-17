@@ -52,8 +52,8 @@ class Activity
     private $location;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
-     * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group",inversedBy="activities")
+     * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id", nullable=true)
      */
     private $author;
 

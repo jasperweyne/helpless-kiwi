@@ -29,6 +29,7 @@ class ActivityEditType extends AbstractType
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
+                'placeholder' => "geen groep",
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
                         ->andWhere('t.active = TRUE');
