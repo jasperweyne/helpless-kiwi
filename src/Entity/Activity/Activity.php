@@ -52,7 +52,7 @@ class Activity
     private $location;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group",inversedBy="activities")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id", nullable=true)
      */
     private $author;
@@ -242,7 +242,7 @@ class Activity
      *
      * @param Group $author
      */
-    public function setAuthor(Group $author): self
+    public function setAuthor(?Group $author): self
     {
         $this->author = $author;
 
