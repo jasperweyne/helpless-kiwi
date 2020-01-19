@@ -2,7 +2,6 @@
 
 namespace App\Form\Person;
 
-use App\Controller\Admin\Person\PersonController;
 use App\Entity\Person\PersonField;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
@@ -20,7 +19,7 @@ class PersonFieldType extends AbstractType
             ->add('slug', TextType::class)
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
-                    $vals = array_keys(PersonController::TYPES);
+                    $vals = array_keys(PersonType::TYPES);
 
                     return array_combine($vals, $vals);
                 }),

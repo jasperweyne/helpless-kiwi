@@ -31,11 +31,6 @@ class Person
     private $email;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, fetch="EAGER")
-     */
-    private $fieldValues;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $shortname_expr;
@@ -45,9 +40,15 @@ class Person
      */
     private $name_expr;
 
-    private $shortname;
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, fetch="EAGER")
+     */
+    private $fieldValues;
 
-    private $name;
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\PersonScheme")
+     */
+    private $scheme;
 
     public function __construct()
     {
@@ -151,15 +152,26 @@ class Person
         return $this;
     }
 
-    public function getFields(): array
+    /**
+     * @return Collection|PersonValue[]
+     */
+    public function getValues(): Collection
     {
-        $fields = [];
-        foreach ($this->getFieldValues() as $field) {
-            $name = $field->getBuiltin() ?? $field->getField()->getSlug();
-            $fields[$name] = $field->getValue();
-        }
+        if ($this->getScheme()) {
+            // For each field in the scheme, map it to the corresponding PersonValue
+            // associated with $this
+            $mapToValue = function ($field) {
+                $findValue = function ($value) use ($field) {
+                    return $value->getField()->getId() == $field->getId();
+                };
 
-        return $fields;
+                return $this->getFieldValues()->filter($findValue)->first();
+            };
+
+            return $this->getScheme()->getFields()->map($mapToValue);
+        } else {
+            return $this->getFieldValues();
+        }
     }
 
     public function getShortnameExpr(): ?string
@@ -169,7 +181,6 @@ class Person
 
     public function setShortnameExpr(?string $shortname_expr): self
     {
-        $this->shortname = null;
         $this->shortname_expr = $shortname_expr;
 
         return $this;
@@ -182,28 +193,45 @@ class Person
 
     public function setNameExpr(?string $name_expr): self
     {
-        $this->name = null;
         $this->name_expr = $name_expr;
+
+        return $this;
+    }
+
+    public function getScheme(): ?PersonScheme
+    {
+        return $this->scheme;
+    }
+
+    public function setScheme(?PersonScheme $scheme): self
+    {
+        $this->scheme = $scheme;
 
         return $this;
     }
 
     public function getName(): ?string
     {
-        if (is_null($this->name)) {
-            $this->name = $this->evalExpr($this->getNameExpr());
+        $ownExpr = $this->getNameExpr();
+        $scheme = $this->getScheme();
+
+        if (is_null($ownExpr) && is_null($scheme)) {
+            return null;
         }
 
-        return $this->name;
+        return $this->evalExpr($ownExpr ?? $scheme->getNameExpr());
     }
 
     public function getShortname(): ?string
     {
-        if (is_null($this->shortname)) {
-            $this->shortname = $this->evalExpr($this->getShortnameExpr());
+        $ownExpr = $this->getNameExpr();
+        $scheme = $this->getScheme();
+
+        if (is_null($ownExpr) && is_null($scheme)) {
+            return null;
         }
 
-        return $this->shortname;
+        return $this->evalExpr($ownExpr ?? $scheme->getShortnameExpr());
     }
 
     public function getCanonical(): ?string
@@ -237,7 +265,11 @@ class Person
             return $arguments[$str] ?? null;
         });
 
-        $vars = $this->getFields();
+        $vars = [];
+        foreach ($this->getValues() as $value) {
+            $name = $value->getBuiltin() ?? $value->getField()->getSlug();
+            $vars[$name] = $value->getValue();
+        }
         $vars['auth'] = $this->getAuth();
 
         try {

@@ -22,7 +22,7 @@ class PersonField
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $slug;
 
@@ -30,6 +30,11 @@ class PersonField
      * @ORM\Column(type="string", length=255)
      */
     private $valueType;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\PersonScheme", inversedBy="fields")
+     */
+    private $scheme;
 
     /**
      * Get id.
@@ -85,6 +90,18 @@ class PersonField
     public function setValueType(string $valueType): self
     {
         $this->valueType = $valueType;
+
+        return $this;
+    }
+
+    public function getScheme(): ?PersonScheme
+    {
+        return $this->scheme;
+    }
+
+    public function setScheme(?PersonScheme $scheme): self
+    {
+        $this->scheme = $scheme;
 
         return $this;
     }

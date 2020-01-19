@@ -5,7 +5,7 @@
                 <th>E-mailadres</th>
                 <td>{{ person.email ?? '' }}</td>
             </tr>
-            {% for value in person.fieldValues %}
+            {% for value in person.values %}
             <tr>
                 <th>{{ value.field.name ?? value.builtin }}</th>
                 <td>{{ value.value }}</td>
@@ -20,6 +20,10 @@
                 {% else %}
                     <td>Nee, <a href="{{ path('admin_person_auth', { 'id': person.id }) }}">Account toevoegen</a></td>
                 {% endif %}
+            </tr>
+            <tr>
+                <th>Schema</th>
+                <td>{{ person.scheme.name ?? '' }}{% if person.scheme is null %}<i>Geen schema</i>{% endif %}</td>
             </tr>
             <tr>
                 <th>Gemaakt op</th>

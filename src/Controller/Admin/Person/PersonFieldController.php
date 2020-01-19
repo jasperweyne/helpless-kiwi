@@ -3,6 +3,7 @@
 namespace App\Controller\Admin\Person;
 
 use App\Entity\Person\PersonField;
+use App\Entity\Person\PersonScheme;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,13 +18,16 @@ class PersonFieldController extends AbstractController
     /**
      * Creates a new activity entity.
      *
-     * @Route("/new", name="new", methods={"GET", "POST"})
+     * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, PersonScheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
         $field = new PersonField();
+        $field
+            ->setScheme($scheme)
+        ;
 
         $form = $this->createForm('App\Form\Person\PersonFieldType', $field);
         $form->handleRequest($request);
@@ -32,11 +36,12 @@ class PersonFieldController extends AbstractController
             $em->persist($field);
             $em->flush();
 
-            return $this->redirectToRoute('admin_person_index');
+            return $this->redirectToRoute('admin_person_scheme_show', ['id' => $field->getScheme()->getId()]);
         }
 
         return $this->render('admin/person/field/new.html.twig', [
             'field' => $field,
+            'scheme' => $scheme,
             'form' => $form->createView(),
         ]);
     }
@@ -56,7 +61,7 @@ class PersonFieldController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
-            return $this->redirectToRoute('admin_person_index');
+            return $this->redirectToRoute('admin_person_scheme_show', ['id' => $field->getScheme()->getId()]);
         }
 
         return $this->render('admin/person/field/edit.html.twig', [
@@ -80,7 +85,7 @@ class PersonFieldController extends AbstractController
             $em->remove($field);
             $em->flush();
 
-            return $this->redirectToRoute('admin_person_index');
+            return $this->redirectToRoute('admin_person_scheme_show', ['id' => $field->getScheme()->getId()]);
         }
 
         return $this->render('admin/person/field/delete.html.twig', [

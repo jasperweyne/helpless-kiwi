@@ -1,24 +1,26 @@
 <?php
 
-namespace App\Form\Settings;
+namespace App\Form\Person;
 
+use App\Entity\Person\PersonScheme;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PersonSettingsType extends AbstractType
+class PersonSchemeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('person_name_expr_default', TextType::class, [
+            ->add('name', TextType::class)
+            ->add('name_expr', TextType::class, [
                 'required' => false,
-                'label' => 'Default Name Expression',
+                'label' => 'Name Expression',
             ])
-            ->add('person_shortname_expr_default', TextType::class, [
+            ->add('shortname_expr', TextType::class, [
                 'required' => false,
-                'label' => 'Default Shortname Expression',
+                'label' => 'Shortname Expression',
             ])
         ;
     }
@@ -26,7 +28,7 @@ class PersonSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'data_class' => PersonScheme::class,
         ]);
     }
 }

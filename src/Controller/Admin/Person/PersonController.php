@@ -4,9 +4,9 @@ namespace App\Controller\Admin\Person;
 
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
-use App\Entity\Person\PersonField;
+use App\Entity\Person\PersonScheme;
 use App\Entity\Person\PersonValue;
-use App\Entity\Settings\Settings;
+use App\Form\Person\PersonType;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -17,8 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Security\PasswordResetService;
 use App\Security\AuthUserProvider;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**
  * Person controller.
@@ -27,17 +25,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  */
 class PersonController extends AbstractController
 {
-    const TYPES = [
-        'string' => [
-            'type' => TextType::class,
-            'defs' => [],
-        ],
-        'switch' => [
-            'type' => CheckboxType::class,
-            'defs' => [],
-        ],
-    ];
-
     private $events;
 
     public function __construct(EventService $events)
@@ -56,56 +43,11 @@ class PersonController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $persons = $em->getRepository(Person::class)->findAll();
-        $fields = $em->getRepository(PersonField::class)->findAll();
-
-        $form = $this->createForm('App\Form\Settings\PersonSettingsType');
-
-        $data = [];
-        foreach ($form->all() as $input) {
-            $field = $input->getName();
-            $value = $em->getRepository(Settings::class)->findOneBy(['name' => $field]);
-
-            if ($value) {
-                $data[$field] = $value->getValue();
-            }
-        }
-
-        $form->setData($data);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            foreach ($form->all() as $input) {
-                $field = $input->getName();
-                $value = $em->getRepository(Settings::class)->findOneBy(['name' => $field]);
-
-                if (!array_key_exists($field, $data)) {
-                    if ($value) {
-                        $em->remove($value);
-                    }
-                    continue;
-                }
-
-                if (!$value) {
-                    $value = new Settings();
-                    $value->setName($field);
-
-                    $em->persist($value);
-                }
-
-                $value->setValue($data[$field] ?? null);
-            }
-
-            $em->flush();
-
-            return $this->redirectToRoute('admin_person_index');
-        }
+        $schemes = $em->getRepository(PersonScheme::class)->findAll();
 
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
-            'fields' => $fields,
-            'form' => $form->createView(),
+            'schemes' => $schemes,
         ]);
     }
 
@@ -114,29 +56,48 @@ class PersonController extends AbstractController
      *
      * @Route("/new", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newSelectAction(Request $request)
+    {
+        $form = $this->createForm('App\Form\Person\PersonSchemeSelectorType');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $scheme = $form['scheme']->getData();
+
+            return $this->redirectToRoute('admin_person_new_selected', ['id' => $scheme->getId()]);
+        }
+
+        return $this->render('admin/person/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Creates a new activity entity.
+     *
+     * @Route("/new/{id}", name="new_selected", methods={"GET", "POST"})
+     */
+    public function newAction(Request $request, PersonScheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
         $person = new Person();
-        $fields = $em->getRepository(PersonField::class)->findAll();
+        $person
+            ->setScheme($scheme)
+        ;
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields($fields));
+        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $person
-                ->setNameExpr($em->getRepository(Settings::class)->findValue('person_name_expr_default'))
-                ->setShortnameExpr($em->getRepository(Settings::class)->findValue('person_shortname_expr_default'))
-            ;
             $em->persist($person);
 
-            foreach ($fields as $field) {
+            foreach ($scheme->getFields() as $field) {
                 $value = new PersonValue();
                 $value
                     ->setPerson($person)
                     ->setField($field)
-                    ->setValue($form[$field->getSlug()]->getData())
+                    ->setValue($form[$field->getId()]->getData())
                 ;
                 $em->persist($value);
             }
@@ -230,8 +191,11 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $fields = $em->getRepository(PersonField::class)->findAll();
-        $form = $this->createForm('App\Form\Person\PersonType', $person, $this->buildFormFields($fields));
+        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        foreach ($person->getValues() as $value) {
+            $form->get(PersonType::valueRef($value))->setData($value->getValue());
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -284,33 +248,5 @@ class PersonController extends AbstractController
             ->setMethod('DELETE')
             ->getForm()
         ;
-    }
-
-    private function buildFormFields($fields)
-    {
-        $parse = function ($field) {
-            $type = TextType::class;
-            $opts = [];
-
-            if (array_key_exists($field->getValueType(), self::TYPES)) {
-                $type = self::TYPES[$field->getValueType()]['type'] ?? TextType::class;
-                $opts = self::TYPES[$field->getValueType()]['defs'] ?? [];
-            } else {
-                throw new \UnexpectedValueException("Unknown person field type '".$field->getValueType()."'");
-            }
-
-            // Set label
-            $opts['label'] = $opts['label'] ?? $field->getName();
-
-            return [
-                'name' => $field->getSlug(),
-                'type' => $type,
-                'options' => $opts,
-            ];
-        };
-
-        return [
-            'fields' => array_map($parse, $fields),
-        ];
     }
 }
