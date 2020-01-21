@@ -58,6 +58,12 @@ class Activity
     private $author;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
+     */
+    private $target;
+
+    /**
      * @ORM\Column(type="string")
      */
     private $color;
@@ -245,6 +251,28 @@ class Activity
     public function setAuthor(?Group $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get target.
+     *
+     * @return Group
+     */
+    public function getTarget(): ?Group
+    {
+        return $this->target;
+    }
+
+    /**
+     * Set target.
+     *
+     * @param Group $target
+     */
+    public function setTarget(?Group $target): self
+    {
+        $this->target = $target;
 
         return $this;
     }
