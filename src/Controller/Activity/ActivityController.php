@@ -32,7 +32,6 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $groups = $em->getRepository(Group::class)->findAllFor($this->getUser()->getPerson());
-
         $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
 
         return $this->render('activity/index.html.twig', [
@@ -147,12 +146,11 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
       
-
         $groups = $em->getRepository(Group::class)->findAllFor($this->getUser()->getPerson());
-        $toptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity,$groups);
+        $targetoptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity,$groups);
 
         $forms = [];
-        foreach ($toptions as $option) {
+        foreach ($targetoptions as $option) {
             $forms[] = [
                 'data' => $option,
                 'form' => $this->singleRegistrationForm($option)->createView(),

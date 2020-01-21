@@ -34,6 +34,5 @@ class OptionRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-
     
 }

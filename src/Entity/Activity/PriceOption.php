@@ -106,7 +106,7 @@ class PriceOption
         return $this;
     }
 
-        /**
+    /**
      * Get target.
      *
      * @return Group
