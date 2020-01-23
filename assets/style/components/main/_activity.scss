@@ -47,6 +47,8 @@
                     background-color: #0c0;
                     color: black;
                     width: max-content;
+                    overflow-y: scroll;
+                    max-height: 60vh;
                 }
 
                 &:active, &:hover, &:focus {
