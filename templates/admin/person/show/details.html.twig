@@ -23,7 +23,13 @@
             </tr>
             <tr>
                 <th>Schema</th>
-                <td>{{ person.scheme.name ?? '' }}{% if person.scheme is null %}<i>Geen schema</i>{% endif %}</td>
+                <td>
+                    {% if person.scheme %}
+                        <a href="{{ path('admin_person_scheme_show', { 'id': person.scheme.id }) }}">{{ person.scheme.name }}</a>
+                    {% else %}
+                        <i>Geen schema</i>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Gemaakt op</th>
