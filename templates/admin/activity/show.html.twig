@@ -38,8 +38,8 @@
                                 <td>{{ activity.author.name ?? '' }}</td>
                             </tr>
                             <tr>
-                                <th>Activiteit voor</th>
-                                <td>{{ activity.target.name ?? 'Iedereen' }}</td>
+                                <th>Doelgroep</th>
+                                <td>{{ activity.target.name ?? '' }}{% if not activity.target %}<i>Iedereen</i>{% endif %}</td>
                             </tr>
                             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
                                 <tr>
@@ -105,7 +105,7 @@
                                             <tr>
                                                 <td>{{ option.name }}</td>
                                                 <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
-                                                <td> {{option.target.name ?? 'Iedereen' }}  </td>
+                                                <td>{{ option.target.name ?? '' }}{% if not option.target %}<i>Iedereen</i>{% endif %}</td>
                                                 <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
                                             </tr>
                                         {% else %}
