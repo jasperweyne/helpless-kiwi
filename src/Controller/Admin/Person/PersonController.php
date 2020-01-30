@@ -6,6 +6,7 @@ use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonScheme;
 use App\Entity\Person\PersonValue;
+use App\Form\Person\PersonType;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -108,7 +109,7 @@ class PersonController extends AbstractController
                 $value
                     ->setPerson($person)
                     ->setField($field)
-                    ->setValue($form[$field->getId()]->getData())
+                    ->setValue($form[PersonType::formRef($field)]->getData())
                 ;
                 $em->persist($value);
             }
@@ -281,7 +282,7 @@ class PersonController extends AbstractController
                 $value
                     ->setPerson($person)
                     ->setField($field)
-                    ->setValue($form[$field->getId()]->getData())
+                    ->setValue($form[PersonType::formRef($field)]->getData())
                 ;
                 $em->persist($value);
             }
