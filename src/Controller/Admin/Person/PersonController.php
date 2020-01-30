@@ -11,6 +11,7 @@ use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Mail\MailService;
 use App\Template\Annotation\MenuItem;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -207,6 +208,84 @@ class PersonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
+            $em->flush();
+
+            return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
+        }
+
+        return $this->render('admin/person/edit.html.twig', [
+            'person' => $person,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing person entity.
+     *
+     * @Route("/{id}/scheme", name="scheme", methods={"GET", "POST"})
+     */
+    public function schemeSelectAction(Request $request, Person $person)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm('App\Form\Person\PersonSchemeSelectorType');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $scheme = $form['scheme']->getData();
+
+            if ($person->getScheme()->getId() == $scheme->getId()) {
+                $this->addFlash('error', $person->getCanonical().' heeft al '.$scheme->getName().' als schema, kies een ander schema!');
+
+                return $this->render('admin/person/scheme.html.twig', [
+                    'person' => $person,
+                    'form' => $form->createView(),
+                ]);
+            }
+
+            return $this->redirectToRoute('admin_person_scheme_selected', ['person_id' => $person->getId(), 'scheme_id' => $scheme->getId()]);
+        }
+
+        return $this->render('admin/person/scheme.html.twig', [
+            'person' => $person,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing person entity.
+     *
+     * @Route("/{person_id}/scheme/{scheme_id}", name="scheme_selected", methods={"GET", "POST"})
+     * @ParamConverter("person", options={"id": "person_id"})
+     * @ParamConverter("personScheme", options={"id": "scheme_id"})
+     */
+    public function schemeAction(Request $request, Person $person, PersonScheme $personScheme, AuthUserProvider $authProvider)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $person->setScheme($personScheme);
+
+        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $auth = $person->getAuth();
+            $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
+
+            foreach ($person->getFieldValues() as $value) {
+                $em->remove($value);
+            }
+
+            foreach ($personScheme->getFields() as $field) {
+                $value = new PersonValue();
+                $value
+                    ->setPerson($person)
+                    ->setField($field)
+                    ->setValue($form[$field->getId()]->getData())
+                ;
+                $em->persist($value);
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);

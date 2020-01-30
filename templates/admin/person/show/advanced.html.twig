@@ -4,6 +4,7 @@
         {{ form_widget(form) }}
         <div class="button-group">
             <button type="submit">Opslaan</button>
+            <a class="button" href="{{ path('admin_person_scheme', { 'id': person.id }) }}">Schema wijzigen</a>
         </div>
     {{ form_end(form) }}
 </div>
