@@ -58,6 +58,17 @@ class PersonController extends AbstractController
      */
     public function newSelectAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $schemes = $em->getRepository(PersonScheme::class)->findAll();
+        if (0 == count($schemes)) {
+            $this->addFlash('error', 'Kan geen persoon aanmaken zonder schema. Maak eerst een schema aan.');
+
+            return $this->redirectToRoute('admin_person_scheme_new');
+        } elseif (1 == count($schemes)) {
+            return $this->redirectToRoute('admin_person_new_selected', ['id' => $schemes[0]->getId()]);
+        }
+
         $form = $this->createForm('App\Form\Person\PersonSchemeSelectorType');
         $form->handleRequest($request);
 
