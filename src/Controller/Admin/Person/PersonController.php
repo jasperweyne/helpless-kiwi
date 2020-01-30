@@ -6,7 +6,6 @@ use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonScheme;
 use App\Entity\Person\PersonValue;
-use App\Form\Person\PersonType;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -203,15 +202,6 @@ class PersonController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
-        foreach ($person->getKeyValues() as $keyVal) {
-            $key = $keyVal['key'];
-            $value = $keyVal['value'];
-
-            if (!is_null($value)) {
-                $form->get(PersonType::formRef($key))->setData($value->getValue());
-            }
-        }
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

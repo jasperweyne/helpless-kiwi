@@ -4,6 +4,7 @@ namespace App\Form\Person;
 
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonField;
+use App\Entity\Person\PersonValue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -63,8 +64,16 @@ class PersonType extends AbstractType
         foreach ($fields as $option) {
             $builder->add($option['name'], $option['type'], $option['options']);
 
+            if (!is_null($option['value'])) {
+                $builder->get($option['name'])
+                    ->setData($option['value'])
+                ;
+            }
+
             if (!is_null($option['trans'])) {
-                $builder->get($option['name'])->addModelTransformer($option['trans']);
+                $builder->get($option['name'])
+                    ->addModelTransformer($option['trans'])
+                ;
             }
         }
     }
@@ -79,17 +88,23 @@ class PersonType extends AbstractType
         $fields = [];
         foreach ($person->getKeyValues() as $keyVal) {
             $f = $keyVal['key'];
+            $v = $keyVal['value'];
+
+            if ($v instanceof PersonValue) {
+                $v = $v->getValue();
+            }
+
             if ($f instanceof PersonField) {
-                $fields[] = $this->createFormField($f, $f->getName(), $f->getValueType());
+                $fields[] = $this->createFormField($f, $v, $f->getName(), $f->getValueType());
             } else {
-                return $this->createFormField($f);
+                return $this->createFormField($f, $v);
             }
         }
 
         return $fields;
     }
 
-    private function createFormField($key, ?string $name = null, ?string $valueType = null)
+    private function createFormField($key, $value, ?string $name = null, ?string $valueType = null)
     {
         $type = TextType::class;
         $opts = [];
@@ -116,6 +131,7 @@ class PersonType extends AbstractType
             'type' => $type,
             'options' => $opts,
             'trans' => $trans,
+            'value' => $value,
         ];
     }
 }
