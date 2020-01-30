@@ -12,6 +12,11 @@
     {% block body %}
         <h4>{{ personal.canonical }}</h4>
         <span>E-mail: {{ personal.email ?? '' }}</span><br />
+        {% for x in personal.keyValues %}
+            <span>{{ x.key }}: {{ x.value }}</span><br />
+        {% endfor %}
+        <br />
+        <a href="{{ path('profile_edit') }}">Gegevens bewerken</a>
     {% endblock %}
     </div>
 {% endblock %}
