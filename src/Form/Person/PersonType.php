@@ -6,6 +6,7 @@ use App\Entity\Person\Person;
 use App\Entity\Person\PersonField;
 use App\Entity\Person\PersonValue;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,20 +15,35 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class PersonType extends AbstractType
 {
-    const TYPES = [
-        'string' => [
-            'type' => TextType::class,
-            'defs' => [],
-        ],
-        'switch' => [
-            'type' => CheckboxType::class,
-            'defs' => [],
-        ],
-    ];
+    public static function TYPES()
+    {
+        return [
+            'string' => [
+                'type' => TextType::class,
+                'defs' => [],
+            ],
+            'switch' => [
+                'type' => CheckboxType::class,
+                'defs' => [
+                    'required' => false,
+                ],
+                'trans' => new CallbackTransformer(
+                    function ($encodedToBool) {
+                        // transform the encoded value back to a boolean
+                        return json_decode($encodedToBool);
+                    },
+                    function ($switchToString) {
+                        // transform the form value to a string
+                        return json_encode($switchToString);
+                    }
+                ),
+            ],
+        ];
+    }
 
     public static function fieldRef(PersonField $personField)
     {
-        return $personField->getSlug();
+        return $personField->getId();
     }
 
     public static function valueRef(PersonValue $personValue)
@@ -51,6 +67,10 @@ class PersonType extends AbstractType
         // Other fields
         foreach ($fields as $option) {
             $builder->add($option['name'], $option['type'], $option['options']);
+
+            if (!is_null($option['trans'])) {
+                $builder->get($option['name'])->addModelTransformer($option['trans']);
+            }
         }
     }
 
@@ -97,11 +117,13 @@ class PersonType extends AbstractType
     {
         $type = TextType::class;
         $opts = [];
+        $trans = null;
 
         if (!is_null($valueType)) {
-            if (array_key_exists($valueType, self::TYPES)) {
-                $type = self::TYPES[$valueType]['type'] ?? TextType::class;
-                $opts = self::TYPES[$valueType]['defs'] ?? [];
+            if (array_key_exists($valueType, self::TYPES())) {
+                $type = self::TYPES()[$valueType]['type'] ?? TextType::class;
+                $opts = self::TYPES()[$valueType]['defs'] ?? [];
+                $trans = self::TYPES()[$valueType]['trans'] ?? null;
             } else {
                 throw new \UnexpectedValueException("Unknown person field type '".$valueType."'");
             }
@@ -117,6 +139,7 @@ class PersonType extends AbstractType
             'name' => $id,
             'type' => $type,
             'options' => $opts,
+            'trans' => $trans,
         ];
     }
 }

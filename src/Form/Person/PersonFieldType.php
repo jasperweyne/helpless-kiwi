@@ -16,10 +16,13 @@ class PersonFieldType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('slug', TextType::class)
+            ->add('slug', TextType::class, [
+                'label' => 'Expressie naam',
+                'required' => false,
+            ])
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
-                    $vals = array_keys(PersonType::TYPES);
+                    $vals = array_keys(PersonType::TYPES());
 
                     return array_combine($vals, $vals);
                 }),
