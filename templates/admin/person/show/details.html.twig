@@ -5,10 +5,10 @@
                 <th>E-mailadres</th>
                 <td>{{ person.email ?? '' }}</td>
             </tr>
-            {% for value in person.values %}
+            {% for x in person.keyValues %}
             <tr>
-                <th>{{ value.field.name ?? value.builtin }}</th>
-                <td>{{ value.value }}</td>
+                <th>{{ x.key }}</th>
+                <td>{{ x.value }}</td>
             </tr>
             {% endfor %}
             <tr>

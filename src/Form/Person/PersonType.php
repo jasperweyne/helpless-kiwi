@@ -4,7 +4,6 @@ namespace App\Form\Person;
 
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonField;
-use App\Entity\Person\PersonValue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -41,18 +40,14 @@ class PersonType extends AbstractType
         ];
     }
 
-    public static function fieldRef(PersonField $personField)
+    public static function formRef($key)
     {
-        return $personField->getId();
-    }
-
-    public static function valueRef(PersonValue $personValue)
-    {
-        if (!$personValue->getBuiltin()) {
-            return self::fieldRef($personValue->getField());
+        if ($key instanceof PersonField) {
+            return $key->getId();
+        } elseif (is_string($key)) {
+            return $key;
         }
-
-        return $personValue->getBuiltin();
+        throw new \LogicException();
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -82,38 +77,19 @@ class PersonType extends AbstractType
     private function buildFormFields(Person $person)
     {
         $fields = [];
-        if ($person->getScheme()) {
-            $schemeFields = $person->getScheme()->getFields();
-
-            foreach ($schemeFields as $field) {
-                $fields[] = $this->parsePersonField($field);
-            }
-        } else {
-            $personValues = $person->getFieldValues();
-
-            foreach ($personValues as $value) {
-                $fields[] = $this->parsePersonValue($value);
+        foreach ($person->getKeyValues() as $keyVal) {
+            $f = $keyVal['key'];
+            if ($f instanceof PersonField) {
+                $fields[] = $this->createFormField($f, $f->getName(), $f->getValueType());
+            } else {
+                return $this->createFormField($f);
             }
         }
 
         return $fields;
     }
 
-    private function parsePersonField(PersonField $f)
-    {
-        return $this->createFormField(self::fieldRef($f), $f->getName(), $f->getValueType());
-    }
-
-    private function parsePersonValue(PersonValue $v)
-    {
-        if (!$v->getBuiltin()) {
-            return $this->parsePersonField($v->getField());
-        }
-
-        return $this->createFormField(self::valueRef($v));
-    }
-
-    private function createFormField(string $id, ?string $name = null, ?string $valueType = null)
+    private function createFormField($key, ?string $name = null, ?string $valueType = null)
     {
         $type = TextType::class;
         $opts = [];
@@ -136,7 +112,7 @@ class PersonType extends AbstractType
         $opts['mapped'] = false;
 
         return [
-            'name' => $id,
+            'name' => self::formRef($key),
             'type' => $type,
             'options' => $opts,
             'trans' => $trans,

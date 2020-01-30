@@ -203,8 +203,13 @@ class PersonController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
-        foreach ($person->getValues() as $value) {
-            $form->get(PersonType::valueRef($value))->setData($value->getValue());
+        foreach ($person->getKeyValues() as $keyVal) {
+            $key = $keyVal['key'];
+            $value = $keyVal['value'];
+
+            if (!is_null($value)) {
+                $form->get(PersonType::formRef($key))->setData($value->getValue());
+            }
         }
 
         $form->handleRequest($request);

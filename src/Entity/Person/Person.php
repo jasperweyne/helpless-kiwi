@@ -155,23 +155,34 @@ class Person
     /**
      * @return Collection|PersonValue[]
      */
-    public function getValues(): Collection
+    public function getKeyValues(): Collection
     {
+        $keyVals = new ArrayCollection();
         if ($this->getScheme()) {
             // For each field in the scheme, map it to the corresponding PersonValue
             // associated with $this
-            $mapToValue = function ($field) {
+            foreach ($this->getScheme()->getFields() as $field) {
                 $findValue = function ($value) use ($field) {
                     return $value->getField()->getId() == $field->getId();
                 };
 
-                return $this->getFieldValues()->filter($findValue)->first();
-            };
+                $value = $this->getFieldValues()->filter($findValue)->first();
 
-            return $this->getScheme()->getFields()->map($mapToValue);
+                $keyVals[] = [
+                    'key' => $field,
+                    'value' => $value ? $value : null,
+                ];
+            }
         } else {
-            return $this->getFieldValues();
+            foreach ($this->getFieldValues() as $value) {
+                $keyVals[] = [
+                    'key' => $value->getBuiltin() ?? $value->getField(),
+                    'value' => $value,
+                ];
+            }
         }
+
+        return $keyVals;
     }
 
     public function getShortnameExpr(): ?string
@@ -266,9 +277,18 @@ class Person
         });
 
         $vars = [];
-        foreach ($this->getValues() as $value) {
-            $name = $value->getBuiltin() ?? $value->getField()->getSlug();
-            $vars[$name] = $value->getValue();
+        foreach ($this->getKeyValues() as $keyVal) {
+            $key = $keyVal['key'];
+            $value = $keyVal['value'];
+
+            if ($key instanceof PersonField) {
+                $key = $key->getSlug();
+            }
+            if ($value instanceof PersonValue) {
+                $value = $value->getValue();
+            }
+
+            $vars[$key] = $value;
         }
         $vars['auth'] = $this->getAuth();
 
