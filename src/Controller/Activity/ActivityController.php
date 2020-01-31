@@ -31,7 +31,12 @@ class ActivityController extends AbstractController
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $groups = $em->getRepository(Group::class)->findAllFor($this->getUser()->getPerson());
+
+        $groups = [];
+        if ($user = $this->getUser()) {
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+        }
+
         $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
 
         return $this->render('activity/index.html.twig', [
@@ -145,9 +150,13 @@ class ActivityController extends AbstractController
     public function showAction(Activity $activity)
     {
         $em = $this->getDoctrine()->getManager();
-      
-        $groups = $em->getRepository(Group::class)->findAllFor($this->getUser()->getPerson());
-        $targetoptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity,$groups);
+
+        $groups = [];
+        if ($user = $this->getUser()) {
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+        }
+
+        $targetoptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
 
         $forms = [];
         foreach ($targetoptions as $option) {
