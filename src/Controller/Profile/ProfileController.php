@@ -2,6 +2,8 @@
 
 namespace App\Controller\Profile;
 
+use App\Entity\Person\PersonValue;
+use App\Form\Person\PersonType;
 use App\Security\AuthUserProvider;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,6 +47,20 @@ class ProfileController extends AbstractController
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
+            foreach ($person->getKeyValues() as $keyVal) {
+                if (is_null($keyVal['value'])) {
+                    $field = $keyVal['key'];
+
+                    $value = new PersonValue();
+                    $value
+                        ->setPerson($person)
+                        ->setField($field)
+                        ->setValue($form[PersonType::formRef($field)]->getData())
+                    ;
+                    $em->persist($value);
+                }
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('profile_index');
@@ -52,6 +68,45 @@ class ProfileController extends AbstractController
 
         return $this->render('profile/edit.html.twig', [
             'person' => $person,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit logged in person.
+     *
+     * @Route("/update", name="update", methods={"GET", "POST"})
+     */
+    public function updateAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $person = $this->getUser()->getPerson();
+
+        $form = $this->createForm('App\Form\Person\PersonUpdateType', $person, ['person' => $person]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($person->getKeyValues() as $keyVal) {
+                if (is_null($keyVal['value'])) {
+                    $field = $keyVal['key'];
+
+                    $value = new PersonValue();
+                    $value
+                        ->setPerson($person)
+                        ->setField($field)
+                        ->setValue($form[PersonType::formRef($field)]->getData())
+                    ;
+                    $em->persist($value);
+                }
+            }
+
+            $em->flush();
+
+            return $this->redirect('/');
+        }
+
+        return $this->render('profile/update.html.twig', [
+            'personal' => $person,
             'form' => $form->createView(),
         ]);
     }
