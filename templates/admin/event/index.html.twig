@@ -46,7 +46,7 @@
 
 {% block pagination %}
 <div class="container row">
-    <div class="button" style="margin: 0 auto">
+    <div class="button">
         <a href="{{ pagination.hasPrev ? path('admin_event_index', { 'index': pagination.prev }) : '' }}">Prev</a>
         <a href="{{ pagination.hasNext ? path('admin_event_index', { 'index': pagination.next }) : '' }}">Next</a>
     </div>
