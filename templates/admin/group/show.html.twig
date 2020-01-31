@@ -15,6 +15,7 @@
     {% block buttons %}
         {% if group %}
             <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
+            <a href="{{ path('admin_group_delete', { 'id': group.id }) }}">Verwijderen</a>
             <a href="{{ path('admin_group_show', { 'id': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
         {% else %}
             {% if all_groups %}
@@ -53,6 +54,7 @@
                                 <th>{{ group ? 'Subgroepen' : 'Groepen' }}</th>
                                 <th>Aantal leden</th>
                                 <th>Aantal subgroepen</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,7 +69,7 @@
                                 {% if group %}
                                 <td>Geen subgroepen.</td>
                                 {% else %}
-                                <td>Geen groepen.{# Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?#}</td>
+                                <td>Geen groepen. Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?</td>
                                 {% endif %}
                             </tr>
                         {% endfor %}
@@ -94,13 +96,20 @@
                                 <tr>
                                     <th>Leden</th>
                                     <th>Aanvullende groepen</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                             {% for relation in group.relations %}
                                 <tr>
                                     <td>{{ relation.root.person.canonical }}</td>
-                                    <td>{{ relation.allTaxonomies|filter(a => a != group)|map(a => a.name)|join(', ') }}</td>
+                                    <td>
+                                        {% for r in relation.allRelations.toArray|filter(a => a.group != group) %}
+                                            <a href="{{ path('admin_group_show', { 'id': r.group.id }) }}">{{ r.group.name }}</a>{% if r.group.id != relation.root.group.id %} <a href="{{ path('admin_group_relation_delete', { 'id': r.id }) }}">&#128473;</a>{% endif %}{{ loop.last ? '' : ', ' }}
+                                        {% endfor %}
+                                    </td>
+                                    <td><a href="{{ path('admin_group_relation_add', { 'id': relation.id }) }}">Toevoegen</a></td>
+                                    <td><a href="{{ path('admin_group_relation_delete', { 'id': relation.root.id }) }}">Verwijderen</a></td>
                                 </tr>
                             {% else %}
                                 <tr>

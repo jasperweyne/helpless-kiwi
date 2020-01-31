@@ -29,7 +29,7 @@ class GroupController extends AbstractController
     /**
      * Generate default groups.
      *
-     * @ Route("/generate", name="generate_default", methods={"GET", "POST"})
+     * @Route("/generate", name="generate_default", methods={"GET", "POST"})
      */
     public function generateAction(Request $request)
     {
@@ -146,6 +146,30 @@ class GroupController extends AbstractController
     }
 
     /**
+     * Deletes a ApiKey entity.
+     *
+     * @Route("/{id}/delete", name="delete")
+     */
+    public function deleteAction(Request $request, Group $group)
+    {
+        $form = $this->createDeleteForm($group);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($group);
+            $em->flush();
+
+            return $this->redirectToRoute('admin_group_show');
+        }
+
+        return $this->render('admin/group/delete.html.twig', [
+            'group' => $group,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * Displays a form to generate a new relation to a group entity.
      *
      * @Route("/relation/new/{id}", name="relation_new", methods={"GET", "POST"})
@@ -174,6 +198,101 @@ class GroupController extends AbstractController
             'group' => $group,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Displays a form to generate a new relation to a group entity.
+     *
+     * @Route("/relation/add/{id}", name="relation_add", methods={"GET", "POST"})
+     */
+    public function relationAddAction(Request $request, Relation $parent)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $relation = new Relation();
+
+        $form = $this->createForm('App\Form\Group\RelationAddType', $relation);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($relation->getAllRelations()->exists(function ($x, $group) use ($relation) {
+                return $group->getId() === $relation->getGroup()->getId();
+            })) {
+                $this->addFlash('error', $relation->getGroup()->getName().' al in deze relatie!');
+
+                return $this->render('admin/group/relation/add.html.twig', [
+                    'relation' => $parent,
+                    'form' => $form->createView(),
+                ]);
+            }
+
+            $root = $parent->getRoot();
+            $relation->setParent($root);
+
+            $em->persist($relation);
+            $em->flush();
+
+            $this->addFlash('success', $relation->getGroup()->getName().' toegevoegd!');
+
+            return $this->redirectToRoute('admin_group_show', ['id' => $parent->getGroup()->getId()]);
+        }
+
+        return $this->render('admin/group/relation/add.html.twig', [
+            'relation' => $parent,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Deletes a ApiKey entity.
+     *
+     * @Route("/relation/delete/{id}", name="relation_delete")
+     */
+    public function relationDeleteAction(Request $request, Relation $relation)
+    {
+        $form = $this->createRelationDeleteForm($relation);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($relation);
+            $em->flush();
+
+            return $this->redirectToRoute('admin_group_show', ['id' => $relation->getGroup()->getId()]);
+        }
+
+        return $this->render('admin/group/relation/delete.html.twig', [
+            'relation' => $relation,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Creates a form to check out all checked in users.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createDeleteForm(Group $group)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('admin_group_delete', ['id' => $group->getId()]))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+
+    /**
+     * Creates a form to check out all checked in users.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createRelationDeleteForm(Relation $group)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('admin_group_relation_delete', ['id' => $group->getId()]))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
     }
 
     private function generateStructure($defaultBoard)

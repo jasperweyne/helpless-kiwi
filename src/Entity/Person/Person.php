@@ -214,6 +214,8 @@ class Person
 
         if (' ' !== $this->getFullname()) {
             $name = $this->getFullname();
+        } elseif (!is_null($this->getEmail())) {
+            $name = $this->getEmail();
         }
 
         return $name;
