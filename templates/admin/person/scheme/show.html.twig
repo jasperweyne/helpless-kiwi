@@ -4,98 +4,33 @@
     {% set page_title = 'Schema ' ~ scheme.name %}
     
     {% block buttons %}
+        <a href="{{ path("admin_person_new_selected", { 'id': scheme.id }) }} ">Nieuwe persoon</a>
         <a href="{{ path('admin_person_scheme_edit', { 'id': scheme.id }) }}">Bewerken</a>
         <a href="{{ path('admin_person_scheme_delete', { 'id': scheme.id }) }}">Verwijderen</a>
+        <a href="{{ path("admin_person_index") }} ">Terug</a>
     {% endblock %}
 {% endif %}
 
-{% block body %}
-    <div class="table">
-        <table>
-            <tbody>
-                <tr>
-                    <th>Titel</th>
-                    <td>{{ scheme.name }}</td>
-                </tr>
-                <tr>
-                    <th>Velden</th>
-                    <td>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Naam</th>
-                                    <th>Type</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for field in scheme.fields %}
-                                    <tr>
-                                        <td>{{ field.name }}</td>
-                                        <td>{{ field.valueType }}</td>
-                                        <td>
-                                            <a href="{{ path('admin_person_field_edit', { 'id': field.id }) }}">Bewerken</a>
-                                            <a href="{{ path('admin_person_field_delete', { 'id': field.id }) }}">Verwijderen</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                <tr>
-                                    <td><a href="{{ path('admin_person_field_new', { 'id': scheme.id }) }}">Veld toevoegen</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Naam expressie</th>
-                    <td>
-                        {{ scheme.nameExpr }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Korte naam expressie</th>
-                    <td>
-                        {{ scheme.shortNameExpr }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Gemaakt op</th>
-                    <td>
-                        {{ createdAt.time|date('d-m-Y - H:i') }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Gemaakt door</th>
-                    <td>
-                        {{ createdAt.auth.person.canonical ?? '' }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Aanpassingen</th>
-                    <td>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Door</th>
-                                    <th>Tijdstip</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for modif in modifs %}
-                                <tr>
-                                    <td>{{ modif.auth.person.canonical }}</td>
-                                    <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td>Geen aanpassingen.</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+{% block body_wrap %}
+    <div class="tabs">
+        <input type="radio" name="tabs" id="overview" checked>
+        <label for="overview" class="tab">
+            <span>Overzicht</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                {% include 'admin/person/scheme/show/overview.html.twig' %}
+            </div>
+        </div>
+
+        <input type="radio" name="tabs" id="details">
+        <label for="details" class="tab">
+            <span>Details</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                {% include 'admin/person/scheme/show/details.html.twig' %}
+            </div>
+        </div>
     </div>
 {% endblock %}

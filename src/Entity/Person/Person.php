@@ -121,6 +121,24 @@ class Person
         return $this;
     }
 
+    public function getValue($field): ?PersonValue
+    {
+        foreach ($this->fieldValues as $value) {
+            if ($field instanceof PersonField) {
+                $valueField = $value->getField();
+                if (!is_null($valueField) && $valueField->getId() == $field->getId()) {
+                    return $value;
+                }
+            } else {
+                if ($value->getBuiltin() == $field) {
+                    return $value;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return Collection|PersonValue[]
      */
@@ -159,18 +177,10 @@ class Person
     {
         $keyVals = new ArrayCollection();
         if ($this->getScheme()) {
-            // For each field in the scheme, map it to the corresponding PersonValue
-            // associated with $this
             foreach ($this->getScheme()->getFields() as $field) {
-                $findValue = function ($value) use ($field) {
-                    return $value->getField()->getId() == $field->getId();
-                };
-
-                $value = $this->getFieldValues()->filter($findValue)->first();
-
                 $keyVals[] = [
                     'key' => $field,
-                    'value' => $value ? $value : null,
+                    'value' => $this->getValue($field),
                 ];
             }
         } else {

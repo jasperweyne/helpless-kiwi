@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin\Person;
 
+use App\Entity\Person\Person;
 use App\Entity\Person\PersonScheme;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -54,14 +55,35 @@ class PersonSchemeController extends AbstractController
     /**
      * Finds and displays a person entity.
      *
+     * @Route("/null", name="null", methods={"GET", "POST"})
+     */
+    public function nullAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $persons = $em->getRepository(Person::class)->findBy(['scheme' => null]);
+
+        return $this->render('admin/person/scheme/null.html.twig', [
+            'persons' => $persons,
+        ]);
+    }
+
+    /**
+     * Finds and displays a person entity.
+     *
      * @Route("/{id}", name="show", methods={"GET", "POST"})
      */
     public function showAction(PersonScheme $scheme)
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $persons = $em->getRepository(Person::class)->findBy(['scheme' => $scheme->getId()]);
+
         $createdAt = $this->events->findOneBy($scheme, EntityNewEvent::class);
         $modifs = $this->events->findBy($scheme, EntityUpdateEvent::class);
 
         return $this->render('admin/person/scheme/show.html.twig', [
+            'persons' => $persons,
             'createdAt' => $createdAt,
             'modifs' => $modifs,
             'scheme' => $scheme,
