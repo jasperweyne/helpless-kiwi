@@ -260,13 +260,13 @@ class ActivityController extends AbstractController
 
             $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/newregistration_by.html.twig', [
-                'person' => $this->getUser()->getPerson(),
+                'person' => $registration->getPerson(),
                 'activity' => $registration->getActivity(),
                 'title' => $title,
                 'by' => $this->getUser()->getPerson(),
             ]);
 
-            $mailer->message($this->getUser()->getPerson(), $title, $body);
+            $mailer->message($registration->getPerson(), $title, $body);
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -299,13 +299,13 @@ class ActivityController extends AbstractController
 
             $title = 'Afmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/removedregistration_by.html.twig', [
-                'person' => $this->getUser()->getPerson(),
+                'person' => $registration->getPerson(),
                 'activity' => $registration->getActivity(),
                 'title' => $title,
                 'by' => $this->getUser()->getPerson(),
             ]);
 
-            $mailer->message($this->getUser()->getPerson(), $title, $body);
+            $mailer->message($registration->getPerson(), $title, $body);
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
         }
