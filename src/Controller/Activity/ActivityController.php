@@ -4,6 +4,7 @@ namespace App\Controller\Activity;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
+use App\Entity\Group\Group;
 use App\Mail\MailService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +32,12 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $activities = $em->getRepository(Activity::class)->findUpcoming();
+        $groups = [];
+        if ($user = $this->getUser()) {
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+        }
+
+        $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
 
         return $this->render('activity/index.html.twig', [
             'activities' => $activities,
@@ -145,8 +151,15 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $groups = [];
+        if ($user = $this->getUser()) {
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+        }
+
+        $targetoptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
+
         $forms = [];
-        foreach ($activity->getOptions() as $option) {
+        foreach ($targetoptions as $option) {
             $forms[] = [
                 'data' => $option,
                 'form' => $this->singleRegistrationForm($option)->createView(),

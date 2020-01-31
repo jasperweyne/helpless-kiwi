@@ -1,0 +1,18 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set page_title = 'Groep "' ~ group.name ~ '" verwijderen'  %}
+
+{% block body %}
+    <div class="form">
+        {{ form_start(form) }}
+        <div>
+            <p>Weet je dit zeker?</p>
+        </div>
+        {{ form_widget(form) }}
+            <div class="button-group">
+                <button type="submit">Ja, verwijder</button>
+                <a href="{{ path('admin_group_show', { 'id': group.id }) }}">Annuleren</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
