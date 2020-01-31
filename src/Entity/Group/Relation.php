@@ -28,7 +28,7 @@ class Relation
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $taxonomy;
+    private $group;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person")
@@ -72,14 +72,14 @@ class Relation
         return $this;
     }
 
-    public function getTaxonomy(): ?Group
+    public function getGroup(): ?Group
     {
-        return $this->taxonomy;
+        return $this->group;
     }
 
-    public function setTaxonomy(?Group $taxonomy): self
+    public function setGroup(?Group $group): self
     {
-        $this->taxonomy = $taxonomy;
+        $this->group = $group;
 
         return $this;
     }
@@ -148,15 +148,25 @@ class Relation
         return $this;
     }
 
-    public function getTaxonomies(): array
+    public function getChildrenRecursive(): Collection
     {
-        return array_merge([$this->getTaxonomy()], array_map(function ($a) {
-            return $a->getTaxonomy();
-        }, $this->children->toArray()));
+        $childTaxes = $this->children->map(function ($a) {
+            $children = $a->getChildrenRecursive()->toArray();
+            $children[] = $a;
+
+            return $children;
+        })->toArray();
+
+        $taxonomies = array_merge([], ...$childTaxes);
+
+        return new ArrayCollection($taxonomies);
     }
 
-    public function getAllTaxonomies(): array
+    public function getAllRelations(): Collection
     {
-        return $this->getRoot()->getTaxonomies();
+        $tree = $this->getRoot()->getChildrenRecursive();
+        $tree->add($this);
+
+        return $tree;
     }
 }

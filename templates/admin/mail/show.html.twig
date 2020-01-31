@@ -1,0 +1,84 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = mail.title ?? '(geen titel)' %}
+    
+    {% block buttons %}
+        <a href="{{ path('admin_mail_index') }}"> Terug </a>
+    {% endblock %}
+{% endif %}
+
+{% block body_wrap %}
+    <div class="tabs">
+        <input type="radio" name="tabs" id="details" checked>
+        <label for="details" class="tab active">
+            <span>Details</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Titel</th>
+                                <td>{{ mail.title }}</td>
+                            </tr>
+                            <tr>
+                                <th>Verstuurd door </th>
+                                <td>{{ mail.sender }}</td>
+                            </tr>
+                            <tr> 
+                                <th>Verstuurd op </th>
+                                <td>{{ mail.sentAt|date('d-m-Y') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <input type="radio" name="tabs" id="content" >
+        <label for="content" class="tab active">
+            <span>Bericht</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                {{ content|raw }}
+            </div>
+        </div>
+
+        <input type="radio" name="tabs" id="recipients" >
+        <label for="recipients" class="tab">
+            <span>Ontvangers</span> 
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Email</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for recipient in mail.recipients %}
+                                <tr>
+                                    <td> {{ recipient.person.canonical }} </td>
+                                    <td> {{ recipient.person.email ?? '' }} </td>
+                                </tr>
+                            {% else %} 
+                                <tr>
+                                    <td>Geen Ontvangers.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      
+    </div>
+        
+{% endblock %}

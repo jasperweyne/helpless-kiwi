@@ -4,6 +4,7 @@
     {% set page_title = 'Activiteit ' ~ activity.name %}
     
     {% block buttons %}
+        <a href="{{ path('admin_activity_image', { 'id': activity.id }) }}">Afbeelding aanpassen</a>
         <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Bewerken</a>
         <a href="{{ path('admin_activity_delete', { 'id': activity.id }) }}">Verwijderen</a>
     {% endblock %}
@@ -35,6 +36,10 @@
                             <tr>
                                 <th>Georganiseerd door</th>
                                 <td>{{ activity.author.name ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Doelgroep</th>
+                                <td>{{ activity.target.name ?? '' }}{% if not activity.target %}<i>Iedereen</i>{% endif %}</td>
                             </tr>
                             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
                                 <tr>
@@ -91,6 +96,7 @@
                                             <tr>
                                                 <th>Naam</th>
                                                 <th>Prijs</th>
+                                                <th>Doelgroep</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -99,6 +105,7 @@
                                             <tr>
                                                 <td>{{ option.name }}</td>
                                                 <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
+                                                <td>{{ option.target.name ?? '' }}{% if not option.target %}<i>Iedereen</i>{% endif %}</td>
                                                 <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
                                             </tr>
                                         {% else %}

@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Form\Activity;
+namespace App\Form\Activity\Admin;
 
 use App\Form\Location\LocationType;
 use App\Entity\Activity\Activity;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class ActivityType extends AbstractType
+class ActivityEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,6 +29,24 @@ class ActivityType extends AbstractType
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
+                'placeholder' => "Geen groep",
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('t')
+                        ->andWhere('t.active = TRUE');
+                },
+                'choice_label' => function ($ref) {
+                    return $ref->getName();
+                },
+            ])
+            ->add('target', EntityType::class, [
+                'label' => 'Activiteit voor',
+                'class' => 'App\Entity\Group\Group',
+                'required' => false,
+                'placeholder' => "Iedereen",
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('t')
+                        ->andWhere('t.active = TRUE');
+                },
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
@@ -40,10 +58,6 @@ class ActivityType extends AbstractType
             ->add('end', DateTimeType::class, [
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
-            ])
-            ->add('imageFile', VichImageType::class, [
-                'required' => true,
-                'allow_delete' => false,
             ])
             ->add('color', ChoiceType::class, [
                 'attr' => ['data-select' => 'true'],
