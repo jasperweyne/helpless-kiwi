@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\EventSubscriber\ProfileUpdateSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,6 +73,10 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
             throw new CustomUserMessageAuthenticationException($violations[0]->getMessage());
         }
 
+        if (!$userProvider instanceof AuthUserProvider) {
+            throw new \LogicException('User provider not supported!');
+        }
+
         // Load / create our user however you need.
         // You can do this by calling the user provider, or with custom logic here.
         $user = $userProvider->loadUserByEmail($credentials['username']);
@@ -97,11 +102,27 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
         $this->em->persist($auth);
         $this->em->flush();
 
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+        $targetPath = $this->getTargetPath($request->getSession(), $providerKey);
+
+        // First, check if admin page requested
+        // If so, skip the profile update check
+        $adminPrefix = $request->getSchemeAndHttpHost().'/admin';
+        if (substr($targetPath ?? '', 0, strlen($adminPrefix)) === $adminPrefix) {
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('activity_index'));
+        // Execute the profile update check, and redirect if necessary
+        if (ProfileUpdateSubscriber::checkProfileUpdate($auth)) {
+            return new RedirectResponse($this->urlGenerator->generate('profile_update'));
+        }
+
+        // If no profile update required, redirect to target
+        if ($targetPath) {
+            return new RedirectResponse($targetPath);
+        }
+
+        // If no target, redirect to home
+        return new RedirectResponse('/');
     }
 
     protected function getLoginUrl()

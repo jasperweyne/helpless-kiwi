@@ -3,7 +3,7 @@
     flex-wrap: wrap;
     max-width: 100%;
 
-    label {
+    & > label {
         padding: $padding $padding * 1.5;
         background: #e5e5e5;
         cursor: pointer;
@@ -27,23 +27,23 @@
         }
     }
     
-    input {
+    & > input {
         position: absolute;
         opacity: 0;
     }
       
-    input:focus + label {
+    & > input:focus + label {
         box-shadow: inset 0px 0px 0px 3px #2aa1c0;
         z-index: 1;
     }
       
-    input:checked + label {
+    & > input:checked + label {
         background: #fbfbfb;
         color: #000;
         z-index: 65;
     }
 
-    .panel {
+    & > .panel {
         display: none;
         order: 77;
         width: 100%;
@@ -53,7 +53,7 @@
         }
     }
       
-    input:checked + label + .panel {
+    & > input:checked + label + .panel {
         display: block;
     }
 }

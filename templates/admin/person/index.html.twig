@@ -3,39 +3,31 @@
 {% if page_title is not defined %}
     {% set page_title = 'Personen' %}
     
-    {% block top %}
-        {% embed 'admin/listview.html.twig' %}
-            {% set resultcount = persons|length %}
-            
-            {% block buttons %}
-            <a href="{{ path("admin_person_new") }} ">Nieuw</a>
-            {% endblock %}
-        {% endembed %}
+    {% block buttons %}
+    <a href="{{ path("admin_person_new") }} ">Nieuw</a>
     {% endblock %}
 {% endif %}
 
+{% block body_wrap %}
+    <div class="tabs">
+        <input type="radio" name="tabs" id="main" checked>
+        <label for="main" class="tab">
+            <span>Overzicht</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                {% include 'admin/person/index/overview.html.twig' %}
+            </div>
+        </div>
 
-{% block body %}
-    <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Naam</th>
-                    <th>E-mail</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for person in persons %}
-                <tr>
-                    <td><a href="{{ path("admin_person_show", { 'id': person.id }) }}">{{ person.canonical }}</a></td>
-                    <td>{{ person.email }}</td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td>Geen personen.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <input type="radio" name="tabs" id="schemes">
+        <label for="schemes" class="tab">
+            <span>Schema's</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                {% include 'admin/person/index/schemes.html.twig' %}
+            </div>
+        </div>
     </div>
 {% endblock %}

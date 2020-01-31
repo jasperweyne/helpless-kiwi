@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = person.fullname %}
+    {% set page_title = person.canonical %}
 
     {% block buttons %}
         <a href="{{ path('admin_person_edit', { 'id': person.id }) }}">Bewerken</a>
@@ -9,74 +9,26 @@
     {% endblock %}
 {% endif %}
 
-{% block body %}
-    <div class="table">
-    <table>
-        <tbody>
-            <tr>
-                <th>Voornaam</th>
-                <td>{{ person.firstname ?? '' }}</td>
-            </tr>
-            <tr>
-                <th>Achternaam</th>
-                <td>{{ person.lastname ?? '' }}</td>
-            </tr>
-            <tr>
-                <th>E-mailadres</th>
-                <td>{{ person.email ?? '' }}</td>
-            </tr>
-            <tr>
-                <th>Geboortedatum</th>
-                <td>{{ person.birthday|date('d-m-Y') }}</td>
-            </tr>
-            <tr>
-                <th>Kan inloggen?</th>
-                {% if person.auth.password ?? false %}
-                    <td>Ja,<a href="{{ path('admin_security_show', { 'person': person.id }) }}">details bekijken</a></td>
-                {% elseif person.auth %}
-                    <td>Uitnodiging verstuurd, <a href="{{ path('admin_person_auth', { 'id': person.id }) }}">opnieuw verzenden</a></td>
-                {% else %}
-                    <td>Nee, <a href="{{ path('admin_person_auth', { 'id': person.id }) }}">Account toevoegen</a></td>
-                {% endif %}
-            </tr>
-            <tr>
-                <th>Gemaakt op</th>
-                <td>
-                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Gemaakt door</th>
-                <td>
-                    {{ createdAt.auth.person.fullname ?? '' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Aanpassingen</th>
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Door</th>
-                                <th>Tijdstip</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for modif in modifs %}
-                            <tr>
-                                <td>{{ modif.auth.person.fullname }}</td>
-                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td>Geen aanpassingen.</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+{% block body_wrap %}
+    <div class="tabs">
+        <input type="radio" name="tabs" id="details" checked>
+        <label for="details" class="tab">
+            <span>Details</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                {% include 'admin/person/show/details.html.twig' %}
+            </div>
+        </div>
+        
+        <input type="radio" name="tabs" id="advanced">
+        <label for="advanced" class="tab">
+            <span>Geavanceerd</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                {% include 'admin/person/show/advanced.html.twig' %}
+            </div>
+        </div>
     </div>
 {% endblock %}

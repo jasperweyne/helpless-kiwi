@@ -131,8 +131,6 @@ class PasswordController extends AbstractController
                 $person = new Person();
                 $person
                     ->setEmail($mail)
-                    ->setFirstname('')
-                    ->setLastname('')
                 ;
 
                 $em->persist($person);

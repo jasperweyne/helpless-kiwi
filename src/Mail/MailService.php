@@ -39,10 +39,10 @@ class MailService
 
         $addresses = [];
         foreach ($to as $person) {
-            if ('' == trim($person->getFullname() ?? '')) {
+            if ('' == trim($person->getName() ?? $person->getShortname() ?? '')) {
                 $addresses[] = $person->getEmail();
             } else {
-                $addresses[$person->getEmail()] = $person->getFullname();
+                $addresses[$person->getEmail()] = $person->getName() ?? $person->getShortname();
             }
         }
 

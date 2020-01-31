@@ -84,9 +84,10 @@ class ActivityController extends AbstractController
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
-        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
+        $repository = $em->getRepository(Registration::class);
 
-        $deregs = $em->getRepository(Registration::class)->findDeregistrations($activity);
+        $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null]);
+        $deregs = $repository->findDeregistrations($activity);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,
@@ -256,7 +257,7 @@ class ActivityController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getFullname().' aangemeld!');
+            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld!');
 
             $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/newregistration_by.html.twig', [
@@ -295,7 +296,7 @@ class ActivityController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getFullname().' afgemeld!');
+            $this->addFlash('success', $registration->getPerson()->getCanonical().' afgemeld!');
 
             $title = 'Afmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/removedregistration_by.html.twig', [

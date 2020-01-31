@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% set page_title = 'Instellingen' %}
+{% set page_title = 'Schema updaten van '~person.canonical %}
 
 {% block body %}
     <div class="form">
@@ -8,6 +8,7 @@
             {{ form_widget(form) }}
             <div class="button-group">
                 <button type="submit">Opslaan</button>
+                <a href="{{ path('admin_person_show', { 'id': person.id }) }}">Annuleren</a>
             </div>
         {{ form_end(form) }}
     </div>

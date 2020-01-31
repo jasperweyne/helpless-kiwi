@@ -10,9 +10,12 @@
         background-color: #3377ee;
 
         .container {
+            display: flex;
             height: 100%;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
+            text-align: center;
         }
 
         h1 {
