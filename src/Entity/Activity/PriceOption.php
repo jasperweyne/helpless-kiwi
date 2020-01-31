@@ -5,11 +5,13 @@ namespace App\Entity\Activity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Group\Group;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OptionRepository")
+ * 
  */
 class PriceOption
 {
@@ -22,6 +24,7 @@ class PriceOption
 
     /**
      * @ORM\Column(type="string", length=100, name="title")
+     * @Assert\NotBlank
      */
     private $name;
 
