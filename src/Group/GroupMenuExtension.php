@@ -2,7 +2,7 @@
 
 namespace App\Group;
 
-use App\Entity\Group\Taxonomy;
+use App\Entity\Group\Group;
 use App\Template\MenuExtensionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -49,7 +49,7 @@ class GroupMenuExtension implements MenuExtensionInterface
      */
     private function discoverMenuItems()
     {
-        $groups = $this->em->getRepository(Taxonomy::class)->findBy(['category' => true]);
+        $groups = $this->em->getRepository(Group::class)->findBy(['category' => true]);
 
         $mapped = [];
         foreach ($groups as $group) {

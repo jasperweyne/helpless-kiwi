@@ -10,7 +10,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ActivityEditType extends AbstractType
@@ -42,9 +41,6 @@ class ActivityEditType extends AbstractType
                 'time_widget' => 'single_text',
             ])
             ->add('capacity')
-            ->add('imageFile', VichImageType::class, [
-                'allow_delete' => false,
-            ])
             ->add('color', ChoiceType::class, [
                 'attr' => ['data-select' => 'true'],
                 'choices' => [

@@ -112,25 +112,27 @@ class AnnotationMenuExtension implements MenuExtensionInterface
             $routePrefix = $classRoute ? $classRoute->getName() : '';
 
             foreach ($refl->getMethods() as $method) {
-                $annotation = $this->annotationReader->getMethodAnnotation($method, 'App\Template\Annotation\MenuItem');
-                if (!$annotation) {
-                    continue;
-                }
-
-                if (null === $annotation->getPath()) {
-                    $route = $this->annotationReader->getMethodAnnotation($method, 'Symfony\Component\Routing\Annotation\Route');
-                    if (!$route) {
-                        throw AnnotationException::semanticalError('An Symfony\Component\Routing\Annotation\Route annotation is required when using a App\Template\Annotation\MenuItem annotation');
+                $annotations = $this->annotationReader->getMethodAnnotations($method);
+                foreach ($annotations as $annotation) {
+                    if (!$annotation instanceof MenuItem) {
+                        continue;
                     }
 
-                    $annotation->setPath($routePrefix.$route->getName());
-                }
+                    if (null === $annotation->getPath()) {
+                        $route = $this->annotationReader->getMethodAnnotation($method, 'Symfony\Component\Routing\Annotation\Route');
+                        if (!$route) {
+                            throw AnnotationException::semanticalError('An Symfony\Component\Routing\Annotation\Route annotation is required when using a App\Template\Annotation\MenuItem annotation');
+                        }
 
-                /* @var MenuItem $annotation */
-                if (!array_key_exists($annotation->menu, $this->menuItems)) {
-                    $this->menuItems[$annotation->menu] = [];
+                        $annotation->setPath($routePrefix.$route->getName());
+                    }
+
+                    /* @var MenuItem $annotation */
+                    if (!array_key_exists($annotation->menu, $this->menuItems)) {
+                        $this->menuItems[$annotation->menu] = [];
+                    }
+                    $this->menuItems[$annotation->menu][] = $annotation;
                 }
-                $this->menuItems[$annotation->menu][] = $annotation;
             }
         }
     }

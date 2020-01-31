@@ -46,6 +46,9 @@
                     padding: 0 $padding / 2;
                     background-color: #0c0;
                     color: black;
+                    width: max-content;
+                    overflow-y: scroll;
+                    max-height: 60vh;
                 }
 
                 &:active, &:hover, &:focus {
@@ -74,10 +77,15 @@
 
         * {
             margin-bottom: 0;
+            display: table;
         }
     
         h2 {
             font-size: 2rem;
+        }
+
+        span {
+            display: block;
         }
     }
     

@@ -30,4 +30,19 @@ class MailController extends AbstractController
             'mails' => $mails,
         ]);
     }
+
+    /**
+     * Finds and displays a mail entity.
+     *
+     * @Route("/{id}", name="show", methods={"GET"})
+     */
+    public function showAction(Mail $mail)
+    {
+        $content = json_decode($mail->getContent(), true);
+
+        return $this->render('admin/mail/show.html.twig', [
+            'mail' => $mail,
+            'content' => $content['html'],
+        ]);
+    }
 }

@@ -2,12 +2,9 @@
 
 namespace App\Mail;
 
-use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
-use App\Entity\Group\Taxonomy;
 use App\Entity\Mail\Mail;
+use App\Entity\Mail\Recipient;
 use App\Entity\Security\Auth;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -40,13 +37,6 @@ class MailService
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
 
-        $recipients = $this->buildTaxonomy($to);
-        $recipients
-            ->setReadonly(true)
-            ->setName('Mail\\'.date('YmdHis').'-'.$title)
-        ;
-        $this->em->persist($recipients);
-
         $addresses = [];
         foreach ($to as $person) {
             if ('' == trim($person->getFullname() ?? '')) {
@@ -63,7 +53,7 @@ class MailService
             ->addPart($body_plain, 'text/plain')
         ;
 
-        $content = serialize([
+        $content = json_encode([
             'html' => $body,
             'plain' => $body_plain,
         ]);
@@ -71,14 +61,23 @@ class MailService
         $msgEntity = new Mail();
         $msgEntity
             ->setSender($from)
-            ->setTarget($recipients)
             ->setAuth($this->getUser())
             ->setTitle($title)
             ->setContent($content)
-            ->setSentAt(new DateTime())
+            ->setSentAt(new \DateTime())
         ;
-
         $this->em->persist($msgEntity);
+
+        foreach ($to as $person) {
+            $recipient = new Recipient();
+            $recipient
+                ->setPerson($person)
+                ->setMail($msgEntity)
+            ;
+
+            $this->em->persist($recipient);
+        }
+
         $this->em->flush();
 
         $this->mailer->send($message);
@@ -96,22 +95,5 @@ class MailService
         }
 
         return $user;
-    }
-
-    private function buildTaxonomy(array $to): ?Taxonomy
-    {
-        $recipients = new Group();
-
-        foreach ($to as $person) {
-            $recipient = new Relation();
-            $recipient
-                ->setTaxonomy($recipients)
-                ->setPerson($person)
-            ;
-
-            $this->em->persist($recipient);
-        }
-
-        return $recipients;
     }
 }

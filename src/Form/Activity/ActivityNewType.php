@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class ActivityType extends AbstractType
+class ActivityNewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -41,6 +41,7 @@ class ActivityType extends AbstractType
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
             ])
+            ->add('capacity')
             ->add('imageFile', VichImageType::class, [
                 'required' => true,
                 'allow_delete' => false,
