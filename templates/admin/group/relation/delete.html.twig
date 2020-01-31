@@ -10,12 +10,18 @@
     <div class="form">
         {{ form_start(form) }}
         <div>
-            <p>Weet je dit zeker?</p>
+            <p>
+                Weet je dit zeker?
+                {% if relation.root.id == relation.id and relation.allRelations|length > 1 %}
+                    <br />
+                    <i>LET OP: Dit verwijdert ook alle subrelaties</i>
+                {% endif %}
+            </p>
         </div>
         {{ form_widget(form) }}
             <div class="button-group">
                 <button type="submit">Ja, verwijder</button>
-                <a href="{{ path('admin_group_show', { 'id': relation.group.id }) }}">Annuleren</a>
+                <a class="button" href="{{ path('admin_group_show', { 'id': relation.group.id }) }}">Annuleren</a>
             </div>
         {{ form_end(form) }}
     </div>
