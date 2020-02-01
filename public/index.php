@@ -6,6 +6,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__).'/config/bootstrap.php';
 
+if (file_exists('enable-maintenance.txt')) {
+    readfile('maintenance.html');
+    exit;
+}
+
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
 
