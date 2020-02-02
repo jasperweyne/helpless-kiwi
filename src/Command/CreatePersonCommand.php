@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Person\Person;
+use App\Entity\Person\PersonValue;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -129,15 +130,29 @@ class CreatePersonCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $person = new Person();
-        $person
-            // Persons
-            ->setEmail($this->inputInfo['email'])
-            ->setFirstname($this->inputInfo['first'])
-            ->setLastname($this->inputInfo['last'])
-            ->setAddress(null)
+        $firstname = new PersonValue();
+        $firstname
+            ->setBuiltin('firstname')
+            ->setValue($this->inputInfo['first'])
         ;
 
+        $lastname = new PersonValue();
+        $lastname
+            ->setBuiltin('lastname')
+            ->setValue($this->inputInfo['last'])
+        ;
+
+        $person = new Person();
+        $person
+            ->setEmail($this->inputInfo['email'])
+            ->setShortnameExpr('firstname')
+            ->setNameExpr('firstname~" "~lastname')
+            ->addFieldValue($firstname)
+            ->addFieldValue($lastname)
+        ;
+
+        $this->em->persist($firstname);
+        $this->em->persist($lastname);
         $this->em->persist($person);
         $this->em->flush();
 

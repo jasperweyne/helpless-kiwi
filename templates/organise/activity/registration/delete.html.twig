@@ -1,0 +1,18 @@
+{% extends 'organise/activity/layout.html.twig' %}
+
+{% set page_title = registration.person.fullname ~ ' afmelden voor ' ~ registration.activity.name  %}
+
+{% block body %}
+    <div class="form">
+        {{ form_start(form) }}
+        <div>
+            <p>Weet je dit zeker?</p>
+        </div>
+        {{ form_widget(form) }}
+            <div class="button-group">
+                <button type="submit">Ja, meld af</button>
+                <a href="{{ path('organise_activity_show', { 'id': registration.activity.id }) }}">Annuleren</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

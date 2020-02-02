@@ -14,8 +14,9 @@
         <label for="nav-state" class="nav-toggle"><b></b></label>
         <h2 class="nav-site">{{ org }}</h2>
         <div class="nav-profile">
-            <a href="{{ path('activity_index') }}">Terug naar frontend</a>
-            <a href="{{ path('app_logout') }}">Uitloggen</a>
+            {% for item in menu.getItems('admin-profile') %}
+                <a href="{{item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}">{{ item.title }}</a>
+            {% endfor %}
         </div>
     </header>
     <nav>
@@ -24,7 +25,7 @@
         {% if activeSection is not defined %}
             {% set activeSection = app.request.get('_route') %}
         {% endif %}
-        {% for item in menu.getItems('admin') %}
+        {% for item in menu.getItems('admin')|merge(menu.getItems('admin-profile')) %}
             {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
                 {% set item_type = (item.path is defined) ? "a"                          : "span" %}
                 {% set item_path = (item.path is defined) ? "href="~(item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)) : "" %}
@@ -59,10 +60,12 @@
             </span>
             {% endblock %}
         </span>
+        {% block body_wrap %}
         <div class="card">
         {% block body %}
         {% endblock %}
         </div>
+        {% endblock %}
     </div>
     {% block pagination %}
     {% endblock %}

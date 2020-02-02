@@ -1,0 +1,36 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Personen zonder schema' %}
+    
+    {% block buttons %}
+        <a href="{{ path("admin_person_index") }} ">Terug</a>
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>E-mail</th>
+                    <th>Velden</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for person in persons|sort((a, b) => a.canonical <=> b.canonical) %}
+                <tr>
+                    <td><a href="{{ path("admin_person_show", { 'id': person.id }) }}">{{ person.canonical }}</a></td>
+                    <td>{{ person.email }}</td>
+                    <td>{{ person.fieldValues|length }} veld{{ person.fieldValues|length != 1 ? 'en' : '' }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen personen.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

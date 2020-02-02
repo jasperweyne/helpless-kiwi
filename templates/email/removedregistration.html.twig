@@ -1,5 +1,5 @@
 <h2>{{ title }}</h2>
-<p>Hallo {{ person.firstname }},<br />
+<p>Hallo {{ person.shortname ?? person.name ?? '' }},<br />
 Helaas, je hebt je afgemeld voor {{ activity.name }}. Bedankt voor je afmelding.<br />
 <br />
 Groetjes van {{ org }}<p>

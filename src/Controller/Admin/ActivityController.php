@@ -54,7 +54,7 @@ class ActivityController extends AbstractController
     {
         $activity = new Activity();
 
-        $form = $this->createForm('App\Form\Activity\ActivityType', $activity);
+        $form = $this->createForm('App\Form\Activity\Admin\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -84,9 +84,10 @@ class ActivityController extends AbstractController
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
-        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null]);
+        $repository = $em->getRepository(Registration::class);
 
-        $deregs = $em->getRepository(Registration::class)->findDeregistrations($activity);
+        $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null]);
+        $deregs = $repository->findDeregistrations($activity);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,
@@ -104,7 +105,31 @@ class ActivityController extends AbstractController
      */
     public function editAction(Request $request, Activity $activity)
     {
-        $form = $this->createForm('App\Form\Activity\ActivityType', $activity);
+        $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/edit.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing activity entity.
+     *
+     * @Route("/{id}/image", name="image", methods={"GET", "POST"})
+     */
+    public function imageAction(Request $request, Activity $activity)
+    {
+        $form = $this->createForm('App\Form\Activity\ActivityImageType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -113,7 +138,7 @@ class ActivityController extends AbstractController
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
 
-        return $this->render('admin/activity/edit.html.twig', [
+        return $this->render('admin/activity/image.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);
@@ -232,7 +257,7 @@ class ActivityController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getFullname().' aangemeld!');
+            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld!');
 
             $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/newregistration_by.html.twig', [
@@ -271,7 +296,7 @@ class ActivityController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getFullname().' afgemeld!');
+            $this->addFlash('success', $registration->getPerson()->getCanonical().' afgemeld!');
 
             $title = 'Afmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/removedregistration_by.html.twig', [

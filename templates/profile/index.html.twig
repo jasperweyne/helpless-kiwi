@@ -5,14 +5,30 @@
 {% block body_root %}
     <div class="profile hero row">
         <div class="container">
-            <h1>Hey {{ personal.firstname }}!</h1>
+            <h1>Hey {{ personal.shortname ?? personal.canonical }}!</h1>
         </div>
     </div>
     <div class="profile card row">
     {% block body %}
-        <h4>{{ personal.fullname }}</h4>
-        <span>E-mail: {{ personal.email ?? '' }}</span><br />
-        <span>Verjaardag: {{ personal.birthday|date('d-m-Y') }}</span>
+        <h2>{{ personal.canonical }}</h2>
+        <div class="table">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>E-mail</th>
+                        <td>{{ personal.email ?? '' }}</td>
+                    </tr>
+                    {% for x in personal.keyValues %}
+                        <tr>
+                            <th>{{ x.key }}</th>
+                            <td>{{ x.value ?? '' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <a href="{{ path('profile_edit') }}">Gegevens bewerken</a>
     {% endblock %}
     </div>
 {% endblock %}
