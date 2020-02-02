@@ -240,7 +240,13 @@ class Person
             return null;
         }
 
-        return $this->evalExpr($ownExpr ?? $scheme->getNameExpr());
+        $raw = $this->evalExpr($ownExpr ?? $scheme->getNameExpr());
+
+        if ('' == trim($raw)) {
+            return null;
+        }
+
+        return $raw;
     }
 
     public function getShortname(): ?string
@@ -252,7 +258,13 @@ class Person
             return null;
         }
 
-        return $this->evalExpr($ownExpr ?? $scheme->getShortnameExpr());
+        $raw = $this->evalExpr($ownExpr ?? $scheme->getShortnameExpr());
+
+        if ('' == trim($raw)) {
+            return null;
+        }
+
+        return $raw;
     }
 
     public function getCanonical(): ?string
@@ -292,6 +304,9 @@ class Person
             $value = $keyVal['value'];
 
             if ($key instanceof PersonField) {
+                if (null === $key->getSlug()) {
+                    continue;
+                }
                 $key = $key->getSlug();
             }
             if ($value instanceof PersonValue) {

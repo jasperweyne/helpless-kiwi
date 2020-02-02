@@ -15,7 +15,9 @@ class GroupType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description', TextareaType::class)
+            ->add('description', TextareaType::class, [
+                'required' => false,
+            ])
             ->add('relationable', CheckboxType::class, [
                 'label' => 'Mag leden hebben',
                 'required' => false,

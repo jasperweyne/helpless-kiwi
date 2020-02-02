@@ -27,8 +27,7 @@ class Group
     private $name;
 
     /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
@@ -73,6 +72,7 @@ class Group
         $this->relations = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->readonly = false;
+        $this->active = false;
     }
 
     /**

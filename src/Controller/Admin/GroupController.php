@@ -189,7 +189,7 @@ class GroupController extends AbstractController
             $em->persist($relation);
             $em->flush();
 
-            $this->addFlash('success', $relation->getPerson()->getFullname().' toegevoegd!');
+            $this->addFlash('success', $relation->getPerson()->getCanonical().' toegevoegd!');
 
             return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
         }
@@ -302,6 +302,7 @@ class GroupController extends AbstractController
         $boards = new Group();
         $boards
             ->setName('Besturen')
+            ->setSubgroupable(true)
         ;
         $em->persist($boards);
 
@@ -309,24 +310,29 @@ class GroupController extends AbstractController
         $current
             ->setName($defaultBoard)
             ->setParent($boards)
+            ->setRelationable(true)
+            ->setActive(true)
         ;
         $em->persist($current);
 
         $committees = new Group();
         $committees
             ->setName('Commissies')
+            ->setSubgroupable(true)
         ;
         $em->persist($committees);
 
         $boards2 = new Group();
         $boards2
             ->setName('Disputen')
+            ->setSubgroupable(true)
         ;
         $em->persist($boards2);
 
         $positions = new Group();
         $positions
             ->setName('Functies')
+            ->setSubgroupable(true)
         ;
         $em->persist($positions);
 
@@ -334,6 +340,7 @@ class GroupController extends AbstractController
         $president
             ->setName('Voorzitter')
             ->setParent($positions)
+            ->setRelationable(true)
         ;
         $em->persist($president);
 
@@ -341,6 +348,7 @@ class GroupController extends AbstractController
         $secretary
             ->setName('Secretaris')
             ->setParent($positions)
+            ->setRelationable(true)
         ;
         $em->persist($secretary);
 
@@ -348,6 +356,7 @@ class GroupController extends AbstractController
         $treasurer
             ->setName('Penningmeester')
             ->setParent($positions)
+            ->setRelationable(true)
         ;
         $em->persist($treasurer);
 
