@@ -105,6 +105,10 @@ class PersonController extends AbstractController
             $em->persist($person);
 
             foreach ($scheme->getFields() as $field) {
+                if ($field->getUserEditOnly()) {
+                    continue;
+                }
+
                 $value = new PersonValue();
                 $value
                     ->setPerson($person)
@@ -211,17 +215,24 @@ class PersonController extends AbstractController
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
             foreach ($person->getKeyValues() as $keyVal) {
-                if (is_null($keyVal['value'])) {
-                    $field = $keyVal['key'];
+                $field = $keyVal['key'];
+                $value = $keyVal['value'];
 
+                if ($field->getUserEditOnly()) {
+                    continue;
+                }
+
+                if (is_null($value)) {
                     $value = new PersonValue();
                     $value
                         ->setPerson($person)
                         ->setField($field)
-                        ->setValue($form[PersonType::formRef($field)]->getData())
                     ;
+
                     $em->persist($value);
                 }
+
+                $value->setValue($form[PersonType::formRef($field)]->getData());
             }
 
             $em->flush();
@@ -250,7 +261,7 @@ class PersonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $scheme = $form['scheme']->getData();
 
-            if ($person->getScheme()->getId() == $scheme->getId()) {
+            if (!is_null($person->getScheme()) && $person->getScheme()->getId() == $scheme->getId()) {
                 $this->addFlash('error', $person->getCanonical().' heeft al '.$scheme->getName().' als schema, kies een ander schema!');
 
                 return $this->render('admin/person/scheme.html.twig', [
@@ -293,6 +304,10 @@ class PersonController extends AbstractController
             }
 
             foreach ($personScheme->getFields() as $field) {
+                if ($field->getUserEditOnly()) {
+                    continue;
+                }
+
                 $value = new PersonValue();
                 $value
                     ->setPerson($person)

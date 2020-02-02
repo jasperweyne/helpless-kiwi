@@ -58,7 +58,7 @@ class PersonType extends AbstractType
             ->add('email', EmailType::class)
         ;
 
-        $fields = $this->buildFormFields($options['person']);
+        $fields = $this->buildFormFields($options['person'], $options['current_user']);
 
         // Other fields
         foreach ($fields as $option) {
@@ -80,10 +80,13 @@ class PersonType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('person');
+        $resolver
+            ->setRequired('person')
+            ->setDefault('current_user', false)
+        ;
     }
 
-    private function buildFormFields(Person $person)
+    private function buildFormFields(Person $person, bool $isCurrentUser)
     {
         $fields = [];
         foreach ($person->getKeyValues() as $keyVal) {
@@ -95,9 +98,13 @@ class PersonType extends AbstractType
             }
 
             if ($f instanceof PersonField) {
+                if ($f->getUserEditOnly() && !$isCurrentUser) {
+                    continue;
+                }
+
                 $fields[] = $this->createFormField($f, $v, $f->getName(), $f->getValueType());
             } else {
-                return $this->createFormField($f, $v);
+                $fields[] = $this->createFormField($f, $v);
             }
         }
 

@@ -40,7 +40,7 @@ class ProfileController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $person = $this->getUser()->getPerson();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person, 'current_user' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -82,7 +82,7 @@ class ProfileController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $person = $this->getUser()->getPerson();
 
-        $form = $this->createForm('App\Form\Person\PersonUpdateType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonUpdateType', $person, ['person' => $person, 'current_user' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

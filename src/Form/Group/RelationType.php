@@ -7,7 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\ORM\EntityRepository;
 
 class RelationType extends AbstractType
 {
@@ -18,10 +17,6 @@ class RelationType extends AbstractType
                 'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
                 'class' => 'App\Entity\Person\Person',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('u')
-                        ->orderBy('u.firstname', 'ASC');
-                },
                 'choice_label' => function ($ref) {
                     return $ref->getCanonical();
                 },

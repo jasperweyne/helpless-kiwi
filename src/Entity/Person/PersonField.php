@@ -22,7 +22,7 @@ class PersonField
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $slug;
 
@@ -30,6 +30,11 @@ class PersonField
      * @ORM\Column(type="string", length=255)
      */
     private $valueType;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $userEditOnly;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Person\PersonScheme", inversedBy="fields")
@@ -90,6 +95,18 @@ class PersonField
     public function setValueType(string $valueType): self
     {
         $this->valueType = $valueType;
+
+        return $this;
+    }
+
+    public function getUserEditOnly(): ?bool
+    {
+        return $this->userEditOnly;
+    }
+
+    public function setUserEditOnly(bool $userEditOnly): self
+    {
+        $this->userEditOnly = $userEditOnly;
 
         return $this;
     }
