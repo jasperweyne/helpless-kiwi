@@ -26,14 +26,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for registration in deregistrations %}
+                            {% for registration in deregistrations|sort((a, b) => a.deletedate <=> b.deletedate) %}
                                 <tr>
                                     <td><strike>{{ registration.person.canonical }}</strike></td>
                                     <td><strike>{{ registration.option.name }}</strike></td> 
                                     <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
                                 </tr>
                             {% endfor %}
-                            {% for registration in activity.registrations|filter(a => a.deletedate is null) %}
+                            {% for registration in activity.registrations|filter(a => a.deletedate is null)|sort((a, b) => a.deletedate <=> b.deletedate) %}
                                 <tr>
                                     <td>{{ registration.person.canonical }}</td>
                                     <td>{{ registration.option.name }}</td>
