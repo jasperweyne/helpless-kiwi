@@ -109,17 +109,16 @@ class ActivityController extends AbstractController
                 $option = $em->getRepository(PriceOption::class)->find($data['single_option']);
 
                 if (null !== $option) {
-                    $registrations = $em->getRepository(Registration::class)->findBy(['person' => $this->getUser()->getPerson(), 'deletedate' => null]);
+                    $registrations = $em->getRepository(Registration::class)->findBy([
+                        'activity' => $activity,
+                        'person' => $this->getUser()->getPerson(),
+                        'deletedate' => null,
+                    ]);
+
                     if (count($registrations) > 0) {
-                        if (1 == count($registrations) && $registrations[0]->getOption()->getId() == $option->getId()) {
-                            $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
+                        $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
 
-                            return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
-                        }
-
-                        foreach ($registrations as $registration) {
-                            $em->remove($registration);
-                        }
+                        return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
                     }
 
                     $reg = new Registration();
