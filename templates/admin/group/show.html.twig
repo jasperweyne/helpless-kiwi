@@ -167,7 +167,7 @@
                                         <tbody>
                                         {% for modif in modifs %}
                                             <tr>
-                                                <td>{{ modif.auth.person.fullname }}</td>
+                                                <td>{{ modif.auth.person.canonical }}</td>
                                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                                             </tr>
                                         {% else %}

@@ -254,7 +254,7 @@ class ActivityController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getFullname().' aangemeld!');
+            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld!');
 
             $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/newregistration_by.html.twig', [
@@ -295,7 +295,7 @@ class ActivityController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getFullname().' afgemeld!');
+            $this->addFlash('success', $registration->getPerson()->getCanonical().' afgemeld!');
 
             $title = 'Afmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/removedregistration_by.html.twig', [
