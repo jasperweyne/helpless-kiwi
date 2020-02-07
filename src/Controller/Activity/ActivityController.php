@@ -133,7 +133,7 @@ class ActivityController extends AbstractController
                     $em->persist($reg);
                     $em->flush();
 
-                    $this->addFlash('success', 'Aangemelding gelukt!');
+                    $this->addFlash('success', 'Aanmelding gelukt!');
 
                     $title = 'Aanmeldbevestiging '.$activity->getName();
                     $body = $this->renderView('email/newregistration.html.twig', [
