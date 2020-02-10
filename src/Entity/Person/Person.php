@@ -3,6 +3,10 @@
 namespace App\Entity\Person;
 
 use App\Entity\Security\Auth;
+use App\Entity\Document\Value;
+use App\Entity\Document\Document;
+
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,15 +35,11 @@ class Person
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Document")
      */
-    private $shortname_expr;
+    private $document;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $name_expr;
-
+    //REMOVE THESE CLASSES AFTER UPDATE!!. ONLY.
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, fetch="EAGER")
      */
@@ -50,10 +50,6 @@ class Person
      */
     private $scheme;
 
-    public function __construct()
-    {
-        $this->fieldValues = new ArrayCollection();
-    }
 
     /**
      * Get id.
@@ -121,157 +117,46 @@ class Person
         return $this;
     }
 
-    public function getValue($field): ?PersonValue
+    public function getValue($field): ?Value
     {
-        foreach ($this->fieldValues as $value) {
-            if ($field instanceof PersonField) {
-                $valueField = $value->getField();
-                if (!is_null($valueField) && $valueField->getId() == $field->getId()) {
-                    return $value;
-                }
-            } else {
-                if ($value->getBuiltin() == $field) {
-                    return $value;
-                }
-            }
-        }
-
-        return null;
+        return $this->document->getValue($field);
     }
 
     /**
-     * @return Collection|PersonValue[]
-     */
-    public function getFieldValues(): Collection
-    {
-        return $this->fieldValues;
-    }
-
-    public function addFieldValue(PersonValue $fieldValue): self
-    {
-        if (!$this->fieldValues->contains($fieldValue)) {
-            $this->fieldValues[] = $fieldValue;
-            $fieldValue->setPerson($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFieldValue(PersonValue $fieldValue): self
-    {
-        if ($this->fieldValues->contains($fieldValue)) {
-            $this->fieldValues->removeElement($fieldValue);
-            // set the owning side to null (unless already changed)
-            if ($fieldValue->getPerson() === $this) {
-                $fieldValue->setPerson(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|PersonValue[]
+     * @return Collection|Value[]
      */
     public function getKeyValues(): Collection
     {
-        $keyVals = new ArrayCollection();
-        if ($this->getScheme()) {
-            foreach ($this->getScheme()->getFields() as $field) {
-                $keyVals[] = [
-                    'key' => $field,
-                    'value' => $this->getValue($field),
-                ];
-            }
-        } else {
-            foreach ($this->getFieldValues() as $value) {
-                $keyVals[] = [
-                    'key' => $value->getBuiltin() ?? $value->getField(),
-                    'value' => $value,
-                ];
-            }
-        }
-
-        return $keyVals;
+        return $this->document->getKeyValues();
     }
 
-    public function getShortnameExpr(): ?string
+    
+
+    public function getDocument(): ?Document
     {
-        return $this->shortname_expr;
+        return $this->document;
     }
 
-    public function setShortnameExpr(?string $shortname_expr): self
+    public function setDocument(?Document $document): self
     {
-        $this->shortname_expr = $shortname_expr;
-
-        return $this;
-    }
-
-    public function getNameExpr(): ?string
-    {
-        return $this->name_expr;
-    }
-
-    public function setNameExpr(?string $name_expr): self
-    {
-        $this->name_expr = $name_expr;
-
-        return $this;
-    }
-
-    public function getScheme(): ?PersonScheme
-    {
-        return $this->scheme;
-    }
-
-    public function setScheme(?PersonScheme $scheme): self
-    {
-        $this->scheme = $scheme;
+        $this->document = $document;
 
         return $this;
     }
 
     public function getName(): ?string
     {
-        $ownExpr = $this->getNameExpr();
-        $scheme = $this->getScheme();
-
-        if (is_null($ownExpr) && is_null($scheme)) {
-            return null;
-        }
-
-        $raw = $this->evalExpr($ownExpr ?? $scheme->getNameExpr());
-
-        if ('' == trim($raw)) {
-            return null;
-        }
-
-        return $raw;
+        return "name";
     }
 
     public function getShortname(): ?string
     {
-        $ownExpr = $this->getNameExpr();
-        $scheme = $this->getScheme();
-
-        if (is_null($ownExpr) && is_null($scheme)) {
-            return null;
-        }
-
-        $raw = $this->evalExpr($ownExpr ?? $scheme->getShortnameExpr());
-
-        if ('' == trim($raw)) {
-            return null;
-        }
-
-        return $raw;
+        return "shortname";
     }
 
     public function getCanonical(): ?string
     {
-        $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
-
-        return $this->getName() ?? $this->getShortname() ?? $this->getEmail() ?? $pseudo;
+        return "canonical";
     }
 
     public function __toString()
@@ -279,48 +164,17 @@ class Person
         return $this->getCanonical();
     }
 
-    private function evalExpr(?string $expr)
+    /**
+     * @return Collection|PersonValue[]
+     */
+    public function getOldFieldValues(): Collection
     {
-        if (is_null($expr)) {
-            return null;
-        }
-
-        $lang = new ExpressionLanguage();
-        $lang->register('has', function ($str) {
-            return 'isset(${'.$str.'})';
-        }, function ($arguments, $str) {
-            return array_key_exists($str, $arguments);
-        });
-
-        $lang->register('get', function ($str) {
-            return '(${'.$str.'} ?? null)';
-        }, function ($arguments, $str) {
-            return $arguments[$str] ?? null;
-        });
-
-        $vars = [];
-        foreach ($this->getKeyValues() as $keyVal) {
-            $key = $keyVal['key'];
-            $value = $keyVal['value'];
-
-            if ($key instanceof PersonField) {
-                if (null === $key->getSlug()) {
-                    continue;
-                }
-                $key = $key->getSlug();
-            }
-            if ($value instanceof PersonValue) {
-                $value = $value->getValue();
-            }
-
-            $vars[$key] = $value;
-        }
-        $vars['auth'] = $this->getAuth();
-
-        try {
-            return $lang->evaluate($expr, $vars);
-        } catch (\Exception $e) {
-            return null;
-        }
+        return $this->fieldValues;
     }
+
+    public function getOldScheme(): ?PersonScheme
+    {
+        return $this->scheme;
+    }
+
 }
