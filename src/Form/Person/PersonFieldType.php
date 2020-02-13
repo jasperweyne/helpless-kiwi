@@ -3,6 +3,7 @@
 namespace App\Form\Person;
 
 use App\Entity\Person\PersonField;
+use App\Form\Person\Dynamic\DynamicTypeRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -13,6 +14,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PersonFieldType extends AbstractType
 {
+    private $typeRegistry;
+
+    public function __construct(DynamicTypeRegistry $typeRegistry)
+    {
+        $this->typeRegistry = $typeRegistry;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -27,7 +35,7 @@ class PersonFieldType extends AbstractType
             ])
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
-                    $vals = array_keys(PersonFieldValueType::TYPES());
+                    $vals = array_keys($this->typeRegistry->getTypeNames());
 
                     return array_combine($vals, $vals);
                 }),
