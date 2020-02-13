@@ -6,7 +6,7 @@ use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonScheme;
 use App\Entity\Person\PersonValue;
-use App\Form\Person\PersonType;
+use App\Form\Person\PersonFieldValueType;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -98,7 +98,7 @@ class PersonController extends AbstractController
             ->setScheme($scheme)
         ;
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonType', $person);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -113,7 +113,7 @@ class PersonController extends AbstractController
                 $value
                     ->setPerson($person)
                     ->setField($field)
-                    ->setValue($form[PersonType::formRef($field)]->getData())
+                    ->setValue($form[PersonFieldValueType::formRef($field)]->getData())
                 ;
                 $em->persist($value);
             }
@@ -207,7 +207,7 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonType', $person);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -232,7 +232,7 @@ class PersonController extends AbstractController
                     $em->persist($value);
                 }
 
-                $value->setValue($form[PersonType::formRef($field)]->getData());
+                $value->setValue($form[PersonFieldValueType::formRef($field)]->getData());
             }
 
             $em->flush();
@@ -292,7 +292,7 @@ class PersonController extends AbstractController
 
         $person->setScheme($personScheme);
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonType', $person);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -312,7 +312,7 @@ class PersonController extends AbstractController
                 $value
                     ->setPerson($person)
                     ->setField($field)
-                    ->setValue($form[PersonType::formRef($field)]->getData())
+                    ->setValue($form[PersonFieldValueType::formRef($field)]->getData())
                 ;
                 $em->persist($value);
             }

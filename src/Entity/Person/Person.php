@@ -195,6 +195,20 @@ class Person
         return $keyVals;
     }
 
+    public function setKeyValues(Collection $keyVals): self
+    {
+        $this->fieldValues = $keyVals
+            ->map(function ($x) {
+                return $x['value'];
+            })
+            ->filter(function ($x) {
+                return is_null($x);
+            })
+        ;
+
+        return $this;
+    }
+
     public function getShortnameExpr(): ?string
     {
         return $this->shortname_expr;
