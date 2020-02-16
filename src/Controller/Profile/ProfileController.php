@@ -48,17 +48,19 @@ class ProfileController extends AbstractController
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
             foreach ($person->getKeyValues() as $keyVal) {
-                if (is_null($keyVal['value'])) {
-                    $field = $keyVal['key'];
+                $field = $keyVal['key'];
+                $value = $keyVal['value'];
 
+                if (is_null($value)) {
                     $value = new PersonValue();
                     $value
                         ->setPerson($person)
                         ->setField($field)
-                        ->setValue($form[PersonType::formRef($field)]->getData())
                     ;
                     $em->persist($value);
                 }
+
+                $value->setValue($form[PersonType::formRef($field)]->getData());
             }
 
             $em->flush();
