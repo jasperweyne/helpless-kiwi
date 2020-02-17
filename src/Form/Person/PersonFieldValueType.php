@@ -13,16 +13,6 @@ use Symfony\Component\Form\FormEvents;
 
 class PersonFieldValueType extends AbstractType
 {
-    public static function formRef($key)
-    {
-        if ($key instanceof PersonField) {
-            return $key->getId();
-        } elseif (is_string($key)) {
-            return $key;
-        }
-        throw new \LogicException('Type: '.gettype($key));
-    }
-
     private $typeRegistry;
 
     public function __construct(DynamicTypeRegistry $typeRegistry)
@@ -32,22 +22,27 @@ class PersonFieldValueType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $transformer = new DynamicDataMapper($options['person']);
+        $mapper = new DynamicDataMapper($options['person']);
 
         $builder
-            ->setDataMapper($transformer)
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($transformer) {
+            ->setDataMapper($mapper)
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($mapper) {
                 if (null !== $keyVal = $event->getData()) {
                     $builder = $event->getForm();
-
                     $field = $keyVal['key'];
 
+                    // Set get DynamicTypeInterface instance
                     $valueType = $field instanceof PersonField ? $field->getValueType() : 'string';
-
-                    $formId = self::formRef($field);
                     $type = $this->typeRegistry->get($valueType);
 
-                    $transformer
+                    // Set id of new form
+                    $formId = $field;
+                    if ($field instanceof PersonField) {
+                        return $field->getId();
+                    }
+
+                    // Update the mapper
+                    $mapper
                         ->setFormField($formId)
                         ->setType($type)
                     ;
@@ -59,6 +54,7 @@ class PersonFieldValueType extends AbstractType
                         $opts['label'] = $field->getName();
                     }
 
+                    // Add form
                     $builder->add($formId, $type->getFormType(), $opts);
                 }
             })
