@@ -2,9 +2,8 @@
 
 namespace App\Form\Person\Dynamic;
 
+use App\Entity\Person\Person;
 use App\Entity\Person\PersonValue;
-use LogicException;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -17,8 +16,11 @@ class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
 
     private $typeRegistry;
 
-    public function __construct(DynamicTypeRegistry $typeRegistry)
+    private $person;
+
+    public function __construct(Person $person, DynamicTypeRegistry $typeRegistry)
     {
+        $this->person = $person;
         $this->typeRegistry = $typeRegistry;
     }
 
@@ -47,9 +49,18 @@ class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
 
-        $valueObj = $viewData['value'];
-        if (is_null($valueObj) || !$valueObj instanceof PersonValue) {
-            throw new LogicException();
+        if (is_null($viewData['value'])) {
+            $field = $viewData['key'];
+
+            $viewData['value'] = new PersonValue();
+            $viewData['value']
+                ->setPerson($this->person)
+                ->setField($field)
+            ;
+        }
+
+        if (!$viewData['value'] instanceof PersonValue) {
+            throw new \UnexpectedValueException();
         }
 
         $raw = $forms[$this->formField]->getData();
@@ -90,7 +101,7 @@ class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
         if (is_null($this->transformer) || !$this->typeRegistry->has($this->transformer)) {
             throw new TransformationFailedException();
         }
-        
+
         return $this->typeRegistry->get($this->transformer)->getDataTransformer();
     }
 }

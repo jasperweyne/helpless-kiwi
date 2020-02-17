@@ -17,6 +17,7 @@ class PersonType extends AbstractType
             ->add('keyValues', CollectionType::class, [
                 'entry_type' => PersonFieldValueType::class,
                 'entry_options' => [
+                    'person' => $builder->getData(),
                     'current_user' => $options['current_user'],
                 ],
                 'label' => false,

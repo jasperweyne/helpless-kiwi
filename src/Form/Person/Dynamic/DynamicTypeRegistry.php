@@ -19,9 +19,9 @@ class DynamicTypeRegistry
         $this->types = new ArrayCollection(array_combine($keys, $values));
     }
 
-    public function getTypeNames(): array
+    public function getTypes(): array
     {
-        return $this->types->getKeys();
+        return $this->types->toArray();
     }
 
     public function get(string $name): DynamicTypeInterface

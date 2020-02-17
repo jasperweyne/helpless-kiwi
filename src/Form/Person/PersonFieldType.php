@@ -35,7 +35,7 @@ class PersonFieldType extends AbstractType
             ])
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
-                    $vals = array_keys($this->typeRegistry->getTypeNames());
+                    $vals = array_keys($this->typeRegistry->getTypes());
 
                     return array_combine($vals, $vals);
                 }),

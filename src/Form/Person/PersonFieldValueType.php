@@ -35,7 +35,7 @@ class PersonFieldValueType extends AbstractType
     {
         $isCurrentUser = $options['current_user'];
 
-        $transformer = new DynamicDataMapper($this->typeRegistry);
+        $transformer = new DynamicDataMapper($options['person'], $this->typeRegistry);
 
         $builder
             ->setDataMapper($transformer)
@@ -49,6 +49,8 @@ class PersonFieldValueType extends AbstractType
 
                     if ($f instanceof PersonField) {
                         if ($f->getUserEditOnly() && !$isCurrentUser) {
+                            $builder->getParent()->remove($builder->getName());
+
                             return;
                         }
 
@@ -69,6 +71,7 @@ class PersonFieldValueType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired('person')
             ->setDefault('current_user', false)
             ->setDefault('label', false)
         ;
@@ -84,7 +87,6 @@ class PersonFieldValueType extends AbstractType
 
         // Build options
         $opts = $type->getDefaultOptions();
-        $opts['mapped'] = false;
 
         if (!is_null($name)) {
             $opts['label'] = $name;

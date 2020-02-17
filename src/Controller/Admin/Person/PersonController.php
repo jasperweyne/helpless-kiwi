@@ -5,8 +5,6 @@ namespace App\Controller\Admin\Person;
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 use App\Entity\Person\PersonScheme;
-use App\Entity\Person\PersonValue;
-use App\Form\Person\PersonFieldValueType;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -103,21 +101,6 @@ class PersonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($person);
-
-            foreach ($scheme->getFields() as $field) {
-                if ($field->getUserEditOnly()) {
-                    continue;
-                }
-
-                $value = new PersonValue();
-                $value
-                    ->setPerson($person)
-                    ->setField($field)
-                    ->setValue($form[PersonFieldValueType::formRef($field)]->getData())
-                ;
-                $em->persist($value);
-            }
-
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -214,27 +197,6 @@ class PersonController extends AbstractController
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
-            foreach ($person->getKeyValues() as $keyVal) {
-                $field = $keyVal['key'];
-                $value = $keyVal['value'];
-
-                if ($field->getUserEditOnly()) {
-                    continue;
-                }
-
-                if (is_null($value)) {
-                    $value = new PersonValue();
-                    $value
-                        ->setPerson($person)
-                        ->setField($field)
-                    ;
-
-                    $em->persist($value);
-                }
-
-                $value->setValue($form[PersonFieldValueType::formRef($field)]->getData());
-            }
-
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -298,24 +260,6 @@ class PersonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
-
-            foreach ($person->getFieldValues() as $value) {
-                $em->remove($value);
-            }
-
-            foreach ($personScheme->getFields() as $field) {
-                if ($field->getUserEditOnly()) {
-                    continue;
-                }
-
-                $value = new PersonValue();
-                $value
-                    ->setPerson($person)
-                    ->setField($field)
-                    ->setValue($form[PersonFieldValueType::formRef($field)]->getData())
-                ;
-                $em->persist($value);
-            }
 
             $em->flush();
 
