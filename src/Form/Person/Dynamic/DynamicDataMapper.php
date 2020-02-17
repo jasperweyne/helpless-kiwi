@@ -3,10 +3,10 @@
 namespace App\Form\Person\Dynamic;
 
 use App\Entity\Person\Person;
+use App\Entity\Person\PersonField;
 use App\Entity\Person\PersonValue;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class DynamicDataMapper implements DataMapperInterface
 {
@@ -50,10 +50,13 @@ class DynamicDataMapper implements DataMapperInterface
             $field = $viewData['key'];
 
             $viewData['value'] = new PersonValue();
-            $viewData['value']
-                ->setPerson($this->person)
-                ->setField($field)
-            ;
+            $viewData['value']->setPerson($this->person);
+
+            if ($field instanceof PersonField) {
+                $viewData['value']->setField($field);
+            } else {
+                $viewData['value']->setBuiltin($field);
+            }
         }
 
         if (!$viewData['value'] instanceof PersonValue) {
@@ -85,8 +88,8 @@ class DynamicDataMapper implements DataMapperInterface
 
     private function getTransformer(): DataTransformerInterface
     {
-        if (is_null($this->transformer)) {
-            throw new TransformationFailedException();
+        if (is_null($this->dynamicType)) {
+            throw new \RuntimeException('setType must be called before getTransformer can be called');
         }
 
         return $this->dynamicType->getDataTransformer();
