@@ -38,7 +38,7 @@ class PersonFieldValueType extends AbstractType
                     // Set id of new form
                     $formId = $field;
                     if ($field instanceof PersonField) {
-                        return $field->getId();
+                        $formId = $field->getId();
                     }
 
                     // Update the mapper
