@@ -8,20 +8,17 @@ use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
+class DynamicDataMapper implements DataMapperInterface
 {
-    private $transformer = null;
+    private $dynamicType = null;
 
     private $formField;
 
-    private $typeRegistry;
-
     private $person;
 
-    public function __construct(Person $person, DynamicTypeRegistry $typeRegistry)
+    public function __construct(Person $person)
     {
         $this->person = $person;
-        $this->typeRegistry = $typeRegistry;
     }
 
     public function mapDataToForms($viewData, $forms)
@@ -40,7 +37,7 @@ class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
         }
 
         // initialize form field values
-        $data = $this->transform($valueObj->getValue());
+        $data = $this->getTransformer()->transform($valueObj->getValue());
         $forms[$this->formField]->setData($data);
     }
 
@@ -64,7 +61,7 @@ class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
         }
 
         $raw = $forms[$this->formField]->getData();
-        $data = $this->reverseTransform($raw);
+        $data = $this->getTransformer()->reverseTransform($raw);
 
         // as data is passed by reference, overriding it will change it in
         // the form object as well
@@ -72,9 +69,9 @@ class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
         $viewData['value']->setValue($data);
     }
 
-    public function setType(string $type): self
+    public function setType(DynamicTypeInterface $dynamicType): self
     {
-        $this->transformer = $type;
+        $this->dynamicType = $dynamicType;
 
         return $this;
     }
@@ -86,22 +83,12 @@ class DynamicDataMapper implements DataMapperInterface, DataTransformerInterface
         return $this;
     }
 
-    public function transform($value)
-    {
-        return $this->getTransformer()->transform($value);
-    }
-
-    public function reverseTransform($value)
-    {
-        return $this->getTransformer()->reverseTransform($value);
-    }
-
     private function getTransformer(): DataTransformerInterface
     {
-        if (is_null($this->transformer) || !$this->typeRegistry->has($this->transformer)) {
+        if (is_null($this->transformer)) {
             throw new TransformationFailedException();
         }
 
-        return $this->typeRegistry->get($this->transformer)->getDataTransformer();
+        return $this->dynamicType->getDataTransformer();
     }
 }
