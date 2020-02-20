@@ -31,7 +31,7 @@ jobs:
         sed -i -e 's/\"extra\": {/\"extra\": {\n        \"public-dir\": \"..\/public_html\/kiwi\",/g' kiwi/composer.json
         mkdir public_html
         mv kiwi/public public_html/kiwi
-        ls
+        find -maxdepth 2 -type d -ls
         
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
