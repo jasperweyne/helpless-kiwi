@@ -1,6 +1,11 @@
 name: CI
 
-on: [push]
+on:
+  pull_request:
+  push:
+    branches:
+      - master          # triggers on pushes that contain changes in master
+      - develop
 
 jobs:
   build:
