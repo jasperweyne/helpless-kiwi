@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: 'kiwi'
       
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -24,14 +26,11 @@ jobs:
 
     - name: Move public for artifact building
       run: |
-        mkdir kiwi
-        ls -a | grep -v kiwi | xargs mv -t kiwi
         egrep -lRZ 'public/' kiwi | xargs -0 -l sed -i -e 's/public\//..\/public_html\/kiwi\//g'
         sed -i -e 's/\/config\/bootstrap.php/\/..\/kiwi\/config\/bootstrap.php/g' kiwi/public/index.php
         sed -i -e 's/\"extra\": {/\"extra\": {\n        \"public-dir\": \"..\/public_html\/kiwi\",/g' kiwi/composer.json
         mkdir public_html
         mv kiwi/public public_html/kiwi
-        find -maxdepth 2 -type d -ls
         
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
