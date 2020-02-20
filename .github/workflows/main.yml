@@ -104,9 +104,12 @@ jobs:
         id: author-date
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
           script: |             
             const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
-            return commit_details.data.author.date
+            const date = new Date(commit_details.data.author.date)
+            function pad(s) { return (s < 10) ? '0' + s : s; }
+            return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
             
       - name: Download build
         uses: actions/download-artifact@v1
