@@ -130,7 +130,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DATE: ${{ steps.author-date.outputs.result }}
+          DATE: ${{ steps.formatted-date.outputs.result }}
         with:
           tag_name: ${{ env.DATE }}
           release_name: Release ${{ env.DATE }}
