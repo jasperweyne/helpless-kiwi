@@ -20,9 +20,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    
-    - name: Validate composer.json and composer.lock
-      run: composer validate --no-check-all --no-check-publish
 
     - name: Move public for artifact building
       run: |
@@ -32,6 +29,10 @@ jobs:
         mkdir public_html
         mv kiwi/public public_html/kiwi
         
+    - name: Validate composer.json and composer.lock
+      run: composer validate --no-check-all --no-check-publish
+      working-directory: kiwi
+      
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
       working-directory: kiwi
