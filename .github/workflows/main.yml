@@ -21,6 +21,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --no-check-all --no-check-publish
+      working-directory: kiwi
+      continue-on-error: true
+      
     - name: Move public for artifact building
       run: |
         egrep -lRZ 'public/' kiwi | xargs -0 -l sed -i -e 's/public\//..\/public_html\/kiwi\//g'
@@ -28,10 +34,6 @@ jobs:
         sed -i -e 's/\"extra\": {/\"extra\": {\n        \"public-dir\": \"..\/public_html\/kiwi\",/g' kiwi/composer.json
         mkdir public_html
         mv kiwi/public public_html/kiwi
-        
-    - name: Validate composer.json and composer.lock
-      run: composer validate --no-check-all --no-check-publish
-      working-directory: kiwi
       
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
