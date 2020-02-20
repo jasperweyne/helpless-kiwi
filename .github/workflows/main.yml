@@ -49,3 +49,36 @@ jobs:
     - name: Build JS dependencies
       run: yarn build
       working-directory: kiwi
+     
+    - name: Cleanup
+      run: |
+        rm kiwi/{,.[!.],..?}* 2> /dev/null
+        rm -rf kiwi/.github
+        rm -rf kiwi/.hooks
+        rm -rf kiwi/assets
+        rm -rf kiwi/bin
+        rm -rf kiwi/node_modules
+        rm -rf kiwi/var
+
+    - name: Generate sample environment settings
+      run: |
+        cat > kiwi/.env.local.php.sample << EOL
+        <?php
+        return array (
+            'APP_DEBUG' => '0',
+            'APP_ENV' => 'prod',
+            'APP_SECRET' => '6badc0fca270ab84a00a67226f9e2554',
+            'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
+            'DATABASE_URL' => 'mysql://db_user:db_pass@127.0.0.1:3306/db',
+            'MAILER_URL' => 'null://localhost',
+            'DEFAULT_FROM' => 'foo@bar.com',
+        );
+        EOL
+      working-directory: kiwi
+      
+    - name: Save build
+      uses: actions/upload-artifact@v1
+      with:
+        name: production
+        path: .
+       
