@@ -124,8 +124,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DATE: ${{ steps.author-date.outputs.result }}
         with:
-          tag_name: ${{ env.date }}
-          release_name: Release ${{ env.date }}
+          tag_name: ${{ env.DATE }}
+          release_name: Release ${{ env.DATE }}
           draft: true
           prerelease: false
       
