@@ -28,6 +28,7 @@ jobs:
       continue-on-error: true
       
     - name: Move public for artifact building
+      if: github.ref == 'refs/heads/master'
       run: |
         egrep -lRZ 'public/' kiwi | xargs -0 -l sed -i -e 's/public\//..\/public_html\/kiwi\//g'
         sed -i -e 's/\/config\/bootstrap.php/\/..\/kiwi\/config\/bootstrap.php/g' kiwi/public/index.php
@@ -53,15 +54,16 @@ jobs:
     - name: Cleanup
       run: |
         rm kiwi/{,.[!.],..?}* 2> /dev/null || true
+        rm -rf kiwi/.git
         rm -rf kiwi/.github
         rm -rf kiwi/.hooks
         rm -rf kiwi/assets
         rm -rf kiwi/bin
         rm -rf kiwi/node_modules
         rm -rf kiwi/var
-        find -maxdepth 2 -type d -ls
 
     - name: Generate sample environment settings
+      if: github.ref == 'refs/heads/master'
       run: |
         cat > kiwi/.env.local.php.sample << EOL
         <?php
@@ -78,7 +80,7 @@ jobs:
       
     - name: Save build
       uses: actions/upload-artifact@v1
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
       with:
         name: prod
         path: .
