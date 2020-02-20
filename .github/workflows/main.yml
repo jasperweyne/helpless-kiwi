@@ -63,6 +63,7 @@ jobs:
 
     - name: Generate sample environment settings
       run: |
+        touch kiwi/.env.local.php.sample
         cat > kiwi/.env.local.php.sample << EOL
         <?php
         return array (
