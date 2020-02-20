@@ -122,10 +122,11 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DATE: ${{ steps.author-date.outputs.result }}
         with:
-          tag_name: ${{ steps.author-date.outputs.result }}
-          release_name: Release ${{ steps.author-date.outputs.result }}
-          draft: false
+          tag_name: ${{ env.date }}
+          release_name: Release ${{ env.date }}
+          draft: true
           prerelease: false
       
       - name: Upload Release Asset
