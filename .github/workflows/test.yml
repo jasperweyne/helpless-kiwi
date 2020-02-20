@@ -20,9 +20,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
+      run: composer install --prefer-dist --no-progress --no-suggest
       env:
-        APP_DEBUG: 0
         APP_ENV: test
       
     - name: Run tests
