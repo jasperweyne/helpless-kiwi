@@ -1,0 +1,35 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
+      env:
+        APP_DEBUG: 0
+        APP_ENV: prod
+  
+    - name: Install JS dependencies
+      run: yarn install
+    
+    - name: Build JS dependencies
+      run: yarn build
