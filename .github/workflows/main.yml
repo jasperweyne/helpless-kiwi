@@ -115,7 +115,7 @@ jobs:
         id: formatted-date
         run: |
           date="${DATE//\"/}"
-          echo $date
+          echo "::set-output name=result::$date"
         env:
           DATE: ${{ steps.author-date.outputs.result }}
             
