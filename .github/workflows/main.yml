@@ -9,7 +9,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -22,6 +22,17 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate --no-check-all --no-check-publish
 
+    - name: Move public for artifact building
+      run: |
+        mkdir kiwi
+        ls | grep -v kiwi | xargs mv -t kiwi
+        egrep -lRZ 'public/' kiwi | xargs -0 -l sed -i -e 's/public\//..\/public_html\/kiwi\//g'
+        sed -i -e 's/\/config\/bootstrap.php/\/..\/kiwi\/config\/bootstrap.php/g' kiwi/public/index.php
+        sed -i -e 's/\"extra\": {/\"extra\": {\n        \"public-dir\": \"..\/public_html\/kiwi\",/g' kiwi/composer.json
+        mkdir public_html
+        mv kiwi/public public_html/kiwi
+        cd kiwi
+        
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
       env:
