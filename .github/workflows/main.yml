@@ -35,12 +35,15 @@ jobs:
         
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --no-dev --optimize-autoloader
+      working-directory: kiwi
       env:
         APP_DEBUG: 0
         APP_ENV: prod
   
     - name: Install JS dependencies
       run: yarn install
+      working-directory: kiwi
     
     - name: Build JS dependencies
       run: yarn build
+      working-directory: kiwi
