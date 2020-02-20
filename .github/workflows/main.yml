@@ -126,7 +126,7 @@ jobs:
           path: prod.zip
         
       - name: List
-        run: find -maxdepth 2 -type d -ls
+        run: ls prod.zip
         
       - name: Create Release
         id: create_release
