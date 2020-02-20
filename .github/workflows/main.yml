@@ -3,9 +3,9 @@ name: CI
 on:
   pull_request:
   push:
-    #branches:
-      #- master          # triggers on pushes that contain changes in master
-      #- develop
+    branches:
+      - master  # triggers on pushes that contain changes in master
+      - develop
 
 jobs:
   build:
@@ -25,14 +25,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate --no-check-all --no-check-publish
-      working-directory: kiwi
-      continue-on-error: true
       
-    - name: Move public for artifact building
-      #if: github.ref == 'refs/heads/master'
+    - name: Move public for build
+      if: github.ref == 'refs/heads/master'
       run: |
         egrep -lRZ 'public/' kiwi | xargs -0 -l sed -i -e 's/public\//..\/public_html\/kiwi\//g'
         sed -i -e 's/\/config\/bootstrap.php/\/..\/kiwi\/config\/bootstrap.php/g' kiwi/public/index.php
@@ -55,8 +50,8 @@ jobs:
       run: yarn build
       working-directory: kiwi
      
-    - name: Cleanup
-      #if: github.ref == 'refs/heads/master'
+    - name: Cleanup build
+      if: github.ref == 'refs/heads/master'
       run: |
         rm kiwi/{,.[!.],..?}* 2> /dev/null || true
         rm -rf kiwi/.git
@@ -67,8 +62,8 @@ jobs:
         rm -rf kiwi/node_modules
         rm -rf kiwi/var
 
-    - name: Generate sample environment settings
-      #if: github.ref == 'refs/heads/master'
+    - name: Generate sample environment settings for build
+      if: github.ref == 'refs/heads/master'
       run: |
         cat > kiwi/.env.local.php.sample << EOL
         <?php
@@ -84,18 +79,18 @@ jobs:
         EOL
         
     - name: Compress build
-      #if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       run: zip -qq -r prod.zip kiwi public_html
       
     - name: Upload build
       uses: actions/upload-artifact@v1
-      #if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       with:
         name: prod
         path: prod.zip
   
   release:
-    #if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -111,8 +106,7 @@ jobs:
             function pad(s) { return (s < 10) ? '0' + s : s; }
             return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
         
-      - name: Format date
-        id: formatted-date
+      - id: formatted-date
         run: |
           date="${DATE//\"/}"
           echo "::set-output name=result::$date"
@@ -125,9 +119,6 @@ jobs:
           name: prod
           path: .
         
-      - name: List
-        run: ls prod.zip
-        
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -137,7 +128,7 @@ jobs:
         with:
           tag_name: ${{ env.DATE }}
           release_name: Release ${{ env.DATE }}
-          draft: true
+          draft: false
           prerelease: false
       
       - name: Upload Release Asset
