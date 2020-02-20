@@ -51,6 +51,7 @@ jobs:
       working-directory: kiwi
      
     - name: Cleanup
+      continue-on-error: true
       run: |
         rm kiwi/{,.[!.],..?}* 2> /dev/null
         rm -rf kiwi/.github
