@@ -110,6 +110,14 @@ jobs:
             const d = new Date(commit_details.data.author.date)
             function pad(s) { return (s < 10) ? '0' + s : s; }
             return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+        
+      - name: Format date
+        id: formatted-date
+        run: |
+          date="${DATE//\"/}"
+          echo $date
+        env:
+          DATE: ${{ steps.author-date.outputs.result }}
             
       - name: Download build
         uses: actions/download-artifact@v1
