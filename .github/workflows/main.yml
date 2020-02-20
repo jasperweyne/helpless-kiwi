@@ -60,6 +60,7 @@ jobs:
         rm -rf kiwi/bin
         rm -rf kiwi/node_modules
         rm -rf kiwi/var
+        find -maxdepth 2 -type d -ls
 
     - name: Generate sample environment settings
       run: |
@@ -78,7 +79,8 @@ jobs:
       
     - name: Save build
       uses: actions/upload-artifact@v1
+      if: github.ref == 'refs/heads/master'
       with:
-        name: production
+        name: prod
         path: .
        
