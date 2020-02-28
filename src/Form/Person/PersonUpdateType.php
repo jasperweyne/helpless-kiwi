@@ -2,8 +2,9 @@
 
 namespace App\Form\Person;
 
-use App\Entity\Person\Person;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class PersonUpdateType extends PersonType
 {
@@ -11,25 +12,22 @@ class PersonUpdateType extends PersonType
     {
         parent::buildForm($builder, $options);
 
-        $builder->remove('email');
+        $builder
+            ->remove('email')
+            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+                if (null !== $event->getData()) {
+                    $builder = $event->getForm();
+                    $keyValues = $builder->get('keyValues');
 
-        $fields = $this->buildRemoveFields($options['person']);
+                    foreach ($keyValues->all() as $formField) {
+                        $field = $formField->getData();
 
-        // Other fields
-        foreach ($fields as $field) {
-            $builder->remove($field);
-        }
-    }
-
-    private function buildRemoveFields(Person $person)
-    {
-        $fields = [];
-        foreach ($person->getKeyValues() as $keyVal) {
-            if (!is_null($keyVal['value'])) {
-                $fields[] = self::formRef($keyVal['key']);
-            }
-        }
-
-        return $fields;
+                        if (!is_null($field['value'])) {
+                            $keyValues->remove($formField->getName());
+                        }
+                    }
+                }
+            })
+        ;
     }
 }
