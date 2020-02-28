@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Document\Document;
-use App\Entity\Document\Value;
+use App\Entity\Document\FieldValue;
 use App\Entity\Document\Scheme;
 use App\Entity\Document\Field;
 use App\Entity\Document\Index;
@@ -29,7 +29,7 @@ class CreateDocumentCommand extends Command
     private $inputInfo;
 
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'app:create-document2';
+    protected static $defaultName = 'app:create-document';
 
     public function __construct(EntityManagerInterface $em)
     {
@@ -99,10 +99,12 @@ class CreateDocumentCommand extends Command
             $oldKeyVals = $this->getOldKeyValue($oldScheme,$oldValues);
 
             //creating new scheme if not found already in the current schemes. 
-            $newScheme = $this->em->getRepository(Scheme::class)->findOneBy(['name' => $oldScheme->getName()]);
+            $newScheme = $this->em->getRepository(Scheme::class)->findOneBy(['id' => $oldScheme->getId()]);
             if ($newScheme == null) {
                 $newScheme = new Scheme();
+                $newScheme->setId($oldScheme->getId());
                 $newScheme->setName($oldScheme->getName());
+                $newScheme->setSchemeType("person");
 
                 foreach ($oldFields as $oldField) {
                     $newField = new Field();
@@ -122,9 +124,18 @@ class CreateDocumentCommand extends Command
 
                 $this->em->persist($newScheme);
             }
-            $this->em->flush();
+            
+        } else {
+            $newScheme = $this->em->getRepository(Scheme::class)->findOneBy(['name' => 'leeg schema', 'schemeType' => 'person']);
+            if ($newScheme == null) {
+                $newScheme = new Scheme();
+                $newScheme->setName("leeg schema");
+                $newScheme->setSchemeType("person");
+                $this->em->persist($newScheme);
+            }
         }
-        
+        $this->em->flush();
+
         //Generate the document and copy the values of all fields. 
         $document = new Document();
         $document->setScheme($newScheme);
@@ -132,7 +143,7 @@ class CreateDocumentCommand extends Command
         if ($oldKeyVals) {
             //Only does something if we actually have a fields. 
             foreach ($oldKeyVals as $oldKeyVal) {
-                $newValue = new Value();
+                $newValue = new FieldValue();
                 $oldField = $oldKeyVal->get('key');
                 $oldValue = $oldKeyVal->get('value');
                 $newField = $newScheme->getField($oldField->getName());

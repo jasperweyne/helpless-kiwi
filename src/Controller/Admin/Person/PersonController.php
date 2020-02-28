@@ -4,9 +4,19 @@ namespace App\Controller\Admin\Person;
 
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
+
+use App\Entity\Document\Scheme;
+use App\Entity\Document\Document;
 use App\Entity\Person\PersonScheme;
 use App\Entity\Person\PersonValue;
+use App\Entity\Document\FieldValue;
+use App\Entity\Document\Expression;
+use App\Entity\Document\ExpressionValue;
+
 use App\Form\Person\PersonType;
+use App\Form\Document\DocumentType;
+
+
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -44,14 +54,14 @@ class PersonController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $persons = $em->getRepository(Person::class)->findAll();
-        $schemes = $em->getRepository(PersonScheme::class)->findAll();
+        $schemes = $em->getRepository(Scheme::class)->findBy(['schemeType' => 'person']);
 
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
             'schemes' => $schemes,
         ]);
     }
-
+    
     /**
      * Creates a new activity entity.
      *
@@ -61,11 +71,11 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $schemes = $em->getRepository(PersonScheme::class)->findAll();
+        $schemes = $em->getRepository(Scheme::class)->findBy(['schemeType' => 'person']);
         if (0 == count($schemes)) {
             $this->addFlash('error', 'Kan geen persoon aanmaken zonder schema. Maak eerst een schema aan.');
 
-            return $this->redirectToRoute('admin_person_scheme_new');
+            return $this->redirectToRoute('admin_document_scheme_new');
         } elseif (1 == count($schemes)) {
             return $this->redirectToRoute('admin_person_new_selected', ['id' => $schemes[0]->getId()]);
         }
@@ -89,14 +99,14 @@ class PersonController extends AbstractController
      *
      * @Route("/new/{id}", name="new_selected", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, PersonScheme $scheme)
+    public function newAction(Request $request, Scheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
         $person = new Person();
-        $person
-            ->setScheme($scheme)
-        ;
+        $document = new Document();
+        $document->setScheme($scheme);
+        $person->setDocument($document);
 
         $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
         $form->handleRequest($request);
@@ -109,13 +119,13 @@ class PersonController extends AbstractController
                     continue;
                 }
 
-                $value = new PersonValue();
-                $value
-                    ->setPerson($person)
+                $FieldValue = new FieldValue();
+                $FieldValue
+                    ->setDocument($document)
                     ->setField($field)
-                    ->setValue($form[PersonType::formRef($field)]->getData())
+                    ->setValue($form[DocumentType::formRef($field)]->getData())
                 ;
-                $em->persist($value);
+                $em->persist($FieldValue);
             }
 
             $em->flush();
@@ -207,7 +217,13 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonType', 
+                                  $person, 
+                                  ['person' => $person, 
+                                  'document'=> $person->getDocument(), 
+                                  'current_user' => $this->getUser()->getPerson()]
+                                  );
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -216,23 +232,26 @@ class PersonController extends AbstractController
 
             foreach ($person->getKeyValues() as $keyVal) {
                 $field = $keyVal['key'];
-                $value = $keyVal['value'];
+                $FieldValue = $keyVal['value'];
 
+                if ($field instanceof Expression) {
+                    continue;
+                }
                 if ($field->getUserEditOnly()) {
                     continue;
                 }
-
-                if (is_null($value)) {
-                    $value = new PersonValue();
-                    $value
-                        ->setPerson($person)
+                
+                if (is_null($FieldValue)) {
+                    $FieldValue = new FieldValue();
+                    $FieldValue
+                        ->setDocument($person->getDocument())
                         ->setField($field)
                     ;
 
-                    $em->persist($value);
+                    $em->persist($FieldValue);
                 }
 
-                $value->setValue($form[PersonType::formRef($field)]->getData());
+                $FieldValue->setValue($form['document'][DocumentType::formRef($field)]->getData());
             }
 
             $em->flush();
@@ -261,7 +280,7 @@ class PersonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $scheme = $form['scheme']->getData();
 
-            if (!is_null($person->getScheme()) && $person->getScheme()->getId() == $scheme->getId()) {
+            if (!is_null($person->getDocument()->getScheme()) && $person->getDocument()->getScheme()->getId() == $scheme->getId()) {
                 $this->addFlash('error', $person->getCanonical().' heeft al '.$scheme->getName().' als schema, kies een ander schema!');
 
                 return $this->render('admin/person/scheme.html.twig', [
@@ -286,11 +305,13 @@ class PersonController extends AbstractController
      * @ParamConverter("person", options={"id": "person_id"})
      * @ParamConverter("personScheme", options={"id": "scheme_id"})
      */
-    public function schemeAction(Request $request, Person $person, PersonScheme $personScheme, AuthUserProvider $authProvider)
+    public function schemeAction(Request $request, Person $person, Scheme $scheme, AuthUserProvider $authProvider)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $person->setScheme($personScheme);
+        $document= $person->getDocument();
+        $document->setScheme($scheme);
+
 
         $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
         $form->handleRequest($request);
@@ -299,22 +320,22 @@ class PersonController extends AbstractController
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
-            foreach ($person->getFieldValues() as $value) {
-                $em->remove($value);
+            foreach ($person->getDocument()->getFieldValues() as $FieldValue) {
+                $em->remove($FieldValue);
             }
 
-            foreach ($personScheme->getFields() as $field) {
+            foreach ($scheme->getFields() as $field) {
                 if ($field->getUserEditOnly()) {
                     continue;
                 }
 
-                $value = new PersonValue();
-                $value
-                    ->setPerson($person)
+                $FieldValue = new FieldValue();
+                $FieldValue
+                    ->setDocument($document)
                     ->setField($field)
-                    ->setValue($form[PersonType::formRef($field)]->getData())
+                    ->setValue($form[DocumentType::formRef($field)]->getData())
                 ;
-                $em->persist($value);
+                $em->persist($FieldValue);
             }
 
             $em->flush();

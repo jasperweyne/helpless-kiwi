@@ -3,10 +3,9 @@
 namespace App\Entity\Person;
 
 use App\Entity\Security\Auth;
-use App\Entity\Document\Value;
+use App\Entity\Document\FieldValue;
 use App\Entity\Document\Document;
-
-
+use App\Entity\Document\ValueInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -117,9 +116,9 @@ class Person
         return $this;
     }
 
-    public function getValue($field): ?Value
-    {
-        return $this->document->getValue($field);
+    public function getValue($key): ?ValueInterface
+    {   
+        return $this->document->getKeyValue($key);
     }
 
     /**
@@ -177,4 +176,14 @@ class Person
         return $this->scheme;
     }
 
+    /**
+     * @return Collection|AccesGroup[]
+     */
+    public function userAccesGroups(Document $document): Collection 
+    {
+        $accesGroups = clone $document->getScheme()->getAccesGroups();
+        $accesGroups->filter( function($x) use ($document) { $x->inGroup($this,$document); } );
+
+        return $accesGroups;
+    }
 }

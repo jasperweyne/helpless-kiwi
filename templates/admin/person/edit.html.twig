@@ -5,7 +5,11 @@
 {% block body %}
     <div class="form">
         {{ form_start(form) }}
-            {{ form_widget(form) }}
+            {# Hmtl rendering of the form is not yet optimal, I do not know how to fix this.#}
+            {{ form_widget(form.email) }}
+
+            {{ form_widget(form.document) }}
+           
             <div class="button-group">
                 <button type="submit">Opslaan</button>
                 <a href="{{ path('admin_person_show', { 'id': person.id }) }}">Annuleren</a>

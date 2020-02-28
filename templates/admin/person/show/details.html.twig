@@ -24,8 +24,8 @@
             <tr>
                 <th>Schema</th>
                 <td>
-                    {% if person.scheme %}
-                        <a href="{{ path('admin_person_scheme_show', { 'id': person.scheme.id }) }}">{{ person.scheme.name }}</a>
+                    {% if person.document.scheme %}
+                        <a href="{{ path('admin_document_scheme_show', { 'id': person.document.scheme.id }) }}">{{ person.document.scheme.name }}</a>
                     {% else %}
                         <i>Geen schema</i>
                     {% endif %}

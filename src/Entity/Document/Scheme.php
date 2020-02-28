@@ -23,7 +23,17 @@ class Scheme
      */
     private $name;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $schemeType;
+
     
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Document\Expression", mappedBy="scheme")
+     */
+    private $expressions;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Document\Field", mappedBy="scheme")
@@ -31,9 +41,9 @@ class Scheme
     private $fields;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document\Index", mappedBy="scheme")
+     * @ORM\OneToMany(targetEntity="App\Entity\Document\AccesGroup", mappedBy="scheme")
      */
-    private $index;
+    private $acces;
 
     public function __construct()
     {
@@ -74,15 +84,28 @@ class Scheme
         return $this;
     }
 
+    public function getSchemeType(): ?string
+    {
+        return $this->schemeType;
+    }
+
+    public function setSchemeType(string $schemeType): self
+    {
+        $this->schemeType = $schemeType;
+
+        return $this;
+    }
+
     /**
-     * @return Collection|PersonField[]
+     * @return Collection|Field[]
      */
     public function getFields(): Collection
     {
         return $this->fields;
     }
 
-    public function getField($name): ?Field {
+    public function getField($name): ?Field 
+    {
         foreach ($this->fields as $field) {
             if ($field->getName() == $name ) {
                return $field;
@@ -113,4 +136,93 @@ class Scheme
 
         return $this;
     }
+
+    /**
+     * @return Collection|Expression[]
+     */
+    public function getExpressions(): Collection
+    {
+        return $this->expressions;
+    }
+
+    public function getExpression($name): ?Expression {
+        foreach ($this->expressions as $expression) {
+            if ($expression->getName() == $name ) {
+               return $expression;
+            } 
+        }
+        return null;
+    }
+
+    public function addExpression(Expression $expression): self
+    {
+        if (!$this->expressions->contains($expression)) {
+            $this->expressions[] = $expression;
+            $expression->setScheme($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpression(Expression $expression): self
+    {
+        if ($this->expressions->contains($expression)) {
+            $this->expressions->removeElement($expression);
+            // set the owning side to null (unless already changed)
+            if ($expression->getScheme() === $this) {
+                $expression->setScheme(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FieldInterface[]
+     */
+    public function getKeys(): Collection
+    {   
+        $keys = new ArrayCollection();
+        foreach ($this->fields as $key) {
+            $keys[] = $key;
+        }
+        
+        foreach ($this->expressions as $key) {
+            $keys[] = $key;
+        }
+
+        return $keys;
+    }
+
+    /**
+     * @return Collection|AccesGroup[]
+     */
+    public function getAccesGroups(): Collection
+    {
+        return $this->acces;
+    }
+
+    public function addAccesGroup(AccesGroup $acces): self
+    {
+        if (!$this->acces->contains($acces)) {
+            $this->acces[] = $acces;
+            $acces->setScheme($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAccesGroup(AccesGroup $acces): self
+    {
+        if ($this->acces->contains($acces)) {
+            $this->acces->removeElement($acces);
+            // set the owning side to null (unless already changed)
+            if ($acces->getScheme() === $this) {
+                $acces->setScheme(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\FieldRepository")
  */
-class Field
+class Field implements FieldInterface
 {
     /**
      * @ORM\Id()
@@ -40,6 +40,19 @@ class Field
      * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme", inversedBy="fields")
      */
     private $scheme;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\AccesGroup")
+     * @ORM\JoinColumn(name="edit_group", referencedColumnName="id", nullable=true)
+     */
+    private $canEdit;
+
+     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\AccesGroup")
+     * @ORM\JoinColumn(name="view_group", referencedColumnName="id", nullable=true)
+     */
+    private $canView;
+
 
     /**
      * Get id.
@@ -123,6 +136,30 @@ class Field
         return $this;
     }
 
+    public function getCanEdit(): ?AccesGroup
+    {
+        return $this->canEdit;
+    }
+
+    public function setCanEdit(?AccesGroup $edit): self
+    {
+        $this->canEdit = $edit;
+
+        return $this;
+    }
+
+    public function getCanView(): ?AccesGroup
+    {
+        return $this->canView;
+    }
+
+    public function setCanView(?AccesGroup $view): self
+    {
+        $this->canView = $view;
+
+        return $this;
+    }
+    
     public function __toString()
     {
         return $this->getName();
