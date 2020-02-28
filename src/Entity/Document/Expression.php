@@ -8,9 +8,9 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Document\IndexRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Document\ExpressionRepository")
  */
-class Index
+class Expression implements FieldInterface
 {
     /**
      * @ORM\Id()
@@ -25,7 +25,7 @@ class Index
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme", inversedBy="fields")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme", inversedBy="expressions")
      */
     private $scheme;
 
@@ -33,6 +33,19 @@ class Index
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $expr;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\AccesGroup")
+     * @ORM\JoinColumn(name="edit_group", referencedColumnName="id", nullable=true)
+     */
+    private $canEdit;
+
+     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\AccesGroup")
+     * @ORM\JoinColumn(name="view_group", referencedColumnName="id", nullable=true)
+     */
+    private $canView;
+
 
 
     /**
@@ -84,22 +97,55 @@ class Index
     }
 
 
-    public function getExpr(): ?string
+    public function getExpression(): ?string
     {
         return $this->expr;
     }
 
-    public function setExpr(string $expr): self
+    public function setExpression(string $expr): self
     {
         $this->expr = $expr;
 
         return $this;
     }
 
+    public function getValueType(): ?string
+    {
+        return "Jochem";
+    }
 
-    //Move functions??
 
-    private function evalExpr(?string $expr)
+    public function evalValue(Document $document): ?string
+    {
+        
+        return "joost";
+    }
+    
+    public function getCanEdit(): ?AccesGroup
+    {
+        return $this->canEdit;
+    }
+
+    public function setCanEdit(?AccesGroup $edit): self
+    {
+        $this->canEdit = $edit;
+
+        return $this;
+    }
+
+    public function getCanView(): ?AccesGroup
+    {
+        return $this->canView;
+    }
+
+    public function setCanView(?AccesGroup $view): self
+    {
+        $this->canView = $view;
+
+        return $this;
+    }
+
+    private function evalExpr(?string $expr,Document $document)
     {
         if (is_null($expr)) {
             return null;
@@ -119,29 +165,35 @@ class Index
         });
 
         $vars = [];
-        foreach ($this->getKeyValues() as $keyVal) {
+        foreach ($document->getKeyValues() as $keyVal) {
             $key = $keyVal['key'];
             $value = $keyVal['value'];
 
-            if ($key instanceof PersonField) {
+            if ($key instanceof Field) {
                 if (null === $key->getSlug()) {
                     continue;
                 }
                 $key = $key->getSlug();
             }
-            if ($value instanceof PersonValue) {
+            if ($value instanceof FieldValue) {
                 $value = $value->getValue();
             }
 
             $vars[$key] = $value;
         }
-        $vars['auth'] = $this->getAuth();
+        
+        
 
         try {
             return $lang->evaluate($expr, $vars);
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 
 }

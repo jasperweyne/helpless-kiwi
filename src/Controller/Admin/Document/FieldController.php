@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller\Admin\Person;
+namespace App\Controller\Admin\Document;
 
-use App\Entity\Person\PersonField;
-use App\Entity\Person\PersonScheme;
+use App\Entity\Document\Field;
+use App\Entity\Document\Scheme;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,35 +11,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Person controller.
  *
- * @Route("/admin/person/field", name="admin_person_field_")
+ * @Route("/admin/document/field", name="admin_document_field_")
  */
-class PersonFieldController extends AbstractController
+class FieldController extends AbstractController
 {
     /**
      * Creates a new activity entity.
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, PersonScheme $scheme)
+    public function newAction(Request $request, Scheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $field = new PersonField();
-        $field
-            ->setScheme($scheme)
-        ;
+        $field = new Field();
+        $field->setScheme($scheme);
 
-        $form = $this->createForm('App\Form\Person\PersonFieldType', $field);
+        $form = $this->createForm('App\Form\Document\FieldType', $field);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($field);
             $em->flush();
 
-            return $this->redirectToRoute('admin_person_scheme_show', ['id' => $field->getScheme()->getId()]);
+            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
         }
 
-        return $this->render('admin/person/field/new.html.twig', [
+        return $this->render('admin/document/field/new.html.twig', [
             'field' => $field,
             'scheme' => $scheme,
             'form' => $form->createView(),
@@ -51,20 +49,20 @@ class PersonFieldController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, PersonField $field)
+    public function editAction(Request $request, Field $field)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonFieldType', $field);
+        $form = $this->createForm('App\Form\Document\FieldType', $field);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
-            return $this->redirectToRoute('admin_person_scheme_show', ['id' => $field->getScheme()->getId()]);
+            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
         }
 
-        return $this->render('admin/person/field/edit.html.twig', [
+        return $this->render('admin/document/field/edit.html.twig', [
             'field' => $field,
             'form' => $form->createView(),
         ]);
@@ -75,7 +73,7 @@ class PersonFieldController extends AbstractController
      *
      * @Route("/{id}/delete", name="delete")
      */
-    public function deleteAction(Request $request, PersonField $field)
+    public function deleteAction(Request $request, Field $field)
     {
         $form = $this->createDeleteForm($field);
         $form->handleRequest($request);
@@ -85,10 +83,10 @@ class PersonFieldController extends AbstractController
             $em->remove($field);
             $em->flush();
 
-            return $this->redirectToRoute('admin_person_scheme_show', ['id' => $field->getScheme()->getId()]);
+            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
         }
 
-        return $this->render('admin/person/field/delete.html.twig', [
+        return $this->render('admin/document/field/delete.html.twig', [
             'field' => $field,
             'form' => $form->createView(),
         ]);
@@ -99,10 +97,10 @@ class PersonFieldController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(PersonField $field)
+    private function createDeleteForm(Field $field)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_person_field_delete', ['id' => $field->getId()]))
+            ->setAction($this->generateUrl('admin_document_field_delete', ['id' => $field->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

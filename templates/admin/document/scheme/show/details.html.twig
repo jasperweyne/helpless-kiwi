@@ -22,28 +22,45 @@
                                     <td>{{ field.name }}</td>
                                     <td>{{ field.valueType }}</td>
                                     <td>
-                                        <a href="{{ path('admin_person_field_edit', { 'id': field.id }) }}">Bewerken</a>
-                                        <a href="{{ path('admin_person_field_delete', { 'id': field.id }) }}">Verwijderen</a>
+                                        <a href="{{ path('admin_document_field_edit', { 'id': field.id }) }}">Bewerken</a>
+                                        <a href="{{ path('admin_document_field_delete', { 'id': field.id }) }}">Verwijderen</a>
                                     </td>
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_person_field_new', { 'id': scheme.id }) }}">Veld toevoegen</a></td>
+                                <td><a href="{{ path('admin_document_field_new', { 'id': scheme.id }) }}">Veld toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>
                 </td>
             </tr>
             <tr>
-                <th>Naam expressie</th>
+                <th>Expressies</th>
                 <td>
-                    {{ scheme.nameExpr }}
-                </td>
-            </tr>
-            <tr>
-                <th>Korte naam expressie</th>
-                <td>
-                    {{ scheme.shortNameExpr }}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Type</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expression in scheme.expressions %}
+                                <tr>
+                                    <td>{{ expression.name }}</td>
+                                    <td>{{ expression.valueType }}</td>
+                                    <td>
+                                        <a href="{{ path('admin_document_expression_edit', { 'id': expression.id }) }}">Bewerken</a>
+                                        <a href="{{ path('admin_document_expression_delete', { 'id': expression.id }) }}">Verwijderen</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td><a href="{{ path('admin_document_expression_new', { 'id': scheme.id }) }}">Expressie toevoegen</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </td>
             </tr>
             <tr>

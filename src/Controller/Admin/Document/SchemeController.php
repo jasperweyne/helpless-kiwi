@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Controller\Admin\Person;
+namespace App\Controller\Admin\Document;
 
+use App\Entity\Document\Document;
 use App\Entity\Person\Person;
-use App\Entity\Person\PersonScheme;
+use App\Entity\Document\Scheme;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
@@ -12,11 +13,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * Person controller.
+ * Scheme controller.
  *
- * @Route("/admin/person/scheme", name="admin_person_scheme_")
+ * @Route("/admin/document/scheme", name="admin_document_scheme_")
  */
-class PersonSchemeController extends AbstractController
+class SchemeController extends AbstractController
 {
     private $events;
 
@@ -26,7 +27,7 @@ class PersonSchemeController extends AbstractController
     }
 
     /**
-     * Creates a new activity entity.
+     * Creates a new scheme entity.
      *
      * @Route("/new", name="new", methods={"GET", "POST"})
      */
@@ -34,9 +35,9 @@ class PersonSchemeController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $scheme = new PersonScheme();
+        $scheme = new Scheme();
 
-        $form = $this->createForm('App\Form\Person\PersonSchemeType', $scheme);
+        $form = $this->createForm('App\Form\Document\SchemeType', $scheme);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -46,7 +47,7 @@ class PersonSchemeController extends AbstractController
             return $this->redirectToRoute('admin_person_index');
         }
 
-        return $this->render('admin/person/scheme/new.html.twig', [
+        return $this->render('admin/document/scheme/new.html.twig', [
             'scheme' => $scheme,
             'form' => $form->createView(),
         ]);
@@ -63,26 +64,28 @@ class PersonSchemeController extends AbstractController
 
         $persons = $em->getRepository(Person::class)->findBy(['scheme' => null]);
 
-        return $this->render('admin/person/scheme/null.html.twig', [
+        return $this->render('admin/document/scheme/null.html.twig', [
             'persons' => $persons,
         ]);
     }
 
     /**
-     * Finds and displays a person entity.
+     * Finds and displays a scheme entity.
      *
      * @Route("/{id}", name="show", methods={"GET", "POST"})
      */
-    public function showAction(PersonScheme $scheme)
+    public function showAction(Scheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $persons = $em->getRepository(Person::class)->findBy(['scheme' => $scheme->getId()]);
+        $documents = $em->getRepository(Document::class)->findBy(['scheme' => $scheme->getId()]);
+        //fix this at some point, need person repository function that finds person array by doc array.
+        $persons = $em->getRepository(Person::class)->findAll();
 
         $createdAt = $this->events->findOneBy($scheme, EntityNewEvent::class);
         $modifs = $this->events->findBy($scheme, EntityUpdateEvent::class);
 
-        return $this->render('admin/person/scheme/show.html.twig', [
+        return $this->render('admin/document/scheme/show.html.twig', [
             'persons' => $persons,
             'createdAt' => $createdAt,
             'modifs' => $modifs,
@@ -95,11 +98,11 @@ class PersonSchemeController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, PersonScheme $scheme)
+    public function editAction(Request $request, Scheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonSchemeType', $scheme);
+        $form = $this->createForm('App\Form\Document\SchemeType', $scheme);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -108,7 +111,7 @@ class PersonSchemeController extends AbstractController
             return $this->redirectToRoute('admin_person_index');
         }
 
-        return $this->render('admin/person/scheme/edit.html.twig', [
+        return $this->render('admin/document/scheme/edit.html.twig', [
             'scheme' => $scheme,
             'form' => $form->createView(),
         ]);
@@ -119,7 +122,7 @@ class PersonSchemeController extends AbstractController
      *
      * @Route("/{id}/delete", name="delete")
      */
-    public function deleteAction(Request $request, PersonScheme $scheme)
+    public function deleteAction(Request $request, Scheme $scheme)
     {
         $form = $this->createDeleteForm($scheme);
         $form->handleRequest($request);
@@ -132,7 +135,7 @@ class PersonSchemeController extends AbstractController
             return $this->redirectToRoute('admin_person_index');
         }
 
-        return $this->render('admin/person/scheme/delete.html.twig', [
+        return $this->render('admin/document/scheme/delete.html.twig', [
             'scheme' => $scheme,
             'form' => $form->createView(),
         ]);
@@ -143,10 +146,10 @@ class PersonSchemeController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(PersonScheme $scheme)
+    private function createDeleteForm(Scheme $scheme)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_person_scheme_delete', ['id' => $scheme->getId()]))
+            ->setAction($this->generateUrl('admin_document_scheme_delete', ['id' => $scheme->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

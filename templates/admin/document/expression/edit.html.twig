@@ -1,0 +1,18 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Bewerk expressie "' ~ expression.name ~ '"' %}
+{% endif %}
+
+{% block body %}
+    <div class="form">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="button-group">
+                <button type="submit">Opslaan</button>
+                <a href="{{ path('admin_person_index') }}">Annuleren</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

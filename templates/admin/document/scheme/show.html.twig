@@ -5,8 +5,8 @@
     
     {% block buttons %}
         <a href="{{ path("admin_person_new_selected", { 'id': scheme.id }) }} ">Nieuwe persoon</a>
-        <a href="{{ path('admin_person_scheme_edit', { 'id': scheme.id }) }}">Bewerken</a>
-        <a href="{{ path('admin_person_scheme_delete', { 'id': scheme.id }) }}">Verwijderen</a>
+        <a href="{{ path('admin_document_scheme_edit', { 'id': scheme.id }) }}">Bewerken</a>
+        <a href="{{ path('admin_document_scheme_delete', { 'id': scheme.id }) }}">Verwijderen</a>
         <a href="{{ path("admin_person_index") }} ">Terug</a>
     {% endblock %}
 {% endif %}
@@ -19,7 +19,7 @@
         </label>
         <div class="panel">
             <div class="card">
-                {% include 'admin/person/scheme/show/overview.html.twig' %}
+                {% include 'admin/document/scheme/show/overview.html.twig' %}
             </div>
         </div>
 
@@ -29,7 +29,7 @@
         </label>
         <div class="panel">
             <div class="card">
-                {% include 'admin/person/scheme/show/details.html.twig' %}
+                {% include 'admin/document/scheme/show/details.html.twig' %}
             </div>
         </div>
     </div>

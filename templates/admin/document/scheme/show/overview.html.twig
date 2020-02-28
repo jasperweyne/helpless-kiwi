@@ -4,8 +4,8 @@
             <tr>
                 <th>Naam</th>
                 <th>E-mail</th>
-                {% for field in scheme.fields %}
-                    <th>{{ field.name }}</th>
+                {% for key in scheme.keys %}
+                    <th>{{ key.name }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -14,7 +14,7 @@
             <tr>
                 <td><a href="{{ path("admin_person_show", { 'id': person.id }) }}">{{ person.canonical }}</a></td>
                 <td>{{ person.email }}</td>
-                {% for value in scheme.fields|map(x => person.getValue(x)) %}
+                {% for value in scheme.keys|map(x => person.getValue(x)) %}
                     <td>{{ value }}</td>
                 {% endfor %}
             </tr>

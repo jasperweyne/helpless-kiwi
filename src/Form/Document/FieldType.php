@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Form\Person;
+namespace App\Form\Document;
 
-use App\Entity\Person\PersonField;
+use App\Entity\Document\Field;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PersonFieldType extends AbstractType
+class FieldType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -27,7 +27,7 @@ class PersonFieldType extends AbstractType
             ])
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
-                    $vals = array_keys(PersonType::TYPES());
+                    $vals = array_keys(DocumentType::TYPES());
 
                     return array_combine($vals, $vals);
                 }),
@@ -38,7 +38,7 @@ class PersonFieldType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PersonField::class,
+            'data_class' => Field::class,
         ]);
     }
 }

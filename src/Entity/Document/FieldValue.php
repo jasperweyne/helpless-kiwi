@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\ValueRepository")
  */
-class Value
+class FieldValue implements ValueInterface
 {
     /**
      * @ORM\Id()
@@ -60,7 +60,7 @@ class Value
         return $this;
     }
 
-    public function getField(): ?Field
+    public function getField(): ?FieldInterface
     {
         return $this->field;
     }
