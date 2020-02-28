@@ -40,7 +40,7 @@ class Person
 
     //REMOVE THESE CLASSES AFTER UPDATE!!. ONLY.
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, cascade={"persist","remove"}, fetch="EAGER")
      */
     private $fieldValues;
 
@@ -129,7 +129,43 @@ class Person
         return $this->document->getKeyValues();
     }
 
+<<<<<<< HEAD
     
+=======
+    public function setKeyValues(Collection $keyVals): self
+    {
+        foreach ($this->fieldValues as $fieldValue) {
+            $this->removeFieldValue($fieldValue);
+        }
+
+        $keyVals = $keyVals
+            ->map(function ($x) {
+                return $x['value'];
+            })
+            ->filter(function ($x) {
+                return !is_null($x);
+            })
+        ;
+
+        foreach ($keyVals as $value) {
+            $this->addFieldValue($value);
+        }
+
+        return $this;
+    }
+
+    public function getShortnameExpr(): ?string
+    {
+        return $this->shortname_expr;
+    }
+
+    public function setShortnameExpr(?string $shortname_expr): self
+    {
+        $this->shortname_expr = $shortname_expr;
+
+        return $this;
+    }
+>>>>>>> develop
 
     public function getDocument(): ?Document
     {

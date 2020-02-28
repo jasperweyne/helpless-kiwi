@@ -92,9 +92,17 @@ php bin/console server:run
 ```
 
 ### Production
-To ease the building process, you can download, modify and run the build_prod.sh
-script from this repository to generate a production environment. If this
-doesn't work properly for you can deploy manually using these instructions.
+To ease the building process, you can download the latest release from the
+[releases page](https://github.com/jasperweyne/helpless-kiwi/releases), and
+upload the folders directly to your server. Here, it is assumed your server's
+root directory is 'public_html' and Kiwi is served from a subdirectory within,
+called 'kiwi', usually representing a subdomain.
+
+If these conditions don't apply to you, you can instead download, modify and run
+the build_prod.sh script from this repository to generate a production
+environment. This script is intended to produce the same results as a release.
+If this doesn't work properly for you can deploy manually using these
+instructions.
 
 For clarity purposes, we're assuming you're deploying to another location, for
 example by moving the files over FTP. Locally or through SSH should work fine

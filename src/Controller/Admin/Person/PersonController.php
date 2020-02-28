@@ -113,6 +113,7 @@ class PersonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($person);
+<<<<<<< HEAD
 
             foreach ($scheme->getFields() as $field) {
                 if ($field->getUserEditOnly()) {
@@ -128,6 +129,8 @@ class PersonController extends AbstractController
                 $em->persist($FieldValue);
             }
 
+=======
+>>>>>>> develop
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -217,6 +220,7 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+<<<<<<< HEAD
         $form = $this->createForm('App\Form\Person\PersonType', 
                                   $person, 
                                   ['person' => $person, 
@@ -224,12 +228,16 @@ class PersonController extends AbstractController
                                   'current_user' => $this->getUser()->getPerson()]
                                   );
 
+=======
+        $form = $this->createForm('App\Form\Person\PersonType', $person);
+>>>>>>> develop
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
+<<<<<<< HEAD
             foreach ($person->getKeyValues() as $keyVal) {
                 $field = $keyVal['key'];
                 $FieldValue = $keyVal['value'];
@@ -254,6 +262,8 @@ class PersonController extends AbstractController
                 $FieldValue->setValue($form['document'][DocumentType::formRef($field)]->getData());
             }
 
+=======
+>>>>>>> develop
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -320,6 +330,7 @@ class PersonController extends AbstractController
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
+<<<<<<< HEAD
             foreach ($person->getDocument()->getFieldValues() as $FieldValue) {
                 $em->remove($FieldValue);
             }
