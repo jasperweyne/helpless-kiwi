@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Form\Person\Dynamic;
+namespace App\Form\Document\Dynamic;
 
-use App\Entity\Person\Person;
-use App\Entity\Person\PersonField;
-use App\Entity\Person\PersonValue;
+use App\Entity\Document\Document;
+use App\Entity\Document\Field;
+use App\Entity\Document\FieldValue;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 
@@ -14,11 +14,11 @@ class DynamicDataMapper implements DataMapperInterface
 
     private $formField;
 
-    private $person;
+    private $document;
 
-    public function __construct(Person $person)
+    public function __construct(Document $document)
     {
-        $this->person = $person;
+        $this->document = $document;
     }
 
     public function mapDataToForms($viewData, $forms)
@@ -32,7 +32,7 @@ class DynamicDataMapper implements DataMapperInterface
         $forms = iterator_to_array($forms);
 
         $valueObj = $viewData['value'];
-        if (is_null($valueObj) || !$valueObj instanceof PersonValue) {
+        if (is_null($valueObj) || !$valueObj instanceof FieldValue) {
             return;
         }
 
@@ -49,17 +49,17 @@ class DynamicDataMapper implements DataMapperInterface
         if (is_null($viewData['value'])) {
             $field = $viewData['key'];
 
-            $viewData['value'] = new PersonValue();
-            $viewData['value']->setPerson($this->person);
+            $viewData['value'] = new FieldValue();
+            $viewData['value']->setDocument($this->document);
 
-            if ($field instanceof PersonField) {
+            if ($field instanceof Field) {
                 $viewData['value']->setField($field);
             } else {
                 $viewData['value']->setBuiltin($field);
             }
         }
 
-        if (!$viewData['value'] instanceof PersonValue) {
+        if (!$viewData['value'] instanceof FieldValue) {
             throw new \UnexpectedValueException();
         }
 

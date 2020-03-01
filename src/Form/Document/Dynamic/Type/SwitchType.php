@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Person\Dynamic\Type;
+namespace App\Form\Document\Dynamic\Type;
 
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\DataTransformerInterface;

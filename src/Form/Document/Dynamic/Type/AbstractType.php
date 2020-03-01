@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Form\Person\Dynamic\Type;
+namespace App\Form\Document\Dynamic\Type;
 
-use App\Form\Person\Dynamic\DynamicTypeInterface;
+use App\Form\Document\Dynamic\DynamicTypeInterface;
+
+
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

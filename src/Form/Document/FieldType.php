@@ -2,12 +2,10 @@
 
 namespace App\Form\Document;
 
-<<<<<<< HEAD:src/Form/Document/FieldType.php
 use App\Entity\Document\Field;
-=======
-use App\Entity\Person\PersonField;
-use App\Form\Person\Dynamic\DynamicTypeRegistry;
->>>>>>> develop:src/Form/Person/PersonFieldType.php
+
+
+use App\Form\Document\Dynamic\DynamicTypeRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -39,11 +37,8 @@ class FieldType extends AbstractType
             ])
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
-<<<<<<< HEAD:src/Form/Document/FieldType.php
                     $vals = array_keys(DocumentType::TYPES());
-=======
                     $vals = array_keys($this->typeRegistry->getTypes());
->>>>>>> develop:src/Form/Person/PersonFieldType.php
 
                     return array_combine($vals, $vals);
                 }),

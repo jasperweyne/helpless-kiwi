@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Person\Dynamic;
+namespace App\Form\Document\Dynamic;
 
 use Symfony\Component\Form\DataTransformerInterface;
 

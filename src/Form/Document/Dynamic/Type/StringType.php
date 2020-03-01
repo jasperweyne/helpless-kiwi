@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Person\Dynamic\Type;
+namespace App\Form\Document\Dynamic\Type;
 
 class StringType extends AbstractType
 {

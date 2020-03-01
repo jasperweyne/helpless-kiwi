@@ -129,31 +129,6 @@ class Person
         return $this->document->getKeyValues();
     }
 
-<<<<<<< HEAD
-    
-=======
-    public function setKeyValues(Collection $keyVals): self
-    {
-        foreach ($this->fieldValues as $fieldValue) {
-            $this->removeFieldValue($fieldValue);
-        }
-
-        $keyVals = $keyVals
-            ->map(function ($x) {
-                return $x['value'];
-            })
-            ->filter(function ($x) {
-                return !is_null($x);
-            })
-        ;
-
-        foreach ($keyVals as $value) {
-            $this->addFieldValue($value);
-        }
-
-        return $this;
-    }
-
     public function getShortnameExpr(): ?string
     {
         return $this->shortname_expr;
@@ -165,7 +140,6 @@ class Person
 
         return $this;
     }
->>>>>>> develop
 
     public function getDocument(): ?Document
     {

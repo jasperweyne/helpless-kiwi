@@ -51,12 +51,12 @@ services:
         arguments:
             - !tagged app.menu_extension
 
-    App\Form\Person\Dynamic\DynamicTypeRegistry:
+    App\Form\Document\Dynamic\DynamicTypeRegistry:
         arguments:
             - !tagged app.dynamic_type
 
     _instanceof:
         App\Template\MenuExtensionInterface:
             tags: ['app.menu_extension']
-        App\Form\Person\Dynamic\DynamicTypeInterface:
+        App\Form\Document\Dynamic\DynamicTypeInterface:
             tags: ['app.dynamic_type']

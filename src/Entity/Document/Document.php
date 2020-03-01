@@ -175,7 +175,7 @@ class Document
     }
 
     /**
-     * @return Collection|PersonValue[]
+     * @return Collection|ValueInterface[]
      */
     public function getKeyValues(): Collection
     {
@@ -187,12 +187,12 @@ class Document
                     'value' => $this->getFieldValue($field),
                 ];
             }
-            foreach ($this->getScheme()->getExpressions() as $expression) {
+            /*foreach ($this->getScheme()->getExpressions() as $expression) {
                 $keyVals[] = [
                     'key' => $expression,
                     'value' => $this->getExpressionValue($expression),
                 ];
-            }
+            }*/
         } else {
             foreach ($this->getFieldValues() as $value) {
                 $keyVals[] = [
@@ -243,7 +243,27 @@ class Document
     }
 
     
+    public function setKeyValues(Collection $keyVals): self
+    {
+        foreach ($this->fieldValues as $fieldValue) {
+            $this->removeFieldValue($fieldValue);
+        }
 
+        $keyVals = $keyVals
+            ->map(function ($x) {
+                return $x['value'];
+            })
+            ->filter(function ($x) {
+                return !is_null($x);
+            })
+        ;
+
+        foreach ($keyVals as $value) {
+            $this->addFieldValue($value);
+        }
+
+        return $this;
+    }
 
     
 }

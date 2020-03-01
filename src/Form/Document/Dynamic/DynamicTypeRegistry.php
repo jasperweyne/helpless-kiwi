@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Form\Person\Dynamic;
+namespace App\Form\Document\Dynamic;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Form\Document\Dynamic\DynamicTypeInterface;
+
 
 class DynamicTypeRegistry
 {

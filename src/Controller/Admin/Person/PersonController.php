@@ -80,7 +80,7 @@ class PersonController extends AbstractController
             return $this->redirectToRoute('admin_person_new_selected', ['id' => $schemes[0]->getId()]);
         }
 
-        $form = $this->createForm('App\Form\Person\PersonSchemeSelectorType');
+        $form = $this->createForm('App\Form\Person\PersonSchemeSelectorType',null,['schemes' => $schemes]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -108,29 +108,15 @@ class PersonController extends AbstractController
         $document->setScheme($scheme);
         $person->setDocument($document);
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonType',$person,['current_user' => $this->getUser()->getPerson()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($person);
-<<<<<<< HEAD
-
-            foreach ($scheme->getFields() as $field) {
-                if ($field->getUserEditOnly()) {
-                    continue;
-                }
-
-                $FieldValue = new FieldValue();
-                $FieldValue
-                    ->setDocument($document)
-                    ->setField($field)
-                    ->setValue($form[DocumentType::formRef($field)]->getData())
-                ;
-                $em->persist($FieldValue);
+            //Persist all new field values. 
+            foreach ($person->getDocument()->getFieldValues() as $val){
+                $em->persist($val);
             }
-
-=======
->>>>>>> develop
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -154,20 +140,20 @@ class PersonController extends AbstractController
         $createdAt = $this->events->findOneBy($person, EntityNewEvent::class);
         $modifs = $this->events->findBy($person, EntityUpdateEvent::class);
 
-        $form = $this->createForm('App\Form\Person\PersonAdvancedType', $person);
+        /*$form = $this->createForm('App\Form\Person\PersonAdvancedType', $person);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
-        }
+        }*/
 
         return $this->render('admin/person/show.html.twig', [
             'createdAt' => $createdAt,
             'modifs' => $modifs,
             'person' => $person,
-            'form' => $form->createView(),
+            //'form' => $form->createView(),
         ]);
     }
 
@@ -220,50 +206,16 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-<<<<<<< HEAD
-        $form = $this->createForm('App\Form\Person\PersonType', 
-                                  $person, 
-                                  ['person' => $person, 
-                                  'document'=> $person->getDocument(), 
-                                  'current_user' => $this->getUser()->getPerson()]
-                                  );
-
-=======
-        $form = $this->createForm('App\Form\Person\PersonType', $person);
->>>>>>> develop
+        $form = $this->createForm('App\Form\Person\PersonType',$person,['current_user' => $this->getUser()->getPerson()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
-
-<<<<<<< HEAD
-            foreach ($person->getKeyValues() as $keyVal) {
-                $field = $keyVal['key'];
-                $FieldValue = $keyVal['value'];
-
-                if ($field instanceof Expression) {
-                    continue;
-                }
-                if ($field->getUserEditOnly()) {
-                    continue;
-                }
-                
-                if (is_null($FieldValue)) {
-                    $FieldValue = new FieldValue();
-                    $FieldValue
-                        ->setDocument($person->getDocument())
-                        ->setField($field)
-                    ;
-
-                    $em->persist($FieldValue);
-                }
-
-                $FieldValue->setValue($form['document'][DocumentType::formRef($field)]->getData());
+            
+            foreach ($person->getDocument()->getFieldValues() as $val){
+                $em->persist($val);
             }
-
-=======
->>>>>>> develop
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -323,31 +275,12 @@ class PersonController extends AbstractController
         $document->setScheme($scheme);
 
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person]);
+        $form = $this->createForm('App\Form\Person\PersonType', $person);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
-
-<<<<<<< HEAD
-            foreach ($person->getDocument()->getFieldValues() as $FieldValue) {
-                $em->remove($FieldValue);
-            }
-
-            foreach ($scheme->getFields() as $field) {
-                if ($field->getUserEditOnly()) {
-                    continue;
-                }
-
-                $FieldValue = new FieldValue();
-                $FieldValue
-                    ->setDocument($document)
-                    ->setField($field)
-                    ->setValue($form[DocumentType::formRef($field)]->getData())
-                ;
-                $em->persist($FieldValue);
-            }
 
             $em->flush();
 
