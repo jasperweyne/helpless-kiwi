@@ -11,7 +11,7 @@ use App\Entity\Document\AccesGroup;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\FieldRepository")
  */
-class Field implements FieldInterface
+class Field 
 {
     /**
      * @ORM\Id()

@@ -4,12 +4,17 @@
     {% set page_title = person.canonical %}
 
     {% block buttons %}
-        <a href="{{ path('admin_person_edit', { 'id': person.id }) }}">Bewerken</a>
-        <a href="{{ path('admin_person_delete', { 'id': person.id }) }}">Verwijderen</a>
+        
+        <a href="{{ path('admin_person_edit', { 'id': person.id }) }}"  class="button add icon">Bewerken</a>
+        <a href="{{ path('admin_person_delete', { 'id': person.id }) }}"  class="button">Verwijderen</a>
+       
     {% endblock %}
+
+   
 {% endif %}
 
 {% block body_wrap %}
+
     <div class="tabs">
         <input type="radio" name="tabs" id="details" checked>
         <label for="details" class="tab">
@@ -27,7 +32,7 @@
         </label>
         <div class="panel">
             <div class="card">
-                {# {% include 'admin/person/show/advanced.html.twig' %} #}
+                {% include 'admin/person/show/advanced.html.twig' %} 
             </div>
         </div>
     </div>

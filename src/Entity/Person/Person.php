@@ -116,7 +116,7 @@ class Person
         return $this;
     }
 
-    public function getValue($key): ?ValueInterface
+    public function getValue($key): ?FieldValue
     {   
         return $this->document->getKeyValue($key);
     }
@@ -155,17 +155,22 @@ class Person
 
     public function getName(): ?string
     {
-        return "name";
+        return $this->document->getValue("Naam");
     }
 
     public function getShortname(): ?string
     {
-        return "shortname";
+        return $this->document->getValue("Shortname");
     }
 
     public function getCanonical(): ?string
     {
-        return "canonical";
+        if ($this->document->getValue("Canonical")==' '){
+            return 'Geen naam ingevoerd.';
+        } else {
+            return $this->document->getValue("Canonical");
+        }
+        
     }
 
     public function __toString()

@@ -153,7 +153,7 @@ class SchemeController extends AbstractController
     }
 
     /**
-     * Displays a form to edit an existing person entity.
+     * Displays a form to edit an existing scheme entity.
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
@@ -179,7 +179,7 @@ class SchemeController extends AbstractController
     }
 
     /**
-     * Deletes a person entity.
+     * Deletes a scheme entity.
      *
      * @Route("/{id}/delete", name="delete")
      */
@@ -215,9 +215,6 @@ class SchemeController extends AbstractController
             ->getForm()
         ;
     }
-
-
-
 
     /**
      * Creates a new default scheme type entity.
@@ -294,13 +291,13 @@ class SchemeController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Document\SchemeType', $default);
+        $form = $this->createForm('App\Form\Document\Scheme\SchemeDefaultType', $default);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
-            return $this->redirectToRoute('admin_person_index');
+            return $this->redirectToRoute('admin_document_scheme_index');
         }
 
         return $this->render('admin/document/schemeDefault/edit.html.twig', [

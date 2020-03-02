@@ -15,6 +15,8 @@ use App\Entity\Document\Field\ExpressionValue;
 
 use App\Entity\Document\Scheme\Scheme;
 use App\Entity\Document\AccesGroup;
+use phpDocumentor\Reflection\Types\Mixed_;
+use phpDocumentor\Reflection\Types\String_;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\DocumentRepository")
@@ -32,11 +34,6 @@ class Document
      * @ORM\OneToMany(targetEntity="App\Entity\Document\Field\FieldValue", mappedBy="document", orphanRemoval=true, fetch="EAGER")
      */
     private $fieldValues;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document\Field\ExpressionValue", mappedBy="document", orphanRemoval=true, fetch="EAGER")
-     */
-    private $expressionValues;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme\Scheme")
@@ -137,7 +134,7 @@ class Document
     }
     
     /**
-     * @return Collection|ValueInterface[]
+     * @return Collection
      */
     public function getExprValues(): Collection
     {
@@ -163,7 +160,7 @@ class Document
     }
 
     /**
-     * @return Collection|ValueInterface[]
+     * @return Collection|FieldValue[]
      */
     public function getKeyValues(): Collection
     {
@@ -195,8 +192,37 @@ class Document
         return $keyVals;
     }
 
+    public function getValue($str): ?string
+    {
+        if ($this->getScheme()){ 
+            foreach ($this->getScheme()->getFields() as $field) {
+                if ($field->getName()==$str){
+                    return $this->getFieldValue($field)->getValue();
+                }
+            }
+            foreach ($this->getScheme()->getExpressions() as $expr) {
+                if ($expr->getName()==$str){
+                    return $this->getExpressionValue($expr);
+                }
+            }
+            foreach ($this->getScheme()->getSchemeDefault()->getFields() as $field) {
+                if ($field->getName()==$str){
+                    return $this->getFieldValue($field)->getValue();
+                }
+            }
+            foreach ($this->getScheme()->getSchemeDefault()->getExpressions() as $expr) {
+                if ($expr->getName()==$str){
+                    return $this->getExpressionValue($expr);
+                }
+            }
+            return "Fout schema type.";
+        } else {
+            return "Geen  asdfschema ingesteld.";
+        }
+        
+    }
 
-    public function getKeyValue($key): ?ValueInterface
+    public function getKeyValue($key): ?FieldValue
     {
         foreach ($this->expressionValues as $value) {
             if ($key instanceof Expression) {

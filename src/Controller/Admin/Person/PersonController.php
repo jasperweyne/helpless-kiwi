@@ -11,7 +11,6 @@ use App\Entity\Person\PersonScheme;
 use App\Entity\Person\PersonValue;
 use App\Entity\Document\FieldValue;
 use App\Entity\Document\Expression;
-use App\Entity\Document\ExpressionValue;
 
 use App\Form\Person\PersonType;
 use App\Form\Document\DocumentType;
@@ -85,7 +84,7 @@ class PersonController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $scheme = $form['scheme']->getData();
+            $scheme = $form['document']['scheme']->getData();
 
             return $this->redirectToRoute('admin_person_new_selected', ['id' => $scheme->getId()]);
         }
@@ -213,7 +212,9 @@ class PersonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $auth = $person->getAuth();
-            $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
+            if ($auth){
+                $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
+            }
             
             foreach ($person->getDocument()->getFieldValues() as $val){
                 $em->persist($val);

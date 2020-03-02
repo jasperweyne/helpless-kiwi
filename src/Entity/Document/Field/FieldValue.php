@@ -8,7 +8,7 @@ use App\Entity\Document\Document;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\ValueRepository")
  */
-class FieldValue implements ValueInterface
+class FieldValue 
 {
     /**
      * @ORM\Id()
@@ -61,7 +61,7 @@ class FieldValue implements ValueInterface
         return $this;
     }
 
-    public function getField(): ?FieldInterface
+    public function getField(): ?Field
     {
         return $this->field;
     }

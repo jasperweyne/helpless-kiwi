@@ -33,10 +33,10 @@
                     {% if person.document.scheme %}
                         <a href="{{ path('admin_document_scheme_show', { 'id': person.document.scheme.id }) }}">{{ person.document.scheme.name }}</a>
                     {% else %}
-                        <i>Geen schema</i>
-                        <a href="{{ path('admin_person_scheme', { 'id': person.id }) }}">Schema veranderen</a>
-
+                        <i>Geen schema, </i>
+                        <a href="{{ path('admin_person_scheme', { 'id': person.id }) }}">kies een Schema.</a>
                     {% endif %}
+                    
                 </td>
             </tr>
             <tr>

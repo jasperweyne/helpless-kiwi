@@ -13,7 +13,7 @@ use App\Entity\Document\AccesGroup;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\ExpressionRepository")
  */
-class Expression implements FieldInterface
+class Expression 
 {
     /**
      * @ORM\Id()
