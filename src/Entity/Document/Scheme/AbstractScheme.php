@@ -1,15 +1,24 @@
 <?php
 
-namespace App\Entity\Document;
+namespace App\Entity\Document\Scheme;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Document\Field\Field;
+use App\Entity\Document\Field\Expression;
+use App\Entity\Document\Field\FieldInterface;
+use App\Entity\Document\Field\ValueInterface;
+use App\Entity\Document\Field\FieldValue;
+
+use App\Entity\Document\AccesGroup;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Document\SchemeRepository")
- */
-class Scheme
+ * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * 
+ * */
+class AbstractScheme
 {
     /**
      * @ORM\Id()
@@ -24,30 +33,19 @@ class Scheme
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $schemeType;
-
-    
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document\Expression", mappedBy="scheme")
+     * @ORM\OneToMany(targetEntity="App\Entity\Document\Field\Expression", mappedBy="scheme")
      */
     private $expressions;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document\Field", mappedBy="scheme")
+     * @ORM\OneToMany(targetEntity="App\Entity\Document\Field\Field", mappedBy="scheme")
      */
     private $fields;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document\AccesGroup", mappedBy="scheme")
-     */
-    private $acces;
 
     public function __construct()
     {
         $this->fields = new ArrayCollection();
+        $this->expressions = new ArrayCollection();
     }
 
     /**
@@ -84,18 +82,6 @@ class Scheme
         return $this;
     }
 
-    public function getSchemeType(): ?string
-    {
-        return $this->schemeType;
-    }
-
-    public function setSchemeType(string $schemeType): self
-    {
-        $this->schemeType = $schemeType;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Field[]
      */
@@ -116,10 +102,16 @@ class Scheme
 
     public function addField(Field $field): self
     {
-        if (!$this->fields->contains($field)) {
+        if ($this->fields){
+            if (!$this->fields->contains($field)) {
+                $this->fields[] = $field;
+                $field->setScheme($this);
+            }
+        } else {
             $this->fields[] = $field;
-            $field->setScheme($this);
+            $field->setScheme($this); 
         }
+        
 
         return $this;
     }
@@ -156,10 +148,16 @@ class Scheme
 
     public function addExpression(Expression $expression): self
     {
-        if (!$this->expressions->contains($expression)) {
+        if ($this->expressions){
+            if (!$this->expressions->contains($expression)) {
+                $this->expressions[] = $expression;
+                $expression->setScheme($this);
+            }
+        } else {
             $this->expressions[] = $expression;
             $expression->setScheme($this);
         }
+        
 
         return $this;
     }
@@ -192,37 +190,6 @@ class Scheme
         }
 
         return $keys;
-    }
-
-    /**
-     * @return Collection|AccesGroup[]
-     */
-    public function getAccesGroups(): Collection
-    {
-        return $this->acces;
-    }
-
-    public function addAccesGroup(AccesGroup $acces): self
-    {
-        if (!$this->acces->contains($acces)) {
-            $this->acces[] = $acces;
-            $acces->setScheme($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAccesGroup(AccesGroup $acces): self
-    {
-        if ($this->acces->contains($acces)) {
-            $this->acces->removeElement($acces);
-            // set the owning side to null (unless already changed)
-            if ($acces->getScheme() === $this) {
-                $acces->setScheme(null);
-            }
-        }
-
-        return $this;
     }
 
 }

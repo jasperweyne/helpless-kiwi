@@ -2,7 +2,7 @@
 
 namespace App\Repository\Document;
 
-use App\Entity\Document\Field;
+use App\Entity\Document\Field\Field;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

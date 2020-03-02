@@ -13,23 +13,23 @@
 
 {% block body_wrap %}
     <div class="tabs">
-        <input type="radio" name="tabs" id="overview" >
+        <input type="radio" name="tabs" id="overview" checked>
         <label for="overview" class="tab">
-            <span>Overzicht</span>
+            <span>Personen met dit schema</span>
         </label>
         <div class="panel">
             <div class="card">
-                {#{% include 'admin/document/scheme/show/overview.html.twig' %}#}
+                {% include 'admin/person/scheme/overview.html.twig' %}
             </div>
         </div>
 
-        <input type="radio" name="tabs" id="details" checked>
+        <input type="radio" name="tabs" id="details">
         <label for="details" class="tab">
             <span>Details</span>
         </label>
         <div class="panel">
             <div class="card">
-                {% include 'admin/document/scheme/show/details.html.twig' %}
+                {% include 'admin/person/scheme/details.html.twig' %}
             </div>
         </div>
     </div>

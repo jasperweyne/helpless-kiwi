@@ -1,0 +1,23 @@
+<div class="table">
+    <table>
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Type</th>
+                <th>Velden</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for default in defaults %}
+            <tr>
+                <td><a href="{{ path('admin_document_scheme_default_show', { 'id': default.id }) }}">{{ default.name }}</a></td>
+                <td>{{ default.schemeType}} </td>
+                <td>{{ default.fields|length }} veld{{ default.fields|length != 1 ? 'en' : '' }}</td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td><a href="{{ path('admin_document_scheme_default_new') }}">Default schema toevoegen</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

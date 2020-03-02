@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use App\Entity\Document\Scheme\Scheme;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\AccesGroupRepository")
@@ -21,7 +22,7 @@ class AccesGroup
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme\Scheme")
      */
     private $scheme;
 

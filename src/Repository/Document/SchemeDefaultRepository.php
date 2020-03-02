@@ -2,21 +2,21 @@
 
 namespace App\Repository\Document;
 
-use App\Entity\Document\Scheme\Scheme;
+use App\Entity\Document\Scheme\SchemeDefault;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method Scheme|null find($id, $lockMode = null, $lockVersion = null)
- * @method Scheme|null findOneBy(array $criteria, array $orderBy = null)
- * @method Scheme[]    findAll()
- * @method Scheme[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method SchemeDefault|null find($id, $lockMode = null, $lockVersion = null)
+ * @method SchemeDefault|null findOneBy(array $criteria, array $orderBy = null)
+ * @method SchemeDefault[]    findAll()
+ * @method SchemeDefault[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SchemeRepository extends ServiceEntityRepository
+class SchemeDefaultRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Scheme::class);
+        parent::__construct($registry, SchemeDefault::class);
     }
 
     // /**

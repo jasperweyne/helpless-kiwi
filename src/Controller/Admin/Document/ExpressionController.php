@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin\Document;
 
-use App\Entity\Document\Expression;
-use App\Entity\Document\Scheme;
+use App\Entity\Document\Field\Expression;
+use App\Entity\Document\Scheme\AbstractScheme;
+use App\Entity\Document\Scheme\Scheme;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +22,7 @@ class ExpressionController extends AbstractController
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, Scheme $scheme)
+    public function newAction(Request $request, AbstractScheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -33,8 +35,11 @@ class ExpressionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($expression);
             $em->flush();
-
-            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $expression->getScheme()->getId()]);
+            if ($expression->getScheme() instanceof Scheme) {
+                return $this->redirectToRoute('admin_document_scheme_show', ['id' => $expression->getScheme()->getId()]);
+            } else {
+                return $this->redirectToRoute('admin_document_scheme_default_show', ['id' => $expression->getScheme()->getId()]);
+            }    
         }
 
         return $this->render('admin/document/expression/new.html.twig', [
@@ -59,7 +64,11 @@ class ExpressionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
-            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $expression->getScheme()->getId()]);
+            if ($expression->getScheme() instanceof Scheme) {
+                return $this->redirectToRoute('admin_document_scheme_show', ['id' => $expression->getScheme()->getId()]);
+            } else {
+                return $this->redirectToRoute('admin_document_scheme_default_show', ['id' => $expression->getScheme()->getId()]);
+            }    
         }
 
         return $this->render('admin/document/expression/edit.html.twig', [
@@ -83,7 +92,11 @@ class ExpressionController extends AbstractController
             $em->remove($expression);
             $em->flush();
 
-            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $expression->getScheme()->getId()]);
+            if ($expression->getScheme() instanceof Scheme) {
+                return $this->redirectToRoute('admin_document_scheme_show', ['id' => $expression->getScheme()->getId()]);
+            } else {
+                return $this->redirectToRoute('admin_document_scheme_default_show', ['id' => $expression->getScheme()->getId()]);
+            }    
         }
 
         return $this->render('admin/document/expression/delete.html.twig', [

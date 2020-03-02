@@ -2,7 +2,7 @@
 
 namespace App\Form\Document;
 
-use App\Entity\Document\Field;
+use App\Entity\Document\Field\Field;
 
 
 use App\Form\Document\Dynamic\DynamicTypeRegistry;
@@ -37,7 +37,6 @@ class FieldType extends AbstractType
             ])
             ->add('valueType', ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () {
-                    $vals = array_keys(DocumentType::TYPES());
                     $vals = array_keys($this->typeRegistry->getTypes());
 
                     return array_combine($vals, $vals);

@@ -3,9 +3,9 @@
 namespace App\Entity\Person;
 
 use App\Entity\Security\Auth;
-use App\Entity\Document\FieldValue;
+use App\Entity\Document\Field\FieldValue;
 use App\Entity\Document\Document;
-use App\Entity\Document\ValueInterface;
+use App\Entity\Document\Field\ValueInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

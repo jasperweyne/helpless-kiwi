@@ -9,15 +9,15 @@
         <tbody>
         {% for scheme in schemes %}
             <tr>
-                <td><a href="{{ path('admin_person_scheme_show', { 'id': scheme.id }) }}">{{ scheme.name }}</a></td>
+                <td><a href="{{ path('admin_person_show_scheme', { 'id': scheme.id }) }}">{{ scheme.name }}</a></td>
                 <td>{{ scheme.fields|length }} veld{{ scheme.fields|length != 1 ? 'en' : '' }}</td>
             </tr>
         {% endfor %}
             <tr>
-                <td><i><a href="{{ path('admin_person_scheme_null') }}">Personen zonder schema</a></i></td>
+                <td><i><a href="{{ path('admin_document_scheme_null') }}">Personen zonder schema</a></i></td>
             </tr>
             <tr>
-                <td><a href="{{ path('admin_person_scheme_new') }}">Schema toevoegen</a></td>
+                <td><a href="{{ path('admin_document_scheme_new') }}">Schema toevoegen</a></td>
             </tr>
         </tbody>
     </table>

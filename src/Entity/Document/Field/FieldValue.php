@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Entity\Document;
+namespace App\Entity\Document\Field;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Document\Document;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Document\ExpressionValueRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Document\ValueRepository")
  */
-class ExpressionValue implements ValueInterface
+class FieldValue implements ValueInterface
 {
     /**
      * @ORM\Id()
@@ -17,10 +18,10 @@ class ExpressionValue implements ValueInterface
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Expression", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Field\Field", fetch="EAGER")
      * @ORM\JoinColumn()
      */
-    private $expression;
+    private $field;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Document\Document", inversedBy="fieldValues", fetch="EAGER")
@@ -62,17 +63,12 @@ class ExpressionValue implements ValueInterface
 
     public function getField(): ?FieldInterface
     {
-        return $this->expression;
+        return $this->field;
     }
 
-    public function getExpression(): ?Expression
+    public function setField(?Field $field): self
     {
-        return $this->expression;
-    }
-
-    public function setExpression(?Expression $expression): self
-    {
-        $this->expression = $expression;
+        $this->field = $field;
 
         return $this;
     }
@@ -91,12 +87,18 @@ class ExpressionValue implements ValueInterface
 
     public function getValue(): ?string
     {
-        return $this->getExpression()->evalValue($this->getDocument());
+        return $this->value;
+    }
+
+    public function setValue(string $value): self
+    {
+        $this->value = $value;
+
+        return $this;
     }
 
     public function getBuiltin(): ?string
     {
-        //Dont know this and stuff. 
         return $this->builtin;
     }
 

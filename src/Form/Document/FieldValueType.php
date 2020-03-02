@@ -2,7 +2,7 @@
 
 namespace App\Form\Document;
 
-use App\Entity\Document\Field;
+use App\Entity\Document\Field\Field;
 use App\Form\Document\Dynamic\DynamicDataMapper;
 use App\Form\Document\Dynamic\DynamicTypeRegistry;
 use Symfony\Component\Form\AbstractType;

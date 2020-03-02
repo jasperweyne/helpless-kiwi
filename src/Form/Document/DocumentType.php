@@ -5,10 +5,8 @@ namespace App\Form\Document;
 use App\Entity\Document\AccesGroup;
 use App\Entity\Document\Document;
 use App\Entity\Person\Person;
-use App\Entity\Document\Field;
-use App\Entity\Document\FieldValue;
-use App\Entity\Document\Expression;
-use App\Entity\Document\ExpressionValue;
+use App\Entity\Document\Field\Field;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

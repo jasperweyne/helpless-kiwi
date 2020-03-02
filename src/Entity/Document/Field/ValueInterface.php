@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity\Document;
+namespace App\Entity\Document\Field;
 
+use App\Entity\Document\Document;
 use Doctrine\ORM\Mapping as ORM;
 
 //Read only interface for values

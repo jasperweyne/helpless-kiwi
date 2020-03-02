@@ -1,0 +1,20 @@
+<div class="table">
+    <table>
+        <thead>
+            <tr>
+                <th>Schema</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for scheme in schemes|sort((a, b) => a.name <=> b.name) %}
+            <tr>
+                <td><a href="{{ path("admin_document_scheme_show", { 'id': scheme.id }) }}">{{ scheme.name }}</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>Geen schema's.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

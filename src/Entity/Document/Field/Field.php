@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Entity\Document;
+namespace App\Entity\Document\Field;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Document\Document;
+use App\Entity\Document\Scheme\Scheme;
+use App\Entity\Document\Scheme\AbstractScheme;
+use App\Entity\Document\AccesGroup;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\FieldRepository")
@@ -37,7 +41,7 @@ class Field implements FieldInterface
     private $userEditOnly;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme", inversedBy="fields")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme\AbstractScheme", inversedBy="fields")
      */
     private $scheme;
 
@@ -124,12 +128,12 @@ class Field implements FieldInterface
         return $this;
     }
 
-    public function getScheme(): ?Scheme
+    public function getScheme(): ?AbstractScheme
     {
         return $this->scheme;
     }
 
-    public function setScheme(?Scheme $scheme): self
+    public function setScheme(?AbstractScheme $scheme): self
     {
         $this->scheme = $scheme;
 

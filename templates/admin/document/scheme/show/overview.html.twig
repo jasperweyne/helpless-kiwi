@@ -3,24 +3,22 @@
         <thead>
             <tr>
                 <th>Naam</th>
-                <th>E-mail</th>
                 {% for key in scheme.keys %}
                     <th>{{ key.name }}</th>
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
-        {% for person in persons|sort((a, b) => a.canonical <=> b.canonical) %}
+        {% for object in objects|sort((a, b) => a.id <=> b.id) %}
             <tr>
-                <td><a href="{{ path("admin_person_show", { 'id': person.id }) }}">{{ person.canonical }}</a></td>
-                <td>{{ person.email }}</td>
-                {% for value in scheme.keys|map(x => person.getValue(x)) %}
+                <td><a href="{{ path("admin_person_show", { 'id': object.id }) }}">{{ object.id }}</a></td>
+                {% for value in scheme.keys|map(x => object.getValue(x)) %}
                     <td>{{ value }}</td>
                 {% endfor %}
             </tr>
         {% else %}
             <tr>
-                <td>Geen personen.</td>
+                <td>Geen objecten met dit schema.</td>
             </tr>
         {% endfor %}
         </tbody>

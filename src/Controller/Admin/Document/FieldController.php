@@ -2,8 +2,9 @@
 
 namespace App\Controller\Admin\Document;
 
-use App\Entity\Document\Field;
-use App\Entity\Document\Scheme;
+use App\Entity\Document\Field\Field;
+use App\Entity\Document\Scheme\AbstractScheme;
+use App\Entity\Document\Scheme\Scheme;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +17,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FieldController extends AbstractController
 {
     /**
-     * Creates a new activity entity.
+     * Creates a new field entity.
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, Scheme $scheme)
+    public function newAction(Request $request, AbstractScheme $scheme)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -34,7 +35,11 @@ class FieldController extends AbstractController
             $em->persist($field);
             $em->flush();
 
-            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
+            if ($scheme instanceof Scheme) {
+                return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
+            } else {
+                return $this->redirectToRoute('admin_document_scheme_default_show', ['id' => $field->getScheme()->getId()]);
+            }
         }
 
         return $this->render('admin/document/field/new.html.twig', [
@@ -59,7 +64,11 @@ class FieldController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
-            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
+            if ($field->getScheme() instanceof Scheme) {
+                return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
+            } else {
+                return $this->redirectToRoute('admin_document_scheme_default_show', ['id' => $field->getScheme()->getId()]);
+            }
         }
 
         return $this->render('admin/document/field/edit.html.twig', [
@@ -83,7 +92,11 @@ class FieldController extends AbstractController
             $em->remove($field);
             $em->flush();
 
-            return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
+            if ($field->getScheme() instanceof Scheme) {
+                return $this->redirectToRoute('admin_document_scheme_show', ['id' => $field->getScheme()->getId()]);
+            } else {
+                return $this->redirectToRoute('admin_document_scheme_default_show', ['id' => $field->getScheme()->getId()]);
+            }        
         }
 
         return $this->render('admin/document/field/delete.html.twig', [

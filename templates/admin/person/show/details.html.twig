@@ -5,7 +5,13 @@
                 <th>E-mailadres</th>
                 <td>{{ person.email ?? '' }}</td>
             </tr>
-            {% for x in person.keyValues %}
+            {% for x in person.document.keyValues %}
+            <tr>
+                <th>{{ x.key }}</th>
+                <td>{{ x.value }}</td>
+            </tr>
+            {% endfor %}
+            {% for x in person.document.exprValues %}
             <tr>
                 <th>{{ x.key }}</th>
                 <td>{{ x.value }}</td>
@@ -28,6 +34,8 @@
                         <a href="{{ path('admin_document_scheme_show', { 'id': person.document.scheme.id }) }}">{{ person.document.scheme.name }}</a>
                     {% else %}
                         <i>Geen schema</i>
+                        <a href="{{ path('admin_person_scheme', { 'id': person.id }) }}">Schema veranderen</a>
+
                     {% endif %}
                 </td>
             </tr>
@@ -56,7 +64,7 @@
                         <tbody>
                         {% for modif in modifs %}
                             <tr>
-                                <td>{{ modif.auth.person.canonical }}</td>
+                                <td>{{ modif.auth ? modif.auth.person.canonical : "Onbekend"}}</td>
                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                             </tr>
                         {% else %}

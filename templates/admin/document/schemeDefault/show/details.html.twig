@@ -3,7 +3,7 @@
         <tbody>
             <tr>
                 <th>Titel</th>
-                <td>{{ scheme.name }}</td>
+                <td>{{ default.name }}</td>
             </tr>
             <tr>
                 <th>Velden</th>
@@ -17,7 +17,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for field in scheme.fields %}
+                            {% for field in default.fields %}
                                 <tr>
                                     <td>{{ field.name }}</td>
                                     <td>{{ field.valueType }}</td>
@@ -28,7 +28,7 @@
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_document_field_new', { 'id': scheme.id }) }}">Veld toevoegen</a></td>
+                                <td><a href="{{ path('admin_document_field_new', { 'id': default.id }) }}">Veld toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -46,7 +46,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for expression in scheme.expressions %}
+                            {% for expression in default.expressions %}
                                 <tr>
                                     <td>{{ expression.name }}</td>
                                     <td>{{ expression.valueType }}</td>
@@ -57,7 +57,7 @@
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_document_expression_new', { 'id': scheme.id }) }}">Expressie toevoegen</a></td>
+                                <td><a href="{{ path('admin_document_expression_new', { 'id': default.id }) }}">Expressie toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>

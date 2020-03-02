@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Entity\Document;
+namespace App\Entity\Document\Field;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Document\Document;
+use App\Entity\Document\Scheme\AbstractScheme;
+use App\Entity\Document\AccesGroup;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\ExpressionRepository")
@@ -25,7 +28,7 @@ class Expression implements FieldInterface
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme", inversedBy="expressions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme\AbstractScheme", inversedBy="expressions")
      */
     private $scheme;
 
@@ -84,12 +87,12 @@ class Expression implements FieldInterface
 
 
     
-    public function getScheme(): ?Scheme
+    public function getScheme(): ?AbstractScheme
     {
         return $this->scheme;
     }
 
-    public function setScheme(?Scheme $scheme): self
+    public function setScheme(?AbstractScheme $scheme): self
     {
         $this->scheme = $scheme;
 
@@ -118,7 +121,7 @@ class Expression implements FieldInterface
     public function evalValue(Document $document): ?string
     {
         
-        return "joost";
+        return $this->evalExpr($this->expr,$document);
     }
     
     public function getCanEdit(): ?AccesGroup

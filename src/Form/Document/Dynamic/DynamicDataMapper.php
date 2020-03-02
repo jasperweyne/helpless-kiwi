@@ -3,8 +3,8 @@
 namespace App\Form\Document\Dynamic;
 
 use App\Entity\Document\Document;
-use App\Entity\Document\Field;
-use App\Entity\Document\FieldValue;
+use App\Entity\Document\Field\Field;
+use App\Entity\Document\Field\FieldValue;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 

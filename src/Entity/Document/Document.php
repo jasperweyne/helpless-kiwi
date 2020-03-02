@@ -6,6 +6,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use App\Entity\Document\Field\Field;
+use App\Entity\Document\Field\Expression;
+use App\Entity\Document\Field\FieldInterface;
+use App\Entity\Document\Field\ValueInterface;
+use App\Entity\Document\Field\FieldValue;
+use App\Entity\Document\Field\ExpressionValue;
+
+use App\Entity\Document\Scheme\Scheme;
+use App\Entity\Document\AccesGroup;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Document\DocumentRepository")
@@ -20,17 +29,17 @@ class Document
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document\FieldValue", mappedBy="document", orphanRemoval=true, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\Document\Field\FieldValue", mappedBy="document", orphanRemoval=true, fetch="EAGER")
      */
     private $fieldValues;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document\ExpressionValue", mappedBy="document", orphanRemoval=true, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\Document\Field\ExpressionValue", mappedBy="document", orphanRemoval=true, fetch="EAGER")
      */
     private $expressionValues;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Document\Scheme\Scheme")
      */
     private $scheme;
 
@@ -122,56 +131,35 @@ class Document
         return $this;
     }
 
-    public function getExpressionValue($expression): ?ExpressionValue
+    public function getExpressionValue(Expression $expression): ?string
     {
-        foreach ($this->expressionValues as $value) {
-            if ($expression instanceof Expression) {
-                $expressionField = $value->getField();
-                if (!is_null($expressionField) && $expressionField->getId() == $expression->getId()) {
-                    return $value;
-                }
-            } else {
-                /*
-                if ($value->getBuiltin() == $expression) {
-                    return $value;
-                }
-                */
-            
-            }
-        }
-
-        return null;
+        return $expression->evalValue($this);
     }
     
     /**
-     * @return Collection|ExpressionValue[]
+     * @return Collection|ValueInterface[]
      */
-    public function getExpressionValues(): Collection
+    public function getExprValues(): Collection
     {
-        return $this->expressionValues;
-    }
-
-    public function addExpressionValue(ExpressionValue $value): self
-    {
-        if (!$this->expressionValues->contains($value)) {
-            $this->expressionValues[] = $value;
-            $value->setDocument($this);
-        }
-
-        return $this;
-    }
-
-    public function removeExpressionValue(ExpressionValue $value): self
-    {
-        if ($this->expressionValues->contains($value)) {
-            $this->expressionValues->removeElement($value);
-            // set the owning side to null (unless already changed)
-            if ($value->getDocument() === $this) {
-                $value->setDocument(null);
+        $exprVals = new ArrayCollection();
+        if ($this->getScheme()) {
+            //Normal schema expressions
+            foreach ($this->getScheme()->getExpressions() as $expr) {
+                $exprVals[] = [
+                    'key' => $expr,
+                    'value' => $this->getExpressionValue($expr),
+                ];
             }
-        }
+            //Uber schema expressions
+            foreach ($this->getScheme()->getSchemeDefault()->getExpressions() as $expr) {
+                $exprVals[] = [
+                    'key' => $expr,
+                    'value' => $this->getExpressionValue($expr),
+                ];
+            }
+        } 
 
-        return $this;
+        return $exprVals;
     }
 
     /**
@@ -181,18 +169,20 @@ class Document
     {
         $keyVals = new ArrayCollection();
         if ($this->getScheme()) {
+            //Normal schema field
             foreach ($this->getScheme()->getFields() as $field) {
                 $keyVals[] = [
                     'key' => $field,
                     'value' => $this->getFieldValue($field),
                 ];
             }
-            /*foreach ($this->getScheme()->getExpressions() as $expression) {
+            //Uber schema field
+            foreach ($this->getScheme()->getSchemeDefault()->getFields() as $field) {
                 $keyVals[] = [
-                    'key' => $expression,
-                    'value' => $this->getExpressionValue($expression),
+                    'key' => $field,
+                    'value' => $this->getFieldValue($field),
                 ];
-            }*/
+            }
         } else {
             foreach ($this->getFieldValues() as $value) {
                 $keyVals[] = [

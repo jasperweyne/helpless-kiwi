@@ -5,7 +5,7 @@ namespace App\Controller\Admin\Person;
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
 
-use App\Entity\Document\Scheme;
+use App\Entity\Document\Scheme\Scheme;
 use App\Entity\Document\Document;
 use App\Entity\Person\PersonScheme;
 use App\Entity\Person\PersonValue;
@@ -54,7 +54,7 @@ class PersonController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $persons = $em->getRepository(Person::class)->findAll();
-        $schemes = $em->getRepository(Scheme::class)->findBy(['schemeType' => 'person']);
+        $schemes = $em->getRepository(Scheme::class)->findAll();
 
         return $this->render('admin/person/index.html.twig', [
             'persons' => $persons,
@@ -71,7 +71,8 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $schemes = $em->getRepository(Scheme::class)->findBy(['schemeType' => 'person']);
+        //Change this to be working later
+        $schemes = $em->getRepository(Scheme::class)->findAll();
         if (0 == count($schemes)) {
             $this->addFlash('error', 'Kan geen persoon aanmaken zonder schema. Maak eerst een schema aan.');
 
@@ -113,6 +114,7 @@ class PersonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($person);
+            $em->persist($document);
             //Persist all new field values. 
             foreach ($person->getDocument()->getFieldValues() as $val){
                 $em->persist($val);
@@ -236,22 +238,24 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Person\PersonSchemeSelectorType');
+        //Change this to be working later
+        $schemes = $em->getRepository(Scheme::class)->findAll();
+        $form = $this->createForm('App\Form\Person\PersonSchemeSelectorType', $person,['schemes' => $schemes]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $scheme = $form['scheme']->getData();
+            $em->flush();
 
-            if (!is_null($person->getDocument()->getScheme()) && $person->getDocument()->getScheme()->getId() == $scheme->getId()) {
+            /*if (!is_null($person->getDocument()->getScheme()) && $person->getDocument()->getScheme()->getId() == $scheme->getId()) {
                 $this->addFlash('error', $person->getCanonical().' heeft al '.$scheme->getName().' als schema, kies een ander schema!');
 
                 return $this->render('admin/person/scheme.html.twig', [
                     'person' => $person,
                     'form' => $form->createView(),
                 ]);
-            }
+            }*/
 
-            return $this->redirectToRoute('admin_person_scheme_selected', ['person_id' => $person->getId(), 'scheme_id' => $scheme->getId()]);
+            return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
         }
 
         return $this->render('admin/person/scheme.html.twig', [
@@ -265,7 +269,7 @@ class PersonController extends AbstractController
      *
      * @Route("/{person_id}/scheme/{scheme_id}", name="scheme_selected", methods={"GET", "POST"})
      * @ParamConverter("person", options={"id": "person_id"})
-     * @ParamConverter("personScheme", options={"id": "scheme_id"})
+     * @ParamConverter("scheme", options={"id": "scheme_id"})
      */
     public function schemeAction(Request $request, Person $person, Scheme $scheme, AuthUserProvider $authProvider)
     {
@@ -282,6 +286,10 @@ class PersonController extends AbstractController
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
 
+            foreach ($person->getDocument()->getFieldValues() as $val){
+                $em->persist($val);
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
@@ -292,6 +300,30 @@ class PersonController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * Finds and displays a scheme entity of the person type.
+     *
+     * @Route("/scheme/{id}", name="show_scheme", methods={"GET", "POST"})
+     */
+    public function showSchemeAction(Scheme $scheme)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        //Need repository function that find person class. 
+        $persons = $em->getRepository(Person::class)->findAll();
+
+        $createdAt = $this->events->findOneBy($scheme, EntityNewEvent::class);
+        $modifs = $this->events->findBy($scheme, EntityUpdateEvent::class);
+
+        return $this->render('admin/person/scheme/showScheme.html.twig', [
+            'persons' => $persons,
+            'createdAt' => $createdAt,
+            'modifs' => $modifs,
+            'scheme' => $scheme,
+        ]);
+    }
+
 
     /**
      * Deletes a person entity.

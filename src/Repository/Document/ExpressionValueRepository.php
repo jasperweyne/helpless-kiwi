@@ -2,7 +2,7 @@
 
 namespace App\Repository\Document;
 
-use App\Entity\Document\ExpressionValue;
+use App\Entity\Document\Field\ExpressionValue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
