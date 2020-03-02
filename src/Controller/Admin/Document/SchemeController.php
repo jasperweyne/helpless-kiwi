@@ -16,8 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Template\Annotation\MenuItem;
-use App\Entity\Inventory\Item;
-
 
 /**
  * Scheme controller.
@@ -44,7 +42,6 @@ class SchemeController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        
         $schemes = $em->getRepository(Scheme::class)->findAll();
         $schemeDefaults = $em->getRepository(SchemeDefault::class)->findAll();
 
@@ -136,10 +133,9 @@ class SchemeController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        //Entities that correspond which these document are unknown. 
+        //This kinda ruins the user interface as we cannot display the corresponding entities. 
         $documents = $em->getRepository(Document::class)->findBy(['scheme' => $scheme->getId()]);
-        //fix this at some point, need person repository function that finds person array by doc array.
-        //$objects = $documents->array_map(function($x) {$x.get } ) 
-        //$em->getRepository(Person::class)->findAll();
 
         $createdAt = $this->events->findOneBy($scheme, EntityNewEvent::class);
         $modifs = $this->events->findBy($scheme, EntityUpdateEvent::class);
@@ -268,8 +264,6 @@ class SchemeController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $schemes = $em->getRepository(Scheme::class)->findBy(['schemeDefault' => $default->getId()]);
-        //fix this at some point, need person repository function that finds person array by doc array.
-        $persons = $em->getRepository(Person::class)->findAll();
 
         $createdAt = $this->events->findOneBy($default, EntityNewEvent::class);
         $modifs = $this->events->findBy($default, EntityUpdateEvent::class);

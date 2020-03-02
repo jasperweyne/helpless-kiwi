@@ -4,18 +4,8 @@ namespace App\Controller\Admin\Person;
 
 use App\Entity\Security\Auth;
 use App\Entity\Person\Person;
-
 use App\Entity\Document\Scheme\Scheme;
 use App\Entity\Document\Document;
-use App\Entity\Person\PersonScheme;
-use App\Entity\Person\PersonValue;
-use App\Entity\Document\FieldValue;
-use App\Entity\Document\Expression;
-
-use App\Form\Person\PersonType;
-use App\Form\Document\DocumentType;
-
-
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -70,7 +60,7 @@ class PersonController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        //Change this to be working later
+        //Change this to be working later need repository for this to work.
         $schemes = $em->getRepository(Scheme::class)->findAll();
         if (0 == count($schemes)) {
             $this->addFlash('error', 'Kan geen persoon aanmaken zonder schema. Maak eerst een schema aan.');
@@ -140,15 +130,6 @@ class PersonController extends AbstractController
 
         $createdAt = $this->events->findOneBy($person, EntityNewEvent::class);
         $modifs = $this->events->findBy($person, EntityUpdateEvent::class);
-
-        /*$form = $this->createForm('App\Form\Person\PersonAdvancedType', $person);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-
-            return $this->redirectToRoute('admin_person_show', ['id' => $person->getId()]);
-        }*/
 
         return $this->render('admin/person/show.html.twig', [
             'createdAt' => $createdAt,
