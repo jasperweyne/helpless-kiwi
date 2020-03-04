@@ -67,6 +67,11 @@ class Group
      */
     private $active;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $register;
+    
     public function __construct()
     {
         $this->relations = new ArrayCollection();
@@ -263,6 +268,18 @@ class Group
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function canRegister(): ?bool
+    {
+        return $this->register;
+    }
+
+    public function setRegister(bool $register): self
+    {
+        $this->register = $register;
 
         return $this;
     }

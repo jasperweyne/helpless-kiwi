@@ -31,6 +31,11 @@ class GroupType extends AbstractType
                 'help' => 'Actieve groepen kunnen activiteiten organiseren en meer!',
                 'required' => false,
             ])
+            ->add('register', CheckboxType::class, [
+                'label' => 'Kan zich registeeren',
+                'help' => 'Registreer groepen kunnen zich voor activiteiten aanmelden.',
+                'required' => true,
+            ])
         ;
     }
 
