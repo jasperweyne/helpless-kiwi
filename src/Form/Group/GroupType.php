@@ -32,7 +32,7 @@ class GroupType extends AbstractType
                 'required' => false,
             ])
             ->add('register', CheckboxType::class, [
-                'label' => 'Kan zich registeeren',
+                'label' => 'Kan zich registreren',
                 'help' => 'Registreer groepen kunnen zich voor activiteiten aanmelden.',
                 'required' => true,
             ])
