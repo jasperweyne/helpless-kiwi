@@ -71,7 +71,7 @@ class Group
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $register;
-    
+
     public function __construct()
     {
         $this->relations = new ArrayCollection();
@@ -272,7 +272,7 @@ class Group
         return $this;
     }
 
-    public function canRegister(): ?bool
+    public function getRegister(): ?bool
     {
         return $this->register;
     }
