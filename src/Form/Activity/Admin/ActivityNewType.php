@@ -46,7 +46,7 @@ class ActivityNewType extends AbstractType
                 'placeholder' => "Iedereen",
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
-                        ->andWhere('t.active = TRUE');
+                        ->andWhere('t.register = TRUE');
                 },
                 'choice_label' => function ($ref) {
                     return $ref->getName();
