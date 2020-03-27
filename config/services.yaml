@@ -47,6 +47,11 @@ services:
     App\DataCollector\AuthSecurityDataCollector:
         decorates: data_collector.security
 
+    App\EventListener\DoctrineTablePrefixListener:
+        arguments: ["kiwi_"]
+        tags:
+            - { name: doctrine.event_listener, event: loadClassMetadata }
+
     App\Template\MenuBuilder:
         arguments:
             - !tagged app.menu_extension
