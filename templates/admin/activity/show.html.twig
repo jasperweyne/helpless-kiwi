@@ -219,15 +219,19 @@
                         <tbody>
                         {% for registration in reserve %}
                             <tr>
-                                <td>{{ registration.person.fullname }}</td>
+                                <td>{{ registration.person.canonical }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                                <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
                             </tr>
                         {% else %}
                             <tr>
                                 <td>Geen aanmeldingen.</td>
                             </tr>
                         {% endfor %}
+                            <tr>
+                                <td><a href="{{ path('admin_activity_registration_new_reserve', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -318,6 +318,48 @@ class ActivityController extends AbstractController
     }
 
     /**
+     * Displays a form to edit an existing activity entity.
+     *
+     * @Route("/register/new/reserve/{id}", name="registration_new_reserve", methods={"GET", "POST"})
+     */
+    public function reserveNewAction(Request $request, Activity $activity, MailService $mailer)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $position = $em->getRepository(Registration::class)->findAppendPosition($activity);
+
+        $registration = new Registration();
+        $registration
+            ->setActivity($activity)
+            ->setReservePosition($position)
+        ;
+
+        $now = new \DateTime('now');
+        $registration->setNewDate($now);
+
+        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
+            'allowed_options' => $activity->getOptions(),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($registration);
+            $em->flush();
+
+            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld op de reservelijst!');
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/registration/new.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+            'reserve' => true,
+        ]);
+    }
+
+    /**
      * Creates a form to check out all checked in users.
      *
      * @return \Symfony\Component\Form\Form The form
