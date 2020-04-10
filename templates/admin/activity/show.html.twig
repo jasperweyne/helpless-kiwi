@@ -212,7 +212,7 @@
                             <tr>
                                 <th>Naam</th>
                                 <th>Optie</th>
-                                <th>Laatst bewerkt</th>
+                                <th>Aangemeld</th>
                                 <th>Acties</th>
                             </tr>
                         </thead>
@@ -222,11 +222,9 @@
                                 <td>{{ registration.person.canonical }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
-                                <td>
-                                    <a href="{{ path('admin_activity_reserve_move_up', { 'id': registration.id }) }}">Up</a>
-                                    <a href="{{ path('admin_activity_reserve_move_down', { 'id': registration.id }) }}">Down</a>
-                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
-                                </td>
+                                <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                <td>{% if not loop.first %}<a href="{{ path('admin_activity_reserve_move_up', { 'id': registration.id }) }}">Up</a>{% endif %}</td>
+                                <td>{% if not loop.last %}<a href="{{ path('admin_activity_reserve_move_down', { 'id': registration.id }) }}">Down</a>{% endif %}</td>
                             </tr>
                         {% else %}
                             <tr>
