@@ -223,8 +223,8 @@
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
-                                <td>{% if not loop.first %}<a href="{{ path('admin_activity_reserve_move_up', { 'id': registration.id }) }}">Up</a>{% endif %}</td>
-                                <td>{% if not loop.last %}<a href="{{ path('admin_activity_reserve_move_down', { 'id': registration.id }) }}">Down</a>{% endif %}</td>
+                                <td>{% if not loop.first %}<a href="{{ path('admin_activity_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
+                                <td>{% if not loop.last %}<a href="{{ path('admin_activity_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
                             </tr>
                         {% else %}
                             <tr>
