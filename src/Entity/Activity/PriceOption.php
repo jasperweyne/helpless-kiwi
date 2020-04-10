@@ -5,9 +5,13 @@ namespace App\Entity\Activity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Group\Group;
+
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\OptionRepository")
+ * 
  */
 class PriceOption
 {
@@ -20,6 +24,7 @@ class PriceOption
 
     /**
      * @ORM\Column(type="string", length=100, name="title")
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -28,6 +33,12 @@ class PriceOption
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      */
     private $activity;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
+     */
+    private $target;
 
     /**
      * @ORM\Column(type="integer")
@@ -98,6 +109,28 @@ class PriceOption
         return $this;
     }
 
+    /**
+     * Get target.
+     *
+     * @return Group
+     */
+    public function getTarget(): ?Group
+    {
+        return $this->target;
+    }
+
+    /**
+     * Set target.
+     *
+     * @param Group $target
+     */
+    public function setTarget(?Group $target): self
+    {
+        $this->target = $target;
+
+        return $this;
+    }
+
     public function getPrice(): ?int
     {
         return $this->price;
@@ -122,6 +155,7 @@ class PriceOption
         return $this;
     }
 
+    
     public function getConfirmationMsg(): ?string
     {
         return $this->confirmationMsg;

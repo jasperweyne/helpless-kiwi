@@ -5,9 +5,10 @@ namespace App\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\GroupRepository")
  * @ORM\Table("taxonomy")
  */
 class Group
@@ -21,11 +22,12 @@ class Group
 
     /**
      * @ORM\Column(type="string", length=100, name="title")
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
@@ -60,11 +62,22 @@ class Group
      */
     private $relations;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $register;
+
     public function __construct()
     {
         $this->relations = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->readonly = false;
+        $this->active = false;
     }
 
     /**
@@ -243,6 +256,30 @@ class Group
                 $group->setParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getRegister(): ?bool
+    {
+        return $this->register;
+    }
+
+    public function setRegister(bool $register): self
+    {
+        $this->register = $register;
 
         return $this;
     }

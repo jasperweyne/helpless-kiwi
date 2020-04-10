@@ -10,7 +10,7 @@
         <tbody>
             <tr>
                 <th>Auteur</th>
-                <td>{{ claim.author.person.fullname }}</td>
+                <td>{{ claim.author.person.canonical }}</td>
             </tr>
             <tr>
                 <th>Beschrijving</th>
@@ -30,7 +30,7 @@
             </tr>
             <tr>
                 <th>Gemaakt door</th>
-                <td>{{ createdAt.auth.person.fullname ?? '' }}</td>
+                <td>{{ createdAt.auth.person.canonical ?? '' }}</td>
             </tr>
             <tr>
                 <th>Bestand</th>

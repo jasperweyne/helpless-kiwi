@@ -7,6 +7,7 @@ use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
@@ -27,11 +28,13 @@ class Activity
 
     /**
      * @ORM\Column(type="string", length=100, name="title")
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank 
      */
     private $description;
 
@@ -52,10 +55,16 @@ class Activity
     private $location;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Group\Group")
-     * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id", nullable=true)
      */
     private $author;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
+     * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
+     */
+    private $target;
 
     /**
      * @ORM\Column(type="string")
@@ -247,9 +256,31 @@ class Activity
      *
      * @param Group $author
      */
-    public function setAuthor(Group $author): self
+    public function setAuthor(?Group $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get target.
+     *
+     * @return Group
+     */
+    public function getTarget(): ?Group
+    {
+        return $this->target;
+    }
+
+    /**
+     * Set target.
+     *
+     * @param Group $target
+     */
+    public function setTarget(?Group $target): self
+    {
+        $this->target = $target;
 
         return $this;
     }

@@ -4,6 +4,8 @@ namespace App\Entity\Activity;
 
 use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RegistrationRepository")
@@ -20,6 +22,7 @@ class Registration
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank
      */
     private $option;
 

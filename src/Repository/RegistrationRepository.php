@@ -135,6 +135,7 @@ class RegistrationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.reserve_position IS NOT NULL')
             ->andWhere('p.activity = :activity')
+            ->andWhere('p.deletedate IS NULL')
             ->setParameter('activity', $activity)
             ->orderBy('p.reserve_position', 'ASC')
             ->getQuery()

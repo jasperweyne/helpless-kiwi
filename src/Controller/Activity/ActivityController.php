@@ -4,6 +4,7 @@ namespace App\Controller\Activity;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
+use App\Entity\Group\Group;
 use App\Mail\MailService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +32,12 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $activities = $em->getRepository(Activity::class)->findUpcoming();
+        $groups = [];
+        if ($user = $this->getUser()) {
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+        }
+
+        $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
 
         return $this->render('activity/index.html.twig', [
             'activities' => $activities,
@@ -103,6 +109,18 @@ class ActivityController extends AbstractController
                 $option = $em->getRepository(PriceOption::class)->find($data['single_option']);
 
                 if (null !== $option) {
+                    $registrations = $em->getRepository(Registration::class)->findBy([
+                        'activity' => $activity,
+                        'person' => $this->getUser()->getPerson(),
+                        'deletedate' => null,
+                    ]);
+
+                    if (count($registrations) > 0) {
+                        $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
+
+                        return $this->redirectToRoute('activity_show', ['id' => $activity->getId()]);
+                    }
+
                     $reg = new Registration();
                     $reg->setActivity($activity);
                     $reg->setOption($option);
@@ -157,12 +175,19 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $registrations = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'reserve_position' => null, 'deletedate' => null]);
+        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $reserve = $em->getRepository(Registration::class)->findReserve($activity);
-        $hasReserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($reserve) > 0);
+        $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
+        
+        $groups = [];
+        if ($user = $this->getUser()) {
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+        }
+
+        $targetoptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
 
         $forms = [];
-        foreach ($activity->getOptions() as $option) {
+        foreach ($targetoptions as $option) {
             $forms[] = [
                 'data' => $option,
                 'form' => $this->singleRegistrationForm($option, $hasReserve)->createView(),
@@ -177,8 +202,6 @@ class ActivityController extends AbstractController
                 $unregister = $this->singleUnregistrationForm($registration)->createView();
             }
         }
-
-        $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
 
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,

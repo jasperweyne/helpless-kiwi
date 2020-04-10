@@ -4,7 +4,14 @@ use App\Kernel;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
-require dirname(__DIR__).'/config/bootstrap.php';
+$bootstrap = dirname(__DIR__).'/config/bootstrap.php';
+
+if (file_exists('enable-maintenance.txt') || !file_exists($bootstrap)) {
+    readfile('maintenance.html');
+    exit;
+}
+
+include $bootstrap;
 
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);

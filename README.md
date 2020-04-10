@@ -2,6 +2,10 @@
 <img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/master/assets/image/readme-header.png" alt="helpless-kiwi" style="max-width:100%;">
 </p>
 
+| **Service** | **Master** | **Develop** |
+|-------------|------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| CI Status | ![CI](https://github.com/jasperweyne/helpless-kiwi/workflows/CI/badge.svg?branch=master) | ![CI](https://github.com/jasperweyne/helpless-kiwi/workflows/CI/badge.svg?branch=develop) |
+
 # Helpless Kiwi
 Helpless Kiwi is a project to manage members, create and manage activities, keep
 track of inventory and more. It has been written using the Symfony/Doctrine framework.

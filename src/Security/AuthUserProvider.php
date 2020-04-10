@@ -43,7 +43,12 @@ class AuthUserProvider implements UserProviderInterface
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        return $this->loadUserByUsername($user->getAuthId()); // todo: support username editting, requires backref to Person
+        return $this->_refresh($user);
+    }
+
+    private function _refresh(Auth $user)
+    {
+        return $this->loadUserByUsername($user->getAuthId());
     }
 
     /**

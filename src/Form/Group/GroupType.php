@@ -15,13 +15,25 @@ class GroupType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description', TextareaType::class)
+            ->add('description', TextareaType::class, [
+                'required' => false,
+            ])
             ->add('relationable', CheckboxType::class, [
                 'label' => 'Mag leden hebben',
                 'required' => false,
             ])
             ->add('subgroupable', CheckboxType::class, [
                 'label' => 'Mag subgroepen hebben',
+                'required' => false,
+            ])
+            ->add('active', CheckboxType::class, [
+                'label' => 'Is actief',
+                'help' => 'Actieve groepen kunnen activiteiten organiseren en meer!',
+                'required' => false,
+            ])
+            ->add('register', CheckboxType::class, [
+                'label' => 'Is doelgroep',
+                'help' => 'Doelgroepen kunnen geselecteerd worden als doelgroep voor activiteiten.',
                 'required' => false,
             ])
         ;

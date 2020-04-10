@@ -41,6 +41,10 @@
                                 <th>Georganiseerd door</th>
                                 <td>{{ activity.author.name ?? '' }}</td>
                             </tr>
+                            <tr>
+                                <th>Doelgroep</th>
+                                <td>{{ activity.target.name ?? '' }}{% if not activity.target %}<i>Iedereen</i>{% endif %}</td>
+                            </tr>
                             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
                                 <tr>
                                     <th>Datum</th>
@@ -77,8 +81,12 @@
                             <tr>
                                 <th>Gemaakt door</th>
                                 <td>
-                                    {{ createdAt.auth.person.fullname ?? '' }}
+                                    {{ createdAt.auth.person.canonical ?? '' }}
                                 </td>
+                            </tr>
+                            <tr>
+                                <th>Capaciteit</th>
+                                <td>{% if activity.capacity %}Maximaal {{ activity.capacity }} deelnemers{% else %}Geen maximum{% endif %}</td>
                             </tr>
                             <tr>
                                 <th>Afbeelding</th>
@@ -96,6 +104,7 @@
                                             <tr>
                                                 <th>Naam</th>
                                                 <th>Prijs</th>
+                                                <th>Doelgroep</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -104,6 +113,7 @@
                                             <tr>
                                                 <td>{{ option.name }}</td>
                                                 <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
+                                                <td>{{ option.target.name ?? '' }}{% if not option.target %}<i>Iedereen</i>{% endif %}</td>
                                                 <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
                                             </tr>
                                         {% else %}
@@ -131,7 +141,7 @@
                                         <tbody>
                                         {% for modif in modifs %}
                                             <tr>
-                                                <td>{{ modif.auth.person.fullname }}</td>
+                                                <td>{{ modif.auth.person.canonical }}</td>
                                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                                             </tr>
                                         {% else %}
@@ -166,16 +176,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in deregistrations %}
+                        {% for registration in deregistrations|sort((a, b) => a.deletedate <=> b.deletedate) %}
                             <tr>
-                                <td> <strike>{{ registration.person.fullname }} </strike> </td>
+                                <td> <strike>{{ registration.person.canonical }} </strike> </td>
                                 <td> <strike> {{ registration.option.name }}   </strike> </td> 
                                 <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
                             </tr>
                         {% endfor %}
-                        {% for registration in registrations %}
+                        {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
                             <tr>
-                                <td>{{ registration.person.fullname }}</td>
+                                <td>{{ registration.person.canonical }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>

@@ -148,15 +148,25 @@ class Relation
         return $this;
     }
 
-    public function getTaxonomies(): array
+    public function getChildrenRecursive(): Collection
     {
-        return array_merge([$this->getGroup()], array_map(function ($a) {
-            return $a->getGroup();
-        }, $this->children->toArray()));
+        $childTaxes = $this->children->map(function ($a) {
+            $children = $a->getChildrenRecursive()->toArray();
+            $children[] = $a;
+
+            return $children;
+        })->toArray();
+
+        $taxonomies = array_merge([], ...$childTaxes);
+
+        return new ArrayCollection($taxonomies);
     }
 
-    public function getAllTaxonomies(): array
+    public function getAllRelations(): Collection
     {
-        return $this->getRoot()->getTaxonomies();
+        $tree = $this->getRoot()->getChildrenRecursive();
+        $tree->add($this);
+
+        return $tree;
     }
 }

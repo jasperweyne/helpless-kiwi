@@ -1,7 +1,7 @@
-.button {
+.button, button {
     background-color: gray;
     color: white;
-    display: inline-block;
+    display: inline-block !important;
     padding: .5rem 1rem;
     border-radius: $global-radius;
     cursor: pointer;
@@ -11,7 +11,7 @@
         cursor: not-allowed;
     }
     
-    &.confirm, &.add {
+    &.confirm, &.add, &[type=submit] {
         background-color: #0c0;
         color: white;
 
