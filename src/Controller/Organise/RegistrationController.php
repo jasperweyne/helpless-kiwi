@@ -5,26 +5,41 @@ namespace App\Controller\Organise;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Order;
 use App\Entity\Activity\Registration;
+use App\Entity\Group\Group;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Activity\PriceOption;
-use App\Entity\Group\Group;
 use App\Mail\MailService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Activity controller.
  *
  * @Route("/organise/activity/register", name="organise_activity_registration_")
  */
-class RegistrationController extends ActivityController
+class RegistrationController extends AbstractController
 {
+    protected function blockUnauthorisedUsers(Group $group)
+    {
+        $e = $this->createAccessDeniedException('Not authorised for the correct group.');
+
+        $current = $this->getUser();
+        if (is_null($current)) {
+            throw $e;
+        }
+
+        if (!$group->getRelations()->exists(function ($index, $a) use ($current) {
+            return $a->getPerson()->getId() === $current->getPerson()->getId();
+        })) {
+            throw $e;
+        }
+    }
+
     /**
      * Displays a form to edit an existing activity entity.
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function registrationNewAction(Request $request, Activity $activity, MailService $mailer)
+    public function newAction(Request $request, Activity $activity, MailService $mailer)
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -70,9 +85,9 @@ class RegistrationController extends ActivityController
     /**
      * Deletes a person entity.
      *
-     * @Route("/delete/{id}", name="registration_delete")
+     * @Route("/delete/{id}", name="delete", methods={"GET", "POST"})
      */
-    public function registrationDeleteAction(Request $request, Registration $registration, MailService $mailer)
+    public function deleteAction(Request $request, Registration $registration, MailService $mailer)
     {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
 
@@ -107,8 +122,6 @@ class RegistrationController extends ActivityController
             'form' => $form->createView(),
         ]);
     }
-
-
 
     /**
      * Displays a form to edit an existing activity entity.
