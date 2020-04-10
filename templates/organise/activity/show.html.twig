@@ -83,6 +83,10 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>Capaciteit</th>
+                                    <td>{% if activity.hasCapacity %}Maximaal {{ activity.capacity }} deelnemers{% else %}Geen maximum{% endif %}</td>
+                                </tr>
+                                <tr>
                                     <th>Afbeelding</th>
                                     <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
                                 </tr>
