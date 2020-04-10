@@ -2,6 +2,7 @@
 
 namespace App\Entity\Activity;
 
+use App\Entity\Order;
 use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
