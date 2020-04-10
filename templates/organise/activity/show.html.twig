@@ -69,8 +69,8 @@
                                     <td>{{ registration.option.name }}</td>
                                     <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                     <td><a href="{{ path('organise_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
-                                    <td>{% if not loop.first %}<a href="{{ path('organise_activity_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
-                                    <td>{% if not loop.last %}<a href="{{ path('organise_activity_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
+                                    <td>{% if not loop.first %}<a href="{{ path('organise_activity_registration_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
+                                    <td>{% if not loop.last %}<a href="{{ path('organise_activity_registration_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
                                 </tr>
                             {% else %}
                                 <tr>
@@ -78,7 +78,7 @@
                                 </tr>
                             {% endfor %}
                                 <tr>
-                                    <td><a href="{{ path('organise_activity_reserve_new', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
+                                    <td><a href="{{ path('organise_activity_registration_reserve_new', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
                                 </tr>
                             </tbody>
                         </table>
