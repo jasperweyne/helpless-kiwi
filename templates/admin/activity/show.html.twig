@@ -222,7 +222,11 @@
                                 <td>{{ registration.person.canonical }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
-                                <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                <td>
+                                    <a href="{{ path('admin_activity_reserve_move_up', { 'id': registration.id }) }}">Up</a>
+                                    <a href="{{ path('admin_activity_reserve_move_down', { 'id': registration.id }) }}">Down</a>
+                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
@@ -230,7 +234,7 @@
                             </tr>
                         {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_activity_registration_new_reserve', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
+                                <td><a href="{{ path('admin_activity_reserve_new', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>

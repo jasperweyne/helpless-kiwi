@@ -99,6 +99,47 @@ class RegistrationRepository extends ServiceEntityRepository
                Order::avg($current, self::MAXORDER()))))));
     }
 
+    public function findBefore(Activity $activity, Order $position)
+    {
+        $reg = $this->createQueryBuilder('r')
+            ->where('r.reserve_position < :position')
+            ->andWhere('r.activity = :activity')
+            ->andWhere('r.deletedate IS NULL')
+            ->setParameter('position', strval($position))
+            ->setParameter('activity', $activity)
+            ->orderBy('r.reserve_position', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        if (is_null($reg))
+            return self::MINORDER();
+
+        return $reg->getReservePosition();
+    }
+
+    public function findAfter(Activity $activity, Order $position)
+    {
+        $reg = $this->createQueryBuilder('r')
+            ->where('r.reserve_position > :position')
+            ->andWhere('r.activity = :activity')
+            ->andWhere('r.deletedate IS NULL')
+            ->setParameter('position', strval($position))
+            ->setParameter('activity', $activity)
+            ->orderBy('r.reserve_position', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+
+        if (is_null($reg))
+            return self::MAXORDER();
+
+        return $reg->getReservePosition();
+    }
+
     /**
      * @return Registration[] Returns an array of Activity objects
      */

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\Order;
 use App\Entity\Activity\Registration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -320,7 +321,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      *
-     * @Route("/register/new/reserve/{id}", name="registration_new_reserve", methods={"GET", "POST"})
+     * @Route("/reserve/new/{id}", name="reserve_new", methods={"GET", "POST"})
      */
     public function reserveNewAction(Request $request, Activity $activity, MailService $mailer)
     {
@@ -357,6 +358,48 @@ class ActivityController extends AbstractController
             'form' => $form->createView(),
             'reserve' => true,
         ]);
+    }
+
+    /**
+     * Displays a form to edit an existing activity entity.
+     *
+     * @Route("/reserve/move/{id}/up", name="reserve_move_up", methods={"GET", "POST"})
+     */
+    public function reserveMoveUpAction(Request $request, Registration $registration)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $x1 = $em->getRepository(Registration::class)->findBefore($registration->getActivity(), $registration->getReservePosition());
+        $x2 = $em->getRepository(Registration::class)->findBefore($registration->getActivity(), $x1);
+
+        $registration->setReservePosition(Order::avg($x1, $x2));
+
+        $em->flush();
+
+        $this->addFlash('success', $registration->getPerson()->getCanonical().' naar boven verplaatst!');
+
+        return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
+    }
+
+    /**
+     * Displays a form to edit an existing activity entity.
+     *
+     * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
+     */
+    public function reserveMoveDownAction(Request $request, Registration $registration)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $x1 = $em->getRepository(Registration::class)->findAfter($registration->getActivity(), $registration->getReservePosition());
+        $x2 = $em->getRepository(Registration::class)->findAfter($registration->getActivity(), $x1);
+
+        $registration->setReservePosition(Order::avg($x1, $x2));
+
+        $em->flush();
+
+        $this->addFlash('success', $registration->getPerson()->getCanonical().' naar beneden verplaatst!');
+
+        return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
     }
 
     /**
