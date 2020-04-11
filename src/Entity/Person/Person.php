@@ -177,13 +177,21 @@ class Person
     {
         $keyVals = new ArrayCollection();
         if ($this->getScheme()) {
-            foreach ($this->getScheme()->getFields() as $field) {
+            $fields = $this->getScheme()->getFields()->toArray();
+            usort($fields, function(PersonField $a, PersonField $b) { return ($a->getPosition() ?? '') <=> ($b->getPosition() ?? '');});
+            foreach ($fields as $field) {
                 $keyVals[] = [
                     'key' => $field,
                     'value' => $this->getValue($field),
                 ];
             }
         } else {
+            $fields = $this->getFieldValues()->toArray();
+            usort($fields, function(PersonValue $a, PersonValue $b) {
+                $x = $a->getBuiltin() ? '' : $a->getField()->getPosition();
+                $y = $b->getBuiltin() ? '' : $b->getField()->getPosition();
+                return ($x ?? '') <=> ($y ?? '');
+            });
             foreach ($this->getFieldValues() as $value) {
                 $keyVals[] = [
                     'key' => $value->getBuiltin() ?? $value->getField(),

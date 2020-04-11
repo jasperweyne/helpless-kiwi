@@ -18,7 +18,7 @@
                         <th>E-mail</th>
                         <td>{{ personal.email ?? '' }}</td>
                     </tr>
-                    {% for x in personal.keyValues|sort((a, b) => (a.key.position ?? '') <=> (b.key.position ?? '')) %}
+                    {% for x in personal.keyValues %}
                         <tr>
                             <th>{{ x.key }}</th>
                             <td>{{ x.value ?? '' }}</td>
