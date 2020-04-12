@@ -53,10 +53,11 @@ class Order
         $res = $interm;
         for ($i = $length - 1; $i >= 0; --$i) {
             // Calculate result
-            $res[$i] = ($interm[$i] + $carry) % 26;
+            $val = $interm[$i] + $carry;
+            $res[$i] = $val % 26;
 
             // Set carry for the next iteration
-            $carry = floor($interm[$i] / 26);
+            $carry = floor($val / 26);
         }
 
         // Return result
