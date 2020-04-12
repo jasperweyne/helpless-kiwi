@@ -177,9 +177,7 @@ class Person
     {
         $keyVals = new ArrayCollection();
         if ($this->getScheme()) {
-            $fields = $this->getScheme()->getFields()->toArray();
-            usort($fields, function(PersonField $a, PersonField $b) { return ($a->getPosition() ?? '') <=> ($b->getPosition() ?? '');});
-            foreach ($fields as $field) {
+            foreach ($this->getScheme()->getFields() as $field) {
                 $keyVals[] = [
                     'key' => $field,
                     'value' => $this->getValue($field),
