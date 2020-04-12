@@ -28,6 +28,7 @@ class PersonFieldController extends AbstractController
         $field = new PersonField();
         $field
             ->setScheme($scheme)
+            ->setPosition($em->getRepository(PersonField::class)->findAppendPosition($scheme))
         ;
 
         $form = $this->createForm('App\Form\Person\PersonFieldType', $field);
