@@ -35,7 +35,7 @@ class PersonScheme
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonField", mappedBy="scheme")
-     * @ORM\OrderBy({"position" = "DESC"})
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     private $fields;
 
