@@ -114,7 +114,7 @@ class RegistrationRepository extends ServiceEntityRepository
         ;
 
         if (is_null($reg))
-            return $this->findAppendPosition($activity);
+            return $this->findPrependPosition($activity);
 
         return $reg->getReservePosition();
     }
@@ -135,7 +135,7 @@ class RegistrationRepository extends ServiceEntityRepository
 
 
         if (is_null($reg))
-            return $this->findPrependPosition($activity);
+            return $this->findAppendPosition($activity);
 
         return $reg->getReservePosition();
     }
