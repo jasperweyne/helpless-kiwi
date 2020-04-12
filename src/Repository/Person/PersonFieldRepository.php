@@ -111,7 +111,7 @@ class PersonFieldRepository extends ServiceEntityRepository
         ;
 
         if (is_null($field))
-            return $this->findAppendPosition($scheme);
+            return $this->findPrependPosition($scheme);
 
         return $field->getPosition();
     }
@@ -131,7 +131,7 @@ class PersonFieldRepository extends ServiceEntityRepository
 
 
         if (is_null($field))
-            return $this->findPrependPosition($scheme);
+            return $this->findAppendPosition($scheme);
 
         return $field->getPosition();
     }

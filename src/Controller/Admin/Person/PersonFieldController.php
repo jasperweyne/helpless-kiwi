@@ -105,17 +105,17 @@ class PersonFieldController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $newPos = null;
         if (is_null($field->getPosition())) {
-            $p = $em->getRepository(PersonField::class)->findPrependPosition($field->getScheme());
-
-            $field->setPosition($p);
+            $newPos = $em->getRepository(PersonField::class)->findPrependPosition($field->getScheme());
         } else {
             $x1 = $em->getRepository(PersonField::class)->findBefore($field->getScheme(), $field->getPosition());
             $x2 = $em->getRepository(PersonField::class)->findBefore($field->getScheme(), $x1);
 
-            $field->setPosition(Order::avg($x1, $x2));
+            $newPos = Order::avg($x1, $x2);
         }
 
+        $field->setPosition($newPos);
         $em->flush();
 
         $this->addFlash('success', $field->getName().' naar boven verplaatst!');
@@ -132,17 +132,17 @@ class PersonFieldController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $newPos = null;
         if (is_null($field->getPosition())) {
-            $p = $em->getRepository(PersonField::class)->findAppendPosition($field->getScheme());
-
-            $field->setPosition($p);
+            $newPos = $em->getRepository(PersonField::class)->findAppendPosition($field->getScheme());
         } else {
-            $x1 = $em->getRepository(PersonField::class)->findBefore($field->getScheme(), $field->getPosition());
-            $x2 = $em->getRepository(PersonField::class)->findBefore($field->getScheme(), $x1);
+            $x1 = $em->getRepository(PersonField::class)->findAfter($field->getScheme(), $field->getPosition());
+            $x2 = $em->getRepository(PersonField::class)->findAfter($field->getScheme(), $x1);
 
-            $field->setPosition(Order::avg($x1, $x2));
+            $newPos = Order::avg($x1, $x2);
         }
 
+        $field->setPosition($newPos);
         $em->flush();
 
         $this->addFlash('success', $field->getName().' naar beneden verplaatst!');
