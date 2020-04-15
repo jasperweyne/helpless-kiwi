@@ -38,6 +38,11 @@ class Registration
     private $activity;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $reserve_position;
+
+    /**
      * @var date
      *
      * @ORM\Column(name="newdate", type="datetime", nullable=false)
@@ -105,6 +110,23 @@ class Registration
     public function setActivity(?Activity $activity): self
     {
         $this->activity = $activity;
+
+        return $this;
+    }
+
+    public function isReserve(): bool
+    {
+        return !\is_null($this->reserve_position);
+    }
+
+    public function getReservePosition(): ?Order
+    {
+        return $this->reserve_position ? Order::create($this->reserve_position) : null;
+    }
+
+    public function setReservePosition(?Order $reserve_position): self
+    {
+        $this->reserve_position = ($reserve_position ? strval($reserve_position) : null);
 
         return $this;
     }

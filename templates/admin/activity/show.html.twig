@@ -81,6 +81,10 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th>Capaciteit</th>
+                                <td>{% if activity.hasCapacity %}Maximaal {{ activity.capacity }} deelnemers{% else %}Geen maximum{% endif %}</td>
+                            </tr>
+                            <tr>
                                 <th>Afbeelding</th>
                                 <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
                             </tr>
@@ -149,7 +153,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div>      
 
         <input type="radio" name="tabs" id="participants">
         <label for="participants" class="tab">
@@ -189,6 +193,46 @@
                         {% endfor %}
                             <tr>
                                 <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <input type="radio" name="tabs" id="reserve">
+        <label for="reserve" class="tab">
+            <span>Reservelijst</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Optie</th>
+                                <th>Aangemeld</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for registration in reserve %}
+                            <tr>
+                                <td>{{ registration.person.canonical }}</td>
+                                <td>{{ registration.option.name }}</td>
+                                <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                                <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                <td>{% if not loop.first %}<a href="{{ path('admin_activity_registration_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
+                                <td>{% if not loop.last %}<a href="{{ path('admin_activity_registration_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen reservelijst aanmeldingen.</td>
+                            </tr>
+                        {% endfor %}
+                            <tr>
+                                <td><a href="{{ path('admin_activity_registration_reserve_new', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>

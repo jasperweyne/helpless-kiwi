@@ -26,7 +26,7 @@
         {% else %}
             <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span>
         {% endif %}
-        <span>{{ registrations|length }} {{ registrations|length != 1 ? 'aanmeldingen' : 'aanmelding' }} - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
+        <span>{{ registrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
         <div class="buttons">
             {% if not is_granted('ROLE_USER') %}
                 <span class="button confirm disabled">Niet ingelogd</span>
@@ -90,6 +90,28 @@
                         </tbody>
                     </table>
             </div>
+            {% if reserve|length > 0 %}
+            <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reservelijst</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for registration in reserve|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
+                            <tr>
+                                <td>{{ registration }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen aanmeldingen reserve.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
     </div>

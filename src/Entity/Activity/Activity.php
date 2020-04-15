@@ -107,6 +107,11 @@ class Activity
     private $imageUpdatedAt;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $capacity;
+
+    /**
      * Get id.
      *
      * @return string
@@ -414,5 +419,22 @@ class Activity
         $this->registrations = new ArrayCollection();
         $this->options = new ArrayCollection();
         $this->image = new EmbeddedFile();
+    }
+
+    public function hasCapacity(): bool
+    {
+        return !\is_null($this->capacity);
+    }
+
+    public function getCapacity(): ?int
+    {
+        return $this->capacity;
+    }
+
+    public function setCapacity(?int $capacity): self
+    {
+        $this->capacity = $capacity;
+
+        return $this;
     }
 }
