@@ -15,9 +15,9 @@
     <div class="container">
         <h2>{{ activity.name }}</h2>
         {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
-            <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('H:i') }}</span>
+            <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('none', 'short') }}</span>
         {% else %}
-            <span>{{ activity.start|date('d-m-Y H:i') }} - {{ activity.end|date('d-m-Y H:i') }}</span>
+            <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('medium', 'short') }}</span>
         {% endif %}
         <span>{{ activity.location.address }}</span>
         {% set prices = activity.options|sort((a, b)=>a.price<=>b.price)|map(p => '%01.2f'|format(p.price / 100)) %}
@@ -26,7 +26,7 @@
         {% else %}
             <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span>
         {% endif %}
-        <span>{{ registrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|date('d-m-Y') }}</span>
+        <span>{{ registrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|format_datetime('medium', 'none') }}</span>
         <div class="buttons">
             {% if not is_granted('ROLE_USER') %}
                 <span class="button confirm disabled">Niet ingelogd</span>
