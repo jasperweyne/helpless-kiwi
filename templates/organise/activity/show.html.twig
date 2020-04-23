@@ -23,6 +23,7 @@
                                     <th>Aanmelding</th>
                                     <th>Optie</th>
                                     <th>Laatst bewerkt</th>
+                                    <th>Acties</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -33,7 +34,7 @@
                                     <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
                                 </tr>
                             {% endfor %}
-                            {% for registration in activity.registrations|filter(a => a.deletedate is null)|sort((a, b) => a.deletedate <=> b.deletedate) %}
+                        {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
                                 <tr>
                                     <td>{{ registration.person.canonical }}</td>
                                     <td>{{ registration.option.name }}</td>
@@ -47,6 +48,33 @@
                             {% endfor %}
                                 <tr>
                                     <td><a href="{{ path('organise_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th>Reservelijst</th>
+                                    <th>Optie</th>
+                                    <th>Aangemeld</th>
+                                    <th>Acties</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for registration in reserve %}
+                                <tr>
+                                    <td>{{ registration.person.canonical }}</td>
+                                    <td>{{ registration.option.name }}</td>
+                                    <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                                    <td><a href="{{ path('organise_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                    <td>{% if not loop.first %}<a href="{{ path('organise_activity_registration_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
+                                    <td>{% if not loop.last %}<a href="{{ path('organise_activity_registration_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Geen reservelijst aanmeldingen.</td>
+                                </tr>
+                            {% endfor %}
+                                <tr>
+                                    <td><a href="{{ path('organise_activity_registration_reserve_new', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -81,6 +109,10 @@
                                     <td>
                                         {{ activity.end|date('d-m-Y - H:i') }}
                                     </td>
+                                </tr>
+                                <tr>
+                                    <th>Capaciteit</th>
+                                    <td>{% if activity.hasCapacity %}Maximaal {{ activity.capacity }} deelnemers{% else %}Geen maximum{% endif %}</td>
                                 </tr>
                                 <tr>
                                     <th>Afbeelding</th>

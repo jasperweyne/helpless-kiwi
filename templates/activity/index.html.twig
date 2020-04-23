@@ -16,6 +16,14 @@
                             {% endif %}
                             <div class="container">
                                 <h2>{{ activity.name }}</h2>
+                                <span>{{ activity.start|format_datetime(pattern='E d LLL') }} -
+                                {% set registrations = activity.registrations|filter(a => a.deletedate is null and a.reservePosition is null)|length %}
+                                {% if not activity.hasCapacity or registrations < activity.capacity %}
+                                    {{ registrations }}
+                                    {% if activity.hasCapacity %}/ {{ activity.capacity }}{% endif %}
+                                    aanmeldingen
+                                {% else %}VOL!{% endif %}
+                                </span>
                             </div>
                         </a>
                     </div>

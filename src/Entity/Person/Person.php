@@ -41,7 +41,7 @@ class Person
     private $name_expr;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\Person\PersonValue", mappedBy="person", orphanRemoval=true, cascade={"persist","remove"}, fetch="EAGER")
      */
     private $fieldValues;
 
@@ -184,6 +184,12 @@ class Person
                 ];
             }
         } else {
+            $fields = $this->getFieldValues()->toArray();
+            usort($fields, function(PersonValue $a, PersonValue $b) {
+                $x = $a->getBuiltin() ? '' : $a->getField()->getPosition();
+                $y = $b->getBuiltin() ? '' : $b->getField()->getPosition();
+                return ($x ?? '') <=> ($y ?? '');
+            });
             foreach ($this->getFieldValues() as $value) {
                 $keyVals[] = [
                     'key' => $value->getBuiltin() ?? $value->getField(),
@@ -193,6 +199,28 @@ class Person
         }
 
         return $keyVals;
+    }
+
+    public function setKeyValues(Collection $keyVals): self
+    {
+        foreach ($this->fieldValues as $fieldValue) {
+            $this->removeFieldValue($fieldValue);
+        }
+
+        $keyVals = $keyVals
+            ->map(function ($x) {
+                return $x['value'];
+            })
+            ->filter(function ($x) {
+                return !is_null($x);
+            })
+        ;
+
+        foreach ($keyVals as $value) {
+            $this->addFieldValue($value);
+        }
+
+        return $this;
     }
 
     public function getShortnameExpr(): ?string

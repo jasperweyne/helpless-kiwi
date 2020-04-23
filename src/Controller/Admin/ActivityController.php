@@ -86,8 +86,9 @@ class ActivityController extends AbstractController
 
         $repository = $em->getRepository(Registration::class);
 
-        $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null]);
+        $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $deregs = $repository->findDeregistrations($activity);
+        $reserve = $repository->findReserve($activity);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,
@@ -95,6 +96,7 @@ class ActivityController extends AbstractController
             'activity' => $activity,
             'registrations' => $regs,
             'deregistrations' => $deregs,
+            'reserve' => $reserve,
         ]);
     }
 
@@ -228,105 +230,6 @@ class ActivityController extends AbstractController
             'option' => $price,
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * Displays a form to edit an existing activity entity.
-     *
-     * @Route("/register/new/{id}", name="registration_new", methods={"GET", "POST"})
-     */
-    public function registrationNewAction(Request $request, Activity $activity, MailService $mailer)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $registration = new Registration();
-        $registration->setActivity($activity);
-
-        $now = new \DateTime('now');
-        $registration->setNewDate($now);
-
-        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
-            'allowed_options' => $activity->getOptions(),
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($registration);
-            $em->flush();
-
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld!');
-
-            $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
-            $body = $this->renderView('email/newregistration_by.html.twig', [
-                'person' => $registration->getPerson(),
-                'activity' => $registration->getActivity(),
-                'title' => $title,
-                'by' => $this->getUser()->getPerson(),
-            ]);
-
-            $mailer->message($registration->getPerson(), $title, $body);
-
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
-        }
-
-        return $this->render('admin/activity/registration/new.html.twig', [
-            'activity' => $activity,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * Deletes a person entity.
-     *
-     * @Route("/registration/delete/{id}", name="registration_delete")
-     */
-    public function registrationDeleteAction(Request $request, Registration $registration, MailService $mailer)
-    {
-        $form = $this->createRegistrationDeleteForm($registration);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
-            $now = new \DateTime('now');
-            $registration->setDeleteDate($now);
-
-            $em->flush();
-
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' afgemeld!');
-
-            $title = 'Afmeldbericht '.$registration->getActivity()->getName();
-            $body = $this->renderView('email/removedregistration_by.html.twig', [
-                'person' => $registration->getPerson(),
-                'activity' => $registration->getActivity(),
-                'title' => $title,
-                'by' => $this->getUser()->getPerson(),
-            ]);
-
-            $mailer->message($registration->getPerson(), $title, $body);
-
-            return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
-        }
-
-        return $this->render('admin/activity/registration/delete.html.twig', [
-            'registration' => $registration,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * Creates a form to check out all checked in users.
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createRegistrationDeleteForm(Registration $registration)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_registration_delete', ['id' => $registration->getId()]))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 
     /**

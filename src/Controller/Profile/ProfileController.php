@@ -2,8 +2,6 @@
 
 namespace App\Controller\Profile;
 
-use App\Entity\Person\PersonValue;
-use App\Form\Person\PersonType;
 use App\Security\AuthUserProvider;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,28 +38,12 @@ class ProfileController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $person = $this->getUser()->getPerson();
 
-        $form = $this->createForm('App\Form\Person\PersonType', $person, ['person' => $person, 'current_user' => true]);
+        $form = $this->createForm('App\Form\Person\PersonType', $person, ['current_user' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $auth = $person->getAuth();
             $auth->setAuthId($authProvider->usernameHash($person->getEmail()));
-
-            foreach ($person->getKeyValues() as $keyVal) {
-                $field = $keyVal['key'];
-                $value = $keyVal['value'];
-
-                if (is_null($value)) {
-                    $value = new PersonValue();
-                    $value
-                        ->setPerson($person)
-                        ->setField($field)
-                    ;
-                    $em->persist($value);
-                }
-
-                $value->setValue($form[PersonType::formRef($field)]->getData());
-            }
 
             $em->flush();
 
@@ -84,24 +66,10 @@ class ProfileController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $person = $this->getUser()->getPerson();
 
-        $form = $this->createForm('App\Form\Person\PersonUpdateType', $person, ['person' => $person, 'current_user' => true]);
+        $form = $this->createForm('App\Form\Person\PersonUpdateType', $person, ['current_user' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($person->getKeyValues() as $keyVal) {
-                if (is_null($keyVal['value'])) {
-                    $field = $keyVal['key'];
-
-                    $value = new PersonValue();
-                    $value
-                        ->setPerson($person)
-                        ->setField($field)
-                        ->setValue($form[PersonType::formRef($field)]->getData())
-                    ;
-                    $em->persist($value);
-                }
-            }
-
             $em->flush();
 
             return $this->redirect('/');
