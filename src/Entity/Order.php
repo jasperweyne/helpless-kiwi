@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Activity;
+namespace App\Entity;
 
 class Order
 {

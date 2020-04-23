@@ -3,7 +3,7 @@
 namespace App\Controller\Organise;
 
 use App\Entity\Activity\Activity;
-use App\Entity\Activity\Order;
+use App\Entity\Order;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use Symfony\Component\HttpFoundation\Request;

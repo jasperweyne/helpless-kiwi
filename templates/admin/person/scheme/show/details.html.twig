@@ -17,15 +17,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for field in scheme.fields %}
+                            {% set first_position = true %}
+                            {% for field in scheme.fields|sort((a, b) => (a.position ?? '') <=> (b.position ?? '')) %}
                                 <tr>
                                     <td>{{ field.name }}</td>
                                     <td>{{ field.valueType }}</td>
+                                    <td>{% if not first_position %}<a href="{{ path('admin_person_field_move_up', { 'id': field.id }) }}">&uarr;</a>{% endif %}</td>
+                                    <td>{% if not loop.last %}<a href="{{ path('admin_person_field_move_down', { 'id': field.id }) }}">{{ field.position is null ? '&Darr;' : '&darr;' }}</a>{% endif %}</td>
                                     <td>
                                         <a href="{{ path('admin_person_field_edit', { 'id': field.id }) }}">Bewerken</a>
                                         <a href="{{ path('admin_person_field_delete', { 'id': field.id }) }}">Verwijderen</a>
                                     </td>
                                 </tr>
+                                {% if first_position and field.position is not null %}{% set first_position = false %}{% endif %} 
                             {% endfor %}
                             <tr>
                                 <td><a href="{{ path('admin_person_field_new', { 'id': scheme.id }) }}">Veld toevoegen</a></td>
@@ -49,7 +53,7 @@
             <tr>
                 <th>Gemaakt op</th>
                 <td>
-                    {{ createdAt.time|date('d-m-Y - H:i') }}
+                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
                 </td>
             </tr>
             <tr>
