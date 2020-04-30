@@ -18,7 +18,7 @@
     "dependencies": {
         "dom-to-image": "^2.6.0",
         "foundation-sites": "^6.5.3",
-        "jquery": "^3.4.0",
+        "jquery": "^3.5.0",
         "select2": "^4.0.11",
         "to-px": "^1.1.0"
     }
