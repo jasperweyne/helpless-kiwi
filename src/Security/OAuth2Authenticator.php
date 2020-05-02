@@ -78,13 +78,17 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        /// Check Credentials
+        if (!$this->_checkCredentials($credentials))
+            throw new AuthenticationException();
+
+        /// Get user
         if (!$userProvider instanceof OAuth2UserProvider) {
             throw new \LogicException('User provider not supported!');
         }
 
         // Load / create our user however you need.
-        // You can do this by calling the user provider, or with custom logic here.
-        $user = $userProvider->loadUserByUsername($credentials['accessToken']);
+        $user = $userProvider->loadUserByToken($credentials['accessToken']);
 
         if (!$user) {
             // fail authentication with a custom error
@@ -94,7 +98,7 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
         return $user;
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    private function _checkCredentials($credentials)
     {
         if (is_null($credentials['submittedState']) || $credentials['submittedState'] !== $credentials['validationState']) {
             throw new AuthenticationException('Invalid state returned by authentication server');
@@ -108,7 +112,16 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
         if ($credentials['accessToken']->hasExpired()) {
             throw new AuthenticationException('Access token has expired');
         }
-        
+
+        return true;
+    }
+
+    public function checkCredentials($credentials, UserInterface $user)
+    {
+        // This message is executed _after_ getUser() is executed.
+        // This is obviously a security problem for OAuth2, therefore 
+        // we don't use this method.
+        // Source:  https://symfony.com/doc/current/security/guard_authentication.html#guard-auth-methods  
         return true;
     }
 
