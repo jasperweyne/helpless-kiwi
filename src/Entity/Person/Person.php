@@ -184,6 +184,12 @@ class Person
                 ];
             }
         } else {
+            $fields = $this->getFieldValues()->toArray();
+            usort($fields, function(PersonValue $a, PersonValue $b) {
+                $x = $a->getBuiltin() ? '' : $a->getField()->getPosition();
+                $y = $b->getBuiltin() ? '' : $b->getField()->getPosition();
+                return ($x ?? '') <=> ($y ?? '');
+            });
             foreach ($this->getFieldValues() as $value) {
                 $keyVals[] = [
                     'key' => $value->getBuiltin() ?? $value->getField(),

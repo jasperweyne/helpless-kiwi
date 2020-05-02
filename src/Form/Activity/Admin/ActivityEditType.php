@@ -59,6 +59,7 @@ class ActivityEditType extends AbstractType
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
             ])
+            ->add('capacity')
             ->add('color', ChoiceType::class, [
                 'attr' => ['data-select' => 'true'],
                 'choices' => [

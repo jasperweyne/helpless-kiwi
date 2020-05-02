@@ -2,6 +2,7 @@
 
 namespace App\Entity\Person;
 
+use App\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,6 +41,11 @@ class PersonField
      * @ORM\ManyToOne(targetEntity="App\Entity\Person\PersonScheme", inversedBy="fields")
      */
     private $scheme;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $position;
 
     /**
      * Get id.
@@ -119,6 +125,18 @@ class PersonField
     public function setScheme(?PersonScheme $scheme): self
     {
         $this->scheme = $scheme;
+
+        return $this;
+    }
+
+    public function getPosition(): ?Order
+    {
+        return $this->position ? Order::create($this->position) : null;
+    }
+
+    public function setPosition(?Order $position): self
+    {
+        $this->position = ($position ? strval($position) : null);
 
         return $this;
     }

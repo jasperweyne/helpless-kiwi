@@ -19,6 +19,16 @@
             background-color: #beb;
         }
     }
+    
+    &.warning {
+        background-color: #f80;
+        color: white;
+
+        &.disabled, &[disabled] {
+            background-color: #beb;
+        }
+    }
+
 
     &.deny, &.delete {
         background-color: #c00;
