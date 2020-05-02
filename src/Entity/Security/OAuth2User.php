@@ -39,6 +39,11 @@ class OAuth2User implements UserInterface
         return (string) $this->id;
     }
 
+    public function getUsername()
+    {
+        return $this->getId();
+    }
+
     /**
      * setId
      * Insert description here.
@@ -79,7 +84,7 @@ class OAuth2User implements UserInterface
      * @see
      * @since
      */
-    public function setPerson(string $refreshToken): self
+    public function setRefreshToken(string $refreshToken): self
     {
         $this->refreshToken = $refreshToken;
 

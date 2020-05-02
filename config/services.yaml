@@ -71,7 +71,7 @@ services:
             -
                 clientId: 'demoapp'      # The client ID assigned to you by the provider
                 clientSecret: 'demopass' # The client password assigned to you by the provider
-                redirectUri: 'http://localhost:8000/login_oauth2/'
+                redirectUri: 'http://localhost:8000/login'
                 urlAuthorize: 'http://localhost:4000/authorize'
                 urlAccessToken: 'http://localhost:4000/token'
                 urlResourceOwnerDetails: 'http://localhost:4000/resource'
