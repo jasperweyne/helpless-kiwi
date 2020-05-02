@@ -35,8 +35,11 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request)
     {
-        return 'oidc_auth' === $request->attributes->get('_route')
-            && $request->isMethod('GET');
+        return 'app_login' === $request->attributes->get('_route')
+            && $request->isMethod('GET')
+            && $request->query->has('state')
+            && $request->query->has('code')
+        ;
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null)
@@ -102,7 +105,7 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
             throw $credentials['exception'];
         }
 
-        if ($credentials['accessToken']->hasExpired) {
+        if ($credentials['accessToken']->hasExpired()) {
             throw new AuthenticationException('Access token has expired');
         }
         

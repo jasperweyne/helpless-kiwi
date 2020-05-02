@@ -2,8 +2,10 @@
 
 namespace App\Controller\Security;
 
+use App\Security\OAuth2Authenticator;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -12,9 +14,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class LoginController extends AbstractController
 {
     /**
-     * @Route("/login", name="app_login")
+     * @Route("/login_old", name="app_login_old")
      */
-    public function login(AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
+    public function login_old(AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
     {
         // you can't login again while you already are, redirect
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -34,6 +36,14 @@ class LoginController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername]);
+    }
+
+    /**
+     * @Route("/login", name="app_login", methods={"GET"})
+     */
+    public function login(Request $request, OAuth2Authenticator $authenticator)
+    {
+        return $authenticator->start($request);
     }
 
     /**

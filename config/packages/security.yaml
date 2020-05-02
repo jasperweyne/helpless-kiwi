@@ -15,7 +15,8 @@ security:
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
-            id: App\Security\AuthUserProvider
+            #id: App\Security\AuthUserProvider
+            id: App\Security\OAuth2UserProvider
             
     firewalls:
         dev:
@@ -25,7 +26,8 @@ security:
             anonymous: true
             guard:
                 authenticators:
-                    - App\Security\LoginAuthenticator
+                    #- App\Security\LoginAuthenticator
+                    - App\Security\OAuth2Authenticator
             logout:
                 path:   app_logout
                 # where to redirect after logout

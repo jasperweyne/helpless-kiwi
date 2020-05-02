@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Security\OAuth2User;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -29,13 +30,11 @@ class OAuth2UserProvider implements UserProviderInterface
         // resource owner.
         $resourceOwner = $this->provider->getResourceOwner($token);
 
-        return new User(
-            $resourceOwner->getId(),
-            null,
-            // the roles for the user - you may choose to determine
-            // these dynamically somehow based on the user
-            array('ROLE_API')
-        );
+        $user = new OAuth2User();
+        $user
+            ->setId($resourceOwner->getId())
+            ->setRoles(['ROLE_OAUTH2'])
+        ;
     }
 
     public function refreshUser(UserInterface $user)
@@ -55,6 +54,6 @@ class OAuth2UserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return User::class === $class;
+        return OAuth2User::class === $class;
     }
 }
