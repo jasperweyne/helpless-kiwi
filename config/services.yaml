@@ -71,7 +71,7 @@ services:
             -
                 clientId: 'demoapp'      # The client ID assigned to you by the provider
                 clientSecret: 'demopass' # The client password assigned to you by the provider
-                redirectUri: 'http://localhost:8000/login'
+                redirectUri: '@=service("router").generate("app_login", [], 0)' # 0: ABSOLUTE_URL (see UrlGeneratorInterface)
                 urlAuthorize: 'http://localhost:4000/authorize'
                 urlAccessToken: 'http://localhost:4000/token'
                 urlResourceOwnerDetails: 'http://localhost:4000/resource'
