@@ -75,7 +75,7 @@ services:
                 urlAuthorize: 'http://localhost:4000/authorize'
                 urlAccessToken: 'http://localhost:4000/token'
                 urlResourceOwnerDetails: 'http://localhost:4000/resource'
-                idTokenIssuer: 'localhost:4000'
+                idTokenIssuer: 'https://localhost:4000'
                 publicKey: 'file://%kernel.project_dir%/public.key'
             -
                 signer: '@Lcobucci\JWT\Signer\Rsa\Sha256'
