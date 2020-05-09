@@ -5,6 +5,7 @@ namespace App\Security;
 use App\EventSubscriber\ProfileUpdateSubscriber;
 use App\Security\OAuth2UserProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use OpenIDConnectClient\Exception\InvalidTokenException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,6 +72,9 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
             ]);
         } catch (IdentityProviderException $e) {
             $credentials['exception'] = $e;
+        } catch (InvalidTokenException $e) {
+            $msgs = json_encode($this->provider->getValidatorChain()->getMessages());
+            throw new InvalidTokenException('Invalid OpenID token: ' . $msgs, 0, $e);
         }
 
         return $credentials;
