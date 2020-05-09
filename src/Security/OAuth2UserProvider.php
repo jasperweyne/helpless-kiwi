@@ -26,15 +26,13 @@ class OAuth2UserProvider implements UserProviderInterface
 
     public function loadUserByToken(AccessToken $token)
     {
-        // Using the access token, we may look up details about the
-        // resource owner.
-        $resourceOwner = $this->provider->getResourceOwner($token);
-
         $user = new OAuth2User();
         $user
-            ->setId($resourceOwner->getId())
+            ->setId($token->getIdToken()->getClaim('sub'))
             ->setRoles(['ROLE_OAUTH2'])
         ;
+
+        return $user;
     }
 
     public function refreshUser(UserInterface $user)
