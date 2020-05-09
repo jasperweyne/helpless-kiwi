@@ -76,6 +76,6 @@ services:
                 urlAccessToken: 'http://localhost:4000/token'
                 urlResourceOwnerDetails: 'http://localhost:4000/resource'
                 idTokenIssuer: 'localhost:4000'
-                publicKey: '%kernel.project_dir%/public.key'
+                publicKey: 'file://%kernel.project_dir%/public.key'
             -
                 signer: '@Lcobucci\JWT\Signer\Rsa\Sha256'
