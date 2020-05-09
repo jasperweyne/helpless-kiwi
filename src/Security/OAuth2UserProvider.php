@@ -6,15 +6,15 @@ use App\Entity\Security\OAuth2User;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
-use League\OAuth2\Client\Provider\GenericProvider;
-use League\OAuth2\Client\Token\AccessTokenInterface;
+use OpenIDConnectClient\OpenIDConnectProvider;
+use OpenIDConnectClient\AccessToken;
 use Symfony\Component\Intl\Exception\MethodNotImplementedException;
 
 class OAuth2UserProvider implements UserProviderInterface
 {
     private $provider;
 
-    public function __construct(GenericProvider $provider)
+    public function __construct(OpenIDConnectProvider $provider)
     {
         $this->provider = $provider;
     }
@@ -24,7 +24,7 @@ class OAuth2UserProvider implements UserProviderInterface
         throw new MethodNotImplementedException('ToDo (for impersonation)');
     }
 
-    public function loadUserByToken(AccessTokenInterface $token)
+    public function loadUserByToken(AccessToken $token)
     {
         // Using the access token, we may look up details about the
         // resource owner.

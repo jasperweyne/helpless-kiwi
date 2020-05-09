@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
-use League\OAuth2\Client\Provider\GenericProvider;
+use OpenIDConnectClient\OpenIDConnectProvider;
 
 class OAuth2Authenticator extends AbstractGuardAuthenticator
 {
@@ -22,7 +22,7 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
 
     private $provider;
 
-    public function __construct(GenericProvider $provider)
+    public function __construct(OpenIDConnectProvider $provider)
     {
         $this->provider = $provider;
     }

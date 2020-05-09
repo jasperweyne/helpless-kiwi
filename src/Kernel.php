@@ -2,15 +2,22 @@
 
 namespace App;
 
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-class Kernel extends BaseKernel
+class Kernel extends BaseKernel implements CompilerPassInterface
 {
+    public function process(\Symfony\Component\DependencyInjection\ContainerBuilder $container)
+    {
+        $container->autowire(Sha256::class, Sha256::class);    
+    }
+
     use MicroKernelTrait;
 
     private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
