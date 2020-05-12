@@ -26,10 +26,14 @@ class OAuth2UserProvider implements UserProviderInterface
 
     public function loadUserByToken(AccessToken $token)
     {
+        $roles = ['ROLE_OAUTH2'];
+        if (isset($token->getValues()['scope']) && false !== strpos($token->getValues()['scope'], 'admin'))
+            $roles[] = 'ROLE_ADMIN';
+        
         $user = new OAuth2User();
         $user
             ->setId($token->getIdToken()->getClaim('sub'))
-            ->setRoles(['ROLE_OAUTH2'])
+            ->setRoles($roles)
         ;
 
         return $user;
