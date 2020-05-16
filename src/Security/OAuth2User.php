@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Entity\Security;
+namespace App\Security;
 
-use Doctrine\ORM\Mapping as ORM;
+use League\OAuth2\Client\Token\AccessTokenInterface;
+use OpenIDConnectClient\AccessToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -10,16 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class OAuth2User implements UserInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string", unique=true)
-     */
     private $id;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $refreshToken;
 
     private $roles;
 
@@ -61,32 +53,6 @@ class OAuth2User implements UserInterface
     public function setId(string $id): self
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getRefreshToken(): string
-    {
-        return (string) $this->refreshToken;
-    }
-
-    /**
-     * setRefreshToken
-     * Insert description here.
-     *
-     * @param string
-     * @param $refreshToken
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
-    public function setRefreshToken(string $refreshToken): self
-    {
-        $this->refreshToken = $refreshToken;
 
         return $this;
     }
