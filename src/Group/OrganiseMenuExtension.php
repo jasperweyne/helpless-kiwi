@@ -75,7 +75,7 @@ class OrganiseMenuExtension implements MenuExtensionInterface
 
     }
 
-    private function getUser(): ?Auth
+    private function getUser()
     {
         if (null === $token = $this->tokenStorage->getToken()) {
             return null;

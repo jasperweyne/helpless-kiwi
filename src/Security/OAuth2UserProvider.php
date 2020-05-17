@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Person\Person;
 use App\Entity\Security\OAuth2AccessToken;
 use App\Security\OAuth2User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,11 +37,22 @@ class OAuth2UserProvider implements UserProviderInterface
         $roles = ['ROLE_OAUTH2'];
         if (isset($tokenArray['scope']) && false !== strpos($tokenArray['scope'], 'admin'))
             $roles[] = 'ROLE_ADMIN';
+
+        $idToken = $token->getIdToken();
+
+        $person = new Person();
+        $person
+            ->setId($idToken->getClaim('sub'))
+            ->setEmail($idToken->getClaim('email', ''))
+            ->setShortnameExpr($idToken->getClaim('given_name', ''))
+            ->setNameExpr($idToken->getClaim('given_name', '') . ' ' . $idToken->getClaim('family_name', ''))
+        ;
         
         $user = new OAuth2User();
         $user
             ->setId($token->getIdToken()->getClaim('sub'))
             ->setRoles($roles)
+            ->setPerson($person)
         ;
 
         $dbToken = $this->em->getRepository(OAuth2AccessToken::class)->findOneBy(['id' => $user->getId()]);

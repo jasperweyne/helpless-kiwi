@@ -2,18 +2,18 @@
 
 namespace App\Security;
 
+use App\Entity\Person\Person;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use OpenIDConnectClient\AccessToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @ORM\Entity
- */
 class OAuth2User implements UserInterface
 {
     private $id;
 
     private $roles;
+
+    private $person;
 
     /**
      * getId
@@ -86,6 +86,32 @@ class OAuth2User implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getPerson(): Person
+    {
+        return $this->person;
+    }
+
+    /**
+     * setPerson
+     * Insert description here.
+     *
+     * @param string
+     * @param $person
+     *
+     * @return
+     *
+     * @static
+     *
+     * @see
+     * @since
+     */
+    public function setPerson(?Person $person): self
+    {
+        $this->person = $person;
 
         return $this;
     }

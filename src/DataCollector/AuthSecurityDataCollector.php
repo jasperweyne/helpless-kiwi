@@ -3,6 +3,7 @@
 namespace App\DataCollector;
 
 use App\Entity\Security\Auth;
+use App\Security\OAuth2User;
 use Symfony\Bundle\SecurityBundle\DataCollector\SecurityDataCollector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ class AuthSecurityDataCollector extends SecurityDataCollector
         parent::collect($request, $response, $exception);
 
         $token = $this->data['token'];
-        if (null !== $token && $token->getUser() instanceof Auth) {
+        if (null !== $token && ($token->getUser() instanceof Auth || $token->getUser() instanceof OAuth2User)) {
             $this->data['user'] = $token->getUser()->getPerson()->getCanonical();
         }
     }
