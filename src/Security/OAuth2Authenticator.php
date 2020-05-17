@@ -74,7 +74,7 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
             $credentials['exception'] = $e;
         } catch (InvalidTokenException $e) {
             $msgs = json_encode($this->provider->getValidatorChain()->getMessages());
-            throw new InvalidTokenException('Invalid OpenID token: ' . $msgs, 0, $e);
+            throw new InvalidTokenException($e->getMessage() . '  ' . $msgs, 0, $e);
         }
 
         return $credentials;
@@ -138,24 +138,24 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         $auth = $token->getUser();
-        $auth->setLastLogin(new \DateTime());
+        // $auth->setLastLogin(new \DateTime());
 
-        $this->em->persist($auth);
-        $this->em->flush();
+        // $this->em->persist($auth);
+        // $this->em->flush();
 
         $targetPath = $this->getTargetPath($request->getSession(), $providerKey);
 
         // First, check if admin page requested
         // If so, skip the profile update check
-        $adminPrefix = $request->getSchemeAndHttpHost().'/admin';
-        if (substr($targetPath ?? '', 0, strlen($adminPrefix)) === $adminPrefix) {
-            return new RedirectResponse($targetPath);
-        }
+        // $adminPrefix = $request->getSchemeAndHttpHost().'/admin';
+        // if (substr($targetPath ?? '', 0, strlen($adminPrefix)) === $adminPrefix) {
+        //     return new RedirectResponse($targetPath);
+        // }
 
         // Execute the profile update check, and redirect if necessary
-        if (ProfileUpdateSubscriber::checkProfileUpdate($auth)) {
-            return new RedirectResponse($this->urlGenerator->generate('profile_update'));
-        }
+        // if (ProfileUpdateSubscriber::checkProfileUpdate($auth)) {
+        //     return new RedirectResponse($this->urlGenerator->generate('profile_update'));
+        // }
 
         // If no profile update required, redirect to target
         if ($targetPath) {
