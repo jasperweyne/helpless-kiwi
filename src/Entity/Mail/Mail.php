@@ -2,7 +2,6 @@
 
 namespace App\Entity\Mail;
 
-use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 
@@ -19,10 +18,9 @@ class Mail
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\Auth")
-     * @ORM\JoinColumn(name="auth", referencedColumnName="person")
+     * @ORM\Column(type="guid")
      */
-    private $auth;
+    private $person_id;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Mail\Recipient", mappedBy="mail")
@@ -78,14 +76,14 @@ class Mail
         return $this;
     }
 
-    public function getAuth(): ?Auth
+    public function getPersonId(): ?string
     {
-        return $this->auth;
+        return $this->person_id;
     }
 
-    public function setAuth(?Auth $auth): self
+    public function setPersonId(?string $person_id): self
     {
-        $this->auth = $auth;
+        $this->person_id = $person_id;
 
         return $this;
     }

@@ -2,8 +2,8 @@
 
 namespace App\Security;
 
-use App\Entity\Person\Person;
 use App\Entity\Security\OAuth2AccessToken;
+use App\Provider\Person\Person;
 use App\Security\OAuth2User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -26,13 +26,11 @@ class OAuth2UserProvider implements UserProviderInterface
         $this->em = $em;
     }
 
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($token)
     {
-        throw new MethodNotImplementedException('ToDo (for impersonation)');
-    }
+        if (!$token instanceof AccessToken)
+            throw new UsernameNotFoundException();
 
-    public function loadUserByToken(AccessToken $token)
-    {
         $tokenArray = $token->getValues();
         $roles = ['ROLE_OAUTH2'];
         if (isset($tokenArray['scope']) && false !== strpos($tokenArray['scope'], 'admin'))
@@ -43,9 +41,8 @@ class OAuth2UserProvider implements UserProviderInterface
         $person = new Person();
         $person
             ->setId($idToken->getClaim('sub'))
-            ->setEmail($idToken->getClaim('email', ''))
-            ->setShortnameExpr($idToken->getClaim('given_name', ''))
-            ->setNameExpr($idToken->getClaim('given_name', '') . ' ' . $idToken->getClaim('family_name', ''))
+            ->setEmail($idToken->getClaim('email'))
+            ->setFields(($idToken->getClaims()))
         ;
         
         $user = new OAuth2User();

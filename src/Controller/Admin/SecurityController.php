@@ -2,7 +2,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Security\Auth;
+use App\Entity\Security\LocalAccount;
+use App\Template\Annotation\MenuItem;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Log\EventService;
@@ -27,11 +28,28 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Lists all local account entities.
+     *
+     * @MenuItem(title="Accounts", menu="admin", activeCriteria="admin_security_")
+     * @Route("/", name="index", methods={"GET", "POST"})
+     */
+    public function indexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $accounts = $em->getRepository(LocalAccount::class)->findAll();
+
+        return $this->render('admin/security/index.html.twig', [
+            'accounts' => $accounts,
+        ]);
+    }
+
+    /**
      * Finds and displays an auth entity.
      *
-     * @Route("/{person}", name="show", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET"})
      */
-    public function showAction(Auth $auth)
+    public function showAction(LocalAccount $auth)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -50,7 +68,7 @@ class SecurityController extends AbstractController
      *
      * @Route("/{person}/roles", name="roles", methods={"GET", "POST"})
      */
-    public function rolesAction(Request $request, Auth $auth)
+    public function rolesAction(Request $request, LocalAccount $auth)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -80,7 +98,7 @@ class SecurityController extends AbstractController
         ]);
     }
     
-    private function createRoleForm(Auth $auth)
+    private function createRoleForm(LocalAccount $auth)
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_security_roles', ['person' => $auth->getPerson()->getId()]))

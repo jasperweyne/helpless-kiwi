@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Security\Auth;
+use App\Entity\Security\LocalAccount;
 use App\Mail\MailService;
-use App\Security\AuthUserProvider;
+use App\Security\LocalUserProvider;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use App\Security\PasswordResetService;
 
@@ -35,7 +35,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/reset/{id}", name="reset", methods={"GET", "POST"})
      */
-    public function resetAction(Auth $auth, Request $request)
+    public function resetAction(LocalAccount $auth, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -75,7 +75,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/register/{id}", name="register", methods={"GET", "POST"})
      */
-    public function registerAction(Auth $auth, Request $request)
+    public function registerAction(LocalAccount $auth, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -115,7 +115,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/request", name="request", methods={"GET", "POST"})
      */
-    public function requestAction(Request $request, AuthUserProvider $userProvider, MailService $mailer)
+    public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -138,7 +138,7 @@ class PasswordController extends AbstractController
             }
 
             try {
-                $auth = $userProvider->loadUserByEmail($mail);
+                $auth = $userProvider->loadUserByUsername($mail);
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
 
                 $body = $this->renderView('email/resetpassword.html.twig', [

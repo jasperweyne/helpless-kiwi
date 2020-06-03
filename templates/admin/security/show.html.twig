@@ -9,12 +9,8 @@
     <table>
         <tbody>
             <tr>
-                <th>Persoon</th>
-                <td>{% if auth.person %}<a href="{{ path('admin_person_show', { 'id': auth.person.id }) }}">{{ auth.person.canonical }}</a>{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Authenticatie ID</th>
-                <td>{{ auth.authId }}</td>
+                <th>E-mail</th>
+                <td>{{ auth.email }}</td>
             </tr>
             <tr>
                 <th>Account geactiveerd</th>
@@ -56,7 +52,7 @@
                         <tbody>
                         {% for modif in modifs %}
                             <tr>
-                                <td>{{ modif.auth.person.canonical }}</td>
+                                <td>{{ personReg.find(modif.personId).canonical ?? '' }}</td>
                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                             </tr>
                         {% else %}

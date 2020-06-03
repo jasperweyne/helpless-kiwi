@@ -2,7 +2,6 @@
 
 namespace App\Entity\Group;
 
-use App\Entity\Person\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,9 +30,9 @@ class Relation
     private $group;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person")
+     * @ORM\Column(type="guid")
      */
-    private $person;
+    private $person_id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Relation", inversedBy="children")
@@ -84,14 +83,14 @@ class Relation
         return $this;
     }
 
-    public function getPerson(): ?Person
+    public function getPersonId(): ?string
     {
-        return $this->person;
+        return $this->person_id;
     }
 
-    public function setPerson(?Person $person): self
+    public function setPersonId(?string $person_id): self
     {
-        $this->person = $person;
+        $this->person_id = $person_id;
 
         return $this;
     }

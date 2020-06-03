@@ -102,7 +102,7 @@
                             <tbody>
                             {% for relation in group.relations %}
                                 <tr>
-                                    <td>{{ relation.root.person.canonical }}</td>
+                                    <td>{{ personReg.find(relation.root.personId).canonical }}</td>
                                     <td>
                                         {% for r in relation.allRelations.toArray|filter(a => a.group != group) %}
                                             <a href="{{ path('admin_group_show', { 'id': r.group.id }) }}">{{ r.group.name }}</a>{% if r.group.id != relation.root.group.id %} <a href="{{ path('admin_group_relation_delete', { 'id': r.id }) }}">&#128473;</a>{% endif %}{{ loop.last ? '' : ', ' }}
@@ -171,7 +171,7 @@
                                         <tbody>
                                         {% for modif in modifs %}
                                             <tr>
-                                                <td>{{ modif.auth.person.canonical }}</td>
+                                                <td>{{ personReg.find(modif.personId).canonical }}</td>
                                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                                             </tr>
                                         {% else %}

@@ -3,7 +3,6 @@
 namespace App\Group;
 
 use App\Entity\Group\Group;
-use App\Entity\Security\Auth;
 use App\Template\MenuExtensionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

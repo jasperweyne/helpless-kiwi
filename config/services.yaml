@@ -32,10 +32,6 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     #Editted
-    App\Security\AuthUserProvider:
-        class: App\Security\AuthUserProvider
-        arguments: ['@doctrine', '%env(USERPROVIDER_KEY)%', '%doctrine.default_entity_manager%']
-
     App\Template\AnnotationMenuExtension:
         class: App\Template\AnnotationMenuExtension
         arguments: ["App\\Controller", "../src/Controller", "%kernel.root_dir%", "@annotation_reader"]
@@ -56,15 +52,15 @@ services:
         arguments:
             - !tagged app.menu_extension
 
-    App\Form\Person\Dynamic\DynamicTypeRegistry:
+    App\Provider\Person\PersonRegistry:
         arguments:
-            - !tagged app.dynamic_type
+            - !tagged app.person_provider
 
     _instanceof:
         App\Template\MenuExtensionInterface:
             tags: ['app.menu_extension']
-        App\Form\Person\Dynamic\DynamicTypeInterface:
-            tags: ['app.dynamic_type']
+        App\Provider\Person\PersonProviderInterface:
+            tags: ['app.person_provider']
 
     OpenIDConnectClient\OpenIDConnectProvider:
         arguments:

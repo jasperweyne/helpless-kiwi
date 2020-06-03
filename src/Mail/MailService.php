@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
-use App\Entity\Security\Auth;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -39,6 +38,9 @@ class MailService
 
         $addresses = [];
         foreach ($to as $person) {
+            if (is_null($person->getEmail()))
+                continue;
+            
             if ('' == trim($person->getName() ?? $person->getShortname() ?? '')) {
                 $addresses[] = $person->getEmail();
             } else {
@@ -61,7 +63,7 @@ class MailService
         $msgEntity = new Mail();
         $msgEntity
             ->setSender($from)
-            ->setAuth($this->getUser())
+            ->setPersonId($this->getUser()->getPerson()->getId())
             ->setTitle($title)
             ->setContent($content)
             ->setSentAt(new \DateTime())
@@ -71,7 +73,7 @@ class MailService
         foreach ($to as $person) {
             $recipient = new Recipient();
             $recipient
-                ->setPerson($person)
+                ->setPersonId($person)
                 ->setMail($msgEntity)
             ;
 
@@ -83,7 +85,7 @@ class MailService
         $this->mailer->send($message);
     }
 
-    private function getUser(): ?Auth
+    private function getUser()
     {
         if (null === $token = $this->tokenStorage->getToken()) {
             return null;

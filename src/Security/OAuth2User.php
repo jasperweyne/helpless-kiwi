@@ -2,9 +2,7 @@
 
 namespace App\Security;
 
-use App\Entity\Person\Person;
-use League\OAuth2\Client\Token\AccessTokenInterface;
-use OpenIDConnectClient\AccessToken;
+use App\Provider\Person\Person;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class OAuth2User implements UserInterface

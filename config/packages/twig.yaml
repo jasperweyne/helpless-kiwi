@@ -8,4 +8,5 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         menu: '@App\Template\MenuBuilder'
+        personReg: '@App\Provider\Person\PersonRegistry'
         org: '%env(ORG_NAME)%'

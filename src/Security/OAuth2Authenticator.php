@@ -86,13 +86,8 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
         if (!$this->_checkCredentials($credentials))
             throw new AuthenticationException();
 
-        /// Get user
-        if (!$userProvider instanceof OAuth2UserProvider) {
-            throw new \LogicException('User provider not supported!');
-        }
-
         // Load / create our user however you need.
-        $user = $userProvider->loadUserByToken($credentials['accessToken']);
+        $user = $userProvider->loadUserByUsername($credentials['accessToken']);
 
         if (!$user) {
             // fail authentication with a custom error

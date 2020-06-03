@@ -11,7 +11,7 @@ class EventService
 {
     private $em;
 
-    private $auth;
+    private $person;
 
     private $refl;
 
@@ -20,9 +20,9 @@ class EventService
         $token = $tokenStorage->getToken();
 
         if (null === $token || !\is_object($token->getUser())) {
-            $this->auth = null;
+            $this->person = null;
         } else {
-            $this->auth = $token->getUser();
+            $this->person = $token->getUser()->getPerson()->getId();
         }
 
         $this->em = $em;
@@ -57,7 +57,7 @@ class EventService
         $entity
             ->setTime(new \DateTime())
             ->setDiscr(get_class($event))
-            ->setAuth($this->auth)
+            ->setPersonId($this->person)
             ->setMeta(serialize($meta))
         ;
 
@@ -94,7 +94,7 @@ class EventService
 
         $fields = unserialize($entity->getMeta());
         $fields['time'] = $entity->getTime();
-        $fields['auth'] = $entity->getAuth();
+        $fields['person'] = $entity->getPersonId();
         $fields['entityCb'] = $objectClosure;
         $fields['entityType'] = $objectType;
 

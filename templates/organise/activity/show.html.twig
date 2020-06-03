@@ -29,14 +29,14 @@
                             <tbody>
                             {% for registration in deregistrations|sort((a, b) => a.deletedate <=> b.deletedate) %}
                                 <tr>
-                                    <td><strike>{{ registration.person.canonical }}</strike></td>
+                                    <td><strike>{{ personReg.find(registration.personId).canonical }}</strike></td>
                                     <td><strike>{{ registration.option.name }}</strike></td> 
                                     <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
                                 </tr>
                             {% endfor %}
                         {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
                                 <tr>
-                                    <td>{{ registration.person.canonical }}</td>
+                                    <td>{{ personReg.find(registration.personId).canonical }}</td>
                                     <td>{{ registration.option.name }}</td>
                                     <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                     <td><a href="{{ path('organise_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
@@ -61,7 +61,7 @@
                             <tbody>
                             {% for registration in reserve %}
                                 <tr>
-                                    <td>{{ registration.person.canonical }}</td>
+                                    <td>{{ personReg.find(registration.personId).canonical }}</td>
                                     <td>{{ registration.option.name }}</td>
                                     <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                     <td><a href="{{ path('organise_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>

@@ -70,7 +70,7 @@
                                 {% for relation in group.relations %}
                                     <tr>
                                         {% set relgroups = relation.allRelations|filter(a => a.group != group)|map(a => a.group.name) %}
-                                        <td>{{ relation.root.person.canonical }} <i>{{ relgroups ? '(%s)'|format(relgroups|join(', ')) : '' }}</i></td>
+                                        <td>{{ personReg.find(relation.root.personId).canonical }} <i>{{ relgroups ? '(%s)'|format(relgroups|join(', ')) : '' }}</i></td>
                                     </tr>
                                 {% else %}
                                     <tr>

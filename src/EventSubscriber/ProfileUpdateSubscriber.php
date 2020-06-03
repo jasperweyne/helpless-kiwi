@@ -2,7 +2,6 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\Security\Auth;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -26,6 +25,8 @@ class ProfileUpdateSubscriber implements EventSubscriberInterface
 
     public function onRequest(RequestEvent $event)
     {
+        return;
+        
         $request = $event->getRequest();
         if ($request->hasPreviousSession()) {
             return;
@@ -47,7 +48,7 @@ class ProfileUpdateSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (!$user instanceof Auth) {
+        if (!$user instanceof LocalAccount) {
             return;
         }
 
@@ -56,7 +57,7 @@ class ProfileUpdateSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function checkProfileUpdate(Auth $user)
+    public static function checkProfileUpdate(LocalAccount $user)
     {
         // First, check if user anonymized or pseudonymized
         if (!$person = $user->getPerson()) {

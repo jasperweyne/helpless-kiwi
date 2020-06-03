@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Mail\MailService;
+use App\Provider\Person\PersonRegistry;
 
 /**
  * Activity controller.
@@ -22,7 +23,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, Activity $activity, MailService $mailer)
+    public function newAction(Request $request, Activity $activity, MailService $mailer, PersonRegistry $personRegistry)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -42,17 +43,18 @@ class RegistrationController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld!');
+            $person = $personRegistry->find($registration->getPersonId());
+            $this->addFlash('success', $person['name'].' aangemeld!');
 
             $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/newregistration_by.html.twig', [
-                'person' => $registration->getPerson(),
+                'person' => $person,
                 'activity' => $registration->getActivity(),
                 'title' => $title,
                 'by' => $this->getUser()->getPerson(),
             ]);
 
-            $mailer->message($registration->getPerson(), $title, $body);
+            $mailer->message($person, $title, $body);
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -68,7 +70,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/delete/{id}", name="delete")
      */
-    public function deleteAction(Request $request, Registration $registration, MailService $mailer)
+    public function deleteAction(Request $request, Registration $registration, MailService $mailer, PersonRegistry $personRegistry)
     {
         $form = $this->createRegistrationDeleteForm($registration);
         $form->handleRequest($request);
@@ -81,17 +83,18 @@ class RegistrationController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' afgemeld!');
+            $person = $personRegistry->find($registration->getPersonId());
+            $this->addFlash('success', $person->getCanonical().' afgemeld!');
 
             $title = 'Afmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/removedregistration_by.html.twig', [
-                'person' => $registration->getPerson(),
+                'person' => $person,
                 'activity' => $registration->getActivity(),
                 'title' => $title,
                 'by' => $this->getUser()->getPerson(),
             ]);
 
-            $mailer->message($registration->getPerson(), $title, $body);
+            $mailer->message($person, $title, $body);
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
         }
@@ -107,7 +110,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/reserve/new/{id}", name="reserve_new", methods={"GET", "POST"})
      */
-    public function reserveNewAction(Request $request, Activity $activity, MailService $mailer)
+    public function reserveNewAction(Request $request, Activity $activity, MailService $mailer, PersonRegistry $personRegistry)
     {
         $em = $this->getDoctrine()->getManager();
         
@@ -132,7 +135,8 @@ class RegistrationController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld op de reservelijst!');
+            $person = $personRegistry->find($registration->getPersonId());
+            $this->addFlash('success', $person->getCanonical().' aangemeld op de reservelijst!');
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -149,7 +153,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/reserve/move/{id}/up", name="reserve_move_up", methods={"GET", "POST"})
      */
-    public function reserveMoveUpAction(Request $request, Registration $registration)
+    public function reserveMoveUpAction(Request $request, Registration $registration, PersonRegistry $personRegistry)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -160,7 +164,8 @@ class RegistrationController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash('success', $registration->getPerson()->getCanonical().' naar boven verplaatst!');
+        $person = $personRegistry->find($registration->getPersonId());
+        $this->addFlash('success', $person->getCanonical().' naar boven verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
     }
@@ -170,7 +175,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
      */
-    public function reserveMoveDownAction(Request $request, Registration $registration)
+    public function reserveMoveDownAction(Request $request, Registration $registration, PersonRegistry $personRegistry)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -181,7 +186,8 @@ class RegistrationController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash('success', $registration->getPerson()->getCanonical().' naar beneden verplaatst!');
+        $person = $personRegistry->find($registration->getPersonId());
+        $this->addFlash('success', $person->getCanonical().' naar beneden verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
     }
