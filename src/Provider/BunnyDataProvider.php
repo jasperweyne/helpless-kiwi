@@ -18,11 +18,14 @@ class BunnyDataProvider implements PersonProviderInterface
 
     protected $em;
 
+    private $cache;
+
     public function __construct(OpenIDConnectProvider $provider, TokenStorageInterface $tokens, EntityManagerInterface $em)
     {
         $this->provider = $provider;
         $this->tokens = $tokens;
         $this->em = $em;
+        $this->cache = null;
     }
 
     public function findPerson(string $id): ?Person
@@ -38,32 +41,34 @@ class BunnyDataProvider implements PersonProviderInterface
 
     public function findPersons(): array
     {
-        $user = $this->tokens->getToken()->getUser();
-        if (!$user instanceof OAuth2User)
-            return [];
+        if (is_null($this->cache)) {
+            $user = $this->tokens->getToken()->getUser();
+            if (!$user instanceof OAuth2User)
+                return [];
 
-        $accessToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
-        
-        $request = $this->provider->getAuthenticatedRequest(
-            'GET',
-            'http://localhost:4000/api/person',
-            $accessToken->getAccessToken()
-        );
+            $accessToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
+            
+            $request = $this->provider->getAuthenticatedRequest(
+                'GET',
+                'http://localhost:4000/api/person',
+                $accessToken->getAccessToken()
+            );
 
-        $response = $this->provider->getParsedResponse($request);
+            $response = $this->provider->getParsedResponse($request);
 
-        $persons = [];
-        foreach ($response as $data) {
-            $person = new Person();
-            $person
-                ->setId($data['id'])
-                ->setEmail($data['email'] ?? null)
-                ->setFields($data)
-            ;
+            $this->cache = [];
+            foreach ($response as $data) {
+                $person = new Person();
+                $person
+                    ->setId($data['id'])
+                    ->setEmail($data['email'] ?? null)
+                    ->setFields($data)
+                ;
 
-            $persons[] = $person;
+                $this->cache[] = $person;
+            }
         }
 
-        return $persons;
+        return $this->cache;
     }
 }
