@@ -6,6 +6,7 @@ use App\Entity\Group\Relation;
 use App\Provider\Person\Person;
 use App\Provider\Person\PersonRegistry;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,11 +25,13 @@ class RelationType extends AbstractType
             ->add('person_id', ChoiceType::class, [
                 'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
-                'choices' => $this->personRegistry->findAll(),
-                'choice_value' => 'id',
-                'choice_label' => function($ref) {
-                    return $ref->getCanonical();
-                },
+                'choice_loader' => new CallbackChoiceLoader(function () {
+                    $persons = [];
+                    foreach ($this->personRegistry->findAll() as $person) {
+                        $persons[$person->getCanonical()] = $person->getId();
+                    }
+                    return $persons;
+                }),
                 'required' => true,
             ])
         ;

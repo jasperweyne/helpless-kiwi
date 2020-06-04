@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class RegistrationType extends AbstractType
@@ -26,12 +27,15 @@ class RegistrationType extends AbstractType
             ->add('person_id', ChoiceType::class, [
                 'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
-                'choices' => $this->personRegistry->findAll(),
-                'choice_value' => 'id',
-                'choice_label' => function(?Person $person) {
-                    return $person->getCanonical();
-                },
+                'choice_loader' => new CallbackChoiceLoader(function () {
+                    $persons = [];
+                    foreach ($this->personRegistry->findAll() as $person) {
+                        $persons[$person->getCanonical()] = $person->getId();
+                    }
+                    return $persons;
+                }),
                 'required' => true,
+                
             ])
             ->add('option', EntityType::class, [
                 'label' => 'Optie',
