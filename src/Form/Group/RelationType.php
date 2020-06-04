@@ -21,7 +21,7 @@ class RelationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('person', ChoiceType::class, [
+            ->add('person_id', ChoiceType::class, [
                 'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
                 'choices' => $this->personRegistry->findAll(),
