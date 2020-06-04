@@ -3,12 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Security\LocalAccount;
-use App\Template\Annotation\MenuItem;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
+use App\Template\MenuExtensionInterface;
 use Doctrine\DBAL\Types\BooleanType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/admin/security", name="admin_security_")
  */
-class SecurityController extends AbstractController
+class SecurityController extends AbstractController implements MenuExtensionInterface
 {
     private $events;
 
@@ -27,10 +27,25 @@ class SecurityController extends AbstractController
         $this->events = $events;
     }
 
+    public function getMenuItems(string $menu)
+    {
+        if ($menu != 'admin')
+            return [];
+
+        $em = $this->getDoctrine()->getManager();
+        if (count($em->getRepository(LocalAccount::class)->findAll()) == 0)
+            return [];
+
+        return [[
+            'title' => "Accounts",
+            'activeCriteria' => "admin_security_",
+            'path' => 'admin_security_index',
+        ]];
+    }
+
     /**
      * Lists all local account entities.
      *
-     * @MenuItem(title="Accounts", menu="admin", activeCriteria="admin_security_")
      * @Route("/", name="index", methods={"GET", "POST"})
      */
     public function indexAction(Request $request)

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Security;
 
+use App\Entity\Security\LocalAccount;
 use App\Security\OAuth2Authenticator;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +24,10 @@ class LoginController extends AbstractController
             return $this->redirect('/');
         }
 
-        if ($request->query->getAlpha('provider') == 'bunny') {
+        $em = $this->getDoctrine()->getManager();
+        $bunny = $_ENV['BUNNY_ADDRESS'] != "";
+        $local = count($em->getRepository(LocalAccount::class)->findAll()) > 0;
+        if (($bunny && !$local) || $request->query->getAlpha('provider') == 'bunny') {
             return $authenticator->start($request);
         }
 
@@ -39,7 +43,7 @@ class LoginController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername]);
+        return $this->render('security/login.html.twig', ['bunny' => $bunny, 'last_username' => $lastUsername]);
     }
 
     /**

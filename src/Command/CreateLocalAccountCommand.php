@@ -17,6 +17,7 @@ class CreateLocalAccountCommand extends Command
     private $em;
     private $passwordEncoder;
     private $raw_pass;
+    private $name;
 
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:create-account';
@@ -55,6 +56,9 @@ class CreateLocalAccountCommand extends Command
         ]);
         $helper = $this->getHelper('question');
 
+        $question = new Question('Public name: ');
+        $this->name = $helper->ask($input, $output, $question);
+
         while (true) {
             $question = new Question('Please enter a password: ');
             $question->setHidden(true);
@@ -82,6 +86,7 @@ class CreateLocalAccountCommand extends Command
         $account = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]) ?? new LocalAccount();
         $account
             // Persons
+            ->setName($this->name)
             ->setEmail($email)
             ->setPassword($this->passwordEncoder->encodePassword($account, $this->raw_pass))
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : [])

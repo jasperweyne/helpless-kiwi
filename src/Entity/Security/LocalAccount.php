@@ -25,6 +25,11 @@ class LocalAccount implements UserInterface, EquatableInterface
     private $email;
 
     /**
+     * @ORM\Column(type="string", length=180)
+     */
+    private $name;
+
+    /**
      * @var string The hashed password
      *
      * @ORM\Column(type="string", nullable=true)
@@ -121,13 +126,35 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this->getEmail();
     }
 
+    /**
+     * Get name.
+     *
+     * @return string
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set name.
+     *
+     * @param string $name
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     public function getPerson(): Person
     {
         $person = new Person();
         $person
             ->setId($this->getId())
             ->setEmail($this->getEmail())
-            ->setFields(['name' => $this->getEmail()])
+            ->setFields(['name' => $this->getName()])
         ;
 
         return $person;

@@ -5,11 +5,13 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
-    # Adds a fallback USERPROVIDER_KEY if the env var is not set.
+    # Adds a environment variables even if Bunny is not used.
     # This allows you to run cache:warmup even if your
-    # environment variables are not available yet.
+    # environment variables are not available.
     # You should not need to change this value.
-    env(USERPROVIDER_KEY): ''
+    env(BUNNY_ID): ''
+    env(BUNNY_SECRET): ''
+    env(BUNNY_ADDRESS): ''
 
 services:
     # default configuration for services in *this* file
@@ -65,13 +67,13 @@ services:
     OpenIDConnectClient\OpenIDConnectProvider:
         arguments:
             -
-                clientId: 'demoapp'      # The client ID assigned to you by the provider
-                clientSecret: 'demopass' # The client password assigned to you by the provider
+                clientId: '%env(BUNNY_ID)%'         # The client ID assigned to you by the provider
+                clientSecret: '%env(BUNNY_SECRET)%' # The client password assigned to you by the provider
                 redirectUri: '@=service("router").generate("app_login", [], 0)' # 0: ABSOLUTE_URL (see UrlGeneratorInterface)
-                urlAuthorize: 'http://localhost:4000/authorize'
-                urlAccessToken: 'http://localhost:4000/token'
-                urlResourceOwnerDetails: 'http://localhost:4000/resource'
-                idTokenIssuer: 'https://localhost:4000'
+                urlAuthorize: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/authorize'
+                urlAccessToken: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/token'
+                urlResourceOwnerDetails: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/resource'
+                idTokenIssuer: 'https://%env(BUNNY_ADDRESS)%'
                 publicKey: 'file://%kernel.project_dir%/public.key'
                 scopes: 'profile email admin'
             -

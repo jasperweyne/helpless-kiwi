@@ -36,7 +36,9 @@
         {% if not app.user %}
             <a href="{{ path('password_request') }}">Wachtwoord vergeten</a>
         {% endif %}
+        {% if bunny %}
         <a href="{{ path('app_login', { provider: 'bunny' }) }}">Log in met Bunny</a>
+        {% endif %}
     </form>
 </div>
 {% endblock %}

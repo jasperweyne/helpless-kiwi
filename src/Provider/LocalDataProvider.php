@@ -33,13 +33,6 @@ class LocalDataProvider implements PersonProviderInterface
         if (is_null($auth))
             return null;
 
-        $person = new Person();
-        $person
-            ->setId($auth->getId())
-            ->setEmail($auth->getEmail())
-            ->setFields(['name' => $auth->getEmail()])
-        ;
-
-        return $person;
+        return $auth->getPerson();
     }
 }
