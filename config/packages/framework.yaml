@@ -10,6 +10,7 @@ framework:
         handler_id: ~
         cookie_secure: auto
         cookie_samesite: lax
+        name: KIWI_PHPSESSID
 
     #esi: true
     #fragments: true
