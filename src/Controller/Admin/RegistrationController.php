@@ -44,7 +44,7 @@ class RegistrationController extends AbstractController
             $em->flush();
 
             $person = $personRegistry->find($registration->getPersonId());
-            $this->addFlash('success', $person['name'].' aangemeld!');
+            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld!');
 
             $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/newregistration_by.html.twig', [
@@ -84,7 +84,7 @@ class RegistrationController extends AbstractController
             $em->flush();
 
             $person = $personRegistry->find($registration->getPersonId());
-            $this->addFlash('success', $person->getCanonical().' afgemeld!');
+            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' afgemeld!');
 
             $title = 'Afmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/removedregistration_by.html.twig', [
@@ -136,7 +136,7 @@ class RegistrationController extends AbstractController
             $em->flush();
 
             $person = $personRegistry->find($registration->getPersonId());
-            $this->addFlash('success', $person->getCanonical().' aangemeld op de reservelijst!');
+            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld op de reservelijst!');
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -165,7 +165,7 @@ class RegistrationController extends AbstractController
         $em->flush();
 
         $person = $personRegistry->find($registration->getPersonId());
-        $this->addFlash('success', $person->getCanonical().' naar boven verplaatst!');
+        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
     }
@@ -187,7 +187,7 @@ class RegistrationController extends AbstractController
         $em->flush();
 
         $person = $personRegistry->find($registration->getPersonId());
-        $this->addFlash('success', $person->getCanonical().' naar beneden verplaatst!');
+        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', ['id' => $registration->getActivity()->getId()]);
     }

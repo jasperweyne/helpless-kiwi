@@ -28,7 +28,10 @@ class MailService
 
     public function message($to, string $title, string $body)
     {
-        if (is_object($to)) {
+        if (is_null($to))
+            return;
+        
+        if (!is_iterable($to)) {
             $to = [$to];
         }
 

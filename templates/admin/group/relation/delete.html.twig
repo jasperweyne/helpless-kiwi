@@ -1,9 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if relation.root.id == relation.id %} 
-    {% set page_title = personReg.find(relation.root.personId).canonical ~ ' uit ' ~ relation.group.name ~ ' verwijderen'  %}
+    {% set page_title = personReg.find(relation.root.personId).canonical ?? 'Onbekend' ~ ' uit ' ~ relation.group.name ~ ' verwijderen'  %}
 {% else %}
-    {% set page_title = relation.group.name ~ ' verwijderen voor ' ~ personReg.find(relation.root.personId).canonical ~ ' uit ' ~ relation.root.group.name %}
+    {% set page_title = relation.group.name ~ ' verwijderen voor ' ~ personReg.find(relation.root.personId).canonical ?? 'Onbekend' ~ ' uit ' ~ relation.root.group.name %}
 {% endif %}
 
 {% block body %}

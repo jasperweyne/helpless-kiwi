@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = 'Extra groep bij ' ~ personReg.find(relation.root.personId).canonical ~ ' in ' ~ relation.root.group.name %}
+    {% set page_title = 'Extra groep bij ' ~ personReg.find(relation.root.personId).canonical ?? 'Onbekend' ~ ' in ' ~ relation.root.group.name %}
 {% endif %}
 
 {% block body %}

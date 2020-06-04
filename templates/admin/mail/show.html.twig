@@ -65,7 +65,7 @@
                         <tbody>
                             {% for recipient in mail.recipients %}
                                 <tr>
-                                    <td> {{ personReg.find(recipient.personId).canonical }} </td>
+                                    <td> {{ personReg.find(recipient.personId).canonical ?? 'Onbekend' }} </td>
                                     <td> {{ personReg.find(recipient.personId).email ?? '' }} </td>
                                 </tr>
                             {% else %} 
