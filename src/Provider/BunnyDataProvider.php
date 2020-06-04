@@ -6,8 +6,10 @@ use App\Provider\Person\PersonProviderInterface;
 use App\Entity\Security\OAuth2AccessToken;
 use App\Provider\Person\Person;
 use App\Security\OAuth2User;
+use App\Security\OAuth2UserProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenIDConnectClient\OpenIDConnectProvider;
+use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class BunnyDataProvider implements PersonProviderInterface
@@ -18,14 +20,48 @@ class BunnyDataProvider implements PersonProviderInterface
 
     protected $em;
 
+    protected $userProvider;
+
     private $cache;
 
-    public function __construct(OpenIDConnectProvider $provider, TokenStorageInterface $tokens, EntityManagerInterface $em)
+    public function __construct(OpenIDConnectProvider $provider, TokenStorageInterface $tokens, EntityManagerInterface $em, OAuth2UserProvider $userProvider)
     {
         $this->provider = $provider;
         $this->tokens = $tokens;
         $this->em = $em;
+        $this->userProvider = $userProvider;
         $this->cache = null;
+    }
+
+    public function getAddress(): ?string
+    {
+        if (!isset($_ENV['BUNNY_ADDRESS']))
+            return null;
+            
+        return ($_ENV['SECURE_SCHEME'] ?? 'https') . '://' . $_ENV['BUNNY_ADDRESS'];
+    }
+
+    public function getRequest(string $method, string $uri, array $options = []): ?RequestInterface
+    {
+        $user = $this->tokens->getToken()->getUser();
+        if (!$user instanceof OAuth2User || is_null($this->getAddress()))
+            return null;
+
+        $dbToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
+        $accessToken = $dbToken->getAccessToken();
+
+        if ($accessToken->hasExpired()) {
+            try {
+                $user = $this->userProvider->refreshUser($user);
+            } catch (\Exception $e) {
+                return null;
+            }
+            
+            $dbToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
+            $accessToken = $dbToken->getAccessToken();
+        }
+        
+        return $this->provider->getAuthenticatedRequest($method, $this->getAddress() . $uri, $accessToken, $options);
     }
 
     public function findPerson(string $id): ?Person
@@ -42,30 +78,22 @@ class BunnyDataProvider implements PersonProviderInterface
     public function findPersons(): array
     {
         if (is_null($this->cache)) {
-            $user = $this->tokens->getToken()->getUser();
-            if (!$user instanceof OAuth2User)
-                return [];
-
-            $accessToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
-            
-            $request = $this->provider->getAuthenticatedRequest(
-                'GET',
-                'http://localhost:4000/api/person',
-                $accessToken->getAccessToken()
-            );
-
-            $response = $this->provider->getParsedResponse($request);
-
             $this->cache = [];
-            foreach ($response as $data) {
-                $person = new Person();
-                $person
-                    ->setId($data['id'])
-                    ->setEmail($data['email'] ?? null)
-                    ->setFields($data)
-                ;
+            $request = $this->getRequest('GET', '/api/person');
 
-                $this->cache[] = $person;
+            if (!is_null($request)) {
+                $response = $this->provider->getParsedResponse($request);
+
+                foreach ($response as $data) {
+                    $person = new Person();
+                    $person
+                        ->setId($data['id'])
+                        ->setEmail($data['email'] ?? null)
+                        ->setFields($data)
+                    ;
+
+                    $this->cache[] = $person;
+                }
             }
         }
 

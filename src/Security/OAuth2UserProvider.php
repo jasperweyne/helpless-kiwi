@@ -98,7 +98,7 @@ class OAuth2UserProvider implements UserProviderInterface
                 throw new AuthenticationExpiredException("Access token has expired");
 
             // A valid token was obtain, we refresh the user data and return it
-            return $this->loadUserByToken($accessToken);
+            return $this->loadUserByUsername($accessToken);
         } catch (\Exception $e) {
             // getAccessToken throws exception, this means either a problem
             // occurred, or user has been logged out. Therefore, we log out
