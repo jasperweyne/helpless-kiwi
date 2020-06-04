@@ -25,7 +25,7 @@ class LoginController extends AbstractController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $bunny = $_ENV['BUNNY_ADDRESS'] != "";
+        $bunny = isset($_ENV['BUNNY_ADDRESS']);
         $local = count($em->getRepository(LocalAccount::class)->findAll()) > 0;
         if (($bunny && !$local) || $request->query->getAlpha('provider') == 'bunny') {
             return $authenticator->start($request);

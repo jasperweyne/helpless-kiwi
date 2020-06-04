@@ -33,7 +33,7 @@ class SecurityController extends AbstractController implements MenuExtensionInte
             return [];
 
         $em = $this->getDoctrine()->getManager();
-        if (count($em->getRepository(LocalAccount::class)->findAll()) == 0)
+        if (isset($_ENV['BUNNY_ADDRESS']) && count($em->getRepository(LocalAccount::class)->findAll()) == 0)
             return [];
 
         return [[
