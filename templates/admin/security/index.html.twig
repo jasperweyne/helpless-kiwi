@@ -6,6 +6,10 @@
     {% block top %}
         {% embed 'admin/listview.html.twig' %}
             {% set resultcount = accounts|length %}
+
+            {% block buttons %}
+                <a href="{{ path("admin_security_new") }} ">Nieuw</a>
+            {% endblock %}
         {% endembed %}
     {% endblock %}
 {% endif %}

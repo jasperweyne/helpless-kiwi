@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = 'Account' ~ (auth.person ? ' van ' ~ auth.person.canonical : '') %}
+    {% set page_title = 'Account' ~ (account.person ? ' van ' ~ account.person.canonical : '') %}
 {% endif %}
 
 {% block body %}
@@ -9,26 +9,26 @@
     <table>
         <tbody>
             <tr>
-                <th>Naame</th>
-                <td>{{ auth.name }}</td>
+                <th>Naam</th>
+                <td>{{ account.name }}</td>
             </tr>
             <tr>
                 <th>E-mail</th>
-                <td>{{ auth.email }}</td>
+                <td>{{ account.email }}</td>
             </tr>
             <tr>
                 <th>Account geactiveerd</th>
-                <td>{{ auth.password ? 'Ja' : 'Nee' }}</td>
+                <td>{{ account.password ? 'Ja' : 'Nee' }}</td>
             </tr>
             <tr>
                 <th>Rollen</th>
                 <td>
                     <ul>
-                        {% for role in auth.roles %}
+                        {% for role in account.roles %}
                             <li>{{ role }}</li>
                         {% endfor %}
                     </ul>
-                    <span><a href="{{ path('admin_security_roles', { 'person': auth.person.id }) }}">Rollen bewerken</a></span>
+                    <span><a href="{{ path('admin_security_roles', { 'person': account.person.id }) }}">Rollen bewerken</a></span>
                 </td>
             </tr>
             <tr>
@@ -40,7 +40,7 @@
             <tr>
                 <th>Gemaakt door</th>
                 <td>
-                    {{ createdAt.auth.person.canonical ?? '' }}
+                    {{ createdAt.account.person.canonical ?? '' }}
                 </td>
             </tr>
             <tr>
