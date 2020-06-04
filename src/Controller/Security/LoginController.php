@@ -14,13 +14,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class LoginController extends AbstractController
 {
     /**
-     * @Route("/login_old", name="app_login_old")
+     * @Route("/login", name="app_login")
      */
-    public function login_old(AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
+    public function login(Request $request, OAuth2Authenticator $authenticator, AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
     {
         // you can't login again while you already are, redirect
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect('/');
+        }
+
+        if ($request->query->getAlpha('provider') == 'bunny') {
+            return $authenticator->start($request);
         }
 
         // get the login error if there is one
@@ -36,14 +40,6 @@ class LoginController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername]);
-    }
-
-    /**
-     * @Route("/login", name="app_login", methods={"GET"})
-     */
-    public function login(Request $request, OAuth2Authenticator $authenticator)
-    {
-        return $authenticator->start($request);
     }
 
     /**
