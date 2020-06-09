@@ -10,12 +10,18 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use OpenIDConnectClient\OpenIDConnectProvider;
 use OpenIDConnectClient\AccessToken;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Intl\Exception\MethodNotImplementedException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationExpiredException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
+use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
-class OAuth2UserProvider implements UserProviderInterface
+class OAuth2UserProvider implements UserProviderInterface, LogoutHandlerInterface, LogoutSuccessHandlerInterface
 {
     private $provider;
     private $em;
@@ -112,5 +118,38 @@ class OAuth2UserProvider implements UserProviderInterface
     public function supportsClass($class)
     {
         return OAuth2User::class === $class;
+    }
+
+    public function logout(Request $request, Response $response, TokenInterface $token)
+    {
+        $user = $token->getUser();
+        if ($this->supportsClass(get_class($user))) {
+            $revokeUrl = ($_ENV['SECURE_SCHEME'] ?? 'https') . '://' . $_ENV['BUNNY_ADDRESS'] . '/revoke';
+
+            $dbToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
+            $accessToken = $dbToken->getAccessToken();
+            $refreshToken = $accessToken->getRefreshToken();
+
+            if (!is_null($accessToken)) {
+                if (!is_null($refreshToken)) {
+                    $revokeRequest = $this->provider->getAuthenticatedRequest("POST", $revokeUrl, $accessToken, [
+                        'body' => "token=" . $refreshToken,
+                    ]);
+                    $this->provider->getResponse($revokeRequest);
+                }
+
+                $revokeRequest = $this->provider->getAuthenticatedRequest("POST", $revokeUrl, $accessToken, [
+                    'body' => "token=" . $accessToken,
+                ]);
+                $this->provider->getResponse($revokeRequest);
+            }
+        }
+
+        $request->getSession()->invalidate();
+    }
+
+    public function onLogoutSuccess(Request $request)
+    {
+        return new RedirectResponse(($_ENV['SECURE_SCHEME'] ?? 'https') . '://' . $_ENV['BUNNY_ADDRESS'] . '/logout');
     }
 }
