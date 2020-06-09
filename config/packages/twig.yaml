@@ -10,3 +10,4 @@ twig:
         menu: '@App\Template\MenuBuilder'
         personReg: '@App\Provider\Person\PersonRegistry'
         org: '%env(ORG_NAME)%'
+        bunny: '@App\Provider\BunnyDataProvider'
