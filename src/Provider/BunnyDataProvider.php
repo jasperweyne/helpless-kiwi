@@ -66,10 +66,27 @@ class BunnyDataProvider implements PersonProviderInterface
 
     public function findPerson(string $id): ?Person
     {
-        foreach ($this->findPersons() as $person) {
-            if ($person->getId() == $id) {
-                return $person;
+        if (!is_null($this->cache)) {
+            foreach ($this->cache as $person) {
+                if ($person->getId() == $id) {
+                    return $person;
+                }
             }
+        }
+
+        $request = $this->getRequest('GET', '/api/person/' . $id);
+
+        if (!is_null($request)) {
+            $response = $this->provider->getParsedResponse($request);
+
+            $person = new Person();
+            $person
+                ->setId($response['id'])
+                ->setEmail($response['email'] ?? null)
+                ->setFields($response)
+            ;
+
+            return $person;
         }
 
         return null;
@@ -79,7 +96,7 @@ class BunnyDataProvider implements PersonProviderInterface
     {
         if (is_null($this->cache)) {
             $this->cache = [];
-            $request = $this->getRequest('GET', '/api/person');
+            $request = $this->getRequest('GET', '/api/person/');
 
             if (!is_null($request)) {
                 $response = $this->provider->getParsedResponse($request);
