@@ -15,7 +15,6 @@ security:
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
-            #id: App\Security\AuthUserProvider
             id: App\Security\OAuth2UserProvider
         app_local_user_provider:
             id: App\Security\LocalUserProvider
@@ -31,7 +30,7 @@ security:
             anonymous: true
             provider: all_users
             guard:
-                entry_point: App\Security\LocalAuthenticator
+                entry_point: App\Security\OAuth2Authenticator
                 authenticators:
                     - App\Security\LocalAuthenticator
                     - App\Security\OAuth2Authenticator
@@ -44,6 +43,7 @@ security:
             remember_me:
                 secret: '%kernel.secret%'
                 always_remember_me: true
+                name: KIWI_REMEMBERME
 
             # activate different ways to authenticate
 

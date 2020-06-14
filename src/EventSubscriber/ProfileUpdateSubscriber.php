@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Security\OAuth2User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -25,8 +26,6 @@ class ProfileUpdateSubscriber implements EventSubscriberInterface
 
     public function onRequest(RequestEvent $event)
     {
-        return;
-        
         $request = $event->getRequest();
         if ($request->hasPreviousSession()) {
             return;
@@ -48,7 +47,7 @@ class ProfileUpdateSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (!$user instanceof LocalAccount) {
+        if (!$user instanceof OAuth2User) {
             return;
         }
 
@@ -57,7 +56,7 @@ class ProfileUpdateSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function checkProfileUpdate(LocalAccount $user)
+    public static function checkProfileUpdate(OAuth2User $user)
     {
         // First, check if user anonymized or pseudonymized
         if (!$person = $user->getPerson()) {
@@ -65,12 +64,18 @@ class ProfileUpdateSubscriber implements EventSubscriberInterface
         }
 
         if (is_null($person->getEmail())) {
-            return false;
+            return true;
         }
 
-        // Check if for any field, no PersonValue is assigned
+        // Check if for any field, no value is assigned
         // if so, the profile needs to be updated
-        return $person->getKeyValues()->exists(function ($key, $x) { return is_null($x['value']); });
+        foreach ($person->getFields() as $key => $value) {
+            if (\is_null($value)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static function getSubscribedEvents()

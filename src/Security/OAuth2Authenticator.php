@@ -132,27 +132,9 @@ class OAuth2Authenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $auth = $token->getUser();
-        // $auth->setLastLogin(new \DateTime());
-
-        // $this->em->persist($auth);
-        // $this->em->flush();
-
         $targetPath = $this->getTargetPath($request->getSession(), $providerKey);
 
-        // First, check if admin page requested
-        // If so, skip the profile update check
-        // $adminPrefix = $request->getSchemeAndHttpHost().'/admin';
-        // if (substr($targetPath ?? '', 0, strlen($adminPrefix)) === $adminPrefix) {
-        //     return new RedirectResponse($targetPath);
-        // }
-
-        // Execute the profile update check, and redirect if necessary
-        // if (ProfileUpdateSubscriber::checkProfileUpdate($auth)) {
-        //     return new RedirectResponse($this->urlGenerator->generate('profile_update'));
-        // }
-
-        // If no profile update required, redirect to target
+        // Redirect to target
         if ($targetPath) {
             return new RedirectResponse($targetPath);
         }
