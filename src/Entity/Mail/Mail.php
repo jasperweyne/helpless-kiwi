@@ -18,7 +18,7 @@ class Mail
     private $id;
 
     /**
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="guid", nullable=true)
      */
     private $person_id;
 

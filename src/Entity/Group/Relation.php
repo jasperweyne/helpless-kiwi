@@ -30,7 +30,7 @@ class Relation
     private $group;
 
     /**
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="guid", nullable=true)
      */
     private $person_id;
 
