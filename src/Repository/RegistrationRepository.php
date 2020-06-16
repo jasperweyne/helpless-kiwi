@@ -150,9 +150,9 @@ class RegistrationRepository extends ServiceEntityRepository
         return $qb
             ->where(
                 $qb->expr()->notIn(
-                    'r.person',
+                    'r.person_id',
                     $this->createQueryBuilder('b')
-                        ->select('IDENTITY(b.person)')
+                        ->select('b.person_id')
                         ->where('b.deletedate IS NULL')
                         ->andWhere('b.reserve_position IS NULL')
                         ->andWhere('b.activity = :val')
@@ -164,7 +164,7 @@ class RegistrationRepository extends ServiceEntityRepository
             ->andWhere('r.reserve_position IS NULL')
             ->setParameter('val', $activity)
             ->orderBy('r.deletedate', 'DESC')
-            ->groupBy('r.person')
+            ->groupBy('r.person_id')
             ->getQuery()
             ->getResult()
         ;

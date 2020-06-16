@@ -78,7 +78,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in registrations|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
+                        {% for registration in registrations|map(a => personReg.find(a.personId).name ?? personReg.find(a.personId).shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
                             <tr>
                                 <td>{{ registration }}</td>
                             </tr>
@@ -99,7 +99,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in reserve|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
+                        {% for registration in reserve|map(a => personReg.find(a.personId).name ?? personReg.find(a.personId).shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
                             <tr>
                                 <td>{{ registration }}</td>
                             </tr>

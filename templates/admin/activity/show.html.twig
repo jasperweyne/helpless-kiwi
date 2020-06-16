@@ -77,7 +77,7 @@
                             <tr>
                                 <th>Gemaakt door</th>
                                 <td>
-                                    {{ createdAt.auth.person.canonical ?? '' }}
+                                    {{ personReg.find(createdAt.personId).canonical ?? '' }}
                                 </td>
                             </tr>
                             <tr>
@@ -137,7 +137,7 @@
                                         <tbody>
                                         {% for modif in modifs %}
                                             <tr>
-                                                <td>{{ modif.auth.person.canonical }}</td>
+                                                <td>{{ personReg.find(modif.personId).canonical ?? 'Onbekend' }}</td>
                                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                                             </tr>
                                         {% else %}
@@ -174,14 +174,14 @@
                         <tbody>
                         {% for registration in deregistrations|sort((a, b) => a.deletedate <=> b.deletedate) %}
                             <tr>
-                                <td> <strike>{{ registration.person.canonical }} </strike> </td>
+                                <td> <strike>{{ personReg.find(registration.personId).canonical ?? 'Onbekend' }} </strike> </td>
                                 <td> <strike> {{ registration.option.name }}   </strike> </td> 
                                 <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
                             </tr>
                         {% endfor %}
                         {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
                             <tr>
-                                <td>{{ registration.person.canonical }}</td>
+                                <td>{{ personReg.find(registration.personId).canonical ?? 'Onbekend' }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
@@ -219,7 +219,7 @@
                         <tbody>
                         {% for registration in reserve %}
                             <tr>
-                                <td>{{ registration.person.canonical }}</td>
+                                <td>{{ personReg.find(registration.personId).canonical ?? 'Onbekend' }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>

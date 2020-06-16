@@ -2,7 +2,7 @@
 
 namespace App\Security;
 
-use App\Entity\Security\Auth;
+use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\SelfSaltingEncoderInterface;
@@ -18,7 +18,7 @@ class PasswordResetService
         $this->encoderFactory = $encoderFactory;
     }
 
-    public function isPasswordRequestTokenValid(Auth $auth, string $token)
+    public function isPasswordRequestTokenValid(LocalAccount $auth, string $token)
     {
         $encoder = $this->encoderFactory->getEncoder($auth);
 
@@ -35,7 +35,7 @@ class PasswordResetService
         return $valid && $nonExpired;
     }
 
-    public function generatePasswordRequestToken(Auth $auth, bool $persistAndFlush = true)
+    public function generatePasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true)
     {
         $encoder = $this->encoderFactory->getEncoder($auth);
         $token = base64_encode(random_bytes(18));
@@ -60,7 +60,7 @@ class PasswordResetService
         return $token;
     }
 
-    public function resetPasswordRequestToken(Auth $auth, bool $persistAndFlush = true)
+    public function resetPasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true)
     {
         $encoder = $this->encoderFactory->getEncoder($auth);
         if (!$encoder instanceof SelfSaltingEncoderInterface) {

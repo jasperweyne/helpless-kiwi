@@ -6,9 +6,11 @@ use App\Entity\Activity\Activity;
 use App\Entity\Order;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Mail\MailService;
+use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -27,8 +29,8 @@ class RegistrationController extends AbstractController
             throw $e;
         }
 
-        if (!$group->getRelations()->exists(function ($index, $a) use ($current) {
-            return $a->getPerson()->getId() === $current->getPerson()->getId();
+        if (!$group->getRelations()->exists(function ($index, Relation $a) use ($current) {
+            return $a->getPersonId() === $current->getPerson()->getId();
         })) {
             throw $e;
         }
@@ -39,7 +41,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, Activity $activity, MailService $mailer)
+    public function newAction(Request $request, Activity $activity, MailService $mailer, PersonRegistry $personRegistry)
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -61,17 +63,18 @@ class RegistrationController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld!');
+            $person = $personRegistry->find($registration->getPersonId());
+            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld!');
 
             $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/newregistration_by.html.twig', [
-                'person' => $this->getUser()->getPerson(),
+                'person' => $person,
                 'activity' => $registration->getActivity(),
                 'title' => $title,
                 'by' => $this->getUser()->getPerson(),
             ]);
 
-            $mailer->message($this->getUser()->getPerson(), $title, $body);
+            $mailer->message($person, $title, $body);
 
             return $this->redirectToRoute('organise_activity_show', ['id' => $activity->getId()]);
         }
@@ -87,7 +90,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/delete/{id}", name="delete", methods={"GET", "POST"})
      */
-    public function deleteAction(Request $request, Registration $registration, MailService $mailer)
+    public function deleteAction(Request $request, Registration $registration, MailService $mailer, PersonRegistry $personRegistry)
     {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
 
@@ -102,17 +105,18 @@ class RegistrationController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' afgemeld!');
+            $person = $personRegistry->find($registration->getPersonId());
+            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' afgemeld!');
 
             $title = 'Afmeldbericht '.$registration->getActivity()->getName();
             $body = $this->renderView('email/removedregistration_by.html.twig', [
-                'person' => $this->getUser()->getPerson(),
+                'person' => $person,
                 'activity' => $registration->getActivity(),
                 'title' => $title,
                 'by' => $this->getUser()->getPerson(),
             ]);
 
-            $mailer->message($this->getUser()->getPerson(), $title, $body);
+            $mailer->message($person, $title, $body);
 
             return $this->redirectToRoute('organise_activity_show', ['id' => $registration->getActivity()->getId()]);
         }
@@ -128,7 +132,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/reserve/new/{id}", name="reserve_new", methods={"GET", "POST"})
      */
-    public function reserveNewAction(Request $request, Activity $activity, MailService $mailer)
+    public function reserveNewAction(Request $request, Activity $activity, MailService $mailer, PersonRegistry $personRegistry)
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -155,7 +159,8 @@ class RegistrationController extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $this->addFlash('success', $registration->getPerson()->getCanonical().' aangemeld op de reservelijst!');
+            $person = $personRegistry->find($registration->getPersonId());
+            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld op de reservelijst!');
 
             return $this->redirectToRoute('organise_activity_show', ['id' => $activity->getId()]);
         }
@@ -172,7 +177,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/reserve/move/{id}/up", name="reserve_move_up", methods={"GET", "POST"})
      */
-    public function reserveMoveUpAction(Request $request, Registration $registration)
+    public function reserveMoveUpAction(Request $request, Registration $registration, PersonRegistry $personRegistry)
     {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
 
@@ -185,7 +190,8 @@ class RegistrationController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash('success', $registration->getPerson()->getCanonical().' naar boven verplaatst!');
+        $person = $personRegistry->find($registration->getPersonId());
+        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
 
         return $this->redirectToRoute('organise_activity_show', ['id' => $registration->getActivity()->getId()]);
     }
@@ -195,7 +201,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
      */
-    public function reserveMoveDownAction(Request $request, Registration $registration)
+    public function reserveMoveDownAction(Request $request, Registration $registration, PersonRegistry $personRegistry)
     {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
 
@@ -208,7 +214,8 @@ class RegistrationController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash('success', $registration->getPerson()->getCanonical().' naar beneden verplaatst!');
+        $person = $personRegistry->find($registration->getPersonId());
+        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
         return $this->redirectToRoute('organise_activity_show', ['id' => $registration->getActivity()->getId()]);
     }
