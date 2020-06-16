@@ -66,35 +66,14 @@ class BunnyDataProvider implements PersonProviderInterface
 
     public function findPerson(string $id): ?Person
     {
-        if (!is_null($this->cache)) {
-            foreach ($this->cache as $person) {
-                if ($person->getId() == $id) {
-                    return $person;
-                }
-            }
+        if (is_null($this->cache)) {
+            $this->findPersons();
         }
 
-        $request = $this->getRequest('GET', '/api/person/' . $id);
-
-        if (!is_null($request)) {
-            try {
-                $response = $this->provider->getParsedResponse($request);
-            } catch (\Exception $e) {
-                // refresh and retry
-                $this->userProvider->refreshUser($this->tokens->getToken()->getUser());
-
-                $request = $this->getRequest('GET', '/api/person/' . $id);
-                $response = $this->provider->getParsedResponse($request);
+        foreach ($this->cache as $person) {
+            if ($person->getId() == $id) {
+                return $person;
             }
-
-            $person = new Person();
-            $person
-                ->setId($response['id'])
-                ->setEmail($response['email'] ?? null)
-                ->setFields($response)
-            ;
-
-            return $person;
         }
 
         return null;
@@ -107,7 +86,15 @@ class BunnyDataProvider implements PersonProviderInterface
             $request = $this->getRequest('GET', '/api/person/');
 
             if (!is_null($request)) {
-                $response = $this->provider->getParsedResponse($request);
+                try {
+                    $response = $this->provider->getParsedResponse($request);
+                } catch (\Exception $e) {
+                    // refresh and retry
+                    $this->userProvider->refreshUser($this->tokens->getToken()->getUser());
+    
+                    $request = $this->getRequest('GET', '/api/person/');
+                    $response = $this->provider->getParsedResponse($request);
+                }
 
                 foreach ($response as $data) {
                     $person = new Person();
