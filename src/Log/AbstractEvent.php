@@ -6,7 +6,7 @@ class AbstractEvent
 {
     private $time;
 
-    private $auth;
+    private $person;
 
     private $entity;
 
@@ -23,13 +23,13 @@ class AbstractEvent
         return $this->time;
     }
 
-    public function getAuth()
+    public function getPersonId()
     {
         if (null === $this->time) {
             throw new \RuntimeException('Can only be called after the event has been retrieved from the database');
         }
 
-        return $this->auth;
+        return $this->person;
     }
 
     public function getEntity()

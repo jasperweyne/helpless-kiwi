@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Group\Group;
-use App\Entity\Person\Person;
+use App\Provider\Person\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -27,8 +27,8 @@ class GroupRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('g')
             ->join('g.relations', 'r', 'WITH', 'r.group = g.id')
-            ->andWhere('r.person = :person')
-            ->setParameter('person', $person)
+            ->andWhere('r.person_id = :person')
+            ->setParameter('person', $person->getId())
             ->getQuery()
             ->getResult()
         ;

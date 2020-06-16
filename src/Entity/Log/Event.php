@@ -2,7 +2,6 @@
 
 namespace App\Entity\Log;
 
-use App\Entity\Security\Auth;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -46,10 +45,9 @@ class Event
     private $objectType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\Auth")
-     * @ORM\JoinColumn(name="auth", referencedColumnName="person")
+     * @ORM\Column(type="guid", nullable=true)
      */
-    private $auth;
+    private $person_id;
 
     /**
      * @ORM\Column(type="text")
@@ -97,14 +95,14 @@ class Event
         return $this;
     }
 
-    public function getAuth(): ?Auth
+    public function getPersonId(): ?string
     {
-        return $this->auth;
+        return $this->person_id;
     }
 
-    public function setAuth(?Auth $auth): self
+    public function setPersonId(?string $person_id): self
     {
-        $this->auth = $auth;
+        $this->person_id = $person_id;
 
         return $this;
     }

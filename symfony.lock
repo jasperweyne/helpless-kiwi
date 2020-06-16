@@ -123,6 +123,9 @@
     "jms/metadata": {
         "version": "2.0.0"
     },
+    "lcobucci/jwt": {
+        "version": "3.3.1"
+    },
     "monolog/monolog": {
         "version": "1.24.0"
     },
@@ -167,6 +170,9 @@
         "files": [
             "./config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "steverhoades/oauth2-openid-connect-client": {
+        "version": "v0.2.1"
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.2.0"

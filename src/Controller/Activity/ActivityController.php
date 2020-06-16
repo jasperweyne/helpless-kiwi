@@ -111,7 +111,7 @@ class ActivityController extends AbstractController
                 if (null !== $option) {
                     $registrations = $em->getRepository(Registration::class)->findBy([
                         'activity' => $activity,
-                        'person' => $this->getUser()->getPerson(),
+                        'person_id' => $this->getUser()->getPerson()->getId(),
                         'deletedate' => null,
                     ]);
 
@@ -128,7 +128,7 @@ class ActivityController extends AbstractController
                     $now = new \DateTime('now');
                     $reg->setNewDate($now);
 
-                    $reg->setPerson($this->getUser()->getPerson());
+                    $reg->setPersonId($this->getUser()->getPerson()->getId());
 
                     $registrations = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'reserve_position' => null, 'deletedate' => null]);
                     $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($em->getRepository(Registration::class)->findReserve($activity)) > 0);
@@ -196,7 +196,7 @@ class ActivityController extends AbstractController
 
         $unregister = null;
         if (null !== $this->getUser()) {
-            $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person' => $this->getUser()->getPerson(), 'deletedate' => null]);
+            $registration = $em->getRepository(Registration::class)->findOneBy(['activity' => $activity, 'person_id' => $this->getUser()->getPerson()->getId(), 'deletedate' => null]);
 
             if (null !== $registration) {
                 $unregister = $this->singleUnregistrationForm($registration)->createView();

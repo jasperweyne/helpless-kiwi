@@ -8,14 +8,19 @@ parameters:
 
 security:
     encoders:
-        App\Entity\Security\Auth:
+        App\Entity\Security\LocalAccount:
             algorithm: auto
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
-            id: App\Security\AuthUserProvider
+            id: App\Security\OAuth2UserProvider
+        app_local_user_provider:
+            id: App\Security\LocalUserProvider
+        all_users:
+            chain:
+                providers: ['app_local_user_provider', 'app_user_provider']
             
     firewalls:
         dev:
@@ -23,16 +28,22 @@ security:
             security: false
         main:
             anonymous: true
+            provider: all_users
             guard:
+                entry_point: App\Security\OAuth2Authenticator
                 authenticators:
-                    - App\Security\LoginAuthenticator
+                    - App\Security\LocalAuthenticator
+                    - App\Security\OAuth2Authenticator
             logout:
                 path:   app_logout
+                handlers: [App\Security\OAuth2UserProvider]
+                success_handler: App\Security\OAuth2UserProvider
                 # where to redirect after logout
                 # target: app_any_route
             remember_me:
                 secret: '%kernel.secret%'
                 always_remember_me: true
+                name: KIWI_REMEMBERME
 
             # activate different ways to authenticate
 

@@ -3,7 +3,6 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Order;
-use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -28,9 +27,9 @@ class Registration
     private $option;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person")
+     * @ORM\Column(type="guid")
      */
-    private $person;
+    private $person_id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
@@ -91,14 +90,14 @@ class Registration
         return $this;
     }
 
-    public function getPerson(): ?Person
+    public function getPersonId(): ?string
     {
-        return $this->person;
+        return $this->person_id;
     }
 
-    public function setPerson(?Person $person): self
+    public function setPersonId(?string $person_id): self
     {
-        $this->person = $person;
+        $this->person_id = $person_id;
 
         return $this;
     }

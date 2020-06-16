@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Log\EventService;
 use App\Log\Doctrine\EntityUpdateEvent;
+use App\Provider\Person\PersonRegistry;
 
 /**
  * Group category controller.
@@ -174,7 +175,7 @@ class GroupController extends AbstractController
      *
      * @Route("/relation/new/{id}", name="relation_new", methods={"GET", "POST"})
      */
-    public function relationNewAction(Request $request, Group $group)
+    public function relationNewAction(Request $request, Group $group, PersonRegistry $persons)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -189,7 +190,8 @@ class GroupController extends AbstractController
             $em->persist($relation);
             $em->flush();
 
-            $this->addFlash('success', $relation->getPerson()->getCanonical().' toegevoegd!');
+            $name = $persons->find($relation->getPersonId())->getCanonical();
+            $this->addFlash('success', $name.' toegevoegd!');
 
             return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
         }

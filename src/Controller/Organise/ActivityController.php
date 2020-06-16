@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
 use App\Mail\MailService;
 
 /**
@@ -27,8 +28,8 @@ class ActivityController extends AbstractController
             throw $e;
         }
 
-        if (!$group->getRelations()->exists(function ($index, $a) use ($current) {
-            return $a->getPerson()->getId() === $current->getPerson()->getId();
+        if (!$group->getRelations()->exists(function ($index, Relation $a) use ($current) {
+            return $a->getPersonId() === $current->getPerson()->getId();
         })) {
             throw $e;
         }

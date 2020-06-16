@@ -3,23 +3,35 @@
 namespace App\Form\Group;
 
 use App\Entity\Group\Relation;
+use App\Provider\Person\Person;
+use App\Provider\Person\PersonRegistry;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class RelationType extends AbstractType
 {
+    private $personRegistry;
+
+    public function __construct(PersonRegistry $personRegistry)
+    {
+        $this->personRegistry = $personRegistry;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('person', EntityType::class, [
+            ->add('person_id', ChoiceType::class, [
                 'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
-                'class' => 'App\Entity\Person\Person',
-                'choice_label' => function ($ref) {
-                    return $ref->getCanonical();
-                },
+                'choice_loader' => new CallbackChoiceLoader(function () {
+                    $persons = [];
+                    foreach ($this->personRegistry->findAll() as $person) {
+                        $persons[$person->getCanonical()] = $person->getId();
+                    }
+                    return $persons;
+                }),
                 'required' => true,
             ])
         ;

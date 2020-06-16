@@ -2,7 +2,6 @@
 
 namespace App\Entity\Mail;
 
-use App\Entity\Person\Person;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,9 +17,9 @@ class Recipient
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person")
+     * @ORM\Column(type="guid")
      */
-    private $person;
+    private $person_id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Mail\Mail", inversedBy="recipients")
@@ -33,14 +32,14 @@ class Recipient
         return $this->id;
     }
 
-    public function getPerson(): ?Person
+    public function getPersonId(): ?string
     {
-        return $this->person;
+        return $this->person_id;
     }
 
-    public function setPerson(?Person $person): self
+    public function setPersonId(?string $person_id): self
     {
-        $this->person = $person;
+        $this->person_id = $person_id;
 
         return $this;
     }
