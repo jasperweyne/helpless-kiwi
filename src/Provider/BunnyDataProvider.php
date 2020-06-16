@@ -77,7 +77,15 @@ class BunnyDataProvider implements PersonProviderInterface
         $request = $this->getRequest('GET', '/api/person/' . $id);
 
         if (!is_null($request)) {
-            $response = $this->provider->getParsedResponse($request);
+            try {
+                $response = $this->provider->getParsedResponse($request);
+            } catch (\Exception $e) {
+                // refresh and retry
+                $this->userProvider->refreshUser($this->tokens->getToken()->getUser());
+
+                $request = $this->getRequest('GET', '/api/person/' . $id);
+                $response = $this->provider->getParsedResponse($request);
+            }
 
             $person = new Person();
             $person
