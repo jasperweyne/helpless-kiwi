@@ -40,7 +40,7 @@ class LocalAuthenticator extends AbstractFormLoginAuthenticator
 
     public function supports(Request $request)
     {
-        return 'app_login_old' === $request->attributes->get('_route')
+        return 'app_login' === $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
 
