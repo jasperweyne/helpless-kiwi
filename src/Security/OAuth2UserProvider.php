@@ -150,6 +150,9 @@ class OAuth2UserProvider implements UserProviderInterface, LogoutHandlerInterfac
 
     public function onLogoutSuccess(Request $request)
     {
-        return new RedirectResponse(($_ENV['SECURE_SCHEME'] ?? 'https') . '://' . $_ENV['BUNNY_ADDRESS'] . '/logout');
+        if (isset($_ENV['BUNNY_ADDRESS']))
+            return new RedirectResponse(($_ENV['SECURE_SCHEME'] ?? 'https') . '://' . $_ENV['BUNNY_ADDRESS'] . '/logout');
+        else
+            return new RedirectResponse('/');
     }
 }
