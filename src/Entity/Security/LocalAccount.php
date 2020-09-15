@@ -3,6 +3,7 @@
 namespace App\Entity\Security;
 
 use App\Provider\Person\Person;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
@@ -347,5 +348,10 @@ class LocalAccount implements UserInterface, EquatableInterface
         // not needed
 
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->roles = new ArrayCollection();
     }
 }

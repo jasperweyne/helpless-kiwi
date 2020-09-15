@@ -91,10 +91,10 @@ class SecurityController extends AbstractController implements MenuExtensionInte
 
             $mailer->message($account->getPerson(), 'Jouw account', $body);
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $account->getId()]);
+            return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
         }
 
-        return $this->render('admin/activity/new.html.twig', [
+        return $this->render('admin/security/new.html.twig', [
             'account' => $account,
             'form' => $form->createView(),
         ]);
@@ -168,7 +168,7 @@ class SecurityController extends AbstractController implements MenuExtensionInte
     /**
      * Displays a form to edit roles.
      *
-     * @Route("/{person}/roles", name="roles", methods={"GET", "POST"})
+     * @Route("/{id}/roles", name="roles", methods={"GET", "POST"})
      */
     public function rolesAction(Request $request, LocalAccount $account)
     {
@@ -217,7 +217,7 @@ class SecurityController extends AbstractController implements MenuExtensionInte
     private function createRoleForm(LocalAccount $account)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_security_roles', ['person' => $account->getPerson()->getId()]))
+            ->setAction($this->generateUrl('admin_security_roles', ['id' => $account->getId()]))
             ->add('admin', CheckboxType::class, [
                 'required' => false,
                 'attr' => in_array("ROLE_ADMIN", $account->getRoles()) ? ['checked' => 'checked'] : [],
