@@ -207,12 +207,17 @@ class ActivityController extends AbstractController
      */
     public function priceEditAction(Request $request, PriceOption $price)
     {
+        $activity = $price->getActivity();
         $originalPrice = $price->getPrice();
         $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
         $form->handleRequest($request);
 
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(Registration::class);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            if (count($price->getRegistrations()) > 0 && $originalPrice < $price->getPrice()) {
+			$regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
+            if (count($regs) > 0 && $originalPrice < $price->getPrice()) {
                 $this->addFlash('error', 'Prijs kan niet verhoogd worden als er al deelnemers geregistreerd zijn');
 
                 return $this->render('admin/activity/price/edit.html.twig', [
