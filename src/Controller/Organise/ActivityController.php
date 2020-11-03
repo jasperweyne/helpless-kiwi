@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
-use App\Mail\MailService;
 
 /**
  * Activity controller.

@@ -132,6 +132,9 @@
     "jms/metadata": {
         "version": "2.0.0"
     },
+    "jsvrcek/ics": {
+        "version": "0.4"
+    },
     "lcobucci/jwt": {
         "version": "3.3.1"
     },
@@ -146,6 +149,9 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "php": {
+        "version": "7.4"
     },
     "php-cs-fixer/diff": {
         "version": "v1.3.0"
@@ -599,6 +605,9 @@
     },
     "webmozart/assert": {
         "version": "1.4.0"
+    },
+    "welp/ical-bundle": {
+        "version": "1.0.1"
     },
     "zendframework/zend-code": {
         "version": "3.3.1"
