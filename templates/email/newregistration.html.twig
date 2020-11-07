@@ -1,17 +1,18 @@
+
 <h2>{{ title }}</h2>
 <p>Hallo {{ person.shortname ?? person.name ?? '' }},<br />
-{% if by.canonical %}
+{% if by.canonical|default('') %}
 	Je bent aangemeld voor {{ activity.name }}
 {% else %}
 	Je hebt je aangemeld voor {{ activity.name }}
 {% endif %}, wat leuk!<br />
 Je wordt verwacht op {{ activity.start|date('d-m-Y') }} om {{ activity.start|date('H:i') }} bij {{ activity.location.address }}.<br />
-{% if activity.start|date(d-m-Y) == activity.end|date(d-m-Y) %}
+{% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
 	De activiteit duurt ongeveer tot {{ activity.end|date('H:i') }}.
 {% else %}
 	De activiteit zal eindigen op {{ activity.end|date('d-m-Y') }} rond {{ activity.end|date('H:i') }}
 {% endif %}
-{% if by.canonical %}
+{% if by.canonical|default('') %}
 	Je bent aangemeld door {{ by.canonical }}. Klopt dit niet? Neem dan contact met deze persoon op.<br />
 {% endif %}
 Afmelden is mogelijk tot {{ activity.deadline|date('d-m-Y') }}.<br />
