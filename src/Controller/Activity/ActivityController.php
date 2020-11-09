@@ -161,12 +161,7 @@ class ActivityController extends AbstractController
                     } else {
                         $this->addFlash('success', 'Aanmelding gelukt!');
                         $title = 'Aanmeldbevestiging '.$activity->getName();
-                        $ical = $iCalProvider->SingleEventIcal(
-                            $this->getUser()->getPerson(),
-                            $activity->getDescription(),
-                            $activity->getStart(),
-                            $activity->getEnd()
-                        );
+                        $ical = $iCalProvider->SingleEventIcal($activity);
                         $ics = new Swift_Attachment(
                             $ical->export(),
                             $activity->getName().'.ics',
