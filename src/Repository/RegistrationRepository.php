@@ -6,7 +6,7 @@ use App\Entity\Order;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Registration|null find($id, $lockMode = null, $lockVersion = null)
@@ -38,7 +38,7 @@ class RegistrationRepository extends ServiceEntityRepository
         return self::$max;
     }
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Registration::class);
     }

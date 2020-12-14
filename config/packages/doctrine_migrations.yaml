@@ -1,14 +1,5 @@
 doctrine_migrations:
-    dir_name: '%kernel.project_dir%/src/Migrations'
-    # namespace is arbitrary but should be different from App\Migrations
-    # as migrations classes should NOT be autoloaded
-
-    name: "Kiwi Migrations"
-    namespace: "Kiwi\\Migrations"
-    table_name: "doctrine_migration_versions"
-    column_name: "version"
-    column_length: 14
-    executed_at_column_name: "executed_at"
-    all_or_nothing: true
-
-    
+    migrations_paths:
+        # namespace is arbitrary but should be different from App\Migrations
+        # as migrations classes should NOT be autoloaded
+        'Kiwi\\Migrations': '%kernel.project_dir%/src/migrations'
