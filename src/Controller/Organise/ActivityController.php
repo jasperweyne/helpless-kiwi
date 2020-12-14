@@ -83,12 +83,14 @@ class ActivityController extends AbstractController
         $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $deregs = $repository->findDeregistrations($activity);
         $reserve = $repository->findReserve($activity);
+        $present = $repository->countPresent($activity);
 
         return $this->render('organise/activity/show.html.twig', [
             'activity' => $activity,
             'registrations' => $regs,
             'deregistrations' => $deregs,
             'reserve' => $reserve,
+            'present' => $present
         ]);
     }
 
@@ -230,6 +232,83 @@ class ActivityController extends AbstractController
 
         return $this->render('organise/activity/price/edit.html.twig', [
             'option' => $price,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    
+    /**
+     * Creates a form to set participent presence
+     * 
+     * @Route("/{id}/presence", name="presence")
+     */
+
+    public function presenceEditAction(Request $request, Activity $activity)
+    {
+        $this->blockUnauthorisedUsers($activity->getAuthor());
+
+        $form = $this->createForm('App\Form\Activity\ActivityEditPrecense', $activity);
+        $form->handleRequest($request);
+    
+        $em = $this->getDoctrine()->getManager();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Aanwezigheid aangepast');
+        }
+
+        return $this->render('organise/activity/presence.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView()
+            ]);
+    }
+
+            /**
+     * Creates a form to set amount participent present
+     * 
+     * @Route("/{id}/setamountpresence", name="amount_present", methods={"GET", "POST"})
+     */
+
+    public function setAmountPresent(Request $request, Activity $activity)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount',$activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Aanwezigen genoteerd!');
+            return $this->redirectToRoute('organise_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('organise/activity/amountpresent.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+     /**
+     * Creates a form to reset amount participent present
+     * 
+     * @Route("/{id}/resetamountpresence", name="reset_amount_present")
+     */
+
+    public function resetAmountPresent(Request $request, Activity $activity)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm('App\Form\Activity\ActivityCountPresent',$activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $activity->setPresent(null);
+            $em->flush();
+            $this->addFlash('success', 'Aanwezigen geteld!');
+            return $this->redirectToRoute('organise_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('organise/activity/presentcount.html.twig', [
+            'activity' => $activity,
             'form' => $form->createView(),
         ]);
     }
