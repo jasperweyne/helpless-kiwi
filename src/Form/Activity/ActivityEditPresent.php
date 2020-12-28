@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Activity\Activity;
-use App\Form\Activity\PrecenseType;
+use App\Form\Activity\PresentType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +22,7 @@ class ActivityEditPresent extends AbstractType
 
         $builder
             ->add('registrations', CollectionType::class, [
-                'entry_type' => PrecenseType::class,
+                'entry_type' => PresentType::class,
                 'label' => false,
             ])
         ;

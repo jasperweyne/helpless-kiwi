@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
-class PrecenseType extends AbstractType
+class PresentType extends AbstractType
 {
     protected $personRegistry;
 

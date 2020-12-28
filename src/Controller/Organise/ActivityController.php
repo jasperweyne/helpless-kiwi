@@ -243,11 +243,11 @@ class ActivityController extends AbstractController
      * @Route("/{id}/presence", name="presence")
      */
 
-    public function presenceEditAction(Request $request, Activity $activity)
+    public function presentEditAction(Request $request, Activity $activity)
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
-        $form = $this->createForm('App\Form\Activity\ActivityEditPrecense', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);
     
         $em = $this->getDoctrine()->getManager();
@@ -256,7 +256,7 @@ class ActivityController extends AbstractController
             $this->addFlash('success', 'Aanwezigheid aangepast');
         }
 
-        return $this->render('organise/activity/presence.html.twig', [
+        return $this->render('organise/activity/present.html.twig', [
             'activity' => $activity,
             'form' => $form->createView()
             ]);

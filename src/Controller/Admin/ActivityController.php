@@ -248,7 +248,7 @@ class ActivityController extends AbstractController
 
     public function presentEditAction(Request $request, Activity $activity)
     {
-        $form = $this->createForm('App\Form\Activity\ActivityEditPrecense', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);
     
         $em = $this->getDoctrine()->getManager();
@@ -267,7 +267,7 @@ class ActivityController extends AbstractController
             /**
      * Creates a form to set amount participent present
      * 
-     * @Route("/{id}/setamountpresence", name="amount_present", methods={"GET", "POST"})
+     * @Route("/{id}/setamountpresent", name="amount_present", methods={"GET", "POST"})
      */
 
     public function setAmountPresent(Request $request, Activity $activity)
@@ -292,7 +292,7 @@ class ActivityController extends AbstractController
      /**
      * Creates a form to reset amount participent present
      * 
-     * @Route("/{id}/resetamountpresence", name="reset_amount_present")
+     * @Route("/{id}/resetamountpresent", name="reset_amount_present")
      */
 
     public function resetAmountPresent(Request $request, Activity $activity)
