@@ -112,6 +112,10 @@ class Activity
     private $capacity;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $present;
+    /**
      * Get id.
      *
      * @return string
@@ -436,5 +440,14 @@ class Activity
         $this->capacity = $capacity;
 
         return $this;
+    }
+
+    public function getPresent(){
+        return $this->present;
+    }
+
+    public function setPresent(?int $present)
+    {
+        $this->present = $present;
     }
 }

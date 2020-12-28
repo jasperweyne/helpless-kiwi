@@ -186,6 +186,22 @@ class RegistrationRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return int Returns an integer
+     */
+    public function countPresent(Activity $activity)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p.id)')
+            ->andWhere('p.deletedate IS NULL')
+            ->andWhere('p.activity = :activity')
+            ->andWhere('p.present = TRUE')
+            ->setParameter('activity', $activity)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     // /**
     //  * @return Registration[] Returns an array of Registration objects
     //  */

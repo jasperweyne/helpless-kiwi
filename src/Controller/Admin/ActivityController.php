@@ -13,6 +13,7 @@ use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Entity\Activity\PriceOption;
 use App\Mail\MailService;
+use App\Repository\ActivityRepository;
 
 /**
  * Activity controller.
@@ -89,6 +90,7 @@ class ActivityController extends AbstractController
         $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $deregs = $repository->findDeregistrations($activity);
         $reserve = $repository->findReserve($activity);
+        $present = $repository->countPresent($activity);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,
@@ -97,6 +99,7 @@ class ActivityController extends AbstractController
             'registrations' => $regs,
             'deregistrations' => $deregs,
             'reserve' => $reserve,
+            'present' => $present
         ]);
     }
 
@@ -207,12 +210,17 @@ class ActivityController extends AbstractController
      */
     public function priceEditAction(Request $request, PriceOption $price)
     {
+        $activity = $price->getActivity();
         $originalPrice = $price->getPrice();
         $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
         $form->handleRequest($request);
 
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(Registration::class);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            if (count($price->getRegistrations()) > 0 && $originalPrice < $price->getPrice()) {
+			$regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
+            if (count($regs) > 0 && $originalPrice < $price->getPrice()) {
                 $this->addFlash('error', 'Prijs kan niet verhoogd worden als er al deelnemers geregistreerd zijn');
 
                 return $this->render('admin/activity/price/edit.html.twig', [
@@ -228,6 +236,81 @@ class ActivityController extends AbstractController
 
         return $this->render('admin/activity/price/edit.html.twig', [
             'option' => $price,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Creates a form to set participent presence
+     * 
+     * @Route("/{id}/present", name="present")
+     */
+
+    public function presentEditAction(Request $request, Activity $activity)
+    {
+        $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
+        $form->handleRequest($request);
+    
+        $em = $this->getDoctrine()->getManager();
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Aanwezigheid aangepast');
+        }
+
+        return $this->render('admin/activity/present.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView()
+            ]);
+    }
+
+            /**
+     * Creates a form to set amount participent present
+     * 
+     * @Route("/{id}/setamountpresent", name="amount_present", methods={"GET", "POST"})
+     */
+
+    public function setAmountPresent(Request $request, Activity $activity)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount',$activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Aanwezigen genoteerd!');
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/amountpresent.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+     /**
+     * Creates a form to reset amount participent present
+     * 
+     * @Route("/{id}/resetamountpresent", name="reset_amount_present")
+     */
+
+    public function resetAmountPresent(Request $request, Activity $activity)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm('App\Form\Activity\ActivityCountPresent',$activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $activity->setPresent(null);
+            $em->flush();
+            $this->addFlash('success', 'Aanwezigen geteld!');
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/presentcount.html.twig', [
+            'activity' => $activity,
             'form' => $form->createView(),
         ]);
     }

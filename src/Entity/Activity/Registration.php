@@ -56,6 +56,11 @@ class Registration
      */
     private $deletedate;
 
+    /** 
+     * @ORM\Column(name="present", type="boolean", nullable=true)
+    */
+    private $present;
+
     /**
      * Get id.
      *
@@ -163,5 +168,14 @@ class Registration
         $this->deletedate = $date;
 
         return $this;
+    }
+
+    public function getPresent()
+    {
+        return $this->present;
+    }
+
+    public function setPresent($present){
+        $this->present = $present; 
     }
 }
