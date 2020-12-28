@@ -11,6 +11,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
     
     strategy:
       matrix:
@@ -20,6 +21,11 @@ jobs:
     - uses: actions/checkout@v2
       with:
         path: 'kiwi'
+      
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
       
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
