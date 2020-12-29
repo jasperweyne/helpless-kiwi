@@ -10,7 +10,11 @@ additions by opening an issue.
 ## Index
 
 * [Introduction](#introduction)
+* [Issues and bugs](#issues-and-bugs)
+* [Feature requests](#feature-requests)
 * [Pull requests](#pull-requests)
+* [Commits](#commits)
+* [Writing tests](#writing-tests)
 * [Directory structure](#directory-structure)
 
 ## Introduction
@@ -22,13 +26,51 @@ Please note that this project is licensed under the Apache license version 2.0.
 Therefore, your contributions shall be under the Apache license version 2.0
 unless explicitly stated otherwise. For more information, refer to the [license](LICENSE).
 
+## Issues and bugs
+
+Bugs reports are always welcome! They may be filed through our issue tracker.
+
+Issues in the issue tracker should consist of a human-readable, descriptive
+title of the problem. Ideally, the title should serve as a reminder of the bug
+description when a project maintainer has read the issue before. Generally
+speaking, titles should only contain alphanumerical characters.
+
+Issue descriptions should follow their respective template, these are inserted
+automatically when opening a new issue. 
+
+## Feature requests
+
+Feature requests may be submitted in the form of an issue as well, please read
+the [issue guidelines](#issues-and-bugs). Feature requests that motivate how
+their addition would be valuable to all users of Kiwi will receive priority of
+the team. Generally speaking, all feature requests should have some form of
+applicability to the majority of users and will likely be rejected otherwise.
+This is to make sure the project is kept maintainable. Please note that for
+these reasons, a design reconsideration of a (new) featured is preferred over
+hiding it behind a config option.
+
+Since this is free and open source software, this project may be used freely and
+without any expectation of contribution from you, the user. However, the time
+available for the maintenance and development of the project is limited.
+Therefore, even if a potential feature would be universally deemed highly
+valuable, an implementation by the team should not be expected. Ideally, your
+feature request should be accompanied by the commitment to implement a pull
+request it yourself when it's accepted, if you're able to.
+
 ## Pull requests
 
-Thank you for your efforts in developing Kiwi, they're valued immensely. Before
+Thank you for your efforts in developing Kiwi, they're valued immensely. Kiwi
+welcomes pull requests to add tests, fix bugs and to implement features. Before
 starting a pull request, always make sure it's related to an issue that is
 linked to an open project. This way, the team has agreed with the intent of your
 PR, before work on actual code has been started, which reduces the chances your
 pull request will be rejected.
+
+To begin working on a pull request, fork the repository and develop your PR,
+while keeping the guidelines below in mind. The core team members are added as
+collaborators to the main repository, but PRs coming from any source will
+receive the attention of the team. Repository access is therefore not necessary
+and should not be asked for.
 
 Kiwi is collaborative project, developed by different people with different
 opinions. To stimulate a healthy environment for collaboration, some basic rules
@@ -39,12 +81,9 @@ should guide your decisions:
 * Prevent some of the 'Oops' moments.
 * Increase the general level of good will on planet Earth.
 
-This project has been written using the Symfony framework. In general, it's
-recommended to follow their [best practices](https://symfony.com/doc/current/best_practices.html).
-
 Kiwi uses a rolling release cycle, to simplify the development process.
 Therefore, all new pull requests must be created from the develop branch. Please
-make sure  your local git repository is up-to-date before creating a fork or new
+make sure your local git repository is up-to-date before creating a fork or new
 branch, as this reduces the chance of merge conflicts later on. Currently, the
 following branches are in use:
 
@@ -59,12 +98,18 @@ all tests pass. These hooks are located in the .hooks directory. When running
 `composer install`, they auto-install. However, you can activate them by running
 `git config --local core.hooksPath .hooks` as well.
 
+## Commits
+
+This project has been written using the Symfony framework. In general, it's
+recommended to follow their [best practices](https://symfony.com/doc/current/best_practices.html).
+
 We follow the PSR-12 code style, please [review](https://www.php-fig.org/psr/psr-12/)
 these before starting a PR. Note that the git hooks run the code style fixer,
 which should catch some (but not all!) issues before performing a commit.
 Please note that when a pull request contains code style fixes without
 functional modifications on (parts of) the codebase, these pull requests shall
-be rejected.
+be rejected. Fixes are done by the core team when appropriate to avoid causing
+too many unnecessary conflicts between branches and pull requests.
 
 Lastly, consider the next few rules when committing files:
 
@@ -77,6 +122,33 @@ Lastly, consider the next few rules when committing files:
    know what was modified. Definitely include the function name in the message
    as shown below.
    
+The format of the commit message is simple:
+
+    <approx. 50 characters title>\n
+    \n
+    <description, multiple lines>
+    \n
+
+All lines in a commit message should have a maximum line length of 72 characters
+(unless citing text, e.g. a stack trace). Please refer to issue IDs in your
+commit messages when applicable, particularly when fixing bugs. Issue IDs should
+be prefixed by `#`. An example:
+
+    Fixed duplicate registrations for activities (#157)
+    
+    When registering a participant as and admin or organiser, there was no
+    check if this person was registered already. I've added this check in
+    the (..) and (..) files. The registration will now be refused and a
+    warning will be generated, informing the organiser.
+
+## Writing tests
+
+We love tests! Kiwi is a big project, and code coverage improvements help the
+stability and maintainability of the project. Please refer to the
+[Symfony Testing documentation](https://symfony.com/doc/current/testing.html)
+for more information and guidance on how to write your tests. When contributing
+tests, make sure that your tests are comprehensive.
+
 ## Directory structure
 
 Helpless Kiwi consists of multiple folders, each with a prior intended use. When

@@ -19,8 +19,13 @@ track of inventory and more. It has been written using the Symfony/Doctrine fram
  - SCSS
  - Phpunit
 
+## Contributing
+Contributions to the project are most welcome! There are multiple ways you can
+support the project. Please review them, as well as our guidelines, in
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## How to install/deploy
-Please refer to the INSTALL.md file.
+Please refer to the [INSTALL.md](INSTALL.md) file.
 
 ## Commands to remember!
 
