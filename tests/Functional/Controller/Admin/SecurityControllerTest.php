@@ -29,6 +29,7 @@ class SecurityControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        self::bootKernel();
 
         $this->events = self::$container->get(EventService::class);
         $this->securityController = new SecurityController($this->events);

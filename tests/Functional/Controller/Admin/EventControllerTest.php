@@ -29,6 +29,7 @@ class EventControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        self::bootKernel();
 
         $this->events = self::$container->get(EventService::class);
         $this->eventController = new EventController($this->events);

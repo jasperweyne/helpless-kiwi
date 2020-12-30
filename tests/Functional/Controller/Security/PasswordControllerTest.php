@@ -35,6 +35,7 @@ class PasswordControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        self::bootKernel();
 
         $this->passwordEncoder = self::$container->get(UserPasswordEncoderInterface::class);
         $this->passwordReset = self::$container->get(PasswordResetService::class);

@@ -29,6 +29,7 @@ class GroupControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        self::bootKernel();
 
         $this->events = self::$container->get(EventService::class);
         $this->groupController = new GroupController($this->events);
