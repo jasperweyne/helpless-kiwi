@@ -3,6 +3,7 @@
 namespace Tests\Unit\Log;
 
 use App\Log\AbstractEvent;
+use DateTime;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -26,7 +27,7 @@ class AbstractEventTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->abstractEvent = new AbstractEvent();
     }
 
@@ -42,7 +43,7 @@ class AbstractEventTest extends KernelTestCase
 
     public function testGetTime(): void
     {
-        $expected = null;
+        $expected = new DateTime();
         $property = (new ReflectionClass(AbstractEvent::class))
             ->getProperty('time');
         $property->setAccessible(true);
@@ -52,13 +53,13 @@ class AbstractEventTest extends KernelTestCase
 
     public function testGetPersonId(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetEntity(): void
     {
-        $expected = null;
+        $expected = new DateTime();
         $property = (new ReflectionClass(AbstractEvent::class))
             ->getProperty('entity');
         $property->setAccessible(true);
@@ -68,7 +69,7 @@ class AbstractEventTest extends KernelTestCase
 
     public function testSetEntity(): void
     {
-        $expected = null;
+        $expected = new \stdClass();
         $property = (new ReflectionClass(AbstractEvent::class))
             ->getProperty('entity');
         $property->setAccessible(true);
@@ -78,7 +79,7 @@ class AbstractEventTest extends KernelTestCase
 
     public function testGetEntityType(): void
     {
-        $expected = null;
+        $expected = new \stdClass();
         $property = (new ReflectionClass(AbstractEvent::class))
             ->getProperty('entityType');
         $property->setAccessible(true);
@@ -98,7 +99,7 @@ class AbstractEventTest extends KernelTestCase
 
     public function testGetTitle(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

@@ -36,8 +36,8 @@ class EntityNewEventTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->entity = null;
-        $this->fields = null;
+        $this->entity = new \stdClass();
+        $this->fields = new \stdClass();
         $this->entityNewEvent = new EntityNewEvent($this->entity, $this->fields);
     }
 
@@ -55,7 +55,7 @@ class EntityNewEventTest extends KernelTestCase
 
     public function testGetFields(): void
     {
-        $expected = null;
+        $expected = [];
         $property = (new ReflectionClass(EntityNewEvent::class))
             ->getProperty('fields');
         $property->setAccessible(true);
@@ -65,7 +65,7 @@ class EntityNewEventTest extends KernelTestCase
 
     public function testGetTitle(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

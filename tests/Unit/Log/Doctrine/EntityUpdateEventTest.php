@@ -41,9 +41,9 @@ class EntityUpdateEventTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->entity = null;
-        $this->oldObject = null;
-        $this->newValues = null;
+        $this->entity = new \stdClass();
+        $this->oldObject = [];
+        $this->newValues = [];
         $this->entityUpdateEvent = new EntityUpdateEvent($this->entity, $this->oldObject, $this->newValues);
     }
 
@@ -62,7 +62,7 @@ class EntityUpdateEventTest extends KernelTestCase
 
     public function testGetOld(): void
     {
-        $expected = null;
+        $expected = [];
         $property = (new ReflectionClass(EntityUpdateEvent::class))
             ->getProperty('old');
         $property->setAccessible(true);
@@ -72,7 +72,7 @@ class EntityUpdateEventTest extends KernelTestCase
 
     public function testGetNew(): void
     {
-        $expected = null;
+        $expected = [];
         $property = (new ReflectionClass(EntityUpdateEvent::class))
             ->getProperty('new');
         $property->setAccessible(true);
@@ -82,19 +82,19 @@ class EntityUpdateEventTest extends KernelTestCase
 
     public function testGetOldChanged(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetNewChanged(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetTitle(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }
