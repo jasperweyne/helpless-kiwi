@@ -15,8 +15,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        path: 'kiwi'
       
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
