@@ -3,7 +3,7 @@
 namespace Tests\Unit\Entity\Log;
 
 use App\Entity\Log\Event;
-use DateTimeInterface;
+use DateTime;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -73,7 +73,7 @@ class EventTest extends KernelTestCase
 
     public function testGetTime(): void
     {
-        $expected = self::$container->get(DateTimeInterface::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Event::class))
             ->getProperty('time');
         $property->setAccessible(true);
@@ -83,7 +83,7 @@ class EventTest extends KernelTestCase
 
     public function testSetTime(): void
     {
-        $expected = self::$container->get(DateTimeInterface::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Event::class))
             ->getProperty('time');
         $property->setAccessible(true);

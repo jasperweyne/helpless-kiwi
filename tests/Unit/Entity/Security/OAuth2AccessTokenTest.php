@@ -64,21 +64,23 @@ class OAuth2AccessTokenTest extends KernelTestCase
 
     public function testGetAccessToken(): void
     {
-        $expected = self::$container->get(AccessToken::class);
+        $values = '{"access_token":"token"}';
+        $expected = new AccessToken(json_decode($values, true));
         $property = (new ReflectionClass(OAuth2AccessToken::class))
             ->getProperty('accessToken');
         $property->setAccessible(true);
-        $property->setValue($this->oAuth2AccessToken, $expected);
-        $this->assertSame($expected, $this->oAuth2AccessToken->getAccessToken());
+        $property->setValue($this->oAuth2AccessToken, $values);
+        $this->assertEquals($expected, $this->oAuth2AccessToken->getAccessToken());
     }
 
     public function testSetAccessToken(): void
     {
-        $expected = self::$container->get(AccessTokenInterface::class);
+        $expected = '{"access_token":"token"}';
+        $value = new AccessToken(json_decode($expected, true));
         $property = (new ReflectionClass(OAuth2AccessToken::class))
             ->getProperty('accessToken');
         $property->setAccessible(true);
-        $this->oAuth2AccessToken->setAccessToken($expected);
+        $this->oAuth2AccessToken->setAccessToken($value);
         $this->assertSame($expected, $property->getValue($this->oAuth2AccessToken));
     }
 }

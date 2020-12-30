@@ -3,7 +3,7 @@
 namespace Tests\Unit\Entity\Mail;
 
 use App\Entity\Mail\Mail;
-use DateTimeInterface;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -148,7 +148,7 @@ class MailTest extends KernelTestCase
 
     public function testGetSentAt(): void
     {
-        $expected = self::$container->get(DateTimeInterface::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Mail::class))
             ->getProperty('sentAt');
         $property->setAccessible(true);
@@ -158,7 +158,7 @@ class MailTest extends KernelTestCase
 
     public function testSetSentAt(): void
     {
-        $expected = self::$container->get(DateTimeInterface::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Mail::class))
             ->getProperty('sentAt');
         $property->setAccessible(true);

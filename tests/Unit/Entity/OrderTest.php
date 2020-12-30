@@ -26,7 +26,7 @@ class OrderTest extends KernelTestCase
         self::bootKernel();
 
         /** @todo Correctly instantiate tested object to use it. */
-        $this->order = new Order();
+        $this->order = Order::create("test");
     }
 
     /**

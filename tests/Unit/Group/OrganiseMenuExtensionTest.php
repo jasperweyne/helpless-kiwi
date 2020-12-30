@@ -57,7 +57,7 @@ class OrganiseMenuExtensionTest extends KernelTestCase
 
     public function testGetMenuItems(): void
     {
-        $expected = null;
+        $expected = [];
         $property = (new ReflectionClass(OrganiseMenuExtension::class))
             ->getProperty('menuItems');
         $property->setAccessible(true);

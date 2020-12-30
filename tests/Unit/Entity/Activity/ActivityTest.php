@@ -211,7 +211,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetStart(): void
     {
-        $expected = self::$container->get(DateTime::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('start');
         $property->setAccessible(true);
@@ -221,7 +221,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetStart(): void
     {
-        $expected = self::$container->get(DateTime::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('start');
         $property->setAccessible(true);
@@ -231,7 +231,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetEnd(): void
     {
-        $expected = self::$container->get(DateTime::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('end');
         $property->setAccessible(true);
@@ -241,7 +241,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetEnd(): void
     {
-        $expected = self::$container->get(DateTime::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('end');
         $property->setAccessible(true);
@@ -251,7 +251,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetDeadline(): void
     {
-        $expected = self::$container->get(DateTime::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('deadline');
         $property->setAccessible(true);
@@ -261,7 +261,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetDeadline(): void
     {
-        $expected = self::$container->get(DateTime::class);
+        $expected = new DateTime();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('deadline');
         $property->setAccessible(true);

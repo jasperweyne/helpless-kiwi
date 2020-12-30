@@ -49,7 +49,7 @@ class GroupMenuExtensionTest extends KernelTestCase
 
     public function testGetMenuItems(): void
     {
-        $expected = null;
+        $expected = [];
         $property = (new ReflectionClass(GroupMenuExtension::class))
             ->getProperty('menuItems');
         $property->setAccessible(true);

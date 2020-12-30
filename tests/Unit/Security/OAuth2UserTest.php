@@ -69,7 +69,7 @@ class OAuth2UserTest extends KernelTestCase
 
     public function testGetRoles(): void
     {
-        $expected = [];
+        $expected = ['ROLE_USER'];
         $property = (new ReflectionClass(OAuth2User::class))
             ->getProperty('roles');
         $property->setAccessible(true);
@@ -89,7 +89,7 @@ class OAuth2UserTest extends KernelTestCase
 
     public function testGetPerson(): void
     {
-        $expected = self::$container->get(Person::class);
+        $expected = new Person();
         $property = (new ReflectionClass(OAuth2User::class))
             ->getProperty('person');
         $property->setAccessible(true);
@@ -99,7 +99,7 @@ class OAuth2UserTest extends KernelTestCase
 
     public function testSetPerson(): void
     {
-        $expected = self::$container->get(Person::class);
+        $expected = new Person();
         $property = (new ReflectionClass(OAuth2User::class))
             ->getProperty('person');
         $property->setAccessible(true);
