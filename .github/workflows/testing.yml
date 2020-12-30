@@ -22,7 +22,7 @@ jobs:
         php-version: '7.4'
       
     - name: Install dependencies
-      run: composer install --prefer-dist --optimize-autoloader
+      run: composer install --prefer-dist --no-progress --optimize-autoloader
       env:
         APP_ENV: test
   
