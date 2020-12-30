@@ -6,7 +6,6 @@ use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
-use Relation as RelationAlias;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -74,7 +73,7 @@ class RelationTest extends KernelTestCase
 
     public function testGetGroup(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Relation::class))
             ->getProperty('group');
         $property->setAccessible(true);
@@ -84,7 +83,7 @@ class RelationTest extends KernelTestCase
 
     public function testSetGroup(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Relation::class))
             ->getProperty('group');
         $property->setAccessible(true);
@@ -106,7 +105,7 @@ class RelationTest extends KernelTestCase
 
     public function testGetParent(): void
     {
-        $expected = self::$container->get(RelationAlias::class);
+        $expected = new Relation();
         $property = (new ReflectionClass(Relation::class))
             ->getProperty('parent');
         $property->setAccessible(true);
@@ -116,7 +115,7 @@ class RelationTest extends KernelTestCase
 
     public function testSetParent(): void
     {
-        $expected = self::$container->get(RelationAlias::class);
+        $expected = new Relation();
         $property = (new ReflectionClass(Relation::class))
             ->getProperty('parent');
         $property->setAccessible(true);

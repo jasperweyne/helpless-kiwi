@@ -4,7 +4,6 @@ namespace Tests\Unit\Entity\Group;
 
 use App\Entity\Group\Group;
 use Doctrine\Common\Collections\ArrayCollection;
-use Group as GroupAlias;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -103,7 +102,7 @@ class GroupTest extends KernelTestCase
 
     public function testGetParent(): void
     {
-        $expected = self::$container->get(GroupAlias::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Group::class))
             ->getProperty('parent');
         $property->setAccessible(true);
@@ -113,7 +112,7 @@ class GroupTest extends KernelTestCase
 
     public function testSetParent(): void
     {
-        $expected = self::$container->get(GroupAlias::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Group::class))
             ->getProperty('parent');
         $property->setAccessible(true);

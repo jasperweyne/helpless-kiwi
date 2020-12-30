@@ -84,7 +84,7 @@ class PriceOptionTest extends KernelTestCase
 
     public function testGetTarget(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(PriceOption::class))
             ->getProperty('target');
         $property->setAccessible(true);
@@ -94,7 +94,7 @@ class PriceOptionTest extends KernelTestCase
 
     public function testSetTarget(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(PriceOption::class))
             ->getProperty('target');
         $property->setAccessible(true);
@@ -164,7 +164,7 @@ class PriceOptionTest extends KernelTestCase
 
     public function testGetActivity(): void
     {
-        $expected = self::$container->get(Activity::class);
+        $expected = new Activity();
         $property = (new ReflectionClass(PriceOption::class))
             ->getProperty('activity');
         $property->setAccessible(true);
@@ -174,7 +174,7 @@ class PriceOptionTest extends KernelTestCase
 
     public function testSetActivity(): void
     {
-        $expected = self::$container->get(Activity::class);
+        $expected = new Activity();
         $property = (new ReflectionClass(PriceOption::class))
             ->getProperty('activity');
         $property->setAccessible(true);

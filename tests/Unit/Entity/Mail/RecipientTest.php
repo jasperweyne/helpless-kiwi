@@ -65,7 +65,7 @@ class RecipientTest extends KernelTestCase
 
     public function testGetMail(): void
     {
-        $expected = self::$container->get(Mail::class);
+        $expected = new Mail();
         $property = (new ReflectionClass(Recipient::class))
             ->getProperty('mail');
         $property->setAccessible(true);
@@ -75,7 +75,7 @@ class RecipientTest extends KernelTestCase
 
     public function testSetMail(): void
     {
-        $expected = self::$container->get(Mail::class);
+        $expected = new Mail();
         $property = (new ReflectionClass(Recipient::class))
             ->getProperty('mail');
         $property->setAccessible(true);

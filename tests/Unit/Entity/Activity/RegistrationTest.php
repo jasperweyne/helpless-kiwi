@@ -64,7 +64,7 @@ class RegistrationTest extends KernelTestCase
 
     public function testGetOption(): void
     {
-        $expected = self::$container->get(PriceOption::class);
+        $expected = new PriceOption();
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('option');
         $property->setAccessible(true);
@@ -74,7 +74,7 @@ class RegistrationTest extends KernelTestCase
 
     public function testSetOption(): void
     {
-        $expected = self::$container->get(PriceOption::class);
+        $expected = new PriceOption();
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('option');
         $property->setAccessible(true);
@@ -96,7 +96,7 @@ class RegistrationTest extends KernelTestCase
 
     public function testGetActivity(): void
     {
-        $expected = self::$container->get(Activity::class);
+        $expected = new Activity();
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('activity');
         $property->setAccessible(true);
@@ -106,7 +106,7 @@ class RegistrationTest extends KernelTestCase
 
     public function testSetActivity(): void
     {
-        $expected = self::$container->get(Activity::class);
+        $expected = new Activity();
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('activity');
         $property->setAccessible(true);

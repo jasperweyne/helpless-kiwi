@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Vich\UploaderBundle\Entity\File as FileAlias;
+use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 
 /**
  * Class ActivityTest.
@@ -151,7 +151,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetAuthor(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('author');
         $property->setAccessible(true);
@@ -161,7 +161,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetAuthor(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('author');
         $property->setAccessible(true);
@@ -171,7 +171,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetTarget(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('target');
         $property->setAccessible(true);
@@ -181,7 +181,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetTarget(): void
     {
-        $expected = self::$container->get(Group::class);
+        $expected = new Group();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('target');
         $property->setAccessible(true);
@@ -271,7 +271,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetLocation(): void
     {
-        $expected = self::$container->get(Location::class);
+        $expected = new Location();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('location');
         $property->setAccessible(true);
@@ -281,7 +281,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetLocation(): void
     {
-        $expected = self::$container->get(Location::class);
+        $expected = new Location();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('location');
         $property->setAccessible(true);
@@ -291,7 +291,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetImageFile(): void
     {
-        $expected = self::$container->get(File::class);
+        $expected = new File(__DIR__, false);
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('imageFile');
         $property->setAccessible(true);
@@ -301,7 +301,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetImageFile(): void
     {
-        $expected = self::$container->get(File::class);
+        $expected = new File(__DIR__, false);
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('imageFile');
         $property->setAccessible(true);
@@ -311,7 +311,7 @@ class ActivityTest extends KernelTestCase
 
     public function testSetImage(): void
     {
-        $expected = self::$container->get(FileAlias::class);
+        $expected = new EmbeddedFile();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('image');
         $property->setAccessible(true);
@@ -321,7 +321,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetImage(): void
     {
-        $expected = self::$container->get(FileAlias::class);
+        $expected = new EmbeddedFile();
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('image');
         $property->setAccessible(true);
