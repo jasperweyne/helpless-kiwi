@@ -55,6 +55,10 @@ jobs:
     - name: Build JS dependencies
       run: yarn build
       working-directory: kiwi
+
+    - name: Run unit/functional tests
+      run: composer test
+      working-directory: kiwi
      
     - name: Cleanup build
       if: github.ref == 'refs/heads/master'
@@ -66,6 +70,7 @@ jobs:
         rm -rf kiwi/assets
         rm -rf kiwi/bin
         rm -rf kiwi/node_modules
+        rm -rf kiwi/tests
         rm -rf kiwi/var
 
     - name: Generate sample environment settings for build
