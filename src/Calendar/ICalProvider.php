@@ -14,11 +14,11 @@ class ICalProvider
     )
     {
         $icalFactory = new \Welp\IcalBundle\Factory\Factory;
-        $calendar = $icalFactory->createCalendar();
-        $calendar->setProdId('Helpless Kiwi');
+        $calendar = $icalFactory->createCalendar()
+            ->setProdId('Helpless Kiwi');
 
-        $location = $icalFactory->createLocation();
-        $location->setName($activity->getLocation()->getAddress());
+        $location = $icalFactory->createLocation()
+            ->setName($activity->getLocation()->getAddress());
 
         $organiser = $icalFactory->createOrganizer();
         $organiser
@@ -26,18 +26,55 @@ class ICalProvider
             ->setValue($_ENV['DEFAULT_FROM'])
             ->setName(($activity->getAuthor() ? $activity->getAuthor()->getName() . ' - ' : '') . $_ENV['ORG_NAME'] ?? 'Kiwi')
         ;
-        
-        $event = $icalFactory->createCalendarEvent();
-        $event->setStatus("CONFIRMED")
-              ->setStart($activity->getStart())
-              ->setEnd($activity->getEnd())
-              ->setSummary($activity->getName())
-              ->setDescription($activity->getDescription())
-              ->setUid($activity->getId())
-              ->setLocations([$location])
-              ->setOrganizer($organiser)
+
+        $event = $icalFactory->createCalendarEvent()
+            ->setStatus("CONFIRMED")
+            ->setStart($activity->getStart())
+            ->setEnd($activity->getEnd())
+            ->setSummary($activity->getName())
+            ->setDescription($activity->getDescription())
+            ->setUid($activity->getId())
+            ->setLocations([$location])
+            ->setOrganizer($organiser)
         ;
         $calendar->addEvent($event);
-        return $calendar;;
+        return $calendar;
+    }
+
+    /*
+     * create an ical feed for all passed activities
+     */
+    public function IcalFeed(
+        array $activities
+    )
+    {
+        $icalFactory = new \Welp\IcalBundle\Factory\Factory;
+        $calendar = $icalFactory->createCalendar()
+            ->setProdId('Helpless Kiwi');
+        foreach($activities as $activity) {
+            //if typeof?
+            $location = $icalFactory->createLocation()
+                ->setName($activity->getLocation()->getAddress());
+
+            $organiser = $icalFactory->createOrganizer();
+            $organiser
+                ->setSentBy($_ENV['DEFAULT_FROM'])
+                ->setValue($_ENV['DEFAULT_FROM'])
+                ->setName(($activity->getAuthor() ? $activity->getAuthor()->getName() . ' - ' : '') . $_ENV['ORG_NAME'] ?? 'Kiwi')
+            ;
+
+            $event = $icalFactory->createCalendarEvent()
+                ->setStatus("CONFIRMED")//is it?
+                ->setStart($activity->getStart())
+                ->setEnd($activity->getEnd())
+                ->setSummary($activity->getName())
+                ->setDescription($activity->getDescription())
+                ->setUid($activity->getId())
+                ->setLocations([$location])
+                ->setOrganizer($organiser)
+            ;
+            $calendar->addEvent($event);
+        }
+        return $calendar;
     }
 }

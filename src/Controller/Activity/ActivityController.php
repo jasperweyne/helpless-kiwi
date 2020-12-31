@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Activity controller.
@@ -96,6 +97,23 @@ class ActivityController extends AbstractController
             ['id' => $activity->getId()]
         );
     }
+
+    /**
+     * @Route("/ical", methods={"GET"})
+     */
+    public function callIcal(
+        ICalProvider $iCalProvider
+    )
+    {
+        $em = $this->getDoctrine()->getManager();
+        $activities = $em->getRepository(Activity::class)->findAll();
+
+        $var = $iCalProvider->IcalFeed($activities);
+        return new Response(
+            $var->export().''
+        );
+    }
+
 
     /**
      * Displays a form to register to an activity
