@@ -1,0 +1,30 @@
+name: Testing
+
+on:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+      
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --optimize-autoloader
+      env:
+        APP_ENV: test
+  
+    - name: Run unit/functional tests
+      run: composer test

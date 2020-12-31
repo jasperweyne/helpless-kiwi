@@ -72,6 +72,13 @@ collaborators to the main repository, but PRs coming from any source will
 receive the attention of the team. Repository access is therefore not necessary
 and should not be asked for.
 
+Your pull request must contain adequate testing for the methods you've editted.
+Note that this restriction only applies to code in the src directory. If a
+method you've modified doesn't have a test case yet, please add a basic unit
+test. Make sure the behaviours you've changed are tested properly. A unit test
+may use other classes freely during testing, as these are assumed to be tested
+with their own unit tests.
+
 Kiwi is collaborative project, developed by different people with different
 opinions. To stimulate a healthy environment for collaboration, some basic rules
 should guide your decisions:
