@@ -644,7 +644,6 @@ function detect_kiwi() {
     $envpath = dirname(__FILE__,3).'\kiwi\.env*';
     $generate = false;
 
-
     $list = glob($envpath);    
     if (count($list)>1) {
         return true;
@@ -669,13 +668,15 @@ function detect_kiwi_message() {
 
 function detect_kiwi_value() {
     $detected = detect_kiwi();
+    
     if ($detected){
         echo "intro-update";
-        return false;
-    } else {
-        echo "intro-update";
         return true;
+    } else {
+        echo "intro-install";
+        return $detected;
     }
+
 }
 
 
@@ -1559,8 +1560,12 @@ if ($step == "progress-update") {
                 $log = $log . $result["msg"];
                 
             }
-
-            $install_progress = "finish";
+            if ($install_error) {
+                $install_progress = "backup";
+            } else {
+                $install_progress = "finish";
+            }
+            
             
             break;
 
@@ -1569,7 +1574,7 @@ if ($step == "progress-update") {
             $backup=false;
             if ($backup) {
                 $result = restore_from_backup();
-                $install_error = $result["error"];
+                //$install_error = $result["error"];
                 $log = $log . $result["msg"];
                 
             }
@@ -1659,7 +1664,22 @@ function generate_env($app_id,$app_secret,$bunny_url,$db_host,$db_name,$db_passw
             fwrite($envfile, $line);
             $line = "\t".'"'.addslashes("APP_ENV") . '" => "' . addslashes("prod") . '",'. "\n";
             fwrite($envfile, $line);
+            
+            $random_val = '';
+            for($i=0; $i<32; $i++){
+                $random_val = chr(rand(65,90));
+            }
 
+            $line = "\t".'"'.addslashes("APP_SECRET") . '" => "' . addslashes($random_val) . '",'. "\n";
+            fwrite($envfile, $line);
+
+            $random_val2 = '';
+            for($i=0; $i<16; $i++){
+                $random_val2 = chr(rand(65,90));
+            }
+
+            $line = "\t".'"'.addslashes("USERPROVIDER_KEY") . '" => "' . addslashes($random_val2) . '",'. "\n";
+            fwrite($envfile, $line);
 
             //bunny
             if ($sec_type=="bunny"){
@@ -1708,7 +1728,7 @@ function generate_env($app_id,$app_secret,$bunny_url,$db_host,$db_name,$db_passw
             $line = "?> ";
             fwrite($envfile, $line);
 
-            $msg = $msg . "Environment file created <br>";
+            $msg = $msg . "Environment file created. <br>";
         }
     }
 
@@ -1779,6 +1799,9 @@ function download_kiwi($db_host,$db_name,$db_password,$db_username) {
 
             curl_close($ch);
             fclose($tempFile);
+            if ($contine){
+                $msg = $msg ."Kiwi download succesfull. <br>";
+            }
             
         }
 
@@ -1837,7 +1860,7 @@ function download_kiwi($db_host,$db_name,$db_password,$db_username) {
             }
             // Zip archive will be created only after closing object
             $backup->close();
-            $msg = $msg . "Backup created. <br>";
+            $msg = $msg . "Legacy kiwi backup created. <br>";
         }
 
         // Unzip the fresh kiwi release.
@@ -1850,7 +1873,7 @@ function download_kiwi($db_host,$db_name,$db_password,$db_username) {
             if (file_exists($tempPath)) {
                 unlink($tempPath);
             }
-            $msg = $msg . "Unzipped kiwi. <br>";
+            $msg = $msg . "Unzipped the new kiwi files. <br>";
         }
     } else {
         $msg = $msg . "No download. <br>";
@@ -1889,26 +1912,26 @@ function database_connect($db_host,$db_name,$db_password,$db_username) {
         
         
         if (empty(mysqli_fetch_array(mysqli_query($connection, "SHOW DATABASES LIKE '$db_name'")))) {
-            $msg = $msg . "No matching data base found.<br>";
+            $msg = $msg . "No matching data base found. <br>";
            
             $sql = "CREATE DATABASE $db_name";
             if (true === $connection->query($sql)) {
                 $msg = $msg . "Database created successfully.<br>";
             } else {
-                $msg = $msg . "Error creating database: ". $connection->error;
+                $msg = $msg . "Error creating database: ". $connection->error . "<br>";
                 $contine = false;
             }
 
             
         } else {
-            $msg = $msg . "The database was found. <br>";
+            $msg = $msg . "The kiwi database found. <br>";
             mysqli_select_db($connection, $db_name);
             
             // check if database is empty. 
             if (0 == mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(DISTINCT `table_name`) FROM `information_schema`.`columns` WHERE `table_schema` = '$db_name'
             "))[0]) {
                 echo "\n";
-                $msg = $msg . "Database was empty, usable by kiwi. <br>";
+                $msg = $msg . "Database was empty, and usable by kiwi. <br>";
                 
             } else {    
                 if ($contine) {
@@ -1957,6 +1980,8 @@ function doctrine_commands($sec_type,$admin_email,$admin_name,$admin_pass) {
         $application->setAutoExit(false);
         
         $output = new BufferedOutput();
+        
+        $msg = $msg . "Symfony initialized. <br>";
     }
 
 
@@ -2003,9 +2028,9 @@ function doctrine_commands($sec_type,$admin_email,$admin_name,$admin_pass) {
         $succes = $application->run($input,$output);
         $msg = $msg . $output->fetch();    
         if ($succes==0){
-            $msg = $msg . "Doctrine migration succes. <br>";
+            $msg = $msg . "<br>Doctrine migration succes. <br>";
         } else {
-            $msg = $msg . "Doctrine migration failed.";
+            $msg = $msg . "<br>Doctrine migration failed. <br>";
             $contine = false;
             $revert = true;
         }
@@ -2029,7 +2054,7 @@ function doctrine_commands($sec_type,$admin_email,$admin_name,$admin_pass) {
         if ($succes==0){
             $msg = $msg . "User creation succes. <br>";
         } else {
-            $msg = $msg . "User creation failed.";
+            $msg = $msg . "User creation failed. <br>";
             $contine = false;
             $revert = true;
         }
@@ -2052,7 +2077,7 @@ function restore_from_backup() {
 
 
     if (!file_exists($backupPath)) {
-        echo "Restoring the previous kiwi files... \t";
+        echo "Restoring the previous kiwi files... <br>";
 
         
 
@@ -2075,9 +2100,9 @@ function restore_from_backup() {
         $zip->extractTo(dirname(__FILE__,3));
         $zip->close();
 
-        $msg = $msg ."Restored kiwi from the backup. \n";
+        $msg = $msg ."Restored kiwi from the backup. <br>";
     } else {
-        $msg = $msg ."No backup found. \n";
+        $msg = $msg ."No backup found. <br>";
     }
 
     if ($contine) {
