@@ -37,12 +37,10 @@ class ActivityController extends AbstractController
 
         $groups = [];
         if ($user = $this->getUser()) {
-            $groups = $em->getRepository(Group::class)
-                         ->findAllFor($user->getPerson());
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
         }
 
-        $activities = $em->getRepository(Activity::class)
-                         ->findUpcomingByGroup($groups);
+        $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
 
         return $this->render('activity/index.html.twig', [
             'activities' => $activities,
@@ -69,8 +67,7 @@ class ActivityController extends AbstractController
             $data = $form->getData();
 
             if (null !== $data['registration_single']) {
-                $registration = $em->getRepository(Registration::class)
-                                   ->find($data['registration_single']);
+                $registration = $em->getRepository(Registration::class)->find($data['registration_single']);
                 if (null !== $registration) {
                     $now = new \DateTime('now');
                     $registration->setDeleteDate($now);
@@ -135,8 +132,7 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             if (null !== $data['single_option']) {
-                $option = $em->getRepository(PriceOption::class)
-                             ->find($data['single_option']);
+                $option = $em->getRepository(PriceOption::class)->find($data['single_option']);
                 if (null !== $option) {
                     $registrations = $em->getRepository(Registration::class)->findBy([
                         'activity' => $activity,
@@ -144,10 +140,7 @@ class ActivityController extends AbstractController
                         'deletedate' => null,
                     ]);
                     if (count($registrations) > 0) {
-                        $this->addFlash(
-                            'error',
-                            'Je bent al aangemeld voor deze prijsoptie.'
-                        );
+                        $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
                         return $this->redirectToRoute(
                             'activity_show',
                             ['id' => $activity->getId()]
@@ -159,17 +152,14 @@ class ActivityController extends AbstractController
                     $now = new \DateTime('now');
                     $reg->setNewDate($now);
                     $reg->setPersonId($this->getUser()->getPerson()->getId());
-                    $registrations = $em->getRepository(Registration::class)->findBy(
-                        ['activity' => $activity,
+                    $registrations = $em->getRepository(Registration::class)->findBy([
+                        'activity' => $activity,
                         'reserve_position' => null,
-                        'deletedate' => null]
-                    );
-                    $reserve = $activity->hasCapacity() &&
-                        (count($registrations) >= $activity->getCapacity() ||
-                        count($em->getRepository(Registration::class)->findReserve($activity)) > 0);
+                        'deletedate' => null
+                    ]);
+                    $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($em->getRepository(Registration::class)->findReserve($activity)) > 0);
                     if ($reserve) {
-                        $reg->setReservePosition($em->getRepository(Registration::class)
-                            ->findAppendPosition($activity));
+                        $reg->setReservePosition($em->getRepository(Registration::class)->findAppendPosition($activity));
                     }
                     $em->persist($reg);
                     $em->flush();
@@ -219,21 +209,18 @@ class ActivityController extends AbstractController
     public function showAction(Activity $activity)
     {
         $em = $this->getDoctrine()->getManager();
-        $regs = $em->getRepository(Registration::class)->findBy(
-            ['activity' => $activity,
+        $regs = $em->getRepository(Registration::class)->findBy([
+            'activity' => $activity,
             'deletedate' => null,
-            'reserve_position' => null]
-        );
+            'reserve_position' => null
+        ]);
         $reserve = $em->getRepository(Registration::class)->findReserve($activity);
-        $hasReserve = $activity->hasCapacity() &&
-            (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
+        $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
         if ($user = $this->getUser()) {
-            $groups = $em->getRepository(Group::class)
-                         ->findAllFor($user->getPerson());
+            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
         }
-        $targetoptions = $em->getRepository(PriceOption::class)
-                            ->findUpcomingByGroup($activity, $groups);
+        $targetoptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
         $forms = [];
         foreach ($targetoptions as $option) {
             $forms[] = [
@@ -243,11 +230,11 @@ class ActivityController extends AbstractController
         }
         $unregister = null;
         if (null !== $this->getUser()) {
-            $registration = $em->getRepository(Registration::class)->findOneBy(
-                ['activity' => $activity,
+            $registration = $em->getRepository(Registration::class)->findOneBy([
+                'activity' => $activity,
                 'person_id' => $this->getUser()->getPerson()->getId(),
-                'deletedate' => null]
-            );
+                'deletedate' => null
+            ]);
             if (null !== $registration) {
                 $unregister = $this->singleUnregistrationForm($registration)->createView();
             }

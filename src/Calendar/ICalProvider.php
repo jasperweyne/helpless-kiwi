@@ -9,7 +9,7 @@ class ICalProvider
     /*
      * create an ical file for a single event.
      */
-    public function SingleEventIcal(
+    public function singleEventIcal(
         Activity $activity
     )
     {
@@ -44,7 +44,7 @@ class ICalProvider
     /*
      * create an ical feed for all passed activities
      */
-    public function IcalFeed(
+    public function icalFeed(
         array $activities
     )
     {
