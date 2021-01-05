@@ -25,7 +25,7 @@ class ActivityNewTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->activityNewType = new ActivityNewType();
     }
 
@@ -41,7 +41,7 @@ class ActivityNewTypeTest extends KernelTestCase
 
     public function testBuildForm(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

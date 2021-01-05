@@ -25,8 +25,8 @@ class OrderTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
-        $this->order = Order::create("test");
+        /* @todo Correctly instantiate tested object to use it. */
+        $this->order = Order::create('test');
     }
 
     /**
@@ -41,25 +41,25 @@ class OrderTest extends KernelTestCase
 
     public function test__toString(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testAvg(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testCreate(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testCalc(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

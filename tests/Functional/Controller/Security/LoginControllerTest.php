@@ -24,7 +24,7 @@ class LoginControllerTest extends WebTestCase
     {
         parent::setUp();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->loginController = new LoginController();
     }
 
@@ -40,13 +40,13 @@ class LoginControllerTest extends WebTestCase
 
     public function testLogin(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testLogout(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

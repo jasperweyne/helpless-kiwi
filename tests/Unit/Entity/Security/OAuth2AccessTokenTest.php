@@ -3,7 +3,6 @@
 namespace Tests\Unit\Entity\Security;
 
 use App\Entity\Security\OAuth2AccessToken;
-use League\OAuth2\Client\Token\AccessTokenInterface;
 use OpenIDConnectClient\AccessToken;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -28,7 +27,7 @@ class OAuth2AccessTokenTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->oAuth2AccessToken = new OAuth2AccessToken();
     }
 

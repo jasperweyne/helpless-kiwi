@@ -3,14 +3,13 @@
 namespace App\Controller\Organise;
 
 use App\Entity\Activity\Activity;
-use App\Entity\Activity\Registration;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
-use App\Mail\MailService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.
@@ -90,7 +89,7 @@ class ActivityController extends AbstractController
             'registrations' => $regs,
             'deregistrations' => $deregs,
             'reserve' => $reserve,
-            'present' => $present
+            'present' => $present,
         ]);
     }
 
@@ -210,7 +209,7 @@ class ActivityController extends AbstractController
     public function priceEditAction(Request $request, PriceOption $price)
     {
         $this->blockUnauthorisedUsers($price->getActivity()->getAuthor());
-        
+
         $activity = $price->getActivity();
         $originalPrice = $price->getPrice();
         $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
@@ -241,20 +240,18 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    
     /**
-     * Creates a form to set participent presence
-     * 
+     * Creates a form to set participent presence.
+     *
      * @Route("/{id}/presence", name="presence")
      */
-
     public function presentEditAction(Request $request, Activity $activity)
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
         $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);
-    
+
         $em = $this->getDoctrine()->getManager();
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
@@ -263,26 +260,26 @@ class ActivityController extends AbstractController
 
         return $this->render('organise/activity/present.html.twig', [
             'activity' => $activity,
-            'form' => $form->createView()
-            ]);
+            'form' => $form->createView(),
+        ]);
     }
 
-            /**
-     * Creates a form to set amount participent present
-     * 
+    /**
+     * Creates a form to set amount participent present.
+     *
      * @Route("/{id}/setamountpresence", name="amount_present", methods={"GET", "POST"})
      */
-
     public function setAmountPresent(Request $request, Activity $activity)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount',$activity);
+        $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash('success', 'Aanwezigen genoteerd!');
+
             return $this->redirectToRoute('organise_activity_show', ['id' => $activity->getId()]);
         }
 
@@ -292,23 +289,23 @@ class ActivityController extends AbstractController
         ]);
     }
 
-     /**
-     * Creates a form to reset amount participent present
-     * 
+    /**
+     * Creates a form to reset amount participent present.
+     *
      * @Route("/{id}/resetamountpresence", name="reset_amount_present")
      */
-
     public function resetAmountPresent(Request $request, Activity $activity)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Activity\ActivityCountPresent',$activity);
+        $form = $this->createForm('App\Form\Activity\ActivityCountPresent', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $activity->setPresent(null);
             $em->flush();
             $this->addFlash('success', 'Aanwezigen geteld!');
+
             return $this->redirectToRoute('organise_activity_show', ['id' => $activity->getId()]);
         }
 

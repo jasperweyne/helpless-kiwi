@@ -56,13 +56,13 @@ class EntityEventListenerTest extends KernelTestCase
 
     public function testOnFlush(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testExtractFields(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

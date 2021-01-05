@@ -15,7 +15,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 {
     public function process(\Symfony\Component\DependencyInjection\ContainerBuilder $container)
     {
-        $container->autowire(Sha256::class, Sha256::class);    
+        $container->autowire(Sha256::class, Sha256::class);
     }
 
     use MicroKernelTrait;

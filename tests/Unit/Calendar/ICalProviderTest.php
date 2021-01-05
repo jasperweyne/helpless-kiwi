@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Unit\Calendar;
 
-use App\Form\Activity\ActivityImageType;
+use App\Calendar\ICalProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ActivityImageTypeTest.
+ * Class ICalProviderTest.
  *
- * @covers \App\Form\Activity\ActivityImageType
+ * @covers \App\Calendar\ICalProvider
  */
-class ActivityImageTypeTest extends KernelTestCase
+class ICalProviderTest extends KernelTestCase
 {
     /**
-     * @var ActivityImageType
+     * @var ICalProvider
      */
-    protected $activityImageType;
+    protected $iCalProvider;
 
     /**
      * {@inheritdoc}
@@ -23,10 +23,9 @@ class ActivityImageTypeTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->activityImageType = new ActivityImageType();
+        $this->iCalProvider = new ICalProvider();
     }
 
     /**
@@ -36,16 +35,16 @@ class ActivityImageTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->activityImageType);
+        unset($this->iCalProvider);
     }
 
-    public function testBuildForm(): void
+    public function testSingleEventIcal(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
-    public function testConfigureOptions(): void
+    public function testIcalFeed(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();

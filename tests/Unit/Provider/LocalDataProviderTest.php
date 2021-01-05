@@ -48,13 +48,13 @@ class LocalDataProviderTest extends KernelTestCase
 
     public function testFindPerson(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testFindPersons(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

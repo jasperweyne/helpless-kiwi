@@ -48,7 +48,7 @@ class OptionRepositoryTest extends KernelTestCase
 
     public function testFindUpcomingByGroup(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

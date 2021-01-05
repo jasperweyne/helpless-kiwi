@@ -1,0 +1,3 @@
+welp_ical:
+    default_timezone: "Europe/Netherlands"
+    default_prodid: "-//WelpIcalBundle//Calendar App//NL"

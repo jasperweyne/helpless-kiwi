@@ -3,9 +3,9 @@
 namespace Tests\Unit\EventSubscriber;
 
 use App\EventSubscriber\ProfileUpdateSubscriber;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class ProfileUpdateSubscriberTest.
@@ -56,19 +56,19 @@ class ProfileUpdateSubscriberTest extends KernelTestCase
 
     public function testOnRequest(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testCheckProfileUpdate(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetSubscribedEvents(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

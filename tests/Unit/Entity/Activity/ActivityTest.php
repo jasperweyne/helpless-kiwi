@@ -8,8 +8,8 @@ use App\Entity\Location\Location;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 
 /**
@@ -117,13 +117,13 @@ class ActivityTest extends KernelTestCase
 
     public function testAddOption(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testRemoveOption(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
@@ -139,13 +139,13 @@ class ActivityTest extends KernelTestCase
 
     public function testAddRegistration(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testRemoveRegistration(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
@@ -331,7 +331,7 @@ class ActivityTest extends KernelTestCase
 
     public function testHasCapacity(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 

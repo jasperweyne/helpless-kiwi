@@ -5,8 +5,8 @@ namespace Tests\Unit\Group;
 use App\Group\OrganiseMenuExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class OrganiseMenuExtensionTest.

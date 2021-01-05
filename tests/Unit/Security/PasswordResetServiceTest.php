@@ -4,8 +4,8 @@ namespace Tests\Unit\Security;
 
 use App\Security\PasswordResetService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 /**
  * Class PasswordResetServiceTest.
@@ -56,19 +56,19 @@ class PasswordResetServiceTest extends KernelTestCase
 
     public function testIsPasswordRequestTokenValid(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGeneratePasswordRequestToken(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testResetPasswordRequestToken(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

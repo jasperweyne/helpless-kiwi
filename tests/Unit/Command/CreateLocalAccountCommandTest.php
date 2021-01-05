@@ -4,8 +4,8 @@ namespace Tests\Unit\Command;
 
 use App\Command\CreateLocalAccountCommand;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class CreateLocalAccountCommandTest.

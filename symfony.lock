@@ -117,6 +117,15 @@
     "jms/metadata": {
         "version": "2.3.0"
     },
+    "jsvrcek/ics": {
+        "version": "0.4"
+    },
+    "laminas/laminas-eventmanager": {
+        "version": "3.3.0"
+    },
+    "laminas/laminas-zendframework-bridge": {
+        "version": "1.1.1"
+    },
     "lcobucci/jwt": {
         "version": "3.3.3"
     },
@@ -131,6 +140,9 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.2.3"
+    },
+    "php": {
+        "version": "7.4"
     },
     "php-cs-fixer/diff": {
         "version": "v1.3.1"
@@ -602,6 +614,9 @@
     },
     "webmozart/assert": {
         "version": "1.9.1"
+    },
+    "welp/ical-bundle": {
+        "version": "1.0.1"
     },
     "zendframework/zend-code": {
         "version": "3.4.1"

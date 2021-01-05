@@ -25,7 +25,7 @@ class LocalAccountTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->localAccountType = new LocalAccountType();
     }
 
@@ -41,13 +41,13 @@ class LocalAccountTypeTest extends KernelTestCase
 
     public function testBuildForm(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testConfigureOptions(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

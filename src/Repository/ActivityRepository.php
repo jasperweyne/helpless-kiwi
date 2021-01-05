@@ -23,7 +23,7 @@ class ActivityRepository extends ServiceEntityRepository
      * @return Activity[] Returns an array of Activity objects
      */
     public function findUpcoming()
-    {       
+    {
         return $this->createQueryBuilder('p')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->orderBy('p.start', 'ASC')
@@ -36,7 +36,7 @@ class ActivityRepository extends ServiceEntityRepository
      * @return Activity[] Returns an array of Activity objects
      */
     public function findUpcomingByGroup($groups)
-    {       
+    {
         return $this->createQueryBuilder('p')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->andWhere('(p.target IN (:groups)) OR (p.target is NULL)')
@@ -46,7 +46,7 @@ class ActivityRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    
+
     // /**
     //  * @return Activity[] Returns an array of Activity objects
     //  */

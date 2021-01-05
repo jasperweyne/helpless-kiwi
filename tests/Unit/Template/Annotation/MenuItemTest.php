@@ -26,7 +26,7 @@ class MenuItemTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->menuItem = new MenuItem();
     }
 

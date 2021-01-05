@@ -25,7 +25,7 @@ class AuthSecurityDataCollectorTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->authSecurityDataCollector = new AuthSecurityDataCollector();
     }
 
@@ -41,7 +41,7 @@ class AuthSecurityDataCollectorTest extends KernelTestCase
 
     public function testCollect(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

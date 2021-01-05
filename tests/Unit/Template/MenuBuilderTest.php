@@ -58,7 +58,7 @@ class MenuBuilderTest extends KernelTestCase
 
     public function testGetItems(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }
