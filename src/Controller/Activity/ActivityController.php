@@ -103,7 +103,7 @@ class ActivityController extends AbstractController
     )
     {
         $em = $this->getDoctrine()->getManager();
-        $activities = $em->getRepository(Activity::class)->findAll();
+        $activities = $em->getRepository(Activity::class)->findUpcomingByGroup([]); // Only return activities without target audience
 
         $var = $iCalProvider->IcalFeed($activities);
         return new Response(
