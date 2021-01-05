@@ -1,0 +1,17 @@
+{% extends 'organise/activity/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Registeer presence voor ' ~ activity.name%}
+{% endif %}
+
+{% block body %}
+    <div class="form">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="button-group">
+                <button type="submit" class="button add icon">Opslaan</button>
+                <a href="{{ path('organise_activity_show', { 'id': activity.id }) }}" class="button secondary">Terug</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

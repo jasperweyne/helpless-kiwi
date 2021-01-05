@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method PriceOption|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class OptionRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PriceOption::class);
     }
@@ -23,7 +23,7 @@ class OptionRepository extends ServiceEntityRepository
     /**
      * @return PriceOption[] Returns an array of PriceOption objects
      */
-    public function findUpcomingByGroup(Activity $activity,$groups)
+    public function findUpcomingByGroup(Activity $activity, $groups)
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.activity = :activity')
@@ -34,5 +34,4 @@ class OptionRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    
 }

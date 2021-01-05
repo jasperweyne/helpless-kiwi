@@ -7,9 +7,9 @@ use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -34,7 +34,7 @@ class Activity
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank 
+     * @Assert\NotBlank
      */
     private $description;
 
@@ -112,6 +112,11 @@ class Activity
     private $capacity;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $present;
+
+    /**
      * Get id.
      *
      * @return string
@@ -123,8 +128,6 @@ class Activity
 
     /**
      * Set id.
-     *
-     * @param string $id
      */
     public function setId(string $id): self
     {
@@ -145,8 +148,6 @@ class Activity
 
     /**
      * Set name.
-     *
-     * @param string $name
      */
     public function setName(string $name): self
     {
@@ -167,8 +168,6 @@ class Activity
 
     /**
      * Set description.
-     *
-     * @param string $description
      */
     public function setDescription(string $description): self
     {
@@ -297,8 +296,6 @@ class Activity
 
     /**
      * Set color.
-     *
-     * @param string $color
      */
     public function setColor(string $color): self
     {
@@ -319,8 +316,6 @@ class Activity
 
     /**
      * Set start.
-     *
-     * @param \DateTime $start
      */
     public function setStart(\DateTime $start): self
     {
@@ -341,8 +336,6 @@ class Activity
 
     /**
      * Set id.
-     *
-     * @param \DateTime $end
      */
     public function setEnd(\DateTime $end): self
     {
@@ -363,8 +356,6 @@ class Activity
 
     /**
      * Set id.
-     *
-     * @param \DateTime $deadline
      */
     public function setDeadline(\DateTime $deadline): self
     {
@@ -436,5 +427,15 @@ class Activity
         $this->capacity = $capacity;
 
         return $this;
+    }
+
+    public function getPresent()
+    {
+        return $this->present;
+    }
+
+    public function setPresent(?int $present)
+    {
+        $this->present = $present;
     }
 }

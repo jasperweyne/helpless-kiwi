@@ -3,15 +3,15 @@
 namespace App\Controller\Organise;
 
 use App\Entity\Activity\Activity;
-use App\Entity\Order;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Order;
 use App\Mail\MailService;
 use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.
@@ -88,7 +88,7 @@ class RegistrationController extends AbstractController
     /**
      * Deletes a person entity.
      *
-     * @Route("/delete/{id}", name="delete", methods={"GET", "POST"})
+     * @Route("/delete/{id}", name="delete")
      */
     public function deleteAction(Request $request, Registration $registration, MailService $mailer, PersonRegistry $personRegistry)
     {
@@ -137,7 +137,7 @@ class RegistrationController extends AbstractController
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
         $em = $this->getDoctrine()->getManager();
-        
+
         $position = $em->getRepository(Registration::class)->findAppendPosition($activity);
 
         $registration = new Registration();

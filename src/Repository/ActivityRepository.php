@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Activity\Activity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Activity|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ActivityRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Activity::class);
     }
@@ -23,7 +23,7 @@ class ActivityRepository extends ServiceEntityRepository
      * @return Activity[] Returns an array of Activity objects
      */
     public function findUpcoming()
-    {       
+    {
         return $this->createQueryBuilder('p')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->orderBy('p.start', 'ASC')
@@ -36,7 +36,7 @@ class ActivityRepository extends ServiceEntityRepository
      * @return Activity[] Returns an array of Activity objects
      */
     public function findUpcomingByGroup($groups)
-    {       
+    {
         return $this->createQueryBuilder('p')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->andWhere('(p.target IN (:groups)) OR (p.target is NULL)')
@@ -46,7 +46,7 @@ class ActivityRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    
+
     // /**
     //  * @return Activity[] Returns an array of Activity objects
     //  */
