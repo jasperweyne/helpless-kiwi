@@ -2,79 +2,58 @@
 
 namespace App\Calendar;
 
-use App\Entity\Activity\Activity;
+use Error;
+use Exception;
 
 class ICalProvider
 {
-    /*
-     * create an ical file for a single event.
-     */
-    public function singleEventIcal(
-        Activity $activity
-    )
-    {
-        $icalFactory = new \Welp\IcalBundle\Factory\Factory;
-        $calendar = $icalFactory->createCalendar()
-            ->setProdId('Helpless Kiwi');
-
-        $location = $icalFactory->createLocation()
-            ->setName($activity->getLocation()->getAddress());
-
-        $organiser = $icalFactory->createOrganizer();
-        $organiser
-            ->setSentBy($_ENV['DEFAULT_FROM'])
-            ->setValue($_ENV['DEFAULT_FROM'])
-            ->setName(($activity->getAuthor() ? $activity->getAuthor()->getName() . ' - ' : '') . $_ENV['ORG_NAME'] ?? 'Kiwi')
-        ;
-
-        $event = $icalFactory->createCalendarEvent()
-            ->setStatus("CONFIRMED")
-            ->setStart($activity->getStart())
-            ->setEnd($activity->getEnd())
-            ->setSummary($activity->getName())
-            ->setDescription($activity->getDescription())
-            ->setUid($activity->getId())
-            ->setLocations([$location])
-            ->setOrganizer($organiser)
-        ;
-        $calendar->addEvent($event);
-        return $calendar;
-    }
-
-    /*
-     * create an ical feed for all passed activities
+    /**
+     * create an ical feed the passed activity array.
      */
     public function icalFeed(
         array $activities
-    )
-    {
-        $icalFactory = new \Welp\IcalBundle\Factory\Factory;
-        $calendar = $icalFactory->createCalendar()
-            ->setProdId('Helpless Kiwi');
-        foreach($activities as $activity) {
-            //if typeof?
-            $location = $icalFactory->createLocation()
-                ->setName($activity->getLocation()->getAddress());
+    ) {
+        $orgName = getenv('ORG_NAME') ? $_ENV['ORG_NAME'] : 'kiwi';
 
-            $organiser = $icalFactory->createOrganizer();
-            $organiser
-                ->setSentBy($_ENV['DEFAULT_FROM'])
-                ->setValue($_ENV['DEFAULT_FROM'])
-                ->setName(($activity->getAuthor() ? $activity->getAuthor()->getName() . ' - ' : '') . $_ENV['ORG_NAME'] ?? 'Kiwi')
-            ;
+        $icalFactory = new \Welp\IcalBundle\Factory\Factory();
 
-            $event = $icalFactory->createCalendarEvent()
-                ->setStatus("CONFIRMED")//is it?
-                ->setStart($activity->getStart())
-                ->setEnd($activity->getEnd())
-                ->setSummary($activity->getName())
-                ->setDescription($activity->getDescription())
-                ->setUid($activity->getId())
-                ->setLocations([$location])
-                ->setOrganizer($organiser)
-            ;
+        $calendar = $icalFactory->createCalendar();
+        $calendar
+            ->setProdId('-//Helpless Kiwi//'.$orgName.' v1.0//NL')
+            ->setTimezone(new \DateTimeZone(date_default_timezone_get()))
+        ;
+
+        foreach ($activities as $activity) {
+            try {
+                $location = $icalFactory->createLocation();
+                $location
+                    ->setName($activity->getLocation()->getAddress())
+                ;
+
+                $organiser = $icalFactory->createOrganizer();
+                $organiser
+                    ->setSentBy($_ENV['DEFAULT_FROM'])
+                    ->setValue($_ENV['DEFAULT_FROM'])
+                    ->setName(($activity->getAuthor() ? $activity->getAuthor()->getName().' - ' : '').$_ENV['ORG_NAME'] ?? 'Kiwi')
+                ;
+
+                $event = $icalFactory->createCalendarEvent();
+                $event
+                    ->setStatus('CONFIRMED')//is it?
+                    ->setStart($activity->getStart())
+                    ->setEnd($activity->getEnd())
+                    ->setSummary($activity->getName())
+                    ->setDescription($activity->getDescription())
+                    ->setUid($activity->getId())
+                    ->setLocations([$location])
+                    ->setOrganizer($organiser)
+                ;
+            } catch (Error $error) {
+                throw new Exception('Error: The creation of an activity failed.');
+            }
             $calendar->addEvent($event);
         }
+
         return $calendar;
     }
 }
