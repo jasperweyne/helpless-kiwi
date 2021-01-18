@@ -2,20 +2,20 @@
 
 namespace App\Controller\Activity;
 
-use Swift_Attachment;
-use App\Mail\MailService;
-use App\Entity\Group\Group;
+use App\Calendar\ICalProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use App\Calendar\ICalProvider;
+use App\Entity\Group\Group;
+use App\Mail\MailService;
 use App\Template\Annotation\MenuItem;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Swift_Attachment;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.
@@ -56,8 +56,7 @@ class ActivityController extends AbstractController
         Request $request,
         Activity $activity,
         MailService $mailer
-    )
-    {
+    ) {
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createUnregisterForm($activity);
@@ -81,6 +80,7 @@ class ActivityController extends AbstractController
                         'title' => $title,
                     ]);
                     $mailer->message($this->getUser()->getPerson(), $title, $body);
+
                     return $this->redirectToRoute(
                         'activity_show',
                         ['id' => $activity->getId()]
@@ -89,6 +89,7 @@ class ActivityController extends AbstractController
             }
         }
         $this->addFlash('error', 'Probleem tijdens afmelden');
+
         return $this->redirectToRoute(
             'activity_show',
             ['id' => $activity->getId()]
@@ -100,20 +101,17 @@ class ActivityController extends AbstractController
      */
     public function callIcal(
         ICalProvider $iCalProvider
-    )
-    {
+    ) {
         $em = $this->getDoctrine()->getManager();
-        $activities = $em->getRepository(Activity::class)->findUpcomingByGroup([]); // Only return activities without target audience
+        $publicActivities = $em->getRepository(Activity::class)->findUpcomingByGroup([]); // Only return activities without target audience
 
-        $var = $iCalProvider->IcalFeed($activities);
         return new Response(
-            $var->export().''
+            $iCalProvider->IcalFeed($publicActivities)->export().''
         );
     }
 
-
     /**
-     * Displays a form to register to an activity
+     * Displays a form to register to an activity.
      *
      * @Route("/activity/{id}/register", name="register", methods={"POST"})
      */
@@ -122,8 +120,7 @@ class ActivityController extends AbstractController
         Activity $activity,
         MailService $mailer,
         ICalProvider $iCalProvider
-    )
-    {
+    ) {
         //4 deep nested?
         //TO-DO refactor this
         $em = $this->getDoctrine()->getManager();
@@ -141,6 +138,7 @@ class ActivityController extends AbstractController
                     ]);
                     if (count($registrations) > 0) {
                         $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
+
                         return $this->redirectToRoute(
                             'activity_show',
                             ['id' => $activity->getId()]
@@ -155,7 +153,7 @@ class ActivityController extends AbstractController
                     $registrations = $em->getRepository(Registration::class)->findBy([
                         'activity' => $activity,
                         'reserve_position' => null,
-                        'deletedate' => null
+                        'deletedate' => null,
                     ]);
                     $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($em->getRepository(Registration::class)->findReserve($activity)) > 0);
                     if ($reserve) {
@@ -165,11 +163,11 @@ class ActivityController extends AbstractController
                     $em->flush();
                     if ($reserve) {
                         $this->addFlash('success', 'Aanmelding op reservelijst!');
-                        //todo
+                    //todo
                     } else {
                         $this->addFlash('success', 'Aanmelding gelukt!');
                         $title = 'Aanmeldbevestiging '.$activity->getName();
-                        $ical = $iCalProvider->SingleEventIcal($activity);
+                        $ical = $iCalProvider->icalSingle($activity);
                         $ics = new Swift_Attachment(
                             $ical->export(),
                             $activity->getName().'.ics',
@@ -187,6 +185,7 @@ class ActivityController extends AbstractController
                             [$ics]
                         );
                     }
+
                     return $this->redirectToRoute(
                         'activity_show',
                         ['id' => $activity->getId()]
@@ -195,6 +194,7 @@ class ActivityController extends AbstractController
             }
         }
         $this->addFlash('error', 'Probleem tijdens aanmelden');
+
         return $this->redirectToRoute(
             'activity_show',
             ['id' => $activity->getId()]
@@ -212,7 +212,7 @@ class ActivityController extends AbstractController
         $regs = $em->getRepository(Registration::class)->findBy([
             'activity' => $activity,
             'deletedate' => null,
-            'reserve_position' => null
+            'reserve_position' => null,
         ]);
         $reserve = $em->getRepository(Registration::class)->findReserve($activity);
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
@@ -233,12 +233,13 @@ class ActivityController extends AbstractController
             $registration = $em->getRepository(Registration::class)->findOneBy([
                 'activity' => $activity,
                 'person_id' => $this->getUser()->getPerson()->getId(),
-                'deletedate' => null
+                'deletedate' => null,
             ]);
             if (null !== $registration) {
                 $unregister = $this->singleUnregistrationForm($registration)->createView();
             }
         }
+
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
             'registrations' => $regs,
@@ -252,6 +253,7 @@ class ActivityController extends AbstractController
     {
         $form = $this->createUnregisterForm($registration->getActivity());
         $form->get('registration_single')->setData($registration->getId());
+
         return $form;
     }
 
@@ -259,6 +261,7 @@ class ActivityController extends AbstractController
     {
         $form = $this->createRegisterForm($option->getActivity(), $reserve);
         $form->get('single_option')->setData($option->getId());
+
         return $form;
     }
 
@@ -288,4 +291,3 @@ class ActivityController extends AbstractController
         ;
     }
 }
-
