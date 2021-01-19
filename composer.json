@@ -81,7 +81,7 @@
             "@auto-scripts"
         ],
         "test": [
-            "php bin/phpunit --testdox tests"
+            "php bin/phpunit --testdox"
         ],
         "fix": [
             "php-cs-fixer fix src"

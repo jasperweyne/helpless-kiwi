@@ -2,6 +2,10 @@ name: Testing
 
 on:
   pull_request:
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
@@ -28,3 +32,9 @@ jobs:
   
     - name: Run unit/functional tests
       run: composer test
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
