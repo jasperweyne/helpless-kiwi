@@ -20,6 +20,11 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    
+    <logging>
+        <log type="coverage-clover" target="./var/reports/phpunit.coverage.xml"/>
+        <log type="junit" target="./var/reports/phpunit.xml"/>
+    </logging>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
