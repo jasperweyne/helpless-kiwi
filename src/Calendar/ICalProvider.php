@@ -4,7 +4,7 @@ namespace App\Calendar;
 
 use App\Entity\Activity\Activity;
 use Error;
-use Exception;
+use Jsvrcek\ICS\Exception\CalendarEventException;
 
 class ICalProvider
 {
@@ -14,11 +14,12 @@ class ICalProvider
     public function icalFeed(
         array $activities
     ) {
-        $calendar = $this->createCalendar();
+        $icalFactory = new \Welp\IcalBundle\Factory\Factory();
+        $calendar = $this->createCalendar($icalFactory);
 
         foreach ($activities as $activity) {
             try {
-                $calendar->addEvent($this->createEvent($activity));
+                $calendar->addEvent($this->createEvent($activity, $icalFactory));
             } catch (Error $error) {
                 continue;
             }
@@ -33,26 +34,24 @@ class ICalProvider
     public function icalSingle(
         Activity $activity
     ) {
-        $calendar = $this->createCalendar();
+        $icalFactory = new \Welp\IcalBundle\Factory\Factory();
+        $calendar = $this->createCalendar($icalFactory);
 
         try {
-            $calendar->addEvent($this->createEvent($activity));
+            $calendar->addEvent($this->createEvent($activity, $icalFactory));
         } catch (Error $error) {
-            throw new Exception('Error: Failed to create the event');
+            throw new CalendarEventException('Error: Failed to create the event');
         }
 
         return $calendar;
     }
 
-    private function createCalendar()
-    {
-        $icalFactory = new \Welp\IcalBundle\Factory\Factory();
-
-        $orgName = $_ENV['ORG_NAME'] ? $_ENV['ORG_NAME'] : 'kiwi';
-
+    private function createCalendar(
+        \Welp\IcalBundle\Factory\Factory $icalFactory
+    ) {
         $calendar = $icalFactory->createCalendar();
         $calendar
-            ->setProdId('-//Helpless Kiwi//'.$orgName.' v1.0//NL')
+            ->setProdId('-//Helpless Kiwi//'.($_ENV['ORG_NAME'] ?? 'kiwi').' v1.0//NL')
             ->setTimezone(new \DateTimeZone(date_default_timezone_get()))
         ;
 
@@ -60,9 +59,9 @@ class ICalProvider
     }
 
     private function createEvent(
-        Activity $activity
+        Activity $activity,
+        \Welp\IcalBundle\Factory\Factory $icalFactory
     ) {
-        $icalFactory = new \Welp\IcalBundle\Factory\Factory();
         $location = $icalFactory->createLocation();
         $location
             ->setName($activity->getLocation()->getAddress())
@@ -72,12 +71,11 @@ class ICalProvider
         $organiser
             ->setSentBy($_ENV['DEFAULT_FROM'])
             ->setValue($_ENV['DEFAULT_FROM'])
-            ->setName(($activity->getAuthor() ? $activity->getAuthor()->getName().' - ' : '').$_ENV['ORG_NAME'] ?? 'Kiwi')
-        ;
+            ->setName(($activity->getAuthor() ? $activity->getAuthor()->getName().' - ' : '').($_ENV['ORG_NAME'] ?? 'kiwi'));
 
         $event = $icalFactory->createCalendarEvent();
         $event
-            ->setStatus('CONFIRMED')//is it?
+            ->setStatus('CONFIRMED')
             ->setStart($activity->getStart())
             ->setEnd($activity->getEnd())
             ->setSummary($activity->getName())
