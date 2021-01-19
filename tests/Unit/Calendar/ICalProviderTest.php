@@ -25,10 +25,22 @@ class ICalProviderTest extends KernelTestCase
      */
     protected $firstActivity;
     protected $secondActivity;
+    protected $invalidActivity;
 
+    /**
+     * @var datetime
+     */
     protected $now;
+
+    /**
+     * @var string
+     */
     protected $summary;
     protected $description;
+
+    /**
+     * @var location
+     */
     protected $location;
 
     /**
@@ -41,6 +53,7 @@ class ICalProviderTest extends KernelTestCase
         $this->iCalProvider = new ICalProvider();
         $this->firstActivity = new Activity();
         $this->secondActivity = new Activity();
+        $this->invalidActivity = new Activity();
 
         $this->now = new \DateTime();
         $this->summary = 'kiwi test summary';
@@ -48,6 +61,30 @@ class ICalProviderTest extends KernelTestCase
         $this->location = new Location();
 
         $this->location->setAddress('@localhost');
+
+        $this
+            ->firstActivity
+            ->setStart($this->now)
+            ->setEnd($this->now)
+            ->setName($this->summary)
+            ->setLocation($this->location)
+            ->setDescription($this->description)
+        ;
+
+        $this
+            ->secondActivity
+            ->setStart($this->now)
+            ->setEnd($this->now)
+            ->setName('second '.$this->summary)
+            ->setLocation($this->location)
+            ->setDescription('second '.$this->description)
+        ;
+
+        $this
+            ->invalidActivity
+            ->setStart($this->now)
+            ->setEnd($this->now)
+        ;
     }
 
     /**
@@ -60,6 +97,7 @@ class ICalProviderTest extends KernelTestCase
         unset($this->iCalProvider);
         unset($this->firstActivity);
         unset($this->secondActivity);
+        unset($this->invalidActivity);
     }
 
     /**
@@ -67,15 +105,6 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalsingleSuccesWithSingleEvent(): void
     {
-        $this
-            ->firstActivity
-            ->setStart($this->now)
-            ->setEnd($this->now)
-            ->setName($this->summary)
-            ->setLocation($this->location)
-            ->setDescription($this->description)
-        ;
-
         $recieved = $this->iCalProvider->icalSingle(
             $this->firstActivity
         )->export();
@@ -91,15 +120,9 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalsingleSuccesWithErrorHandling(): void
     {
-        $this
-            ->firstActivity
-            ->setStart($this->now)
-            ->setEnd($this->now)
-        ;
-
         $this->expectExceptionMessage('Error: Failed to create the event');
         $this->iCalProvider->icalSingle(
-            $this->firstActivity
+            $this->invalidActivity
         )->export();
     }
 
@@ -108,15 +131,6 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalfeedSuccesWithSingleEvent(): void
     {
-        $this
-            ->firstActivity
-            ->setStart($this->now)
-            ->setEnd($this->now)
-            ->setName($this->summary)
-            ->setLocation($this->location)
-            ->setDescription($this->description)
-        ;
-
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
         ])->export();
@@ -132,24 +146,6 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalfeedSuccesWithTwoValidEvents(): void
     {
-        $this
-            ->firstActivity
-            ->setStart($this->now)
-            ->setEnd($this->now)
-            ->setName($this->summary)
-            ->setLocation($this->location)
-            ->setDescription($this->description)
-        ;
-
-        $this
-            ->secondActivity
-            ->setStart($this->now)
-            ->setEnd($this->now)
-            ->setName('second '.$this->summary)
-            ->setLocation($this->location)
-            ->setDescription('second '.$this->description)
-        ;
-
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
             $this->secondActivity,
@@ -163,24 +159,8 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalfeedSuccesWithOneValidAndOneInvalidEvent(): void
     {
-        $this
-            ->firstActivity
-            ->setName($this->summary)
-            ->setLocation($this->location)
-            ->setDescription($this->description)
-        ;
-
-        $this
-            ->secondActivity
-            ->setStart($this->now)
-            ->setEnd($this->now)
-            ->setName('second '.$this->summary)
-            ->setLocation($this->location)
-            ->setDescription('second '.$this->description)
-        ;
-
         $recieved = $this->iCalProvider->icalFeed([
-            $this->firstActivity,
+            $this->invalidActivity,
             $this->secondActivity,
         ])->export();
         $this->assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
@@ -193,16 +173,6 @@ class ICalProviderTest extends KernelTestCase
     {
         $_orgName = $_ENV['ORG_NAME'];
         unset($_ENV['ORG_NAME']);
-
-        $this
-            ->firstActivity
-            ->setStart($this->now)
-            ->setEnd($this->now)
-            ->setName($this->summary)
-            ->setLocation($this->location)
-            ->setDescription($this->description)
-        ;
-
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
         ])->export();
