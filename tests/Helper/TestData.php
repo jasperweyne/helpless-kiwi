@@ -9,10 +9,12 @@ namespace Tests\Helper;
  * TestData::create(Foo::class)
  *     ->with('bar', [1, 2])
  *     ->with('qux', [3, 4])
+ *     ->do('update', [function($foo) { if ($foo->bar == 1 && $foo->qux == 3) $foo->bar = 5; }, null])
  *     ->where(fn($foo) => $foo->bar == 1)
  *     ->getFailureData();
  *
  * Will return array(
+ *     Foo(bar => 5, qux => 3),
  *     Foo(bar => 2, qux => 3),
  *     Foo(bar => 2, qux => 4)
  * )
@@ -89,13 +91,16 @@ class TestData
 
     protected $property_options;
 
+    protected $action_options;
+
     protected $conditions;
 
     private $initial;
 
-    private function __construct(mixed $initial)
+    private function __construct($initial)
     {
         $this->property_options = [];
+        $this->action_options = [];
         $this->conditions = [];
         $this->initial = clone $initial;
     }
@@ -106,6 +111,13 @@ class TestData
     public function with(string $property, array $options): TestData
     {
         $this->property_options[$property] = array_merge($this->property_options[$property] ?? [], $options);
+
+        return $this;
+    }
+
+    public function do(string $key, array $actions): TestData
+    {
+        $this->action_options[$key] = array_merge($this->action_options[$key] ?? [], $actions);
 
         return $this;
     }
@@ -127,11 +139,11 @@ class TestData
     public function getValidData(): array
     {
         $permutations = [];
-        foreach (self::cartesian($this->property_options) as $perm) {
+        foreach ($this->buildPermutations() as $perm) {
             $object = $this->buildFromData($perm);
 
             // If all condition succeed, add
-            if ($this->allConditionsSucceed($object)) {
+            if ($this->allConditionsSucceed($object) && !in_array($object, $permutations)) {
                 $permutations[] = $object;
             }
         }
@@ -145,11 +157,11 @@ class TestData
     public function getFailureData(): array
     {
         $permutations = [];
-        foreach (self::cartesian($this->property_options) as $perm) {
+        foreach ($this->buildPermutations() as $perm) {
             $object = $this->buildFromData($perm);
 
             // If any condition fails, add
-            if (!$this->allConditionsSucceed($object)) {
+            if (!$this->allConditionsSucceed($object) && !in_array($object, $permutations)) {
                 $permutations[] = $object;
             }
         }
@@ -158,9 +170,20 @@ class TestData
     }
 
     /**
+     * Build all combinations of properties and actions.
+     */
+    protected function buildPermutations(): array
+    {
+        return self::cartesian([
+            'properties' => self::cartesian($this->property_options),
+            'actions' => self::cartesian($this->action_options),
+        ]);
+    }
+
+    /**
      * Test whether all provided conditions return succesful for the given object.
      */
-    protected function allConditionsSucceed(mixed $object): bool
+    protected function allConditionsSucceed($object): bool
     {
         foreach ($this->conditions as $callback) {
             if (!\call_user_func($callback, $object)) {
@@ -174,19 +197,27 @@ class TestData
     /**
      * Build an array or object, based on the initial object from raw array data.
      */
-    protected function buildFromData(array $data): mixed
+    protected function buildFromData(array $data)
     {
-        if (is_array($this->initial)) {
-            return array_merge($this->initial, $data);
+        $object = clone $this->initial;
+
+        if (is_array($object)) {
+            $object = array_merge($object, $data['properties']);
+        } else {
+            // For each property, assign value
+            $reflector = new \ReflectionClass($object);
+            foreach ($data['properties'] as $name => $value) {
+                $property = $reflector->getProperty($name);
+                $property->setAccessible(true);
+                $property->setValue($object, $value);
+            }
         }
 
-        // For each property, assign value
-        $reflector = new \ReflectionClass($this->initial);
-        $object = clone $this->initial;
-        foreach ($data as $name => $value) {
-            $property = $reflector->getProperty($name);
-            $property->setAccessible(true);
-            $property->setValue($object, $value);
+        // Run actions on data
+        foreach ($data['actions'] as $action) {
+            if (is_callable($action)) {
+                \call_user_func($action, $object);
+            }
         }
 
         return $object;
