@@ -7,11 +7,11 @@ namespace Tests\Helper;
  *
  * Usage example:
  * TestData::create(Foo::class)
- *     ->with('bar', [1, 2])
- *     ->with('qux', [3, 4])
- *     ->do('update', [function($foo) { if ($foo->bar == 1 && $foo->qux == 3) $foo->bar = 5; }, null])
+ *     ->with('bar', 1, 2)
+ *     ->with('qux', 3, 4)
+ *     ->do('update', function($foo) { if ($foo->bar == 1 && $foo->qux == 3) $foo->bar = 5; }, null)
  *     ->where(fn($foo) => $foo->bar == 1)
- *     ->getFailureData();
+ *     ->returnInvalid();
  *
  * Will return array(
  *     Foo(bar => 5, qux => 3),
@@ -108,14 +108,17 @@ class TestData
     /**
      * Add value options for a given property (or array key) to the data builder.
      */
-    public function with(string $property, array $options): TestData
+    public function with(string $property, ...$options): TestData
     {
         $this->property_options[$property] = array_merge($this->property_options[$property] ?? [], $options);
 
         return $this;
     }
 
-    public function do(string $key, array $actions): TestData
+    /**
+     * Add optional action callables to the data builder, operating on the data.
+     */
+    public function do(string $key, ?callable ...$actions): TestData
     {
         $this->action_options[$key] = array_merge($this->action_options[$key] ?? [], $actions);
 
@@ -136,7 +139,7 @@ class TestData
     /**
      * Return data instances that are valid and should result in success.
      */
-    public function getValidData(): array
+    public function return(): array
     {
         $permutations = [];
         foreach ($this->buildPermutations() as $perm) {
@@ -154,7 +157,7 @@ class TestData
     /**
      * Return invalid data instances which may or may not fail.
      */
-    public function getFailureData(): array
+    public function returnInvalid(): array
     {
         $permutations = [];
         foreach ($this->buildPermutations() as $perm) {
