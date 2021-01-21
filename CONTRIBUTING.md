@@ -26,6 +26,14 @@ Please note that this project is licensed under the Apache license version 2.0.
 Therefore, your contributions shall be under the Apache license version 2.0
 unless explicitly stated otherwise. For more information, refer to the [license](LICENSE).
 
+When writing code or otherwise modifying the contents of the project, it's
+strongly advised to have an installation ready of the project. You can either
+install the project locally (please refer to the [installation guide](INSTALL.md)), 
+or use Gitpod, which deploys a IDE in your browser, containing all necessary
+tools and dependencies for you to work on this project.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/jasperweyne/helpless-kiwi)
+
 ## Issues and bugs
 
 Bugs reports are always welcome! They may be filed through our issue tracker.
