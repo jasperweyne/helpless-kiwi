@@ -1,0 +1,14 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - init: cat "SECURE_SCHEME=http" > .env.local && composer install && yarn install && yarn run build
+    command: php bin/console server:run
+
+vscode:
+  extensions:
+    - sonarsource.sonarlint-vscode@1.19.0:0efl2ERJ3aA2ElF84T/Qjg==
+    - thenouillet.symfony-vscode@1.0.2:OIK1fwaa9M5k3WymFhShAA==
+    - ecmel.vscode-html-css@1.8.0:KMfC3CfzwPKNTZusWoRuYA==
+    - mblode.twig-language-2@0.9.1:RU6BsxXlTQVjCzHru+HmBw==
+    - tabnine.tabnine-vscode@3.1.11:TrOGC+uTC6k193ZaAykXBg==
