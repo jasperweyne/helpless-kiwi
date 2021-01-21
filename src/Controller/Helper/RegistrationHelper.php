@@ -35,20 +35,8 @@ class RegistrationHelper extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($registration);
-            $em->flush();
 
-            $person = $personRegistry->find($registration->getPersonId());
-            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld!');
-
-            $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
-            $body = $this->renderView('email/newregistration_by.html.twig', [
-                'person' => $person,
-                'activity' => $registration->getActivity(),
-                'title' => $title,
-                'by' => $this->getUser()->getPerson(),
-            ]);
-
-            $mailer->message($person, $title, $body);
+            $this->sendConvermationMail($registration, $mailer, $personRegistry, $em, 'Aanmeldbericht', 'email/newregistration_by');
 
             return $this->redirectToRoute($origin.'_activity_show', ['id' => $activity->getId()]);
         }
@@ -70,25 +58,11 @@ class RegistrationHelper extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
             $now = new \DateTime('now');
+            $em = $this->getDoctrine()->getManager();
             $registration->setDeleteDate($now);
 
-            $em->flush();
-
-            $person = $personRegistry->find($registration->getPersonId());
-            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' afgemeld!');
-
-            $title = 'Afmeldbericht '.$registration->getActivity()->getName();
-            $body = $this->renderView('email/removedregistration_by.html.twig', [
-                'person' => $person,
-                'activity' => $registration->getActivity(),
-                'title' => $title,
-                'by' => $this->getUser()->getPerson(),
-            ]);
-
-            $mailer->message($person, $title, $body);
+            $this->sendConvermationMail($registration, $mailer, $personRegistry, $em, 'Afmeldbericht ', 'email/removedregistration_by');
 
             return $this->redirectToRoute($origin.'_activity_show', ['id' => $registration->getActivity()->getId()]);
         }
@@ -201,5 +175,28 @@ class RegistrationHelper extends AbstractController
             ->setMethod('DELETE')
             ->getForm()
                 ;
+    }
+
+    private function sendconvermationmail(
+        Registration $registration,
+        MailService $mailer,
+        PersonRegistry $personRegistry,
+        $em,
+        $title,
+        $template
+    ) {
+        $em->flush();
+        $person = $personRegistry->find($registration->getPersonId());
+        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' afgemeld!');
+
+        $title = $title.' '.$registration->getActivity()->getName();
+        $body = $this->renderView($template.'.html.twig', [
+            'person' => $person,
+            'activity' => $registration->getActivity(),
+            'title' => $title,
+            'by' => $this->getUser()->getPerson(),
+        ]);
+
+        $mailer->message($person, $title, $body);
     }
 }
