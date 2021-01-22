@@ -5,8 +5,6 @@ namespace App\Controller\Admin;
 use App\Controller\Helper\RegistrationHelper;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
-use App\Mail\MailService;
-use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,8 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class RegistrationController extends AbstractController
 {
-    private $routeOrigin = 'admin';
-
     /**
      * Displays a form to edit an existing activity entity.
      *
@@ -28,11 +24,14 @@ class RegistrationController extends AbstractController
     public function newAction(
         Request $request,
         Activity $activity,
-        MailService $mailer,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
-        return $helper->newAction($request, $activity, $mailer, $personRegistry, $this->routeOrigin);
+        $returnData = $helper->newAction($request, $activity);
+        if (!is_null($returnData)) {
+            return $this->render('admin/activity/registration/new.html.twig', $returnData);
+        }
+
+        return $this->handleRedirect($activity->getId());
     }
 
     /**
@@ -43,11 +42,14 @@ class RegistrationController extends AbstractController
     public function deleteAction(
         Request $request,
         Registration $registration,
-        MailService $mailer,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
-        return $helper->deleteAction($request, $registration, $mailer, $personRegistry, $this->routeOrigin);
+        $returnData = $helper->deleteAction($request, $registration);
+        if (!is_null($returnData)) {
+            return $this->render('admin/activity/registration/delete.html.twig', $returnData);
+        }
+
+        return $this->handleRedirect($registration->getActivity()->getId());
     }
 
     /**
@@ -56,33 +58,44 @@ class RegistrationController extends AbstractController
     public function reserveNewAction(
         Request $request,
         Activity $activity,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
-        return $helper->reserveNewAction($request, $activity, $personRegistry, $this->routeOrigin);
+        $returnData = $helper->reserveNewAction($request, $activity);
+        if (!is_null($returnData)) {
+            return $this->render('admin/activity/registration/new.html.twig', $returnData);
+        }
+
+        return $this->handleRedirect($activity->getId());
     }
 
     /**
      * @Route("/reserve/move/{id}/up", name="reserve_move_up", methods={"GET", "POST"})
      */
     public function reserveMoveUpAction(
-        Request $request,
         Registration $registration,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
-        return $helper->reserveMoveUpAction($request, $registration, $personRegistry, $this->routeOrigin);
+        $helper->reserveMoveUpAction($registration);
+
+        return $this->handleRedirect($registration->getActivity()->getId());
     }
 
     /**
      * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
      */
     public function reserveMoveDownAction(
-        Request $request,
         Registration $registration,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
-        return $helper->reserveMoveDownAction($request, $registration, $personRegistry, $this->routeOrigin);
+        $helper->reserveMoveDownAction($registration);
+
+        return $this->handleRedirect($registration->getActivity()->getId());
+    }
+
+    private function handleRedirect($id)
+    {
+        return $this->redirectToRoute('admin_activity_show', [
+            'id' => $id,
+        ]);
     }
 }
