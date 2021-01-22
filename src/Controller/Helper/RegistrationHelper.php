@@ -57,7 +57,7 @@ class RegistrationHelper extends AbstractController
         Request $request,
         Registration $registration
     ) {
-        $form = $this->createRegistrationDeleteForm($registration);
+        $form = $this->createRegistrationDeleteForm($request, $registration);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -130,6 +130,8 @@ class RegistrationHelper extends AbstractController
 
         $person = $this->personRegistry->find($registration->getPersonId());
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
+
+        return $registration->getActivity()->getId();
     }
 
     /**
@@ -152,9 +154,7 @@ class RegistrationHelper extends AbstractController
         $person = $this->personRegistry->find($registration->getPersonId());
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
-        return $this->redirectToRoute('admin_activity_show', [
-            'id' => $registration->getActivity()->getId(),
-        ]);
+        return $registration->getActivity()->getId();
     }
 
     /**
@@ -163,10 +163,11 @@ class RegistrationHelper extends AbstractController
      * @return \Symfony\Component\Form\Form The form
      */
     private function createRegistrationDeleteForm(
+        Request $request,
         Registration $registration
     ) {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_registration_delete', ['id' => $registration->getId()]))
+            ->setAction($this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]))
             ->setMethod('DELETE')
             ->getForm()
                 ;
