@@ -5,20 +5,26 @@ namespace App\Controller\Helper;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
-use App\Mail\MailService;
-use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationHelper extends AbstractController
 {
+    private $mailer;
+    private $personRegistry;
+
+    public function __construct(
+        \App\Mail\MailService $mailer,
+        \App\Provider\Person\PersonRegistry $personRegistry
+    ) {
+        $this->mailer = $mailer;
+        $this->personRegistry = $personRegistry;
+    }
+
     public function newAction(
         Request $request,
-        Activity $activity,
-        MailService $mailer,
-        PersonRegistry $personRegistry,
-        $origin
+        Activity $activity
     ) {
         $registration = new Registration();
         $registration->setActivity($activity);
@@ -36,23 +42,20 @@ class RegistrationHelper extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($registration);
 
-            $this->sendConvermationMail($registration, $mailer, $personRegistry, $em, 'Aanmeldbericht', 'email/newregistration_by');
+            $this->sendConvermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by');
 
-            return $this->redirectToRoute($origin.'_activity_show', ['id' => $activity->getId()]);
+            return null;
         }
 
-        return $this->render($origin.'/activity/registration/new.html.twig', [
+        return [
             'activity' => $activity,
             'form' => $form->createView(),
-        ]);
+        ];
     }
 
     public function deleteAction(
         Request $request,
-        Registration $registration,
-        MailService $mailer,
-        PersonRegistry $personRegistry,
-        $origin
+        Registration $registration
     ) {
         $form = $this->createRegistrationDeleteForm($registration);
         $form->handleRequest($request);
@@ -62,22 +65,20 @@ class RegistrationHelper extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $registration->setDeleteDate($now);
 
-            $this->sendConvermationMail($registration, $mailer, $personRegistry, $em, 'Afmeldbericht ', 'email/removedregistration_by');
+            $this->sendConvermationMail($registration, $em, 'Afmeldbericht ', 'email/removedregistration_by');
 
-            return $this->redirectToRoute($origin.'_activity_show', ['id' => $registration->getActivity()->getId()]);
+            return null;
         }
 
-        return $this->render($origin.'/activity/registration/delete.html.twig', [
+        return [
             'registration' => $registration,
             'form' => $form->createView(),
-        ]);
+        ];
     }
 
     public function reserveNewAction(
         Request $request,
-        Activity $activity,
-        PersonRegistry $personRegistry,
-        $origin
+        Activity $activity
     ) {
         $em = $this->getDoctrine()->getManager();
 
@@ -102,24 +103,21 @@ class RegistrationHelper extends AbstractController
             $em->persist($registration);
             $em->flush();
 
-            $person = $personRegistry->find($registration->getPersonId());
+            $person = $this->personRegistry->find($registration->getPersonId());
             $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld op de reservelijst!');
 
-            return $this->redirectToRoute($origin.'_activity_show', ['id' => $activity->getId()]);
+            return null;
         }
 
-        return $this->render($origin.'/activity/registration/new.html.twig', [
+        return [
             'activity' => $activity,
             'form' => $form->createView(),
             'reserve' => true,
-        ]);
+        ];
     }
 
     public function reserveMoveUpAction(
-        Request $request,
-        Registration $registration,
-        PersonRegistry $personRegistry,
-        $origin
+        Registration $registration
     ) {
         $em = $this->getDoctrine()->getManager();
 
@@ -130,10 +128,8 @@ class RegistrationHelper extends AbstractController
 
         $em->flush();
 
-        $person = $personRegistry->find($registration->getPersonId());
+        $person = $this->personRegistry->find($registration->getPersonId());
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
-
-        return $this->redirectToRoute($origin.'_activity_show', ['id' => $registration->getActivity()->getId()]);
     }
 
     /**
@@ -142,10 +138,7 @@ class RegistrationHelper extends AbstractController
      * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
      */
     public function reserveMoveDownAction(
-        Request $request,
-        Registration $registration,
-        PersonRegistry $personRegistry,
-        $origin
+        Registration $registration
     ) {
         $em = $this->getDoctrine()->getManager();
 
@@ -156,10 +149,12 @@ class RegistrationHelper extends AbstractController
 
         $em->flush();
 
-        $person = $personRegistry->find($registration->getPersonId());
+        $person = $this->personRegistry->find($registration->getPersonId());
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
-        return $this->redirectToRoute($origin.'_activity_show', ['id' => $registration->getActivity()->getId()]);
+        return $this->redirectToRoute('admin_activity_show', [
+            'id' => $registration->getActivity()->getId(),
+        ]);
     }
 
     /**
@@ -177,16 +172,14 @@ class RegistrationHelper extends AbstractController
                 ;
     }
 
-    private function sendconvermationmail(
+    private function sendConvermationMail(
         Registration $registration,
-        MailService $mailer,
-        PersonRegistry $personRegistry,
         $em,
         $title,
         $template
     ) {
         $em->flush();
-        $person = $personRegistry->find($registration->getPersonId());
+        $person = $this->personRegistry->find($registration->getPersonId());
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' afgemeld!');
 
         $title = $title.' '.$registration->getActivity()->getName();
@@ -197,6 +190,6 @@ class RegistrationHelper extends AbstractController
             'by' => $this->getUser()->getPerson(),
         ]);
 
-        $mailer->message($person, $title, $body);
+        $this->mailer->message($person, $title, $body);
     }
 }
