@@ -2,6 +2,10 @@ name: Testing
 
 on:
   pull_request:
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
@@ -15,6 +19,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
       
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
@@ -28,3 +34,15 @@ jobs:
   
     - name: Run unit/functional tests
       run: composer test
+
+    - name: fix code coverage paths
+      working-directory: ./var/reports
+      run: |
+        sed -i 's/\/home\/runner\/work\/helpless-kiwi\/helpless-kiwi\//\/github\/workspace\//g' phpunit.xml
+        sed -i 's/\/home\/runner\/work\/helpless-kiwi\/helpless-kiwi\//\/github\/workspace\//g' phpunit.coverage.xml
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
