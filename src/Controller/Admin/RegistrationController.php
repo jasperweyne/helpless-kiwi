@@ -75,9 +75,9 @@ class RegistrationController extends AbstractController
         Registration $registration,
         RegistrationHelper $helper
     ) {
-        $helper->reserveMoveUpAction($registration);
+        $returnData = $helper->reserveMoveUpAction($registration);
 
-        return $this->handleRedirect($registration->getActivity()->getId());
+        return $this->handleRedirect($returnData);
     }
 
     /**
@@ -87,9 +87,9 @@ class RegistrationController extends AbstractController
         Registration $registration,
         RegistrationHelper $helper
     ) {
-        $helper->reserveMoveDownAction($registration);
+        $returnData = $helper->reserveMoveDownAction($registration);
 
-        return $this->handleRedirect($registration->getActivity()->getId());
+        return $this->handleRedirect($returnData);
     }
 
     private function handleRedirect($id)

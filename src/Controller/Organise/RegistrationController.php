@@ -7,8 +7,6 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
-use App\Mail\MailService;
-use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,8 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class RegistrationController extends AbstractController
 {
-    private $routeOrigin = 'organise';
-
     protected function blockUnauthorisedUsers(Group $group)
     {
         $e = $this->createAccessDeniedException('Not authorised for the correct group.');
@@ -46,13 +42,15 @@ class RegistrationController extends AbstractController
     public function newAction(
         Request $request,
         Activity $activity,
-        MailService $mailer,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($activity->getAuthor());
+        $returnData = $helper->newAction($request, $activity);
+        if (!is_null($returnData)) {
+            return $this->render('organise/activity/registration/new.html.twig', $returnData);
+        }
 
-        return $helper->newAction($request, $activity, $mailer, $personRegistry, $this->routeOrigin);
+        return $this->handleRedirect($activity->getId());
     }
 
     /**
@@ -63,13 +61,15 @@ class RegistrationController extends AbstractController
     public function deleteAction(
         Request $request,
         Registration $registration,
-        MailService $mailer,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
+        $returnData = $helper->deleteAction($request, $registration);
+        if (!is_null($returnData)) {
+            return $this->render('organise/activity/registration/delete.html.twig', $returnData);
+        }
 
-        return $helper->deleteAction($request, $registration, $mailer, $personRegistry, $this->routeOrigin);
+        return $this->handleRedirect($registration->getActivity()->getId());
     }
 
     /**
@@ -78,39 +78,47 @@ class RegistrationController extends AbstractController
     public function reserveNewAction(
         Request $request,
         Activity $activity,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($activity->getAuthor());
+        $returnData = $helper->reserveNewAction($request, $activity);
+        if (!is_null($returnData)) {
+            return $this->render('organise/activity/registration/new.html.twig', $returnData);
+        }
 
-        return $helper->reserveNewAction($request, $activity, $personRegistry, $this->routeOrigin);
+        return $this->handleRedirect($activity->getId());
     }
 
     /**
      * @Route("/reserve/move/{id}/up", name="reserve_move_up", methods={"GET", "POST"})
      */
     public function reserveMoveUpAction(
-        Request $request,
         Registration $registration,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
+        $returnData = $helper->reserveMoveUpAction($registration);
 
-        return $helper->reserveMoveUpAction($request, $registration, $personRegistry, $this->routeOrigin);
+        return $this->handleRedirect($returnData);
     }
 
     /**
      * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
      */
     public function reserveMoveDownAction(
-        Request $request,
         Registration $registration,
-        PersonRegistry $personRegistry,
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
+        $returnData = $helper->reserveMoveDownAction($registration);
 
-        return $helper->reserveMoveDownAction($request, $registration, $personRegistry, $this->routeOrigin);
+        return $this->handleRedirect($returnData);
+    }
+
+    private function handleRedirect($id)
+    {
+        return $this->redirectToRoute('organise_activity_show', [
+            'id' => $id,
+        ]);
     }
 }
