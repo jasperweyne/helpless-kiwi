@@ -8,7 +8,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class LocationFixture extends Fixture
 {
-    public const LOCATION_REFERENCE = 'location';
+    public const LOCATION_REFERENCE = '';
 
     public function load(ObjectManager $manager)
     {

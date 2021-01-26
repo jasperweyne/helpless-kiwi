@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Helper;
+namespace App\Tests\Helper;
 
 /**
  * Test data builder.
@@ -120,6 +120,23 @@ class TestData
      */
     public function do(string $key, ?callable ...$actions): TestData
     {
+        $this->action_options[$key] = array_merge($this->action_options[$key] ?? [], $actions);
+
+        return $this;
+    }
+
+    /**
+     * Add an action callables to the data builder with multiple data options.
+     */
+    public function doWith(string $key, callable $action, ...$options): TestData
+    {
+        $actions = [];
+        foreach ($options as $option) {
+            $actions[] = function ($object) use ($action, $option) {
+                \call_user_func($action, $object, $option);
+            };
+        }
+
         $this->action_options[$key] = array_merge($this->action_options[$key] ?? [], $actions);
 
         return $this;

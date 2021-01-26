@@ -4,9 +4,9 @@ namespace App\DataFixtures\Activity;
 
 use App\DataFixtures\Location\LocationFixture;
 use App\Entity\Activity\Activity;
+use App\Tests\Helper\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Tests\Helper\TestData;
 
 class ActivityFixture extends Fixture
 {
@@ -16,6 +16,8 @@ class ActivityFixture extends Fixture
 
         foreach (self::generate([$location]) as $object) {
             $manager->persist($object);
+            $this->setReference($object->getName(), $object);
+            var_dump($object);
         }
 
         $manager->flush();
@@ -28,7 +30,7 @@ class ActivityFixture extends Fixture
         ];
     }
 
-    public static function generate(array $locations)
+    public static function generate()
     {
         $colors = [
             'red',
@@ -46,14 +48,14 @@ class ActivityFixture extends Fixture
 
         return TestData::from(new Activity())
             ->with('description', '')
-            ->with('location', $locations)
+            //->with('location', $locations)
             ->with('color', ...$colors)
-            ->with('start', new \DateTime('second day of January 2038 18:00'))
-            ->with('end', new \DateTime('second day of January 2038 20:00'))
-            ->with('deadline', new \DateTime('first day of January 2038'))
-            ->with('capacity', 10, null)
+            ->with('start', new \DateTime('second day January 2038 18:00'))
+            ->with('end', new \DateTime('second day January 2038 20:00'))
+            ->with('deadline', new \DateTime('first day January 2038'))
+            ->with('imageUpdatedAt', new \DateTime('second day January 2038 18:00'))
             ->do('name', function (Activity $activity) use (&$i) {
-                $activity->setName('Activity ' + strval($i++));
+                $activity->setName('Activity '.strval($i++));
             })
             ->return();
     }
