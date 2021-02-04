@@ -8,27 +8,27 @@ if (isset($_SESSION['step'])) {
     if (isset($_SESSION['install_progress'])) {
         $step = $_SESSION['step'];
         $install_progress = $_SESSION['install_progress'];
-
+        $wait_time = 5;
         if ('confirm-install' == $step && 'start' == $install_progress) {
-            $secondsWait = 1;
+            $secondsWait = $wait_time;
         }
         if ('progress-install' == $step) {
-            $secondsWait = 1;
+            $secondsWait = $wait_time;
         }
         if ('confirm-install' == $step && 'finish' == $install_progress) {
             //$_SESSION["step"]="success-install";
-            $secondsWait = 1;
+            $secondsWait = $wait_time;
         }
 
         if ('confirm-update' == $step && 'start' == $install_progress) {
-            $secondsWait = 1;
+            $secondsWait = $wait_time;
         }
         if ('progress-update' == $step) {
-            $secondsWait = 1;
+            $secondsWait = $wait_time;
         }
         if ('confirm-update' == $step && 'finish' == $install_progress) {
             //$_SESSION["step"]="success-install";
-            $secondsWait = 1;
+            $secondsWait = $wait_time;
         }
     }
 }
@@ -652,6 +652,7 @@ if ('progress-install' == $step) {
         case 'doctrine':
             $doctrine = true;
             if ($doctrine) {
+                var_dump($install_progress);
                 $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
                 $install_error = $result['error'];
                 $log = $log.$result['msg'];
@@ -1632,7 +1633,11 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
         //Not used, as we have a env sample
         if ($generate) {
             $envpath = dirname(__FILE__, 3).'\kiwi\.env.local.php';
-            $envfile = fopen($envpath, 'w+');
+
+            if (!file_exists(dirname(__FILE__, 3).'\kiwi')) {
+                mkdir(dirname(__FILE__, 3).'\kiwi');
+            }
+            $envfile = fopen($envpath, 'w');
 
             //php start
             $line = "<?php\n";
@@ -1648,7 +1653,7 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
 
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
-                $random_val = chr(rand(65, 90));
+                $random_val = $random_val.chr(rand(65, 90));
             }
 
             $line = "\t".'"'.addslashes('APP_SECRET').'" => "'.addslashes($random_val).'",'."\n";
@@ -1656,7 +1661,7 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
 
             $random_val2 = '';
             for ($i = 0; $i < 16; ++$i) {
-                $random_val2 = chr(rand(65, 90));
+                $random_val2 = $random_val2.chr(rand(65, 90));
             }
 
             $line = "\t".'"'.addslashes('USERPROVIDER_KEY').'" => "'.addslashes($random_val2).'",'."\n";
@@ -1677,6 +1682,9 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
                 $line = "\t".'"'.addslashes('MAILER_URL').'" => "'.addslashes($mailer_url).'",'."\n";
                 fwrite($envfile, $line);
                 $line = "\t".'"'.addslashes('DEFAULT_FROM').'" => "'.addslashes($mailer_email).'",'."\n";
+                fwrite($envfile, $line);
+            } else {
+                $line = "\t".'"'.addslashes('MAILER_URL').'" => "'.'null://localhost'.'",'."\n";
                 fwrite($envfile, $line);
             }
 
@@ -1879,7 +1887,6 @@ function database_connect($db_host, $db_name, $db_password, $db_username)
         }
     }
 
-    $filldatabase = false;
     if ($contine) {
         if (empty(mysqli_fetch_array(mysqli_query($connection, "SHOW DATABASES LIKE '$db_name'")))) {
             $msg = $msg.'No matching data base found. <br>';
@@ -1900,9 +1907,6 @@ function database_connect($db_host, $db_name, $db_password, $db_username)
             "))[0]) {
                 echo "\n";
                 $msg = $msg.'Database was empty, and usable by kiwi. <br>';
-            } else {
-                if ($contine) {
-                }
             }
         }
     }
@@ -2000,13 +2004,13 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
         $succes = $application->run($input, $output);
         $outputtext = $output->fetch();
 
-        if (str_contains($outputtext, 'Could not find any migrations to execute.')) {
+        if (false !== strpos($outputtext, 'Could not find any migrations to execute.')) {
             $succes = 0;
             $msg = $msg.'Database already up-to-date. <br>';
         } else {
+            $msg = $msg.$outputtext;
         }
 
-        $msg = $msg.$outputtext;
         if (0 == $succes) {
             $msg = $msg.'<br>Doctrine migration succes. <br>';
         } else {
