@@ -66,15 +66,17 @@ class RegistrationController extends AbstractController
             $person = $personRegistry->find($registration->getPersonId());
             $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld!');
 
-            $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
-            $body = $this->renderView('email/newregistration_by.html.twig', [
-                'person' => $person,
-                'activity' => $registration->getActivity(),
-                'title' => $title,
-                'by' => $this->getUser()->getPerson(),
-            ]);
+            if (true == $form['mail']->getData()) {
+                $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
+                $body = $this->renderView('email/newregistration_by.html.twig', [
+                    'person' => $person,
+                    'activity' => $registration->getActivity(),
+                    'title' => $title,
+                    'by' => $this->getUser()->getPerson(),
+                ]);
 
-            $mailer->message($person, $title, $body);
+                $mailer->message($person, $title, $body);
+            }
 
             return $this->redirectToRoute('organise_activity_show', ['id' => $activity->getId()]);
         }

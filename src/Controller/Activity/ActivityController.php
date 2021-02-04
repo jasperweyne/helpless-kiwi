@@ -2,17 +2,17 @@
 
 namespace App\Controller\Activity;
 
-use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Mail\MailService;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Activity\PriceOption;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use App\Entity\Activity\Registration;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.
@@ -37,7 +37,7 @@ class ActivityController extends AbstractController
             $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
         }
 
-        $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
+        $activities = $em->getRepository(Activity::class)->findUpcomingByGroupWithoutHidden($groups);
 
         return $this->render('activity/index.html.twig', [
             'activities' => $activities,
@@ -178,7 +178,7 @@ class ActivityController extends AbstractController
         $regs = $em->getRepository(Registration::class)->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $reserve = $em->getRepository(Registration::class)->findReserve($activity);
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
-        
+
         $groups = [];
         if ($user = $this->getUser()) {
             $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());

@@ -3,14 +3,14 @@
 namespace App\Form\Activity;
 
 use App\Entity\Activity\Registration;
-use App\Provider\Person\Person;
 use App\Provider\Person\PersonRegistry;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class RegistrationType extends AbstractType
 {
@@ -32,10 +32,10 @@ class RegistrationType extends AbstractType
                     foreach ($this->personRegistry->findAll() as $person) {
                         $persons[$person->getCanonical()] = $person->getId();
                     }
+
                     return $persons;
                 }),
                 'required' => true,
-                
             ])
             ->add('option', EntityType::class, [
                 'label' => 'Optie',
@@ -45,6 +45,12 @@ class RegistrationType extends AbstractType
                     return $ref;
                 },
                 'required' => true,
+            ])
+            ->add('mail', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Moet de persoon gemailt worden?',
+                'mapped' => false,
+                'data' => true,
             ])
 
         ;

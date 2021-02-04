@@ -3,13 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Activity\Activity;
-use App\Entity\Order;
 use App\Entity\Activity\Registration;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Order;
 use App\Mail\MailService;
 use App\Provider\Person\PersonRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.
@@ -46,15 +46,17 @@ class RegistrationController extends AbstractController
             $person = $personRegistry->find($registration->getPersonId());
             $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld!');
 
-            $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
-            $body = $this->renderView('email/newregistration_by.html.twig', [
-                'person' => $person,
-                'activity' => $registration->getActivity(),
-                'title' => $title,
-                'by' => $this->getUser()->getPerson(),
-            ]);
+            if (true == $form['mail']->getData()) {
+                $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
+                $body = $this->renderView('email/newregistration_by.html.twig', [
+                    'person' => $person,
+                    'activity' => $registration->getActivity(),
+                    'title' => $title,
+                    'by' => $this->getUser()->getPerson(),
+                ]);
 
-            $mailer->message($person, $title, $body);
+                $mailer->message($person, $title, $body);
+            }
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -113,7 +115,7 @@ class RegistrationController extends AbstractController
     public function reserveNewAction(Request $request, Activity $activity, MailService $mailer, PersonRegistry $personRegistry)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         $position = $em->getRepository(Registration::class)->findAppendPosition($activity);
 
         $registration = new Registration();

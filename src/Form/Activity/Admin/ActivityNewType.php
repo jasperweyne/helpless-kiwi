@@ -2,17 +2,18 @@
 
 namespace App\Form\Activity\Admin;
 
-use App\Form\Location\LocationType;
 use App\Entity\Activity\Activity;
+use App\Form\Location\LocationType;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ActivityNewType extends AbstractType
 {
@@ -30,7 +31,7 @@ class ActivityNewType extends AbstractType
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
-                'placeholder' => "Geen groep",
+                'placeholder' => 'Geen groep',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
                         ->andWhere('t.active = TRUE');
@@ -43,7 +44,7 @@ class ActivityNewType extends AbstractType
                 'label' => 'Activiteit voor',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
-                'placeholder' => "Iedereen",
+                'placeholder' => 'Iedereen',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
                         ->andWhere('t.register = TRUE');
@@ -79,6 +80,10 @@ class ActivityNewType extends AbstractType
                     'Paars' => 'purple',
                     'Roze' => 'pink',
                 ],
+            ])
+            ->add('hidden', CheckboxType::class, [
+                'label' => 'Maak Activiteit privé',
+                'required' => false,
             ])
         ;
     }
