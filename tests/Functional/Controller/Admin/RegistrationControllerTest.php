@@ -3,14 +3,18 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\RegistrationController;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\DataFixtures\Activity\ActivityFixture;
+use App\DataFixtures\Activity\PriceOptionFixture;
+use App\DataFixtures\Location\LocationFixture;
+use App\DataFixtures\Security\LocalAccountFixture;
+use App\Tests\Helper\AuthWebTestCase;
 
 /**
  * Class RegistrationControllerTest.
  *
  * @covers \App\Controller\Admin\RegistrationController
  */
-class RegistrationControllerTest extends WebTestCase
+class RegistrationControllerTest extends AuthWebTestCase
 {
     /**
      * @var RegistrationController
@@ -40,7 +44,24 @@ class RegistrationControllerTest extends WebTestCase
 
     public function testNewAction(): void
     {
-        /* @todo This test is incomplete. */
+//        $fixtures = $this->loadFixtures([
+//            LocalAccountFixture::class,
+//            LocationFixture::class,
+//            PriceOptionFixture::class,
+//            ActivityFixture::class,
+//        ])->getReferenceRepository();
+//
+//        $this->login();
+//
+//        //$crawler = $this->client->request('GET', '/admin/activity/'.$fixtures->getReference('Activity 0')->getId());
+//        $crawler = $this->client->request('GET', '/');
+//        $this->assertResponseIsSuccessful();
+//        $link = $crawler
+//            ->filter('a[class^="activity"]') // find all links with the text "Greet"
+//            ->eq(0) // select the second link in the list
+//            ->link()
+//        ;
+        //$this->assertGreaterThan(0, $crawler->filter('//button[@class="button add icon"]'));
         $this->markTestIncomplete();
     }
 

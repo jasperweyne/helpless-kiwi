@@ -4,6 +4,7 @@ namespace App\DataFixtures\Activity;
 
 use App\DataFixtures\Location\LocationFixture;
 use App\Entity\Activity\Activity;
+use App\Entity\Location\Location;
 use App\Tests\Helper\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -12,15 +13,16 @@ class ActivityFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $location = $this->getReference(LocationFixture::LOCATION_REFERENCE);
+        $locations = $this->getReference(LocationFixture::LOCATION_REFERENCE);
 
-        foreach (self::generate([$location]) as $object) {
+        foreach (self::generate([$locations]) as $object) {
             $manager->persist($object);
             $this->setReference($object->getName(), $object);
-            var_dump($object);
         }
 
         $manager->flush();
+//        \DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver::commit();
+//        die;
     }
 
     public function getDependencies()
@@ -30,17 +32,17 @@ class ActivityFixture extends Fixture
         ];
     }
 
-    public static function generate()
+    public static function generate(array $locations)
     {
         $colors = [
-            'red',
-            'orange',
-            'yellow',
-            'green',
-            'cyan',
-            'ltblue',
-            'blue',
-            'purple',
+            //            'red',
+            //            'orange',
+            //            'yellow',
+            //            'green',
+            //            'cyan',
+            //            'ltblue',
+            //            'blue',
+            //            'purple',
             'pink',
         ];
 
@@ -48,7 +50,6 @@ class ActivityFixture extends Fixture
 
         return TestData::from(new Activity())
             ->with('description', '')
-            //->with('location', $locations)
             ->with('color', ...$colors)
             ->with('start', new \DateTime('second day January 2038 18:00'))
             ->with('end', new \DateTime('second day January 2038 20:00'))
@@ -57,6 +58,9 @@ class ActivityFixture extends Fixture
             ->do('name', function (Activity $activity) use (&$i) {
                 $activity->setName('Activity '.strval($i++));
             })
+            ->doWith('location', function (Activity $activity, Location $location) {
+                $activity->setLocation($location);
+            }, ...$locations)
             ->return();
     }
 }

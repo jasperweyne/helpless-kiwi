@@ -41,6 +41,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "friendsofphp/php-cs-fixer": "^2.14",
         "liip/test-fixtures-bundle": "^1.0.0",
+        "symfony/css-selector": "4.4.*",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/profiler-pack": "*",
