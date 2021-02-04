@@ -37,6 +37,7 @@ rm -rf kiwi/.hooks
 rm -rf kiwi/assets
 rm -rf kiwi/bin
 rm -rf kiwi/node_modules
+rm -rf kiwi/tests
 rm -rf kiwi/var
 
 # Create environment variable file

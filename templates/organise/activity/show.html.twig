@@ -24,6 +24,7 @@
                                     <th>Optie</th>
                                     <th>Laatst bewerkt</th>
                                     <th>Acties</th>
+                                    <th>Aanwezigheid</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,6 +41,10 @@
                                     <td>{{ registration.option.name }}</td>
                                     <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                     <td><a href="{{ path('organise_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                    <td>{% if registration.present is null %}Onbekend
+                                    {% elseif registration.present == true %}Aanwezig
+                                    {% else %}Afwezig
+                                    {% endif %}</td>
                                 </tr>
                             {% else %}
                                 <tr>
@@ -48,6 +53,8 @@
                             {% endfor %}
                                 <tr>
                                     <td><a href="{{ path('organise_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
+                                    <td></td><td></td><td></td>
+                                    <td><a href="{{ path('organise_activity_presence', { 'id': activity.id }) }}">Aanwezigheid aanpassen</a></td>
                                 </tr>
                             </tbody>
                             <thead>
@@ -97,6 +104,15 @@
                                 <tr>
                                     <th>Aanmelddeadline</th>
                                     <td>{{ activity.deadline|date('d-m-Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{% if activity.present is null %}
+                                        Hoeveelheid aanwezigen
+                                        {% else %} Hoeveelheid aanwezigen{% endif %}</th>
+                                        <td>{% if activity.present is null %}<i>{{present}}</i> (Automatisch gegenereerd)</td><td>
+                                        <a href="{{ path('organise_activity_amount_present', { 'id': activity.id }) }}"> set </a></td>
+                                        {% else %}{{activity.present}}<td>
+                                        <a href="{{ path('organise_activity_reset_amount_present', { 'id': activity.id }) }}">Herstel</a></td>{% endif %}</td
                                 </tr>
                                 <tr>
                                     <th>Begint</th>

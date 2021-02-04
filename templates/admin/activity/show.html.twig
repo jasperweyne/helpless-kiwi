@@ -41,6 +41,18 @@
                                 <th>Doelgroep</th>
                                 <td>{{ activity.target.name ?? '' }}{% if not activity.target %}<i>Iedereen</i>{% endif %}</td>
                             </tr>
+                            <tr>
+                                <th>{% if activity.present is null %}
+                                Hoeveelheid aanwezigen
+                                {% else %} Hoeveelheid aanwezigen{% endif %}</th>
+                                {% if activity.present is null %}
+                                <td><i>{{present}}</i> (Automatisch gegenereerd)</td>
+                                <td><a href="{{ path('admin_activity_amount_present', { 'id': activity.id }) }}"> set </a></td>
+                                {% else %}
+                                <td>{{activity.present}}</td>
+                                <td> <a href="{{ path('admin_activity_reset_amount_present', { 'id': activity.id }) }}">Herstel</a></td>
+                                {% endif %}
+                            </tr>
                             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
                                 <tr>
                                     <th>Datum</th>
@@ -169,6 +181,7 @@
                                 <th>Optie</th>
                                 <th>Laatst bewerkt</th>
                                 <th>Acties</th>
+                                <th>Aanwezigheid</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -185,6 +198,12 @@
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                <td>
+                                {% if registration.present is null %}Onbekend
+                                {% elseif registration.present == true %}Aanwezig
+                                {% else %}Afwezig
+                                {% endif %}
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
@@ -193,6 +212,8 @@
                         {% endfor %}
                             <tr>
                                 <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
+                                <td></td><td></td><td></td>
+                                <td><a href="{{ path('admin_activity_present', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
                             </tr>
                         </tbody>
                     </table>
@@ -239,5 +260,6 @@
                 </div>
             </div>
         </div>
+        <input type="radio" name="tabs" id="aanwezig">
     </div>
 {% endblock %}
