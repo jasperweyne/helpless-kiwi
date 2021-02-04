@@ -15,7 +15,7 @@ fi
 
 if $HAS_PHP_CS_FIXER; then
     git status --porcelain | grep -e '^[AM]\(.*\).php$' | cut -c 3- | while read line; do
-        $PHP_CS_FIXER fix --verbose "$line" &>> "${LOGDIR}${PHP_CS_FIXER_LOG}";
+        $PHP_CS_FIXER fix --verbose "$line" >> "${LOGDIR}${PHP_CS_FIXER_LOG}" 2>&1;
         git add "$line";
     done
 else
