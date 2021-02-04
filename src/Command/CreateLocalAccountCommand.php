@@ -42,6 +42,8 @@ class CreateLocalAccountCommand extends Command
 
             // possible arguments
             ->addArgument('email', InputArgument::REQUIRED, 'The e-mail address of the login.')
+            ->addArgument('name', InputArgument::OPTIONAL, 'The public name associated with the user.')
+            ->addArgument('pass', InputArgument::OPTIONAL, 'The password for login with the user.')
 
             // options
             ->addOption('admin', null, InputOption::VALUE_NONE, 'Make the user an admin');
@@ -56,26 +58,34 @@ class CreateLocalAccountCommand extends Command
         ]);
         $helper = $this->getHelper('question');
 
-        $question = new Question('Public name: ');
-        $this->name = $helper->ask($input, $output, $question);
+        if ($input->hasArgument('name')) {
+            $this->name = $input->getArgument('name');
+        } else {
+            $question = new Question('Public name: ');
+            $this->name = $helper->ask($input, $output, $question);
+        }
 
-        while (true) {
-            $question = new Question('Please enter a password: ');
-            $question->setHidden(true);
-            $question->setHiddenFallback(false);
-            $pass = $helper->ask($input, $output, $question);
+        if ($input->hasArgument('pass')) {
+            $this->raw_pass = $input->getArgument('pass');
+        } else {
+            while (true) {
+                $question = new Question('Please enter a password: ');
+                $question->setHidden(true);
+                $question->setHiddenFallback(false);
+                $pass = $helper->ask($input, $output, $question);
 
-            $question = new Question('Confirm the password: ');
-            $question->setHidden(true);
-            $question->setHiddenFallback(false);
-            $pass_confirm = $helper->ask($input, $output, $question);
+                $question = new Question('Confirm the password: ');
+                $question->setHidden(true);
+                $question->setHiddenFallback(false);
+                $pass_confirm = $helper->ask($input, $output, $question);
 
-            if ($pass === $pass_confirm && '' != $pass) {
-                $this->raw_pass = $pass;
-                break;
+                if ($pass === $pass_confirm && '' != $pass) {
+                    $this->raw_pass = $pass;
+                    break;
+                }
+
+                $output->writeln('Invalid input, please try again!');
             }
-
-            $output->writeln('Invalid input, please try again!');
         }
     }
 

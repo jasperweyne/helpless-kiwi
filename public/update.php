@@ -4,58 +4,39 @@ session_start();
 $secondsWait = 1000;
 
 //Autoload when installing to display progress.
-if (isset($_SESSION['step'])) {
-    if (isset($_SESSION['install_progress'])) {
-        $step = $_SESSION['step'];
-        $install_progress = $_SESSION['install_progress'];
-        $wait_time = 5;
-        if ('confirm-install' == $step && 'start' == $install_progress) {
-            $secondsWait = $wait_time;
-        }
-        if ('progress-install' == $step) {
-            $secondsWait = $wait_time;
-        }
-        if ('confirm-install' == $step && 'finish' == $install_progress) {
-            //$_SESSION["step"]="success-install";
-            $secondsWait = $wait_time;
-        }
+if (isset($_SESSION['step']) && isset($_SESSION['install_progress'])) {
+    $step = $_SESSION['step'];
+    $install_progress = $_SESSION['install_progress'];
+    $wait_time = 5;
+    if ('confirm-install' == $step && 'start' == $install_progress) {
+        $secondsWait = $wait_time;
+    }
+    if ('progress-install' == $step) {
+        $secondsWait = $wait_time;
+    }
+    if ('confirm-install' == $step && 'finish' == $install_progress) {
+        $secondsWait = $wait_time;
+    }
 
-        if ('confirm-update' == $step && 'start' == $install_progress) {
-            $secondsWait = $wait_time;
-        }
-        if ('progress-update' == $step) {
-            $secondsWait = $wait_time;
-        }
-        if ('confirm-update' == $step && 'finish' == $install_progress) {
-            //$_SESSION["step"]="success-install";
-            $secondsWait = $wait_time;
-        }
+    if ('confirm-update' == $step && 'start' == $install_progress) {
+        $secondsWait = $wait_time;
+    }
+    if ('progress-update' == $step) {
+        $secondsWait = $wait_time;
+    }
+    if ('confirm-update' == $step && 'finish' == $install_progress) {
+        $secondsWait = $wait_time;
     }
 }
 
 //Delete session cookie and redirect at button click
 if (isset($_SESSION['step'])) {
     $step = $_SESSION['step'];
-    if ('success-install' == $step) {
-        if (isset($_POST['action'])) {
-            if ('success-install' == $_POST['action']) {
-                unset($_SESSION);
-                session_destroy();
-                header('Location: /');
-                exit;
-            }
-        }
-    }
-
-    if ('success-update' == $step) {
-        if (isset($_POST['action'])) {
-            if ('success-update' == $_POST['action']) {
-                unset($_SESSION);
-                session_destroy();
-                header('Location: /');
-                exit;
-            }
-        }
+    if (('success-install' == $step || 'success-update' == $step) && isset($_POST['action']) && $step == $_POST['action']) {
+        unset($_SESSION);
+        session_destroy();
+        header('Location: /');
+        exit;
     }
 }
 
@@ -187,129 +168,34 @@ header("Refresh:$secondsWait");
     <title>PHP Test</title>
 </head>
 <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+                <div id="digidecs" class="panel panel-default">
 <?php
 
 //Define variables, get the session data for each variable and set to a placeholder if empty in session.
 //region LOAD_SESSION_DATA
-if (isset($_SESSION['db_type'])) {
-    $db_type = $_SESSION['db_type'];
-} else {
-    $db_type = '';
-}
-
-if (isset($_SESSION['db_name'])) {
-    $db_name = $_SESSION['db_name'];
-} else {
-    $db_name = '';
-}
-
-if (isset($_SESSION['db_host'])) {
-    $db_host = $_SESSION['db_host'];
-} else {
-    $db_host = '';
-}
-
-if (isset($_SESSION['db_user'])) {
-    $db_username = $_SESSION['db_user'];
-} else {
-    $db_username = '';
-}
-
-if (isset($_SESSION['db_pass'])) {
-    $db_password = $_SESSION['db_pass'];
-} else {
-    $db_password = '';
-}
-
-if (isset($_SESSION['email_type'])) {
-    $email_type = $_SESSION['email_type'];
-} else {
-    $email_type = '';
-}
-
-if (isset($_SESSION['mailer_url'])) {
-    $mailer_url = $_SESSION['mailer_url'];
-} else {
-    $mailer_url = '';
-}
-
-if (isset($_SESSION['mailer_email'])) {
-    $mailer_email = $_SESSION['mailer_email'];
-} else {
-    $mailer_email = '';
-}
-
-if (isset($_SESSION['org_name'])) {
-    $org_name = $_SESSION['org_name'];
-} else {
-    $org_name = '';
-}
-
-if (isset($_SESSION['sec_type'])) {
-    $sec_type = $_SESSION['sec_type'];
-} else {
-    $sec_type = '';
-}
-
-if (isset($_SESSION['admin_name'])) {
-    $admin_name = $_SESSION['admin_name'];
-} else {
-    $admin_name = '';
-}
-
-if (isset($_SESSION['admin_email'])) {
-    $admin_email = $_SESSION['admin_email'];
-} else {
-    $admin_email = '';
-}
-
-if (isset($_SESSION['admin_pass'])) {
-    $admin_pass = $_SESSION['admin_pass'];
-} else {
-    $admin_pass = '';
-}
-
-if (isset($_SESSION['app_id'])) {
-    $app_id = $_SESSION['app_id'];
-} else {
-    $app_id = '';
-}
-
-if (isset($_SESSION['app_secret'])) {
-    $app_secret = $_SESSION['app_secret'];
-} else {
-    $app_secret = '';
-}
-
-if (isset($_SESSION['bunny_url'])) {
-    $bunny_url = $_SESSION['bunny_url'];
-} else {
-    $bunny_url = '';
-}
-
-if (isset($_SESSION['step'])) {
-    $step = $_SESSION['step'];
-} else {
-    $step = 'intro';
-}
-
-if (isset($_SESSION['install_progress'])) {
-    $install_progress = $_SESSION['install_progress'];
-} else {
-    $install_progress = 'start';
-}
-
-if (isset($_SESSION['log'])) {
-    $log = $_SESSION['log'];
-} else {
-    $log = '';
-}
-
-if (isset($_SESSION['install_error'])) {
-    $install_error = $_SESSION['install_error'];
-} else {
-    $install_error = false;
-}
+$db_type = $_SESSION['db_type'] ?? '';
+$db_name = $_SESSION['db_name'] ?? '';
+$db_host = $_SESSION['db_host'] ?? '';
+$db_username = $_SESSION['db_user'] ?? '';
+$db_password = $_SESSION['db_pass'] ?? '';
+$email_type = $_SESSION['email_type'] ?? '';
+$mailer_url = $_SESSION['mailer_url'] ?? '';
+$mailer_email = $_SESSION['mailer_email'] ?? '';
+$org_name = $_SESSION['org_name'] ?? '';
+$sec_type = $_SESSION['sec_type'] ?? '';
+$admin_name = $_SESSION['admin_name'] ?? '';
+$admin_email = $_SESSION['admin_email'] ?? '';
+$admin_pass = $_SESSION['admin_pass'] ?? '';
+$app_id = $_SESSION['app_id'] ?? '';
+$app_secret = $_SESSION['app_secret'] ?? '';
+$bunny_url = $_SESSION['bunny_url'] ?? '';
+$step = $_SESSION['step'] ?? 'intro';
+$install_progress = $_SESSION['install_progress'] ?? 'start';
+$log = $_SESSION['log'] ?? '';
+$install_error = $_SESSION['install_error'] ?? false;
 //endregion LOAD_SESSION_DATA
 
 $error = null;
@@ -354,7 +240,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
             case 'mailer_url':
                 $mailer_url = trim($_POST[$key]);
 
-                if (true == validate_url($mailer_url)) {
+                if (validate_url($mailer_url)) {
                     $_SESSION['mailer_url'] = $_POST[$key];
                 } else {
                     $error = 'The mailer url is incorrect.';
@@ -365,7 +251,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 break;
             case 'mailer_email':
                 $mailer_email = trim($_POST[$key]);
-                if (true == validate_email($mailer_email)) {
+                if (validate_email($mailer_email)) {
                     $_SESSION['mailer_email'] = $_POST[$key];
                 } else {
                     $error = 'The mailer email is incorrect.';
@@ -380,7 +266,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 break;
             case 'bunny_url':
                 $bunny_url = trim($_POST[$key]);
-                if (true == validate_url($bunny_url)) {
+                if (validate_url($bunny_url)) {
                     $_SESSION['bunny_url'] = $_POST[$key];
                 } else {
                     $error = 'The mailer url is incorrect.';
@@ -399,7 +285,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 break;
             case 'admin_email':
                 $admin_email = trim($_POST[$key]);
-                if (true == validate_email($admin_email)) {
+                if (validate_email($admin_email)) {
                     $_SESSION['admin_email'] = $_POST[$key];
                 } else {
                     $error = 'The admin email is incorrect.';
@@ -464,9 +350,6 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 }
                 break;
             case 'bunny':
-                $step = 'confirm-install';
-                $_SESSION['step'] = 'confirm-install';
-                break;
             case 'admin':
                 $step = 'confirm-install';
                 $_SESSION['step'] = 'confirm-install';
@@ -481,6 +364,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 break;
 
             case 'success-install':
+            case 'success-update':
                 $step = 'go-to-kiwi';
                 $_SESSION['step'] = 'go-to-kiwi';
                 break;
@@ -495,10 +379,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 break;
 
             case 'intro-update':
-                $step = 'confirm-update';
-                $_SESSION['step'] = 'confirm-update';
-                break;
-            case 'update':
+                case 'update':
                 $step = 'confirm-update';
                 $_SESSION['step'] = 'confirm-update';
                 break;
@@ -511,10 +392,6 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 $_SESSION['install_progress'] = 'start';
                 break;
 
-            case 'success-update':
-                $step = 'go-to-kiwi';
-                $_SESSION['step'] = 'go-to-kiwi';
-                break;
             case 'failure-update':
                 $step = 'update';
                 $_SESSION['step'] = 'update';
@@ -538,9 +415,6 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
     if (isset($_POST['back'])) {
         switch ($_POST['back']) {
             case 'intro-update':
-                $step = 'intro';
-                $_SESSION['step'] = 'intro';
-                break;
             case 'intro-install':
                 $step = 'intro';
                 $_SESSION['step'] = 'intro';
@@ -571,9 +445,6 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 }
                 break;
             case 'bunny':
-                $step = 'security';
-                $_SESSION['step'] = 'security';
-                break;
             case 'admin':
                 $step = 'security';
                 $_SESSION['step'] = 'security';
@@ -621,7 +492,7 @@ if ('progress-install' == $step) {
             if ($generate_env) {
                 $result = generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type);
                 $install_error = $result['error'];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
 
             $install_progress = 'database';
@@ -632,7 +503,7 @@ if ('progress-install' == $step) {
             if ($check_database) {
                 $result = database_connect($db_host, $db_name, $db_password, $db_username, $db_type);
                 $install_error = $result['error'];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
 
             $install_progress = 'download';
@@ -641,9 +512,9 @@ if ('progress-install' == $step) {
         case'download':
             $download_kiwi = true;
             if ($download_kiwi) {
-                $result = download_kiwi($db_host, $db_name, $db_password, $db_username, $db_type);
+                $result = download_kiwi();
                 $install_error = $result['error'];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
 
             $install_progress = 'doctrine';
@@ -655,7 +526,7 @@ if ('progress-install' == $step) {
                 var_dump($install_progress);
                 $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
                 $install_error = $result['error'];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
 
             $install_progress = 'finish';
@@ -667,7 +538,7 @@ if ('progress-install' == $step) {
             if ($backup) {
                 $result = restore_from_backup();
                 $install_error = $result['error'];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
 
             $install_progress = 'finish';
@@ -698,9 +569,9 @@ if ('progress-update' == $step) {
         case'download':
             $download_kiwi = true;
             if ($download_kiwi) {
-                $result = download_kiwi($db_host, $db_name, $db_password, $db_username, $db_type);
+                $result = download_kiwi();
                 $install_error = $result['error'];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
 
             $install_progress = 'doctrine';
@@ -711,7 +582,7 @@ if ('progress-update' == $step) {
             if ($doctrine) {
                 $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
                 $install_error = $result['error'];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
             if ($install_error) {
                 $install_progress = 'backup';
@@ -725,8 +596,7 @@ if ('progress-update' == $step) {
             $backup = false;
             if ($backup) {
                 $result = restore_from_backup();
-                //$install_error = $result["error"];
-                $log = $log.$result['msg'];
+                $log .= $result['msg'];
             }
 
             $install_progress = 'finish';
@@ -752,785 +622,448 @@ $_SESSION['step'] = $step;
 $_SESSION['install_progress'] = $install_progress;
 
 //region HTML_FORMS
-if ('intro' == $step) {
-    ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Updaten of installeren</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Welkom by de kiwi update of installatie optie. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <?php $new_install = detect_kiwi_message(); ?>
-                        <form role="form" method="post">
-                            <input type="hidden" name="action" value="<?php detect_kiwi_value(); ?>" />
-                            <input type="submit" class="button grow" value="intro" />
-                        </form>
-                             
-                    </div>
-                </div>
-            </div>
-        </div>
+if ('intro' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Updaten of installeren</h3>
     </div>
-<?php
-} ?>
-
-
-
-<?php
-if ('intro-install' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Installeren</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Welkom by de kiwi installatie optie. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <?php $new_install = detect_kiwi(); ?>
-                        <form role="form" method="post">
-                            <input type="hidden" name="action" value="intro-install" />
-                            <input type="submit" class="button grow" value="start instelling" />
-                        </form>
-                             
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
-<?php
-if ('database-choice' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Database configuratie </h3>
-                    </div>
-
-                    <div class="panel-body">
-
-                        <p>Kies de database van de server. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="database-choice" />
-
-                            <div class="form-group">
-
-                                <?php
-
-                                if ('mariadb' == $db_type) {
-                                    ?>
-                                    <label class="radio-inline"><input type="radio" name="db_type" value="mariadb" checked>Maria DB</label>
-                                    <label class="radio-inline"><input type="radio" name="db_type" value="sqldb" >SQL DB</label>
-                                    <?php
-                                }
-        if ('sqldb' == $db_type) {
-            ?>
-                                    <label class="radio-inline"><input type="radio" name="db_type" value="mariadb" >Maria DB</label>
-                                    <label class="radio-inline"><input type="radio" name="db_type" value="sqldb" checked>SQL DB</label>
-                                    <?php
-        }
-        if ('' == $db_type) {
-            ?>
-                                    <label class="radio-inline"><input type="radio" name="db_type" value="mariadb" checked >Maria DB</label>
-                                    <label class="radio-inline"><input type="radio" name="db_type" value="sqldb" >SQL DB</label>
-                                    <?php
-        } ?>
-                            </div>
-
-                            <input type="submit" class="button grow" value="Configuur de database!">
-                        </form>
-                        
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="database-choice" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form> 
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
-<?php
-
-if ('database' == $step) {
-    ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Database configuratie </h3>
-                    </div>
-
-                    <div class="panel-body">
-
-                        <p>Configureer hier de database. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-
-                        <p><span class="error">* required field</span></p>
-                                        
-              
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="database" />
-                            <div class="form-group">
-                                <label for="db_name">Database name<sup>*</sup></label>
-                                <input type="text" class="form-control" id="db_name" name="db_name" placeholder=""
-                                <?php echo refill($db_name); ?>
-                                required>
-                            </div>
-
-                            <div class="form-group">
-                                    <label for="db_host">Database host<sup>*</sup></label>
-                                    <input id="db_host" name="db_host" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
-                                    <?php echo refill($db_host); ?>
-                                    required>
-                            </div>
-
-
-                            <div class="form-group">
-                                    <label for="db_user">Database username<sup>*</sup></label>
-                                    <input id="db_user" name="db_user" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
-                                    <?php echo refill($db_username); ?>
-                                    required>
-                            </div>
-
-                            <div class="form-group">
-                                    <label for="db_pass">Database password<sup>*</sup></label>
-                                    <input id="db_pass" name="db_pass" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
-                                    <?php echo refill($db_password); ?>
-                                    required>
-                            </div>
-
-                            <p>Velden met een <sup>*</sup> zijn verplicht</p>
-                            <input type="submit" class="button grow" value="Bouw database!">
-                        </form>             
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="database" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form> 
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-} ?>
-
-<?php
-if ('emailer-choice' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Organisatie naam en email. </h3>
-                    </div>
-
-                    <div class="panel-body">
-
-                        <p>Bepaal de organisatienaam en bepaal de email service. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="emailer-choice" />
-                            
-                            <div class="form-group">
-                                <label for="org_name">Organisatie naam</label>
-                                <input type="text" class="form-control" id="org_name" name="org_name" placeholder=""
-                                <?php echo refill($org_name); ?>
-                                >
-                            </div>
-
-                            <div class="form-group">
-
-                                <?php
-                                if ('stmp' == $email_type) {
-                                    ?>
-                                    <label class="radio-inline"><input type="radio" name="email_type" value="stmp" checked>STMP e-mail</label>
-                                    <label class="radio-inline"><input type="radio" name="email_type" value="noemail" >Geen e-mail</label>
-                                    <?php
-                                }
-        if ('noemail' == $email_type) {
-            ?>
-                                    <label class="radio-inline"><input type="radio" name="email_type" value="stmp" >STMP e-mail</label>
-                                    <label class="radio-inline"><input type="radio" name="email_type" value="noemail" checked>Geen e-mail</label>
-                                    <?php
-        }
-        if ('' == $email_type) {
-            ?>
-                                    <label class="radio-inline"><input type="radio" name="email_type" value="stmp" >STMP e-mail</label>
-                                    <label class="radio-inline"><input type="radio" name="email_type" value="noemail" checked>Geen e-mail</label>
-                                    <?php
-        } ?>
-                            </div>
-
-                            <input type="submit" class="button grow" value="Zet keuze">
-                        </form>
-                        
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="emailer-choice" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form> 
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
-<?php
-if ('emailer' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Email configuratie</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Dit is de email configuratie. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-
-                        <p><span class="error">* required field</span></p>
-                                        
-              
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="emailer" />
-
-                            <div class="form-group">
-                                    <label for="mailer_url">Swift mailer URL<sup>*</sup></label>
-                                    <input id="mailer_url" name="mailer_url" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
-                                    <?php echo refill($mailer_url); ?>
-                                    required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="mailer_email">E-mailadres<sup>*</sup></label>
-                                <input type="mailer_email" class="form-control" id="mailer_email" name="mailer_email" placeholder="gigantischebaas@viakunst-utrecht.nl"
-                                <?php echo refill($mailer_email); ?>
-                                required>
-                            </div>
-
-
-                            <p>Velden met een <sup>*</sup> zijn verplicht</p>
-                            <input type="submit" class="button grow" value="Bam email">
-                        </form> 
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="emailer" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form> 
-                        
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
-
-
-<?php
-if ('security' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Security</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Kies de security modus van Kiwi. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-
-                                        
-              
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="security" />
-                            
-
-                            <div class="form-group">
-                                <?php if ('admin' == $sec_type) {
-            ?>
-                                    <label class="radio-inline"><input type="radio" name="sec_type" value="admin" checked>Lokale userdata</label>
-                                    <label class="radio-inline"><input type="radio" name="sec_type" value="bunny">Bunny</label>
-                                    <?php
-        }
-        if ('bunny' == $sec_type) {
-            ?>
-                                    <label class="radio-inline"><input type="radio" name="sec_type" value="admin" >Lokale userdata</label>
-                                    <label class="radio-inline"><input type="radio" name="sec_type" value="bunny" checked>Bunny</label>
-                                    <?php
-        }
-        if ('' == $sec_type) {
-            ?>
-                                    <label class="radio-inline"><input type="radio" name="sec_type" value="admin" checked>Lokale userdata</label>
-                                    <label class="radio-inline"><input type="radio" name="sec_type" value="bunny" >Bunny</label>
-                                    <?php
-        } ?>
-                            </div>
-
-
-                            <input type="submit" class="button grow" value="Security instellen">
-                        </form> 
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="security" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form> 
-                                               
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
- 
-
-<?php
-if ('bunny' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Bunny</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Bunny is een openId connect identity en user-management system.  </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <p><span class="error">* required field</span></p>
-                                        
-              
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="bunny" />
-                            <div class="form-group">
-                                <label for="app_id">App id<sup>*</sup></label>
-                                <input type="text" class="form-control" id="app_id" name="app_id" placeholder=""
-                                <?php echo refill($app_id); ?>
-                                required>
-                            </div>
-                            <div class="form-group">
-                                <label for="app_secret">App secret<sup>*</sup></label>
-                                <input type="text" class="form-control" id="app_secret" name="app_secret" placeholder=""
-                                <?php echo refill($app_secret); ?>
-                                required>
-                            </div>
-                            <div class="form-group">
-                                <label for="bunny_url">Bunny URL<sup>*</sup></label>
-                                <input type="text" class="form-control" id="bunny_url" name="bunny_url" placeholder=""
-                                <?php echo refill($bunny_url); ?>
-                                required>
-                            </div>
-                            
-                            <p>Velden met een <sup>*</sup> zijn verplicht</p>
-                            <input type="submit" class="button grow" value="Configueer bunny">
-                        </form> 
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="bunny" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form>                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
- 
- <?php
-if ('admin' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Admin instellingen</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Dit is de user-data van het eerste kiwi account.  </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <p><span class="error">* required field</span></p>
-                                        
-              
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="admin" />
-                            <div class="form-group">
-                                <label for="admin_email">Admin email<sup>*</sup></label>
-                                <input type="text" class="form-control" id="admin_email" name="admin_email" placeholder=""
-                                <?php echo refill($admin_email); ?>
-                                required>
-                            </div>
-                            <div class="form-group">
-                                <label for="admin_name">Admin naam<sup>*</sup></label>
-                                <input type="text" class="form-control" id="admin_name" name="admin_name" placeholder=""
-                                <?php echo refill($admin_name); ?>
-                                required>
-                            </div>
-                            <div class="form-group">
-                                <label for="admin_pass">Admin wachtwoord<sup>*</sup></label>
-                                <input type="text" class="form-control" id="admin_pass" name="admin_pass" placeholder=""
-                                <?php echo refill($admin_pass); ?>
-                                required>
-                            </div>
-                            
-
-                            <p>Velden met een <sup>*</sup> zijn verplicht</p>
-                            <input type="submit" class="button grow" value="Construct account">
-                        </form>
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="admin" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form>                           
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
-<?php
-if ('confirm-install' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Check alle data.</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Kiwi is klaar om te installeren.</p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="action" value="confirm-install" />
-                            <input type="submit" class="button grow" value="Conformeer installatie.">
-                        </form>   
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="back" value="confirm-install" />
-                            <input type="submit" class="button grow" value="Stap terug.">
-                        </form>   
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
- <?php
-if ('success-install' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Succesvolle installatie</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Kiwi is succesvol geinstalleerd </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-
-                        <h4>Log:</h4> 
-                        <p> <?php echo $log; ?></p>
-
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="action" value="success-install" />
-                            <input type="submit" class="button grow" value="Ga naar kiwi.">
-                        </form>  
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
-<?php
-if ('failure-install' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Gefaalde installatie</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Kiwi is helaas niet correct geinstalleerd </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-
-                        <h4>Error log:</h4> 
-                        <p> <?php echo $log; ?></p>
-
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="action" value="failure-install" />
-                            <input type="submit" class="button grow" value="Probeer het opnieuw.">
-                        </form>  
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
-
-
-
-
-
-
-<?php
-if ('intro-update' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Updaten of installeren</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Welkom by de kiwi update of installatie optie. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <?php $new_install = detect_kiwi(); ?>
-                        <form role="form" method="post">
-                            <input type="hidden" name="action" value="intro-update" />
-                            <input type="submit" class="button grow" value="intro" />
-                        </form>
-                             
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-    } ?>
-
- <?php
-if ('update' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Updaten</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Dit is de online updater van kiwi, dit programma update kiwi naar de meest recente stabiele versie.</p> 
-                        <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                                        
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-                            <input type="hidden" name="action" value="update" />
+    <div class="panel-body">
+
+        <p>Welkom by de kiwi update of installatie optie. </p>
+        <?php echo print_error_message($error, $error_type);  $new_install = detect_kiwi_message(); ?>
+        <form role="form" method="post">
+            <input type="hidden" name="action" value="<?php detect_kiwi_value(); ?>" />
+            <input type="submit" class="button grow" value="intro" />
+        </form>
                 
-                            <input type="submit" class="button grow" value="Start Update.">
-                        </form>                        
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-<?php
-    } ?>
- 
+<?php elseif ('intro-install' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Installeren</h3>
+    </div>
+    <div class="panel-body">
 
- <?php
-if ('confirm-update' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Update.</h3>
-                    </div>
-                    <div class="panel-body">
+        <p>Welkom by de kiwi installatie optie. </p>
+        <?php echo print_error_message($error, $error_type);  $new_install = detect_kiwi(); ?>
+        <form role="form" method="post">
+            <input type="hidden" name="action" value="intro-install" />
+            <input type="submit" class="button grow" value="start instelling" />
+        </form>
+                
+    </div>
+<?php elseif ('database-choice' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Database configuratie </h3>
+    </div>
 
-                        <p>Dit is de online updater van kiwi, dit programma update kiwi naar de meest recente stabiele versie.</p> 
-                        <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
-                        <?php echo print_error_message($error, $error_type); ?>
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="action" value="confirm-update" />
-                            <input type="submit" class="button grow" value="Start update">
-                        </form>   
+    <div class="panel-body">
+
+        <p>Kies de database van de server. </p>
+        <?php echo print_error_message($error, $error_type); ?>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="database-choice" />
+
+            <div class="form-group">
+                <label class="radio-inline"><input type="radio" name="db_type" value="mariadb" <?php if ('mariadb' == $db_type) {?>checked<?php }?>>Maria DB</label>
+                <label class="radio-inline"><input type="radio" name="db_type" value="sqldb" <?php if ('sqldb' == $db_type) {?>checked<?php }?>>SQL DB</label>
+            </div>
+
+            <input type="submit" class="button grow" value="Configuur de database!">
+        </form>
+        
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="database-choice" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form> 
+
+    </div>
+<?php elseif ('database' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Database configuratie </h3>
+    </div>
+
+    <div class="panel-body">
+
+        <p>Configureer hier de database. </p>
+        <?php echo print_error_message($error, $error_type); ?>
+
+        <p><span class="error">* required field</span></p>
                         
-                    </div>
-
-                </div>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="database" />
+            <div class="form-group">
+                <label for="db_name">Database name<sup>*</sup></label>
+                <input type="text" class="form-control" id="db_name" name="db_name" placeholder=""
+                <?php echo refill($db_name); ?>
+                required>
             </div>
-        </div>
-    </div>
-<?php
-    } ?>
 
-
-
-<?php
-if ('success-update' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Succesvolle update</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Kiwi is succesvol geupdated. </p>
-                        <?php echo print_error_message($error, $error_type); ?>
-
-                        <h4>Log:</h4> 
-                        <p> <?php echo $log; ?></p>
-
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="action" value="success-update" />
-                            <input type="submit" class="button grow" value="Ga naar kiwi.">
-                        </form>  
-
-                    </div>
-
-                </div>
+            <div class="form-group">
+                    <label for="db_host">Database host<sup>*</sup></label>
+                    <input id="db_host" name="db_host" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
+                    <?php echo refill($db_host); ?>
+                    required>
             </div>
-        </div>
-    </div>
-<?php
-    } ?>
 
-<?php
-if ('failure-update' == $step) {
-        ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Gefaalde update</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Kiwi is helaas niet correct geupdated. </p>
-                        <p>Neem alstublieft contact op met de developers op GitHub.</p>
-                        <?php echo print_error_message($error, $error_type); ?>
-
-                        <h4>Error log:</h4> 
-                        <p> <?php echo $log; ?></p>
-
-                        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-                            <input type="hidden" name="action" value="failure-update" />
-                            <input type="submit" class="button grow" value="Probeer het opnieuw.">
-                        </form>  
-
-                    </div>
-
-                </div>
+            <div class="form-group">
+                    <label for="db_user">Database username<sup>*</sup></label>
+                    <input id="db_user" name="db_user" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
+                    <?php echo refill($db_username); ?>
+                    required>
             </div>
-        </div>
+
+            <div class="form-group">
+                    <label for="db_pass">Database password<sup>*</sup></label>
+                    <input id="db_pass" name="db_pass" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
+                    <?php echo refill($db_password); ?>
+                    required>
+            </div>
+
+            <p>Velden met een <sup>*</sup> zijn verplicht</p>
+            <input type="submit" class="button grow" value="Bouw database!">
+        </form>             
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="database" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form> 
+
     </div>
-<?php
-    }
+<?php elseif ('emailer-choice' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Organisatie naam en email. </h3>
+    </div>
 
-if ('progress-update' == $step) {
-    ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Aan het updaten. </h3>
-                    </div>
-                    <div class="panel-body">
+    <div class="panel-body">
 
-                        <p>Kiwi is aan het updaten, dit kan enkele minuten duren. </p>
-                        <p>Bezig met stap <?php echo $install_progress; ?>  </p>
+        <p>Bepaal de organisatienaam en bepaal de email service. </p>
+        <?php echo print_error_message($error, $error_type); ?>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="emailer-choice" />
+            
+            <div class="form-group">
+                <label for="org_name">Organisatie naam</label>
+                <input type="text" class="form-control" id="org_name" name="org_name" placeholder=""
+                <?php echo refill($org_name); ?>
+                >
+            </div>
 
-                        <?php echo print_error_message($error, $error_type); ?>
+            <div class="form-group">
+
+                <label class="radio-inline"><input type="radio" name="email_type" value="stmp" <?php if ('stmp' == $email_type) { ?>checked<?php } ?>>STMP e-mail</label>
+                <label class="radio-inline"><input type="radio" name="email_type" value="noemail" <?php if ('stmp' != $email_type) { ?>checked<?php } ?>>Geen e-mail</label>
+            </div>
+
+            <input type="submit" class="button grow" value="Zet keuze">
+        </form>
+        
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="emailer-choice" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form> 
+
+    </div>
+<?php elseif ('emailer' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Email configuratie</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Dit is de email configuratie. </p>
+        <?php echo print_error_message($error, $error_type); ?>
+
+        <p><span class="error">* required field</span></p>
                         
-                       
-                                        
-              
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="emailer" />
+
+            <div class="form-group">
+                    <label for="mailer_url">Swift mailer URL<sup>*</sup></label>
+                    <input id="mailer_url" name="mailer_url" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
+                    <?php echo refill($mailer_url); ?>
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="mailer_email">E-mailadres<sup>*</sup></label>
+                <input type="mailer_email" class="form-control" id="mailer_email" name="mailer_email" placeholder="gigantischebaas@viakunst-utrecht.nl"
+                <?php echo refill($mailer_email); ?>
+                required>
+            </div>
+
+            <p>Velden met een <sup>*</sup> zijn verplicht</p>
+            <input type="submit" class="button grow" value="Bam email">
+        </form> 
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="emailer" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form> 
+        
+    </div>
+<?php elseif ('security' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Security</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kies de security modus van Kiwi. </p>
+        <?php echo print_error_message($error, $error_type); ?>
+
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="security" />
+            
+            <div class="form-group">
+                <label class="radio-inline"><input type="radio" name="sec_type" value="admin" <?php if ('admin' == $sec_type) { ?>checked<?php } ?>>Lokale userdata</label>
+                <label class="radio-inline"><input type="radio" name="sec_type" value="bunny" <?php if ('admin' != $sec_type) { ?>checked<?php } ?>>Bunny</label>
+            </div>
+
+            <input type="submit" class="button grow" value="Security instellen">
+        </form> 
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="security" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form> 
                                 
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-    <?php
-}
+<?php elseif ('bunny' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Bunny</h3>
+    </div>
+    <div class="panel-body">
 
-if ('progress-install' == $step) {
-    ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; Aan het installeren. </h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <p>Kiwi is aan het installeren, dit kan enkele minuten duren. </p>
-                        <p>Bezig met stap <?php echo $install_progress; ?>  </p>
-
-                        <?php echo print_error_message($error, $error_type); ?>
+        <p>Bunny is een openId connect identity en user-management system.  </p>
+        <?php echo print_error_message($error, $error_type); ?>
+        <p><span class="error">* required field</span></p>
                         
-                       
-                                        
-              
-                                
-                    </div>
-                </div>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="bunny" />
+            <div class="form-group">
+                <label for="app_id">App id<sup>*</sup></label>
+                <input type="text" class="form-control" id="app_id" name="app_id" placeholder=""
+                <?php echo refill($app_id); ?>
+                required>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="app_secret">App secret<sup>*</sup></label>
+                <input type="text" class="form-control" id="app_secret" name="app_secret" placeholder=""
+                <?php echo refill($app_secret); ?>
+                required>
+            </div>
+            <div class="form-group">
+                <label for="bunny_url">Bunny URL<sup>*</sup></label>
+                <input type="text" class="form-control" id="bunny_url" name="bunny_url" placeholder=""
+                <?php echo refill($bunny_url); ?>
+                required>
+            </div>
+            
+            <p>Velden met een <sup>*</sup> zijn verplicht</p>
+            <input type="submit" class="button grow" value="Configueer bunny">
+        </form> 
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="bunny" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form>                        
     </div>
-    <?php
-}
+<?php elseif ('admin' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Admin instellingen</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Dit is de user-data van het eerste kiwi account.  </p>
+        <?php echo print_error_message($error, $error_type); ?>
+        <p><span class="error">* required field</span></p>
+                        
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="admin" />
+            <div class="form-group">
+                <label for="admin_email">Admin email<sup>*</sup></label>
+                <input type="text" class="form-control" id="admin_email" name="admin_email" placeholder=""
+                <?php echo refill($admin_email); ?>
+                required>
+            </div>
+            <div class="form-group">
+                <label for="admin_name">Admin naam<sup>*</sup></label>
+                <input type="text" class="form-control" id="admin_name" name="admin_name" placeholder=""
+                <?php echo refill($admin_name); ?>
+                required>
+            </div>
+            <div class="form-group">
+                <label for="admin_pass">Admin wachtwoord<sup>*</sup></label>
+                <input type="text" class="form-control" id="admin_pass" name="admin_pass" placeholder=""
+                <?php echo refill($admin_pass); ?>
+                required>
+            </div>
+            
+            <p>Velden met een <sup>*</sup> zijn verplicht</p>
+            <input type="submit" class="button grow" value="Construct account">
+        </form>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="admin" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form>                           
+    </div>
+<?php elseif ('confirm-install' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Check alle data.</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kiwi is klaar om te installeren.</p>
+        <?php echo print_error_message($error, $error_type); ?>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="action" value="confirm-install" />
+            <input type="submit" class="button grow" value="Conformeer installatie.">
+        </form>   
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="back" value="confirm-install" />
+            <input type="submit" class="button grow" value="Stap terug.">
+        </form>   
+    </div>
+<?php elseif ('success-install' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Succesvolle installatie</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kiwi is succesvol geinstalleerd </p>
+        <?php echo print_error_message($error, $error_type); ?>
+
+        <h4>Log:</h4> 
+        <p> <?php echo $log; ?></p>
+
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="action" value="success-install" />
+            <input type="submit" class="button grow" value="Ga naar kiwi.">
+        </form>  
+
+    </div>
+
+<?php elseif ('failure-install' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Gefaalde installatie</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kiwi is helaas niet correct geinstalleerd </p>
+        <?php echo print_error_message($error, $error_type); ?>
+
+        <h4>Error log:</h4> 
+        <p> <?php echo $log; ?></p>
+
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="action" value="failure-install" />
+            <input type="submit" class="button grow" value="Probeer het opnieuw.">
+        </form>  
+
+    </div>
+<?php elseif ('intro-update' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Updaten of installeren</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Welkom by de kiwi update of installatie optie. </p>
+        <?php echo print_error_message($error, $error_type);  $new_install = detect_kiwi(); ?>
+        <form role="form" method="post">
+            <input type="hidden" name="action" value="intro-update" />
+            <input type="submit" class="button grow" value="intro" />
+        </form>
+                
+    </div>
+<?php elseif ('update' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Updaten</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Dit is de online updater van kiwi, dit programma update kiwi naar de meest recente stabiele versie.</p> 
+        <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
+        <?php echo print_error_message($error, $error_type); ?>
+                        
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="update" />
+
+            <input type="submit" class="button grow" value="Start Update.">
+        </form>                        
+    </div>
+<?php elseif ('confirm-update' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Update.</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Dit is de online updater van kiwi, dit programma update kiwi naar de meest recente stabiele versie.</p> 
+        <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
+        <?php echo print_error_message($error, $error_type); ?>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="action" value="confirm-update" />
+            <input type="submit" class="button grow" value="Start update">
+        </form>   
+        
+    </div>
+
+<?php elseif ('success-update' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Succesvolle update</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kiwi is succesvol geupdated. </p>
+        <?php echo print_error_message($error, $error_type); ?>
+
+        <h4>Log:</h4> 
+        <p> <?php echo $log; ?></p>
+
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="action" value="success-update" />
+            <input type="submit" class="button grow" value="Ga naar kiwi.">
+        </form>  
+
+    </div>
+
+<?php elseif ('failure-update' == $step):  ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Gefaalde update</h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kiwi is helaas niet correct geupdated. </p>
+        <p>Neem alstublieft contact op met de developers op GitHub.</p>
+        <?php echo print_error_message($error, $error_type); ?>
+
+        <h4>Error log:</h4> 
+        <p> <?php echo $log; ?></p>
+
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
+            <input type="hidden" name="action" value="failure-update" />
+            <input type="submit" class="button grow" value="Probeer het opnieuw.">
+        </form>  
+
+    </div>
+<?php elseif ('progress-update' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Aan het updaten. </h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kiwi is aan het updaten, dit kan enkele minuten duren. </p>
+        <p>Bezig met stap <?php echo $install_progress; ?>  </p>
+
+        <?php echo print_error_message($error, $error_type); ?>
+        
+    </div>
+<?php elseif ('progress-install' == $step): ?>
+    <div class="panel-heading">
+        <h3 class="panel-title">Helpless Kiwi &mdash; Aan het installeren. </h3>
+    </div>
+    <div class="panel-body">
+
+        <p>Kiwi is aan het installeren, dit kan enkele minuten duren. </p>
+        <p>Bezig met stap <?php echo $install_progress; ?>  </p>
+
+        <?php echo print_error_message($error, $error_type); ?>
+        
+    </div>
+<?php endif;
 
 //endregion HTML_FORMS
 
@@ -1547,14 +1080,9 @@ function detect_kiwi()
     // check .env.local.php
     //.env.* wildcard.
     $envpath = dirname(__FILE__, 3).'\kiwi\.env*';
-    $generate = false;
 
     $list = glob($envpath);
-    if (count($list) > 1) {
-        return true;
-    } else {
-        return false;
-    }
+    return (count($list) > 1);
 }
 
 function detect_kiwi_message()
@@ -1614,261 +1142,208 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
 {
     $msg = '';
 
-    $contine = true;
     //Generate env files.
-    if ($contine) {
-        $envpath = dirname(__FILE__, 3).'\kiwi\.env*';
-        $generate = false;
+    $envpath = dirname(__FILE__, 3).'\kiwi\.env*';
+    $list = glob($envpath);
 
-        $list = glob($envpath);
-
-        if (count($list) > 1) {
-            $msg = $msg.'Environment file found. <br>';
-        } else {
-            $msg = $msg.'No environment file found. <br>';
-            $contine = true;
-            $generate = true;
-        }
-
-        //Not used, as we have a env sample
-        if ($generate) {
-            $envpath = dirname(__FILE__, 3).'\kiwi\.env.local.php';
-
-            if (!file_exists(dirname(__FILE__, 3).'\kiwi')) {
-                mkdir(dirname(__FILE__, 3).'\kiwi');
-            }
-            $envfile = fopen($envpath, 'w');
-
-            //php start
-            $line = "<?php\n";
-            fwrite($envfile, $line);
-            $line = "return [ \n";
-            fwrite($envfile, $line);
-
-            //production env
-            $line = "\t".'"'.addslashes('APP_DEBUG').'" => "'.addslashes(0).'",'."\n";
-            fwrite($envfile, $line);
-            $line = "\t".'"'.addslashes('APP_ENV').'" => "'.addslashes('prod').'",'."\n";
-            fwrite($envfile, $line);
-
-            $random_val = '';
-            for ($i = 0; $i < 32; ++$i) {
-                $random_val = $random_val.chr(rand(65, 90));
-            }
-
-            $line = "\t".'"'.addslashes('APP_SECRET').'" => "'.addslashes($random_val).'",'."\n";
-            fwrite($envfile, $line);
-
-            $random_val2 = '';
-            for ($i = 0; $i < 16; ++$i) {
-                $random_val2 = $random_val2.chr(rand(65, 90));
-            }
-
-            $line = "\t".'"'.addslashes('USERPROVIDER_KEY').'" => "'.addslashes($random_val2).'",'."\n";
-            fwrite($envfile, $line);
-
-            //bunny
-            if ('bunny' == $sec_type) {
-                $line = "\t".'"'.addslashes('BUNNY_SECRET').'" => "'.addslashes($app_secret).'",'."\n";
-                fwrite($envfile, $line);
-                $line = "\t".'"'.addslashes('BUNNY_ID').'" => "'.addslashes($app_id).'",'."\n";
-                fwrite($envfile, $line);
-                $line = "\t".'"'.addslashes('BUNNY_URL').'" => "'.addslashes($bunny_url).'",'."\n";
-                fwrite($envfile, $line);
-            }
-
-            //mailer
-            if ('stmp' == $email_type) {
-                $line = "\t".'"'.addslashes('MAILER_URL').'" => "'.addslashes($mailer_url).'",'."\n";
-                fwrite($envfile, $line);
-                $line = "\t".'"'.addslashes('DEFAULT_FROM').'" => "'.addslashes($mailer_email).'",'."\n";
-                fwrite($envfile, $line);
-            } else {
-                $line = "\t".'"'.addslashes('MAILER_URL').'" => "'.'null://localhost'.'",'."\n";
-                fwrite($envfile, $line);
-            }
-
-            if ('sqldb' == $db_type) {
-                //database
-                $line = "\t".'"'.addslashes('DATABASE_URL').'" => "';
-                $line = $line.'mysql://'.addslashes($db_username).':'.addslashes($db_password).'@';
-                $line = $line.addslashes($db_host).':3306/'.addslashes($db_name);
-                $line = $line.'?serverVersion=5.7'.'",'."\n";
-                fwrite($envfile, $line);
-            }
-            if ('mariadb' == $db_type) {
-                //database
-                $line = "\t".'"'.addslashes('DATABASE_URL').'" => "';
-                $line = $line.'mysql://'.addslashes($db_username).':'.addslashes($db_password).'@';
-                $line = $line.addslashes($db_host).':3306/'.addslashes($db_name);
-                $line = $line.'?serverVersion=mariadb-10.5.8'.'",'."\n";
-
-                fwrite($envfile, $line);
-            }
-
-            //org name
-            if ('' != $org_name) {
-                $line = "\t".'"'.addslashes('ORG_NAME').'" => "'.addslashes($org_name).'",'."\n";
-                fwrite($envfile, $line);
-            }
-
-            //php end
-            $line = "];\n";
-            fwrite($envfile, $line);
-            $line = '?> ';
-            fwrite($envfile, $line);
-
-            $msg = $msg.'Environment file created. <br>';
-        }
-    }
-
-    if ($contine) {
-        return ['error' => false, 'msg' => $msg];
+    if (count($list) > 1) {
+        $msg .= 'Environment file found. <br>';
     } else {
-        return ['error' => true, 'msg' => $msg];
+        $msg .= 'No environment file found. <br>';
+        $vars = [];
+
+        //production env
+        $vars['APP_DEBUG'] = 0;
+        $vars['APP_ENV'] = 'prod';
+
+        $random_val = '';
+        for ($i = 0; $i < 32; ++$i) {
+            $random_val = $random_val.chr(rand(65, 90));
+        }
+
+        $vars['APP_SECRET'] = $random_val;
+
+        $random_val2 = '';
+        for ($i = 0; $i < 16; ++$i) {
+            $random_val2 = $random_val2.chr(rand(65, 90));
+        }
+
+        $vars['USERPROVIDER_KEY'] = $random_val2;
+
+        //bunny
+        if ('bunny' == $sec_type) {
+            $vars['BUNNY_SECRET'] = $app_secret;
+            $vars['BUNNY_ID'] = $app_id;
+            $vars['BUNNY_URL'] = $bunny_url;
+        }
+
+        //mailer
+        if ('stmp' == $email_type) {
+            $vars['MAILER_URL'] = $mailer_url;
+            $vars['DEFAULT_FROM'] = $mailer_email;
+        } else {
+            $vars['MAILER_URL'] = 'null://localhost';
+        }
+
+        if ('sqldb' == $db_type) {
+            //database
+            $vars['DATABASE_URL'] = 'mysql://'.$db_username.':'.$db_password.'@'.$db_host.':3306/'.$db_name.'?serverVersion=5.7';
+        }
+        if ('mariadb' == $db_type) {
+            //database
+            $vars['DATABASE_URL'] = 'mysql://'.$db_username.':'.$db_password.'@'.$db_host.':3306/'.$db_name.'?serverVersion=mariadb-10.5.8';
+        }
+
+        //org name
+        if ('' != $org_name) {
+            $vars['ORG_NAME'] = $org_name;
+        }
+
+        //php
+        $envpath = dirname(__FILE__, 3).'\kiwi\.env.local.php';
+        if (!file_exists(dirname(__FILE__, 3).'\kiwi')) {
+            mkdir(dirname(__FILE__, 3).'\kiwi');
+        }
+        $envfile = fopen($envpath, 'w');
+
+        //php start
+        $line = "<?php\n";
+        fwrite($envfile, $line);
+        $line = "return [\n";
+        fwrite($envfile, $line);
+
+        foreach ($vars as $key => $value) {
+            $line = "\t".'"'.addslashes($key).'" => "'.addslashes($value).'",'."\n";
+            fwrite($envfile, $line);
+        }
+        
+        $line = "];\n";
+        fwrite($envfile, $line);
+        $line = '?> ';
+        fwrite($envfile, $line);
+
+        $msg .= 'Environment file created. <br>';
     }
+
+    return ['error' => false, 'msg' => $msg];
 }
 
-function download_kiwi($db_host, $db_name, $db_password, $db_username)
+function download_kiwi()
 {
     $msg = '';
-
-    $download = true;
     $backup = false;
 
     $backupPath = dirname(__FILE__, 3).'/backup_kiwi.zip';
 
-    //Used in checks, do not change these vars.
-    $contine = true;
-    $revert = true;
+    //Delete previous temp file and make a new one.
+    $tempPath = dirname(__FILE__, 3).'/tempkiwi.zip';
+    if (file_exists($tempPath)) {
+        unlink($tempPath);
+    }
+    $tempFile = fopen($tempPath, 'w+');
 
-    if ($download) {
-        //Delete previous temp file and make a new one.
-        $tempPath = dirname(__FILE__, 3).'/tempkiwi.zip';
-        if (file_exists($tempPath)) {
-            unlink($tempPath);
-        }
-        $tempFile = fopen($tempPath, 'w+');
+    $release_url = 'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases/latest';
 
-        $release_url = 'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases/latest';
+    $ch = curl_init();
 
-        $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $release_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['User-Agent:jasperweyne']);
 
-        curl_setopt($ch, CURLOPT_URL, $release_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['User-Agent:jasperweyne']);
-
-        $release_info = curl_exec($ch);
-        if (empty(false == curl_error($ch))) {
-            //Fatal error, stop immediatily
-            return 'Curl error found <br>'.curl_error($ch);
-            $contine = false;
-        }
-
-        if ($contine) {
-            $decoded_release_info = json_decode($release_info, true);
-            $download_url = $decoded_release_info['assets']['0']['browser_download_url'];
-
-            curl_setopt($ch, CURLOPT_URL, $download_url);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 50);
-            curl_setopt($ch, CURLOPT_FILE, $tempFile);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-            curl_exec($ch);
-
-            if (empty(false == curl_error($ch))) {
-                //Fatal error, stop immediatily
-                return 'Curl error found. <br>'.curl_error($ch);
-                $contine = false;
-            }
-
-            curl_close($ch);
-            fclose($tempFile);
-            if ($contine) {
-                $msg = $msg.'Kiwi download succesfull. <br>';
-            }
-        }
-
-        //check if there are files to backup.
-        if ($contine) {
-            if (file_exists(dirname(__FILE__, 3).'/kiwi') && file_exists(dirname(__FILE__, 3).'/public_html')) {
-                $msg = $msg.'Legacy kiwi folders found. <br>';
-            } else {
-                $backup = false;
-                $msg = $msg.'No previous kiwi files found. <br>';
-            }
-        }
-
-        if ($contine && $backup) {
-            //backup before overwriting the main file.
-
-            $backup = new ZipArchive();
-            $backup->open($backupPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-            $rootPath = dirname(__FILE__, 3).'/kiwi';
-            $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($rootPath),
-                RecursiveIteratorIterator::LEAVES_ONLY
-            );
-
-            $rootPath = dirname(__FILE__, 3);
-            foreach ($files as $name => $file) {
-                // Skip directories (they would be added automatically)
-                if (!$file->isDir()) {
-                    // Get real and relative path for current file
-                    $filePath = $file->getRealPath();
-                    $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                    // Add current file to archive
-                    $backup->addFile($filePath, $relativePath);
-                }
-            }
-
-            $rootPath = dirname(__FILE__, 3).'/public_html';
-            $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($rootPath),
-                RecursiveIteratorIterator::LEAVES_ONLY
-            );
-
-            $rootPath = dirname(__FILE__, 3);
-            foreach ($files as $name => $file) {
-                // Skip directories (they would be added automatically)
-                if (!$file->isDir()) {
-                    // Get real and relative path for current file
-                    $filePath = $file->getRealPath();
-                    $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                    // Add current file to archive
-                    $backup->addFile($filePath, $relativePath);
-                }
-            }
-            // Zip archive will be created only after closing object
-            $backup->close();
-            $msg = $msg.'Legacy kiwi backup created. <br>';
-        }
-
-        // Unzip the fresh kiwi release.
-        if ($contine) {
-            $zip = new ZipArchive();
-            $zip->open($tempPath);
-            $zip->extractTo(dirname(__FILE__, 3));
-            $zip->close();
-
-            if (file_exists($tempPath)) {
-                unlink($tempPath);
-            }
-            $msg = $msg.'Unzipped the new kiwi files. <br>';
-        }
-    } else {
-        $msg = $msg.'No download. <br>';
+    $release_info = curl_exec($ch);
+    if (empty(!curl_error($ch))) {
+        //Fatal error, stop immediatily
+        return 'Curl error found <br>'.curl_error($ch);
     }
 
-    if ($contine) {
-        return ['error' => false, 'msg' => $msg];
-    } else {
-        return ['error' => true, 'msg' => $msg];
+    $decoded_release_info = json_decode($release_info, true);
+    $download_url = $decoded_release_info['assets']['0']['browser_download_url'];
+
+    curl_setopt($ch, CURLOPT_URL, $download_url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+    curl_setopt($ch, CURLOPT_FILE, $tempFile);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    curl_exec($ch);
+
+    if (empty(!curl_error($ch))) {
+        //Fatal error, stop immediatily
+        return 'Curl error found. <br>'.curl_error($ch);
     }
+
+    curl_close($ch);
+    fclose($tempFile);
+    $msg .= 'Kiwi download succesfull. <br>';
+
+    //check if there are files to backup.
+    if (file_exists(dirname(__FILE__, 3).'/kiwi') && file_exists(dirname(__FILE__, 3).'/public_html')) {
+        $msg .= 'Legacy kiwi folders found. <br>';
+    } else {
+        $backup = false;
+        $msg .= 'No previous kiwi files found. <br>';
+    }
+
+    if ($backup) {
+        //backup before overwriting the main file.
+
+        $backup = new ZipArchive();
+        $backup->open($backupPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        $rootPath = dirname(__FILE__, 3).'/kiwi';
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($rootPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $rootPath = dirname(__FILE__, 3);
+        foreach ($files as $file) {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir()) {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+                // Add current file to archive
+                $backup->addFile($filePath, $relativePath);
+            }
+        }
+
+        $rootPath = dirname(__FILE__, 3).'/public_html';
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($rootPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $rootPath = dirname(__FILE__, 3);
+        foreach ($files as $file) {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir()) {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+                // Add current file to archive
+                $backup->addFile($filePath, $relativePath);
+            }
+        }
+        // Zip archive will be created only after closing object
+        $backup->close();
+        $msg .= 'Legacy kiwi backup created. <br>';
+    }
+
+    // Unzip the fresh kiwi release.
+    $zip = new ZipArchive();
+    $zip->open($tempPath);
+    $zip->extractTo(dirname(__FILE__, 3));
+    $zip->close();
+
+    if (file_exists($tempPath)) {
+        unlink($tempPath);
+    }
+    $msg .= 'Unzipped the new kiwi files. <br>';
+
+    return ['error' => false, 'msg' => $msg];
 }
 
 function database_connect($db_host, $db_name, $db_password, $db_username)
@@ -1878,35 +1353,35 @@ function database_connect($db_host, $db_name, $db_password, $db_username)
     $connection = null;
     if ($contine) {
         $connection = mysqli_connect($db_host, $db_username, $db_password);
-        if (false == $connection) {
-            $msg = $msg.'Could not connect to the database server. <br>';
-            $msg = $msg.mysqli_connect_error().'<br>';
+        if (!$connection) {
+            $msg .= 'Could not connect to the database server. <br>';
+            $msg .= mysqli_connect_error().'<br>';
             $contine = false;
         } else {
-            $msg = $msg.'Succesfully connected to the database server. <br>';
+            $msg .= 'Succesfully connected to the database server. <br>';
         }
     }
 
     if ($contine) {
         if (empty(mysqli_fetch_array(mysqli_query($connection, "SHOW DATABASES LIKE '$db_name'")))) {
-            $msg = $msg.'No matching data base found. <br>';
+            $msg .= 'No matching data base found. <br>';
 
             $sql = "CREATE DATABASE $db_name";
-            if (true === $connection->query($sql)) {
-                $msg = $msg.'Database created successfully.<br>';
+            if ($connection->query($sql)) {
+                $msg .= 'Database created successfully.<br>';
             } else {
-                $msg = $msg.'Error creating database: '.$connection->error.'<br>';
+                $msg .= 'Error creating database: '.$connection->error.'<br>';
                 $contine = false;
             }
         } else {
-            $msg = $msg.'The kiwi database found. <br>';
+            $msg .= 'The kiwi database found. <br>';
             mysqli_select_db($connection, $db_name);
 
             // check if database is empty.
             if (0 == mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(DISTINCT `table_name`) FROM `information_schema`.`columns` WHERE `table_schema` = '$db_name'
             "))[0]) {
                 echo "\n";
-                $msg = $msg.'Database was empty, and usable by kiwi. <br>';
+                $msg .= 'Database was empty, and usable by kiwi. <br>';
             }
         }
     }
@@ -1936,8 +1411,8 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
             require_once dirname(__FILE__, 3).'/kiwi/vendor/autoload.php';
         } catch (Exception $e) {
             $contine = false;
-            $msg = $msg.'Symfony init failed. Symfony error. <br>';
-            $msg = $msg.$e.'<br>';
+            $msg .= 'Symfony init failed. Symfony error. <br>';
+            $msg .= $e.'<br>';
         }
 
         // Initialize symfony, to run symfony and doctine commands.
@@ -1949,8 +1424,8 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
                 require_once dirname(__FILE__, 3).'\kiwi\config\bootstrap.php';
             } catch (Exception $e) {
                 $contine = false;
-                $msg = $msg.'Symfony init failed. Symfony error. <br>';
-                $msg = $msg.$e.'<br>';
+                $msg .= 'Symfony init failed. Symfony error. <br>';
+                $msg .= $e.'<br>';
             }
             // Production enviroment, because dev bundles are not included in the release.
 
@@ -1961,7 +1436,7 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
 
                 $output = new BufferedOutput();
 
-                $msg = $msg.'Symfony initialized. <br>';
+                $msg .= 'Symfony initialized. <br>';
             }
         }
     }
@@ -1979,13 +1454,12 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
         $succes = 0; //$application->run($input,$output);
         //$application->renderThrowable($e, $output);
 
-        $msg = $msg.$output->fetch();
+        $msg .= $output->fetch();
         if (0 == $succes) {
-            $msg = $msg.'Cache warm-up succes. <br>';
+            $msg .= 'Cache warm-up succes. <br>';
         } else {
-            $msg = $msg.'Cache warm-up failed. Symfony error. <br>';
+            $msg .= 'Cache warm-up failed. Symfony error. <br>';
             $contine = false;
-            $revert = true;
         }
     }
 
@@ -2006,39 +1480,38 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
 
         if (false !== strpos($outputtext, 'Could not find any migrations to execute.')) {
             $succes = 0;
-            $msg = $msg.'Database already up-to-date. <br>';
+            $msg .= 'Database already up-to-date. <br>';
         } else {
-            $msg = $msg.$outputtext;
+            $msg .= $outputtext;
         }
 
         if (0 == $succes) {
-            $msg = $msg.'<br>Doctrine migration succes. <br>';
+            $msg .= '<br>Doctrine migration succes. <br>';
         } else {
-            $msg = $msg.'<br>Doctrine migration failed. <br>';
+            $msg .= '<br>Doctrine migration failed. <br>';
             $contine = false;
-            $revert = true;
         }
     }
 
     if ($contine && 'admin' == $sec_type) {
         $input = new ArrayInput([
-            'command' => 'app:create-admin',
+            'command' => 'app:create-account',
             // (optional) define the value of command arguments
             'email' => $admin_email,
             'name' => $admin_name,
             'pass' => $admin_pass,
+            '--admin' => true,
         ]);
 
         $output = new BufferedOutput();
         // Run the command in the symfony framework.
         $succes = $application->run($input, $output);
-        $msg = $msg.$output->fetch();
+        $msg .= $output->fetch();
         if (0 == $succes) {
-            $msg = $msg.'User creation succes. <br>';
+            $msg .= 'User creation succes. <br>';
         } else {
-            $msg = $msg.'User creation failed. <br>';
+            $msg .= 'User creation failed. <br>';
             $contine = false;
-            $revert = true;
         }
     }
 
@@ -2052,8 +1525,6 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
 function restore_from_backup()
 {
     //Backup and stuff.
-
-    $contine = true;
     $msg = '';
 
     $backupPath = dirname(__FILE__, 3).'/backup_kiwi.zip';
@@ -2080,23 +1551,19 @@ function restore_from_backup()
         $zip->extractTo(dirname(__FILE__, 3));
         $zip->close();
 
-        $msg = $msg.'Restored kiwi from the backup. <br>';
+        $msg .= 'Restored kiwi from the backup. <br>';
     } else {
-        $msg = $msg.'No backup found. <br>';
+        $msg .= 'No backup found. <br>';
     }
 
-    if ($contine) {
-        return ['error' => false, 'msg' => $msg];
-    } else {
-        return ['error' => true, 'msg' => $msg];
-    }
+    return ['error' => false, 'msg' => $msg];
 }
 //endregion FUNCTIONS
 
 ?> 
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
-
-
-
-
