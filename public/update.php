@@ -1,38 +1,43 @@
 <?php
 session_start();
 
-$secondsWait = 1000;
+abstract class Step
+{
+    const INTRO = 'intro';
+    const INTRO_INSTALL = 'intro-install';
+    const INTRO_UPDATE = 'intro-update';
+    const DATABASE_CHOICE = 'database-choice';
+    const DATABASE = 'database';
+    const EMAILER_CHOICE= 'emailer-choice';
+    const EMAILER = 'emailer';
+    const SECURITY = 'security';
+    const BUNNY = 'bunny';
+    const ADMIN = 'admin';
+    const CONFIRM_INSTALL = 'confirm-install';
+    const SUCCESS_INSTALL = 'success-install';
+    const FAILURE_INSTALL = 'failure-install';
+    const UPDATE = 'update';
+    const CONFIRM_UPDATE = 'confirm-update';
+    const SUCCESS_UPDATE = 'success-update';
+    const FAILURE_UPDATE = 'failure-update';
+    const PROGRESS_UPDATE = 'progress-update';
+    const PROGRESS_INSTALL = 'progress-install';
+}
 
-//Autoload when installing to display progress.
-if (isset($_SESSION['step']) && isset($_SESSION['install_progress'])) {
-    $step = $_SESSION['step'];
-    $install_progress = $_SESSION['install_progress'];
-    $wait_time = 5;
-    if ('confirm-install' == $step && 'start' == $install_progress) {
-        $secondsWait = $wait_time;
-    }
-    if ('progress-install' == $step) {
-        $secondsWait = $wait_time;
-    }
-    if ('confirm-install' == $step && 'finish' == $install_progress) {
-        $secondsWait = $wait_time;
-    }
-
-    if ('confirm-update' == $step && 'start' == $install_progress) {
-        $secondsWait = $wait_time;
-    }
-    if ('progress-update' == $step) {
-        $secondsWait = $wait_time;
-    }
-    if ('confirm-update' == $step && 'finish' == $install_progress) {
-        $secondsWait = $wait_time;
-    }
+abstract class Progress
+{
+    const START = 'start';
+    const FINISH = 'finish';
+    const DATABASE = 'database';
+    const DOCTRINE = 'doctrine';
+    const DOWNLOAD = 'download';
+    const BACKUP = 'backup';
 }
 
 //Delete session cookie and redirect at button click
 if (isset($_SESSION['step'])) {
     $step = $_SESSION['step'];
-    if (('success-install' == $step || 'success-update' == $step) && isset($_POST['action']) && $step == $_POST['action']) {
+    if ((Step::SUCCESS_INSTALL == $step || Step::SUCCESS_UPDATE == $step) && isset($_POST['action']) && $step == $_POST['action']) {
         unset($_SESSION);
         session_destroy();
         header('Location: /');
@@ -40,11 +45,23 @@ if (isset($_SESSION['step'])) {
     }
 }
 
-header("Refresh:$secondsWait");
+//Autoload when installing to display progress.
+if (isset($_SESSION['step']) && isset($_SESSION['install_progress'])) {
+    $step = $_SESSION['step'];
+    $install_progress = $_SESSION['install_progress'];
+    $wait_time = 5;
+    if (
+        (Step::PROGRESS_INSTALL == $step || Step::PROGRESS_UPDATE == $step) || (
+        (Step::CONFIRM_INSTALL == $step || Step::CONFIRM_UPDATE == $step) && 
+        (Progress::START == $install_progress || Progress::FINISH == $install_progress)
+    )) {
+        header("Refresh:5"); // refresh every 5 seconds
+    }
+}
+
+//region HTML_HEADER
 ?>
-
 <!DOCTYPE HTML>  
-
 <html>
 <style>
     
@@ -173,9 +190,10 @@ header("Refresh:$secondsWait");
             <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
                 <div id="digidecs" class="panel panel-default">
 <?php
+//endregion HTML_HEADER
 
-//Define variables, get the session data for each variable and set to a placeholder if empty in session.
 //region LOAD_SESSION_DATA
+//Define variables, get the session data for each variable and set to a placeholder if empty in session.
 $db_type = $_SESSION['db_type'] ?? '';
 $db_name = $_SESSION['db_name'] ?? '';
 $db_host = $_SESSION['db_host'] ?? '';
@@ -192,8 +210,8 @@ $admin_pass = $_SESSION['admin_pass'] ?? '';
 $app_id = $_SESSION['app_id'] ?? '';
 $app_secret = $_SESSION['app_secret'] ?? '';
 $bunny_url = $_SESSION['bunny_url'] ?? '';
-$step = $_SESSION['step'] ?? 'intro';
-$install_progress = $_SESSION['install_progress'] ?? 'start';
+$step = $_SESSION['step'] ?? Step::INTRO;
+$install_progress = $_SESSION['install_progress'] ?? Progress::START;
 $log = $_SESSION['log'] ?? '';
 $install_error = $_SESSION['install_error'] ?? false;
 //endregion LOAD_SESSION_DATA
@@ -205,43 +223,42 @@ $error_type = 0;
 if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
     //Get the form data, verify the form data and save the form data.
     //region HANDLE_FORM_DATA
-    $keys = array_keys($_POST);
-    foreach ($keys as $key) {
+    foreach ($_POST as $key => $value) {
         switch ($key) {
             case 'db_type':
-                $db_type = trim($_POST[$key]);
-                $_SESSION['db_type'] = $_POST[$key];
+                $db_type = trim($value);
+                $_SESSION['db_type'] = $value;
                 break;
             case 'db_name':
-                $db_name = trim($_POST[$key]);
-                $_SESSION['db_name'] = $_POST[$key];
+                $db_name = trim($value);
+                $_SESSION['db_name'] = $value;
                 break;
             case 'db_host':
-                $db_host = trim($_POST[$key]);
-                $_SESSION['db_host'] = $_POST[$key];
+                $db_host = trim($value);
+                $_SESSION['db_host'] = $value;
                 break;
             case 'db_user':
-                $db_username = trim($_POST[$key]);
-                $_SESSION['db_user'] = $_POST[$key];
+                $db_username = trim($value);
+                $_SESSION['db_user'] = $value;
                 break;
             case 'db_pass':
-                $db_password = trim($_POST[$key]);
-                $_SESSION['db_pass'] = $_POST[$key];
+                $db_password = trim($value);
+                $_SESSION['db_pass'] = $value;
                 break;
             case 'org_name':
-                $org_name = trim($_POST[$key]);
-                $_SESSION['org_name'] = $_POST[$key];
+                $org_name = trim($value);
+                $_SESSION['org_name'] = $value;
                 break;
             case 'email_type':
-                $email_type = trim($_POST[$key]);
-                $_SESSION['email_type'] = $_POST[$key];
+                $email_type = trim($value);
+                $_SESSION['email_type'] = $value;
                 break;
 
             case 'mailer_url':
-                $mailer_url = trim($_POST[$key]);
+                $mailer_url = trim($value);
 
                 if (validate_url($mailer_url)) {
-                    $_SESSION['mailer_url'] = $_POST[$key];
+                    $_SESSION['mailer_url'] = $value;
                 } else {
                     $error = 'The mailer url is incorrect.';
                     $error_type = 'validation';
@@ -250,9 +267,9 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 }
                 break;
             case 'mailer_email':
-                $mailer_email = trim($_POST[$key]);
+                $mailer_email = trim($value);
                 if (validate_email($mailer_email)) {
-                    $_SESSION['mailer_email'] = $_POST[$key];
+                    $_SESSION['mailer_email'] = $value;
                 } else {
                     $error = 'The mailer email is incorrect.';
                     $error_type = 'validation';
@@ -261,13 +278,13 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 }
                 break;
             case 'sec_type':
-                $sec_type = trim($_POST[$key]);
-                $_SESSION['sec_type'] = $_POST[$key];
+                $sec_type = trim($value);
+                $_SESSION['sec_type'] = $value;
                 break;
             case 'bunny_url':
-                $bunny_url = trim($_POST[$key]);
+                $bunny_url = trim($value);
                 if (validate_url($bunny_url)) {
-                    $_SESSION['bunny_url'] = $_POST[$key];
+                    $_SESSION['bunny_url'] = $value;
                 } else {
                     $error = 'The mailer url is incorrect.';
                     $error_type = 'validation';
@@ -276,17 +293,17 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 }
                 break;
             case 'app_id':
-                $app_id = trim($_POST[$key]);
-                $_SESSION['app_id'] = $_POST[$key];
+                $app_id = trim($value);
+                $_SESSION['app_id'] = $value;
                 break;
             case 'app_secret':
-                $app_secret = trim($_POST[$key]);
-                $_SESSION['app_secret'] = $_POST[$key];
+                $app_secret = trim($value);
+                $_SESSION['app_secret'] = $value;
                 break;
             case 'admin_email':
-                $admin_email = trim($_POST[$key]);
+                $admin_email = trim($value);
                 if (validate_email($admin_email)) {
-                    $_SESSION['admin_email'] = $_POST[$key];
+                    $_SESSION['admin_email'] = $value;
                 } else {
                     $error = 'The admin email is incorrect.';
                     $error_type = 'validation';
@@ -295,12 +312,12 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
                 }
                 break;
             case 'admin_name':
-                $admin_name = trim($_POST[$key]);
-                $_SESSION['admin_name'] = $_POST[$key];
+                $admin_name = trim($value);
+                $_SESSION['admin_name'] = $value;
                 break;
             case 'admin_pass':
-                $admin_pass = trim($_POST[$key]);
-                $_SESSION['admin_pass'] = $_POST[$key];
+                $admin_pass = trim($value);
+                $_SESSION['admin_pass'] = $value;
                 break;
             default:
                 break;
@@ -312,92 +329,92 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
     //region HANDLE_BUTTON_NEXT
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
-            case 'intro-install':
-                $step = 'database-choice';
-                $_SESSION['step'] = 'database-choice';
+            case Step::INTRO_INSTALL:
+                $step = Step::DATABASE_CHOICE;
+                $_SESSION['step'] = Step::DATABASE_CHOICE;
                 break;
-            case 'database-choice':
-                $step = 'database';
-                $_SESSION['step'] = 'database';
+            case Step::DATABASE_CHOICE:
+                $step = Step::DATABASE;
+                $_SESSION['step'] = Step::DATABASE;
                 break;
-            case 'database':
-                $step = 'emailer-choice';
-                $_SESSION['step'] = 'emailer-choice';
+            case Step::DATABASE:
+                $step = Step::EMAILER_CHOICE;
+                $_SESSION['step'] = Step::EMAILER_CHOICE;
                 break;
-            case 'emailer-choice':
+            case Step::EMAILER_CHOICE:
                 if ('stmp' == $_POST['email_type']) {
-                    $step = 'emailer';
-                    $_SESSION['step'] = 'emailer';
+                    $step = Step::EMAILER;
+                    $_SESSION['step'] = Step::EMAILER;
                 }
                 if ('noemail' == $_POST['email_type']) {
-                    $step = 'security';
-                    $_SESSION['step'] = 'security';
+                    $step = Step::SECURITY;
+                    $_SESSION['step'] = Step::SECURITY;
                 }
                 break;
-            case 'emailer':
-                $step = 'security';
-                $_SESSION['step'] = 'security';
+            case Step::EMAILER:
+                $step = Step::SECURITY;
+                $_SESSION['step'] = Step::SECURITY;
                 break;
-            case 'security':
+            case Step::SECURITY:
 
                 if ('admin' == $_POST['sec_type']) {
-                    $step = 'admin';
-                    $_SESSION['step'] = 'admin';
+                    $step = Step::ADMIN;
+                    $_SESSION['step'] = Step::ADMIN;
                 }
                 if ('bunny' == $_POST['sec_type']) {
-                    $step = 'bunny';
-                    $_SESSION['step'] = 'bunny';
+                    $step = Step::BUNNY;
+                    $_SESSION['step'] = Step::BUNNY;
                 }
                 break;
-            case 'bunny':
-            case 'admin':
-                $step = 'confirm-install';
-                $_SESSION['step'] = 'confirm-install';
+            case Step::BUNNY:
+            case Step::ADMIN:
+                $step = Step::CONFIRM_INSTALL;
+                $_SESSION['step'] = Step::CONFIRM_INSTALL;
                 break;
 
-            case 'confirm-install':
-                $step = 'progress-install';
-                $_SESSION['step'] = 'progress-install';
-                $install_progress = 'start';
+            case Step::CONFIRM_INSTALL:
+                $step = Step::PROGRESS_INSTALL;
+                $_SESSION['step'] = Step::PROGRESS_INSTALL;
+                $install_progress = Progress::START;
 
-                $_SESSION['install_progress'] = 'start';
+                $_SESSION['install_progress'] = Progress::START;
                 break;
 
-            case 'success-install':
-            case 'success-update':
+            case Step::SUCCESS_INSTALL:
+            case Step::SUCCESS_UPDATE:
                 $step = 'go-to-kiwi';
                 $_SESSION['step'] = 'go-to-kiwi';
                 break;
-            case 'failure-install':
-                $step = 'database-choice';
-                $_SESSION['step'] = 'database-choice';
-                $install_progress = 'start';
+            case Step::FAILURE_INSTALL:
+                $step = Step::DATABASE_CHOICE;
+                $_SESSION['step'] = Step::DATABASE_CHOICE;
+                $install_progress = Progress::START;
 
-                $_SESSION['install_progress'] = 'start';
+                $_SESSION['install_progress'] = Progress::START;
                 $log = '';
                 $_SESSION['log'] = '';
                 break;
 
-            case 'intro-update':
-                case 'update':
-                $step = 'confirm-update';
-                $_SESSION['step'] = 'confirm-update';
+            case Step::INTRO_UPDATE:
+            case Step::UPDATE:
+                $step = Step::CONFIRM_UPDATE;
+                $_SESSION['step'] = Step::CONFIRM_UPDATE;
                 break;
 
-            case 'confirm-update':
-                $step = 'progress-update';
-                $_SESSION['step'] = 'progress-update';
-                $install_progress = 'start';
+            case Step::CONFIRM_UPDATE:
+                $step = Step::PROGRESS_UPDATE;
+                $_SESSION['step'] = Step::PROGRESS_UPDATE;
+                $install_progress = Progress::START;
 
-                $_SESSION['install_progress'] = 'start';
+                $_SESSION['install_progress'] = Progress::START;
                 break;
 
-            case 'failure-update':
-                $step = 'update';
-                $_SESSION['step'] = 'update';
+            case Step::FAILURE_UPDATE:
+                $step = Step::UPDATE;
+                $_SESSION['step'] = Step::UPDATE;
 
-                $install_progress = 'start';
-                $_SESSION['install_progress'] = 'start';
+                $install_progress = Progress::START;
+                $_SESSION['install_progress'] = Progress::START;
 
                 $log = '';
                 $_SESSION['log'] = '';
@@ -414,68 +431,63 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
     //region HANDLE_BUTTON_BACK
     if (isset($_POST['back'])) {
         switch ($_POST['back']) {
-            case 'intro-update':
-            case 'intro-install':
-                $step = 'intro';
-                $_SESSION['step'] = 'intro';
+            case Step::INTRO_UPDATE:
+            case Step::INTRO_INSTALL:
+                $step = Step::INTRO;
+                $_SESSION['step'] = Step::INTRO;
                 break;
-            case 'database-choice':
-                $step = 'intro-install';
-                $_SESSION['step'] = 'intro-install';
+            case Step::DATABASE_CHOICE:
+                $step = Step::INTRO_INSTALL;
+                $_SESSION['step'] = Step::INTRO_INSTALL;
                 break;
-            case 'database':
-                $step = 'database-choice';
-                $_SESSION['step'] = 'database-choice';
+            case Step::DATABASE:
+                $step = Step::DATABASE_CHOICE;
+                $_SESSION['step'] = Step::DATABASE_CHOICE;
                 break;
-            case 'emailer-choice':
-                $step = 'database';
-                $_SESSION['step'] = 'database';
+            case Step::EMAILER_CHOICE:
+                $step = Step::DATABASE;
+                $_SESSION['step'] = Step::DATABASE;
                 break;
-            case 'emailer':
-                $step = 'emailer-choice';
-                $_SESSION['step'] = 'emailer-choice';
+            case Step::EMAILER:
+                $step = Step::EMAILER_CHOICE;
+                $_SESSION['step'] = Step::EMAILER_CHOICE;
                 break;
-            case 'security':
+            case Step::SECURITY:
                 if ('stmp' == $email_type) {
-                    $step = 'emailer';
-                    $_SESSION['step'] = 'emailer';
+                    $step = Step::EMAILER;
+                    $_SESSION['step'] = Step::EMAILER;
                 } else {
-                    $step = 'emailer-choice';
-                    $_SESSION['step'] = 'emailer-choice';
+                    $step = Step::EMAILER_CHOICE;
+                    $_SESSION['step'] = Step::EMAILER_CHOICE;
                 }
                 break;
-            case 'bunny':
-            case 'admin':
-                $step = 'security';
-                $_SESSION['step'] = 'security';
+            case Step::BUNNY:
+            case Step::ADMIN:
+                $step = Step::SECURITY;
+                $_SESSION['step'] = Step::SECURITY;
                 break;
-            case 'update':
-                $step = 'intro-update';
-                $_SESSION['step'] = 'intro-update';
+            case Step::UPDATE:
+                $step = Step::INTRO_UPDATE;
+                $_SESSION['step'] = Step::INTRO_UPDATE;
                 break;
-            case 'confirm-install':
+            case Step::CONFIRM_INSTALL:
                 if ('bunny' == $sec_type) {
-                    $step = 'bunny';
-                    $_SESSION['step'] = 'bunny';
+                    $step = Step::BUNNY;
+                    $_SESSION['step'] = Step::BUNNY;
                 } else {
-                    $step = 'admin';
-                    $_SESSION['step'] = 'admin';
+                    $step = Step::ADMIN;
+                    $_SESSION['step'] = Step::ADMIN;
                 }
                 break;
-            case 'confirm-update':
-                $step = 'update';
-                $_SESSION['step'] = 'update';
+            case Step::CONFIRM_UPDATE:
+                $step = Step::UPDATE;
+                $_SESSION['step'] = Step::UPDATE;
                 break;
 
-            case 'success-install':
-                $step = 'success-install';
-                $_SESSION['step'] = 'success-install';
+            case Step::SUCCESS_INSTALL:
+                $step = Step::SUCCESS_INSTALL;
+                $_SESSION['step'] = Step::SUCCESS_INSTALL;
                 break;
-            case 'end-update':
-                $step = 'end-update';
-                $_SESSION['step'] = 'success-install';
-                break;
-
             default:
 
                 break;
@@ -485,9 +497,9 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
 }
 
 //region INSTALL_PROGRESS
-if ('progress-install' == $step) {
+if (Step::PROGRESS_INSTALL == $step) {
     switch ($install_progress) {
-        case 'start':
+        case Progress::START:
             $generate_env = true;
             if ($generate_env) {
                 $result = generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type);
@@ -495,21 +507,21 @@ if ('progress-install' == $step) {
                 $log .= $result['msg'];
             }
 
-            $install_progress = 'database';
+            $install_progress = Progress::DATABASE;
             break;
 
-        case 'database':
+        case Progress::DATABASE:
             $check_database = true;
             if ($check_database) {
-                $result = database_connect($db_host, $db_name, $db_password, $db_username, $db_type);
+                $result = database_connect($db_host, $db_name, $db_password, $db_username);
                 $install_error = $result['error'];
                 $log .= $result['msg'];
             }
 
-            $install_progress = 'download';
+            $install_progress = Progress::DOWNLOAD;
             break;
 
-        case'download':
+        case Progress::DOWNLOAD:
             $download_kiwi = true;
             if ($download_kiwi) {
                 $result = download_kiwi();
@@ -517,10 +529,10 @@ if ('progress-install' == $step) {
                 $log .= $result['msg'];
             }
 
-            $install_progress = 'doctrine';
+            $install_progress = Progress::DOCTRINE;
             break;
 
-        case 'doctrine':
+        case Progress::DOCTRINE:
             $doctrine = true;
             if ($doctrine) {
                 var_dump($install_progress);
@@ -529,11 +541,11 @@ if ('progress-install' == $step) {
                 $log .= $result['msg'];
             }
 
-            $install_progress = 'finish';
+            $install_progress = Progress::FINISH;
 
             break;
 
-        case'backup':
+        case Progress::BACKUP:
             $backup = false;
             if ($backup) {
                 $result = restore_from_backup();
@@ -541,32 +553,32 @@ if ('progress-install' == $step) {
                 $log .= $result['msg'];
             }
 
-            $install_progress = 'finish';
+            $install_progress = Progress::FINISH;
             break;
     }
 
-    if ('finish' == $install_progress) {
-        $step = 'success-install';
+    if (Progress::FINISH == $install_progress) {
+        $step = Step::SUCCESS_INSTALL;
     } else {
-        $step = 'progress-install';
+        $step = Step::PROGRESS_INSTALL;
     }
 
     if ($install_error) {
-        $step = 'failure-install';
+        $step = Step::FAILURE_INSTALL;
     }
 }
 
 //endregion INSTALL_PROGRESS
 
 //region UPDATE_PROGRESS
-if ('progress-update' == $step) {
+if (Step::PROGRESS_UPDATE == $step) {
     switch ($install_progress) {
-        case 'start':
+        case Progress::START:
 
-            $install_progress = 'download';
+            $install_progress = Progress::DOWNLOAD;
             break;
 
-        case'download':
+        case Progress::DOWNLOAD:
             $download_kiwi = true;
             if ($download_kiwi) {
                 $result = download_kiwi();
@@ -574,10 +586,10 @@ if ('progress-update' == $step) {
                 $log .= $result['msg'];
             }
 
-            $install_progress = 'doctrine';
+            $install_progress = Progress::DOCTRINE;
             break;
 
-        case 'doctrine':
+        case Progress::DOCTRINE:
             $doctrine = true;
             if ($doctrine) {
                 $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
@@ -585,32 +597,32 @@ if ('progress-update' == $step) {
                 $log .= $result['msg'];
             }
             if ($install_error) {
-                $install_progress = 'backup';
+                $install_progress = Progress::BACKUP;
             } else {
-                $install_progress = 'finish';
+                $install_progress = Progress::FINISH;
             }
 
             break;
 
-        case'backup':
+        case Progress::BACKUP:
             $backup = false;
             if ($backup) {
                 $result = restore_from_backup();
                 $log .= $result['msg'];
             }
 
-            $install_progress = 'finish';
+            $install_progress = Progress::FINISH;
             break;
     }
 
-    if ('finish' == $install_progress) {
-        $step = 'success-update';
+    if (Progress::FINISH == $install_progress) {
+        $step = Step::SUCCESS_UPDATE;
     } else {
-        $step = 'progress-update';
+        $step = Step::PROGRESS_UPDATE;
     }
 
     if ($install_error) {
-        $step = 'failure-update';
+        $step = Step::FAILURE_UPDATE;
     }
 }
 //endregion UPDATE_PROGRESS
@@ -622,7 +634,7 @@ $_SESSION['step'] = $step;
 $_SESSION['install_progress'] = $install_progress;
 
 //region HTML_FORMS
-if ('intro' == $step): ?>
+if (Step::INTRO == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Updaten of installeren</h3>
     </div>
@@ -636,7 +648,7 @@ if ('intro' == $step): ?>
         </form>
                 
     </div>
-<?php elseif ('intro-install' == $step): ?>
+<?php elseif (Step::INTRO_INSTALL == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Installeren</h3>
     </div>
@@ -645,12 +657,12 @@ if ('intro' == $step): ?>
         <p>Welkom by de kiwi installatie optie. </p>
         <?php echo print_error_message($error, $error_type);  $new_install = detect_kiwi(); ?>
         <form role="form" method="post">
-            <input type="hidden" name="action" value="intro-install" />
+            <input type="hidden" name="action" value="<?php echo Step::INTRO_INSTALL ?>" />
             <input type="submit" class="button grow" value="start instelling" />
         </form>
                 
     </div>
-<?php elseif ('database-choice' == $step): ?>
+<?php elseif (Step::DATABASE_CHOICE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Database configuratie </h3>
     </div>
@@ -660,7 +672,7 @@ if ('intro' == $step): ?>
         <p>Kies de database van de server. </p>
         <?php echo print_error_message($error, $error_type); ?>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="database-choice" />
+            <input type="hidden" name="action" value="<?php echo Step::DATABASE_CHOICE ?>" />
 
             <div class="form-group">
                 <label class="radio-inline"><input type="radio" name="db_type" value="mariadb" <?php if ('mariadb' == $db_type) {?>checked<?php }?>>Maria DB</label>
@@ -671,12 +683,12 @@ if ('intro' == $step): ?>
         </form>
         
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="database-choice" />
+            <input type="hidden" name="back" value="<?php echo Step::DATABASE_CHOICE ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form> 
 
     </div>
-<?php elseif ('database' == $step): ?>
+<?php elseif (Step::DATABASE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Database configuratie </h3>
     </div>
@@ -689,7 +701,7 @@ if ('intro' == $step): ?>
         <p><span class="error">* required field</span></p>
                         
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="database" />
+            <input type="hidden" name="action" value="<?php echo Step::DATABASE ?>" />
             <div class="form-group">
                 <label for="db_name">Database name<sup>*</sup></label>
                 <input type="text" class="form-control" id="db_name" name="db_name" placeholder=""
@@ -722,12 +734,12 @@ if ('intro' == $step): ?>
             <input type="submit" class="button grow" value="Bouw database!">
         </form>             
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="database" />
+            <input type="hidden" name="back" value="<?php echo Step::DATABASE ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form> 
 
     </div>
-<?php elseif ('emailer-choice' == $step): ?>
+<?php elseif (Step::EMAILER_CHOICE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Organisatie naam en email. </h3>
     </div>
@@ -737,7 +749,7 @@ if ('intro' == $step): ?>
         <p>Bepaal de organisatienaam en bepaal de email service. </p>
         <?php echo print_error_message($error, $error_type); ?>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="emailer-choice" />
+            <input type="hidden" name="action" value="<?php echo Step::EMAILER_CHOICE ?>" />
             
             <div class="form-group">
                 <label for="org_name">Organisatie naam</label>
@@ -756,12 +768,12 @@ if ('intro' == $step): ?>
         </form>
         
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="emailer-choice" />
+            <input type="hidden" name="back" value="<?php echo Step::EMAILER_CHOICE ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form> 
 
     </div>
-<?php elseif ('emailer' == $step): ?>
+<?php elseif (Step::EMAILER == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Email configuratie</h3>
     </div>
@@ -773,7 +785,7 @@ if ('intro' == $step): ?>
         <p><span class="error">* required field</span></p>
                         
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="emailer" />
+            <input type="hidden" name="action" value="<?php echo Step::EMAILER ?>" />
 
             <div class="form-group">
                     <label for="mailer_url">Swift mailer URL<sup>*</sup></label>
@@ -793,12 +805,12 @@ if ('intro' == $step): ?>
             <input type="submit" class="button grow" value="Bam email">
         </form> 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="emailer" />
+            <input type="hidden" name="back" value="<?php echo Step::EMAILER ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form> 
         
     </div>
-<?php elseif ('security' == $step): ?>
+<?php elseif (Step::SECURITY == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Security</h3>
     </div>
@@ -808,7 +820,7 @@ if ('intro' == $step): ?>
         <?php echo print_error_message($error, $error_type); ?>
 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="security" />
+            <input type="hidden" name="action" value="<?php echo Step::SECURITY ?>" />
             
             <div class="form-group">
                 <label class="radio-inline"><input type="radio" name="sec_type" value="admin" <?php if ('admin' == $sec_type) { ?>checked<?php } ?>>Lokale userdata</label>
@@ -818,12 +830,12 @@ if ('intro' == $step): ?>
             <input type="submit" class="button grow" value="Security instellen">
         </form> 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="security" />
+            <input type="hidden" name="back" value="<?php echo Step::SECURITY ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form> 
                                 
     </div>
-<?php elseif ('bunny' == $step): ?>
+<?php elseif (Step::BUNNY == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Bunny</h3>
     </div>
@@ -834,7 +846,7 @@ if ('intro' == $step): ?>
         <p><span class="error">* required field</span></p>
                         
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="bunny" />
+            <input type="hidden" name="action" value="<?php echo Step::BUNNY ?>" />
             <div class="form-group">
                 <label for="app_id">App id<sup>*</sup></label>
                 <input type="text" class="form-control" id="app_id" name="app_id" placeholder=""
@@ -858,11 +870,11 @@ if ('intro' == $step): ?>
             <input type="submit" class="button grow" value="Configueer bunny">
         </form> 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="bunny" />
+            <input type="hidden" name="back" value="<?php echo Step::BUNNY ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form>                        
     </div>
-<?php elseif ('admin' == $step): ?>
+<?php elseif (Step::ADMIN == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Admin instellingen</h3>
     </div>
@@ -873,7 +885,7 @@ if ('intro' == $step): ?>
         <p><span class="error">* required field</span></p>
                         
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="admin" />
+            <input type="hidden" name="action" value="<?php echo Step::ADMIN ?>" />
             <div class="form-group">
                 <label for="admin_email">Admin email<sup>*</sup></label>
                 <input type="text" class="form-control" id="admin_email" name="admin_email" placeholder=""
@@ -897,11 +909,11 @@ if ('intro' == $step): ?>
             <input type="submit" class="button grow" value="Construct account">
         </form>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="admin" />
+            <input type="hidden" name="back" value="<?php echo Step::ADMIN ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form>                           
     </div>
-<?php elseif ('confirm-install' == $step): ?>
+<?php elseif (Step::CONFIRM_INSTALL == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Check alle data.</h3>
     </div>
@@ -910,15 +922,15 @@ if ('intro' == $step): ?>
         <p>Kiwi is klaar om te installeren.</p>
         <?php echo print_error_message($error, $error_type); ?>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="action" value="confirm-install" />
+            <input type="hidden" name="action" value="<?php echo Step::CONFIRM_INSTALL ?>" />
             <input type="submit" class="button grow" value="Conformeer installatie.">
         </form>   
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="back" value="confirm-install" />
+            <input type="hidden" name="back" value="<?php echo Step::CONFIRM_INSTALL ?>" />
             <input type="submit" class="button grow" value="Stap terug.">
         </form>   
     </div>
-<?php elseif ('success-install' == $step): ?>
+<?php elseif (Step::SUCCESS_INSTALL == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Succesvolle installatie</h3>
     </div>
@@ -931,13 +943,13 @@ if ('intro' == $step): ?>
         <p> <?php echo $log; ?></p>
 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="action" value="success-install" />
+            <input type="hidden" name="action" value="<?php echo Step::SUCCESS_INSTALL ?>" />
             <input type="submit" class="button grow" value="Ga naar kiwi.">
         </form>  
 
     </div>
 
-<?php elseif ('failure-install' == $step): ?>
+<?php elseif (Step::FAILURE_INSTALL == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Gefaalde installatie</h3>
     </div>
@@ -950,12 +962,12 @@ if ('intro' == $step): ?>
         <p> <?php echo $log; ?></p>
 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="action" value="failure-install" />
+            <input type="hidden" name="action" value="<?php echo Step::FAILURE_INSTALL ?>" />
             <input type="submit" class="button grow" value="Probeer het opnieuw.">
         </form>  
 
     </div>
-<?php elseif ('intro-update' == $step): ?>
+<?php elseif (Step::INTRO_UPDATE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Updaten of installeren</h3>
     </div>
@@ -964,12 +976,12 @@ if ('intro' == $step): ?>
         <p>Welkom by de kiwi update of installatie optie. </p>
         <?php echo print_error_message($error, $error_type);  $new_install = detect_kiwi(); ?>
         <form role="form" method="post">
-            <input type="hidden" name="action" value="intro-update" />
+            <input type="hidden" name="action" value="<?php echo Step::INTRO_UPDATE ?>" />
             <input type="submit" class="button grow" value="intro" />
         </form>
                 
     </div>
-<?php elseif ('update' == $step): ?>
+<?php elseif (Step::UPDATE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Updaten</h3>
     </div>
@@ -980,12 +992,12 @@ if ('intro' == $step): ?>
         <?php echo print_error_message($error, $error_type); ?>
                         
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="update" />
+            <input type="hidden" name="action" value="<?php echo Step::UPDATE ?>" />
 
             <input type="submit" class="button grow" value="Start Update.">
         </form>                        
     </div>
-<?php elseif ('confirm-update' == $step): ?>
+<?php elseif (Step::CONFIRM_UPDATE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Update.</h3>
     </div>
@@ -995,13 +1007,13 @@ if ('intro' == $step): ?>
         <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
         <?php echo print_error_message($error, $error_type); ?>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="action" value="confirm-update" />
+            <input type="hidden" name="action" value="<?php echo Step::CONFIRM_UPDATE ?>" />
             <input type="submit" class="button grow" value="Start update">
         </form>   
         
     </div>
 
-<?php elseif ('success-update' == $step): ?>
+<?php elseif (Step::SUCCESS_UPDATE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Succesvolle update</h3>
     </div>
@@ -1014,13 +1026,13 @@ if ('intro' == $step): ?>
         <p> <?php echo $log; ?></p>
 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="action" value="success-update" />
+            <input type="hidden" name="action" value="<?php echo Step::SUCCESS_UPDATE ?>" />
             <input type="submit" class="button grow" value="Ga naar kiwi.">
         </form>  
 
     </div>
 
-<?php elseif ('failure-update' == $step):  ?>
+<?php elseif (Step::FAILURE_UPDATE == $step):  ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Gefaalde update</h3>
     </div>
@@ -1034,12 +1046,12 @@ if ('intro' == $step): ?>
         <p> <?php echo $log; ?></p>
 
         <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-            <input type="hidden" name="action" value="failure-update" />
+            <input type="hidden" name="action" value="<?php echo Step::FAILURE_UPDATE ?>" />
             <input type="submit" class="button grow" value="Probeer het opnieuw.">
         </form>  
 
     </div>
-<?php elseif ('progress-update' == $step): ?>
+<?php elseif (Step::PROGRESS_UPDATE == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Aan het updaten. </h3>
     </div>
@@ -1051,7 +1063,7 @@ if ('intro' == $step): ?>
         <?php echo print_error_message($error, $error_type); ?>
         
     </div>
-<?php elseif ('progress-install' == $step): ?>
+<?php elseif (Step::PROGRESS_INSTALL == $step): ?>
     <div class="panel-heading">
         <h3 class="panel-title">Helpless Kiwi &mdash; Aan het installeren. </h3>
     </div>
@@ -1104,11 +1116,11 @@ function detect_kiwi_value()
     $detected = detect_kiwi();
 
     if ($detected) {
-        echo 'intro-update';
+        echo Step::INTRO_UPDATE;
 
         return true;
     } else {
-        echo 'intro-install';
+        echo Step::INTRO_INSTALL;
 
         return $detected;
     }
@@ -1141,12 +1153,8 @@ function refill($var)
 function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type)
 {
     $msg = '';
-
-    //Generate env files.
-    $envpath = dirname(__FILE__, 3).'\kiwi\.env*';
-    $list = glob($envpath);
-
-    if (count($list) > 1) {
+    
+    if (detect_kiwi()) {
         $msg .= 'Environment file found. <br>';
     } else {
         $msg .= 'No environment file found. <br>';
@@ -1399,11 +1407,7 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
     $contine = true;
 
     //Doctrine commands
-    $input = null;
-    $output = null;
-    $kernel = null;
     $application = null;
-    $env = null;
     if ($contine) {
         set_time_limit(0);
 
@@ -1430,36 +1434,12 @@ function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
             // Production enviroment, because dev bundles are not included in the release.
 
             if ($contine) {
-                $kernel = new Kernel($_SERVER['APP_ENV'], (bool) true, dirname(__DIR__, 3));
+                $kernel = new Kernel($_SERVER['APP_ENV'], (bool) true);
                 $application = new Application($kernel);
                 $application->setAutoExit(false);
 
-                $output = new BufferedOutput();
-
                 $msg .= 'Symfony initialized. <br>';
             }
-        }
-    }
-
-    // Warm up the cache
-    if ($contine) {
-        $input = new ArrayInput([
-            'command' => 'cache:warmup',
-            // (optional) define the value of command arguments
-            '--env' => 'prod',
-        ]);
-
-        $output = new BufferedOutput();
-        // Run the command in the symfony framework.
-        $succes = 0; //$application->run($input,$output);
-        //$application->renderThrowable($e, $output);
-
-        $msg .= $output->fetch();
-        if (0 == $succes) {
-            $msg .= 'Cache warm-up succes. <br>';
-        } else {
-            $msg .= 'Cache warm-up failed. Symfony error. <br>';
-            $contine = false;
         }
     }
 
