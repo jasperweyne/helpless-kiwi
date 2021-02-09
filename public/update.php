@@ -1,5 +1,6 @@
 <?php
 session_start();
+set_time_limit(0);
 
 abstract class Step
 {
@@ -36,7 +37,11 @@ abstract class Progress
 class Log
 {
     static function msg(string $msg) {
-        $_SESSION['log'] .= $msg . "<br>";
+        $_SESSION['log'] .= str_replace("\n", "<br>", $msg) . "<br>";
+    }
+    
+    static function console(string $msg) {
+        self::msg("<pre>".$msg."</pre>");
     }
 }
 
@@ -72,7 +77,7 @@ if (isset($_SESSION['step']) && isset($_SESSION['install_progress'])) {
         (Step::CONFIRM_INSTALL == $_SESSION['step'] || Step::CONFIRM_UPDATE == $_SESSION['step']) &&
         (Progress::START == $_SESSION['install_progress'] || Progress::FINISH == $_SESSION['install_progress'])
     )) {
-        header("Refresh:5"); // refresh every 5 seconds
+        header("Refresh:1"); // refresh a second after previous action
     }
 }
 
@@ -307,8 +312,8 @@ $screens = [
             <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
 
             <div class="form-group">
-                <label class="radio-inline"><input type="radio" name="sec_type" value="admin" <?php if ('admin' == $sec_type) { ?>checked<?php } ?>>Lokale userdata</label>
-                <label class="radio-inline"><input type="radio" name="sec_type" value="bunny" <?php if ('admin' != $sec_type) { ?>checked<?php } ?>>Bunny</label>
+                <label class="radio-inline"><input type="radio" name="sec_type" value="admin" <?php if ('bunny' != $sec_type) { ?>checked<?php } ?>>Lokale userdata</label>
+                <label class="radio-inline"><input type="radio" name="sec_type" value="bunny" <?php if ('bunny' == $sec_type) { ?>checked<?php } ?>>Bunny</label>
             </div>
 
             <input type="submit" class="button grow" value="Security instellen">
@@ -476,6 +481,7 @@ $screens = [
             'action' => function(){
                 unset($_SESSION);
                 session_destroy();
+                $_SESSION['step'] = Step::INTRO;
             },
         ]),
     Step::UPDATE => new Screen('Updaten', function(){ ?>
@@ -503,10 +509,10 @@ $screens = [
         <h4>Log:</h4>
         <p> <?php echo $_SESSION['log']; ?></p>
 
-        <?php form_button("Ga naar kiwi."); ?>
+        <?php form_button("Ga naar kiwi.", "action"); ?>
 
         <?php }, [
-            'action' => 'go-to-kiwi',
+            'action' => Step::SUCCESS_UPDATE,
         ]),
     Step::PROGRESS_UPDATE => new Screen('Aan het updaten', function(){ ?>
         <p>Kiwi is aan het updaten, dit kan enkele minuten duren. </p>
@@ -515,39 +521,28 @@ $screens = [
         <?php }, [], function() use ($sec_type, $admin_email, $admin_name, $admin_pass) {
             switch ($_SESSION['install_progress']) {
                 case Progress::START:
+                    extend_time_limit();
                     $_SESSION['install_progress'] = Progress::DOWNLOAD;
                     break;
 
                 case Progress::DOWNLOAD:
-                    $download_kiwi = true;
-                    if ($download_kiwi) {
-                        $result = download_kiwi();
-                        $_SESSION['install_error'] = !$result;
-                    }
-
+                    $result = download_kiwi();
+                    $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DOCTRINE;
                     break;
 
                 case Progress::DOCTRINE:
-                    $doctrine = true;
-                    if ($doctrine) {
-                        $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
-                        $_SESSION['install_error'] = !$result;
-                    }
+                    $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
+                    $_SESSION['install_error'] = !$result;
                     if ($_SESSION['install_error']) {
                         $_SESSION['install_progress'] = Progress::BACKUP;
                     } else {
                         $_SESSION['install_progress'] = Progress::FINISH;
                     }
-
                     break;
 
                 case Progress::BACKUP:
-                    $backup = false;
-                    if ($backup) {
-                        restore_from_backup();
-                    }
-
+                    restore_backup();
                     $_SESSION['install_progress'] = Progress::FINISH;
                     break;
             }
@@ -569,52 +564,35 @@ $screens = [
         <?php }, [], function() use ($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type,  $admin_email, $admin_name, $admin_pass) {
             switch ($_SESSION['install_progress']) {
                 case Progress::START:
-                    $generate_env = true;
-                    if ($generate_env) {
-                        $result = generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type);
-                        $_SESSION['install_error'] = !$result;
-                    }
-        
+                    $result = generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type);
+                    $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DATABASE;
                     break;
         
                 case Progress::DATABASE:
-                    $check_database = true;
-                    if ($check_database) {
-                        $result = database_connect($db_host, $db_name, $db_password, $db_username);
-                        $_SESSION['install_error'] = !$result;
-                    }
-        
+                    $result = database_connect($db_host, $db_name, $db_password, $db_username);
+                    $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DOWNLOAD;
                     break;
         
                 case Progress::DOWNLOAD:
-                    $download_kiwi = true;
-                    if ($download_kiwi) {
-                        $result = download_kiwi();
-                        $_SESSION['install_error'] = !$result;
-                    }
-        
+                    $result = download_kiwi();
+                    $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DOCTRINE;
                     break;
         
                 case Progress::DOCTRINE:
-                    $doctrine = true;
-                    if ($doctrine) {
-                        $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
-                        $_SESSION['install_error'] = !$result;
+                    $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
+                    $_SESSION['install_error'] = !$result;
+                    if ($_SESSION['install_error']) {
+                        $_SESSION['install_progress'] = Progress::BACKUP;
+                    } else {
+                        $_SESSION['install_progress'] = Progress::FINISH;
                     }
-        
-                    $_SESSION['install_progress'] = Progress::FINISH;
-        
                     break;
         
                 case Progress::BACKUP:
-                    $backup = false;
-                    if ($backup) {
-                        restore_from_backup();
-                    }
-        
+                    restore_backup();
                     $_SESSION['install_progress'] = Progress::FINISH;
                     break;
             }
@@ -631,8 +609,8 @@ $screens = [
         }),
 ];
 
-
 set_exception_handler(function($exception) use ($screens) {
+    Log::console($exception);
     $_SESSION['step'] = Step::FAILURE;
     render($screens[$_SESSION['step']], null, 0);
 });
@@ -661,9 +639,13 @@ render($step, $error, $error_type);
 //region FUNCTIONS
 
 use App\Kernel;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Query\QueryException;
+use Doctrine\ORM\UnexpectedResultException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 function form_button($label="Terug", $name="back")
 {
@@ -796,15 +778,12 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
         //php
         $envdir = dirname(__FILE__, 3).'/kiwi';
         $envpath = $envdir.'/.env.local.php';
-        if (!file_exists($envdir)) {
-            $success = mkdir($envdir);
-            if (!$success) {
-                Log::msg("Could not create folder {$envdir}, make sure the parent directory is writable.");
-                return false;
-            }
+        if (!file_exists($envdir) && !mkdir($envdir)) {
+            Log::msg("Could not create folder {$envdir}, make sure the parent directory is writable.");
+            return false;
         }
-        $envfile = fopen($envpath, 'w');
         
+        $envfile = fopen($envpath, 'w');
         if (!$envfile) {
             Log::msg("Could not write to {$envpath}, make sure the directory is writable.");
             return false;
@@ -826,10 +805,6 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
 
 function download_kiwi()
 {
-    $backup = false;
-
-    $backupPath = dirname(__FILE__, 3).'/backup_kiwi.zip';
-
     //Delete previous temp file and make a new one.
     $tempPath = dirname(__FILE__, 3).'/tempkiwi.zip';
     if (file_exists($tempPath)) {
@@ -883,57 +858,9 @@ function download_kiwi()
     //check if there are files to backup.
     if (file_exists(dirname(__FILE__, 3).'/kiwi') && file_exists(dirname(__FILE__, 3).'/public_html')) {
         Log::msg('Legacy kiwi folders found.');
+        create_backup();
     } else {
-        $backup = false;
         Log::msg('No previous kiwi files found.');
-    }
-
-    if ($backup) {
-        //backup before overwriting the main file.
-
-        $backup = new ZipArchive();
-        $backup->open($backupPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        $rootPath = dirname(__FILE__, 3).'/kiwi';
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($rootPath),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        $rootPath = dirname(__FILE__, 3);
-        foreach ($files as $file) {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir()) {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                // Add current file to archive
-                $backup->addFile($filePath, $relativePath);
-            }
-        }
-
-        $rootPath = dirname(__FILE__, 3).'/public_html';
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($rootPath),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        $rootPath = dirname(__FILE__, 3);
-        foreach ($files as $file) {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir()) {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                // Add current file to archive
-                $backup->addFile($filePath, $relativePath);
-            }
-        }
-        // Zip archive will be created only after closing object
-        $backup->close();
-        Log::msg('Legacy kiwi backup created.');
     }
 
     // Unzip the fresh kiwi release.
@@ -949,139 +876,172 @@ function download_kiwi()
     return true;
 }
 
+function extend_time_limit()
+{
+    $accessfile = fopen(__DIR__ . "/.htaccess", 'w');
+    if (!$accessfile) {
+        Log::msg("Could not write to {$accessfile}, make sure the directory is writable.");
+        return false;
+    }
+
+    //php start
+    $access = "#Extend execution time
+<IfModule mod_php5.c>
+    php_value max_execution_time 0
+</IfModule>";
+    fwrite($accessfile, $access);
+}
+
 function database_connect($db_host, $db_name, $db_password, $db_username)
 {
-    $success = true;
     $connection = mysqli_connect($db_host, $db_username, $db_password);
     if (!$connection) {
-        Log::msg('Could not connect to the database server.');
-        Log::msg(mysqli_connect_error());
-        $success = false;
-    } else {
-        Log::msg('Succesfully connected to the database server.');
+        throw new ConnectionException(mysqli_connect_error());
     }
 
-    if ($success) {
-        if (empty(mysqli_fetch_array(mysqli_query($connection, "SHOW DATABASES LIKE '$db_name'")))) {
-            Log::msg('No matching data base found.');
+    Log::msg('Succesfully connected to the database server.');
 
-            $sql = "CREATE DATABASE $db_name";
-            if ($connection->query($sql)) {
-                Log::msg('Database created successfully.');
-            } else {
-                Log::msg('Error creating database: '.$connection->error);
-                $success = false;
-            }
+    if (empty(mysqli_fetch_array(mysqli_query($connection, "SHOW DATABASES LIKE '$db_name'")))) {
+        Log::msg('No matching data base found.');
+
+        $sql = "CREATE DATABASE $db_name";
+        if ($connection->query($sql)) {
+            Log::msg('Database created successfully.');
         } else {
-            Log::msg('The kiwi database found.');
-            mysqli_select_db($connection, $db_name);
+            throw new QueryException('Error creating database: '.$connection->error);
+        }
+    } else {
+        Log::msg('The kiwi database found.');
+        mysqli_select_db($connection, $db_name);
 
-            // check if database is empty.
-            if (0 == mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(DISTINCT `table_name`) FROM `information_schema`.`columns` WHERE `table_schema` = '$db_name'
-            "))[0]) {
-                echo "\n";
-                Log::msg('Database was empty, and usable by kiwi.');
-            }
+        // check if database is empty.
+        if (0 == mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(DISTINCT `table_name`) FROM `information_schema`.`columns` WHERE `table_schema` = '$db_name'
+        "))[0]) {
+            echo "\n";
+            Log::msg('Database was empty, and usable by kiwi.');
         }
     }
+}
 
-    return $success;
+function get_application()
+{
+    if (!@include_once dirname(__FILE__, 3).'/kiwi/vendor/autoload.php') {
+        throw new FileNotFoundException("Dependency autoloader was not found");
+    }
+
+    // Initialize symfony, to run symfony and doctine commands.
+    if (!include_once dirname(__FILE__, 3).'/kiwi/config/bootstrap.php') {
+        throw new FileNotFoundException("Symfony bootstrap was not found");
+    }
+
+    // Production enviroment, because dev bundles are not included in the release
+    $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+    $application = new Application($kernel);
+    $application->setAutoExit(false);
+
+    Log::msg('Symfony initialized.');
+
+    return $application;
 }
 
 function doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass)
 {
-    $success = true;
-
     //Doctrine commands
-    $application = null;
-    if ($success) {
-        set_time_limit(0);
+    $application = get_application();
+    $input = new ArrayInput([
+        'command' => 'doctrine:migrations:migrate',
+        // (optional) define the value of command arguments
+        '-n' => true,
+        '--allow-no-migration' => true,
+    ]);
 
-        if (!@include_once dirname(__FILE__, 3).'/kiwi/vendor/autoload.php') {
-            $success = false;
-            Log::msg('Symfony init failed. Symfony error.');
-            Log::msg($e);
-        }
+    $output = new BufferedOutput();
+    // Run the command in the symfony framework.
+
+    $result = $application->run($input, $output);
+    Log::msg($output->fetch());
+
+    if (0 != $result) {
+        throw new UnexpectedResultException('Doctrine migration failed.');
     }
+    Log::msg('Doctrine migration succes.');
 
-    // Initialize symfony, to run symfony and doctine commands.
-    if ($success) {
-        $env = 'prod';
-        putenv('APP_ENV='.$_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = $env);
-        putenv('APP_DEBUG='.$_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = '0');
-        if (!@include_once dirname(__FILE__, 3).'/kiwi/vendor/autoload.php') {
-            $success = false;
-            Log::msg('Symfony init failed. Symfony error.');
-            Log::msg($e);
-        }
+    if ('admin' == $sec_type) {
+        create_user($application, $admin_email, $admin_name, $admin_pass);
     }
-
-    // Production enviroment, because dev bundles are not included in the release.
-
-    if ($success) {
-        $kernel = new Kernel($_SERVER['APP_ENV'], (bool) true);
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        Log::msg('Symfony initialized.');
-    }
-
-    // Run migrations, hopefully succesfull.
-    if ($success) {
-        $input = new ArrayInput([
-            'command' => 'doctrine:migrations:migrate',
-            // (optional) define the value of command arguments
-            '-n' => '-n',
-            '-v' => '--allow-no-migration',
-        ]);
-
-        $output = new BufferedOutput();
-        // Run the command in the symfony framework.
-
-        $succes = $application->run($input, $output);
-        $outputtext = $output->fetch();
-
-        if (false !== strpos($outputtext, 'Could not find any migrations to execute.')) {
-            $succes = 0;
-            Log::msg('Database already up-to-date.');
-        } else {
-            Log::msg($outputtext);
-        }
-
-        if (0 == $succes) {
-            Log::msg('<br>Doctrine migration succes.');
-        } else {
-            Log::msg('<br>Doctrine migration failed.');
-            $success = false;
-        }
-    }
-
-    if ($success && 'admin' == $sec_type) {
-        $input = new ArrayInput([
-            'command' => 'app:create-account',
-            // (optional) define the value of command arguments
-            'email' => $admin_email,
-            'name' => $admin_name,
-            'pass' => $admin_pass,
-            '--admin' => true,
-        ]);
-
-        $output = new BufferedOutput();
-        // Run the command in the symfony framework.
-        $succes = $application->run($input, $output);
-        Log::msg($output->fetch());
-        if (0 == $succes) {
-            Log::msg('User creation succes.');
-        } else {
-            Log::msg('User creation failed.');
-            $success = false;
-        }
-    }
-
-    return $success;
 }
 
-function restore_from_backup()
+function create_user($application, $admin_email, $admin_name, $admin_pass)
+{
+    $input = new ArrayInput([
+        'command' => 'app:create-account',
+        // (optional) define the value of command arguments
+        'email' => $admin_email,
+        'name' => $admin_name,
+        'pass' => $admin_pass,
+        '--admin' => true,
+    ]);
+
+    $output = new BufferedOutput();
+    // Run the command in the symfony framework.
+    $result = $application->run($input, $output);
+    Log::msg($output->fetch());
+    if (0 != $result) {
+        throw new UnexpectedResultException('User creation failed.');
+    }
+    Log::msg('User creation succes.');
+}
+
+function create_backup()
+{
+    //backup before overwriting the main file.
+    $backupPath = dirname(__FILE__, 3).'/backup_kiwi.zip';
+    $backup = new ZipArchive();
+    $backup->open($backupPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    $rootPath = dirname(__FILE__, 3).'/kiwi';
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($rootPath),
+        RecursiveIteratorIterator::LEAVES_ONLY
+    );
+
+    $rootPath = dirname(__FILE__, 3);
+    foreach ($files as $file) {
+        // Skip directories (they would be added automatically)
+        if (!$file->isDir()) {
+            // Get real and relative path for current file
+            $filePath = $file->getRealPath();
+            $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+            // Add current file to archive
+            $backup->addFile($filePath, $relativePath);
+        }
+    }
+
+    $rootPath = dirname(__FILE__, 3).'/public_html';
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($rootPath),
+        RecursiveIteratorIterator::LEAVES_ONLY
+    );
+
+    $rootPath = dirname(__FILE__, 3);
+    foreach ($files as $file) {
+        // Skip directories (they would be added automatically)
+        if (!$file->isDir()) {
+            // Get real and relative path for current file
+            $filePath = $file->getRealPath();
+            $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+            // Add current file to archive
+            $backup->addFile($filePath, $relativePath);
+        }
+    }
+    // Zip archive will be created only after closing object
+    $backup->close();
+    Log::msg('Legacy kiwi backup created.');
+}
+
+function restore_backup()
 {
     //Backup and stuff.
     $backupPath = dirname(__FILE__, 3).'/backup_kiwi.zip';
