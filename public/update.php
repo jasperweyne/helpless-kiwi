@@ -9,7 +9,7 @@ abstract class Step
     const INTRO_UPDATE = 'intro-update';
     const DATABASE_CHOICE = 'database-choice';
     const DATABASE = 'database';
-    const EMAILER_CHOICE= 'emailer-choice';
+    const EMAILER_CHOICE = 'emailer-choice';
     const EMAILER = 'emailer';
     const SECURITY = 'security';
     const BUNNY = 'bunny';
@@ -34,14 +34,26 @@ abstract class Progress
     const BACKUP = 'backup';
 }
 
+abstract class Dir
+{
+    const ROOT_DIR = '';
+    const KIWI_DIR = '/kiwi';
+    const PUBLIC_DIR = '/public_html';
+    const BACKUP_DIR = '/back_up';
+    const BACKUP_KIWI = '/back_up/kiwi_backup.zip';
+    const BACKUP_SQL = '/back_up/sql_dump.sql';
+}
+
 class Log
 {
-    static function msg(string $msg) {
-        $_SESSION['log'] .= str_replace("\n", "<br>", $msg) . "<br>";
+    public static function msg(string $msg)
+    {
+        $_SESSION['log'] .= str_replace("\n", '<br>', $msg).'<br>';
     }
-    
-    static function console(string $msg) {
-        self::msg("<pre>".$msg."</pre>");
+
+    public static function console(string $msg)
+    {
+        self::msg('<pre>'.$msg.'</pre>');
     }
 }
 
@@ -52,11 +64,41 @@ class Screen
     public $actions;
     public $exec;
 
-    public function __construct($title, $render, $actions = [], $exec = null) {
+    public function __construct($title, $render, $actions = [], $exec = null)
+    {
         $this->title = $title;
         $this->render = $render;
         $this->actions = $actions;
         $this->exec = $exec;
+    }
+}
+
+use App\Kernel;
+use Doctrine\DBAL\ConnectionException;
+
+class DirFilter extends RecursiveFilterIterator
+{
+    protected $exclude;
+
+    public function __construct($iterator, array $exclude)
+    {
+        parent::__construct($iterator);
+        $this->exclude = $exclude;
+    }
+
+    public function accept()
+    {
+        return !($this->current()->is_dir() && in_array($this->current()->getFilename(), $this->exclude));
+    }
+
+    public function getChildren()
+    {
+        $it = $this->getInnerIterator();
+        if ($it instanceof RecursiveIterator) {
+            return new DirFilter($it->getChildren(), $this->exclude);
+        } else {
+            // error here
+        }
     }
 }
 
@@ -77,7 +119,7 @@ if (isset($_SESSION['step']) && isset($_SESSION['install_progress'])) {
         (Step::CONFIRM_INSTALL == $_SESSION['step'] || Step::CONFIRM_UPDATE == $_SESSION['step']) &&
         (Progress::START == $_SESSION['install_progress'] || Progress::FINISH == $_SESSION['install_progress'])
     )) {
-        header("Refresh:1"); // refresh a second after previous action
+        header('Refresh:1'); // refresh a second after previous action
     }
 }
 
@@ -109,7 +151,7 @@ $error = null;
 $error_type = 0;
 
 $screens = [
-    Step::INTRO => new Screen('Updaten of installeren', function(){ ?>
+    Step::INTRO => new Screen('Updaten of installeren', function () { ?>
         <p>Welkom by de kiwi update of installatie optie. </p>
         <?php detect_kiwi_message(); ?>
         <form role="form" method="post">
@@ -119,27 +161,27 @@ $screens = [
         <?php }, [
             'action' => function ($value) {
                 $_SESSION['step'] = $value;
-            }
+            },
         ]),
-    Step::INTRO_INSTALL => new Screen('Installeren', function(){ ?>
+    Step::INTRO_INSTALL => new Screen('Installeren', function () { ?>
         <p>Welkom by de kiwi installatie optie. </p>
-        <?php form_button("start instelling", "action"); ?>
+        <?php form_button('start instelling', 'action'); ?>
         <?php form_button(); ?>
         <?php }, [
             'action' => Step::DATABASE_CHOICE,
             'back' => Step::INTRO,
         ]),
-    Step::INTRO_UPDATE => new Screen('Updaten', function(){ ?>
+    Step::INTRO_UPDATE => new Screen('Updaten', function () { ?>
         <p>Welkom by de kiwi update of installatie optie. </p>
-        <?php form_button("intro", "action"); ?>
+        <?php form_button('intro', 'action'); ?>
         <?php }, [
             'action' => Step::CONFIRM_UPDATE,
             'back' => Step::INTRO,
         ]),
-    Step::DATABASE_CHOICE => new Screen('Database configuratie', function() use ($db_type) { ?>
+    Step::DATABASE_CHOICE => new Screen('Database configuratie', function () use ($db_type) { ?>
         <p>Kies de database van de server. </p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
 
             <div class="form-group">
                 <label class="radio-inline"><input type="radio" name="db_type" value="mariadb" <?php if ('mariadb' == $db_type) { ?>checked<?php }?>>Maria DB</label>
@@ -154,10 +196,10 @@ $screens = [
             'action' => Step::DATABASE,
             'back' => Step::INTRO_INSTALL,
         ]),
-    Step::DATABASE => new Screen('Database configuratie', function() use ($db_name, $db_host, $db_username, $db_password) { ?>
+    Step::DATABASE => new Screen('Database configuratie', function () use ($db_name, $db_host, $db_username, $db_password) { ?>
         <p>Configureer hier de database. </p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
             <div class="form-group">
                 <label for="db_name">Database name<sup>*</sup></label>
                 <input type="text" class="form-control" id="db_name" name="db_name" placeholder=""
@@ -215,10 +257,10 @@ $screens = [
                 $_SESSION['db_pass'] = $value;
             },
         ]),
-    Step::EMAILER_CHOICE => new Screen('Organisatie naam en email', function() use ($org_name, $email_type) { ?>
+    Step::EMAILER_CHOICE => new Screen('Organisatie naam en email', function () use ($org_name, $email_type) { ?>
         <p>Bepaal de organisatienaam en bepaal de email service. </p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
 
             <div class="form-group">
                 <label for="org_name">Organisatie naam</label>
@@ -255,10 +297,10 @@ $screens = [
                 $_SESSION['email_type'] = $value;
             },
         ]),
-    Step::EMAILER => new Screen('Email configuratie', function() use ($mailer_url, $mailer_email) { ?>
+    Step::EMAILER => new Screen('Email configuratie', function () use ($mailer_url, $mailer_email) { ?>
         <p>Dit is de email configuratie. </p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
 
             <div class="form-group">
                     <label for="mailer_url">Swift mailer URL<sup>*</sup></label>
@@ -306,10 +348,10 @@ $screens = [
                 }
             },
         ]),
-    Step::SECURITY => new Screen('Security', function() use ($sec_type) { ?>
+    Step::SECURITY => new Screen('Security', function () use ($sec_type) { ?>
         <p>Kies de security modus van Kiwi. </p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
 
             <div class="form-group">
                 <label class="radio-inline"><input type="radio" name="sec_type" value="admin" <?php if ('bunny' != $sec_type) { ?>checked<?php } ?>>Lokale userdata</label>
@@ -341,10 +383,10 @@ $screens = [
                 $_SESSION['sec_type'] = $value;
             },
         ]),
-    Step::BUNNY => new Screen('Bunny', function() use ($app_id, $app_secret, $bunny_url) { ?>
+    Step::BUNNY => new Screen('Bunny', function () use ($app_id, $app_secret, $bunny_url) { ?>
         <p>Bunny is een openId connect identity en user-management system.</p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
             <div class="form-group">
                 <label for="app_id">App id<sup>*</sup></label>
                 <input type="text" class="form-control" id="app_id" name="app_id" placeholder=""
@@ -392,10 +434,10 @@ $screens = [
                 $_SESSION['app_secret'] = $value;
             },
         ]),
-    Step::ADMIN => new Screen('Admin instellingen', function() use ($admin_email, $admin_name, $admin_pass) { ?>
+    Step::ADMIN => new Screen('Admin instellingen', function () use ($admin_email, $admin_name, $admin_pass) { ?>
         <p>Dit is de user-data van het eerste kiwi account.</p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
-            <input type="hidden" name="action" value="<?php echo $_SESSION['step'] ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
             <div class="form-group">
                 <label for="admin_email">Admin email<sup>*</sup></label>
                 <input type="text" class="form-control" id="admin_email" name="admin_email" placeholder=""
@@ -443,13 +485,13 @@ $screens = [
                 $_SESSION['admin_pass'] = $value;
             },
         ]),
-    Step::CONFIRM_INSTALL => new Screen('Check alle data', function(){ ?>
+    Step::CONFIRM_INSTALL => new Screen('Check alle data', function () { ?>
         <p>Kiwi is klaar om te installeren.</p>
-        <?php form_button("Conformeer installatie", "action"); ?>
+        <?php form_button('Conformeer installatie', 'action'); ?>
         <?php form_button(); ?>
 
         <?php }, [
-            'action' => function(){
+            'action' => function () {
                 $_SESSION['step'] = Step::PROGRESS_INSTALL;
                 $_SESSION['install_progress'] = Progress::START;
             },
@@ -461,65 +503,65 @@ $screens = [
                 }
             },
         ]),
-    Step::SUCCESS_INSTALL => new Screen('Succesvolle installatie', function(){ ?>
+    Step::SUCCESS_INSTALL => new Screen('Succesvolle installatie', function () { ?>
         <p>Kiwi is succesvol geinstalleerd </p>
         <h4>Log:</h4>
         <p> <?php echo $_SESSION['log']; ?></p>
-        <?php form_button("Ga naar kiwi", "action"); ?>
+        <?php form_button('Ga naar kiwi', 'action'); ?>
 
         <?php }, [
             'action' => 'go-to-kiwi',
             'back' => Step::SUCCESS_INSTALL,
         ]),
-    Step::FAILURE => new Screen('Gefaalde installatie', function(){ ?>
+    Step::FAILURE => new Screen('Gefaalde installatie', function () { ?>
         <p>Kiwi is helaas niet correct geinstalleerd </p>
         <h4>Error log:</h4>
         <p> <?php echo $_SESSION['log']; ?></p>
-        <?php form_button("Probeer het opnieuw", "action"); ?>
+        <?php form_button('Probeer het opnieuw', 'action'); ?>
 
         <?php }, [
-            'action' => function(){
+            'action' => function () {
                 unset($_SESSION);
                 session_destroy();
                 $_SESSION['step'] = Step::INTRO;
             },
         ]),
-    Step::UPDATE => new Screen('Updaten', function(){ ?>
+    Step::UPDATE => new Screen('Updaten', function () { ?>
         <p>Dit is de online updater van kiwi, dit programma update kiwi naar de meest recente stabiele versie.</p>
         <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
-        <?php form_button("Start update", "action"); ?>
+        <?php form_button('Start update', 'action'); ?>
 
         <?php }, [
             'action' => Step::CONFIRM_UPDATE,
         ]),
-    Step::CONFIRM_UPDATE => new Screen('Check alle data', function(){ ?>
+    Step::CONFIRM_UPDATE => new Screen('Check alle data', function () { ?>
         <p>Dit is de online updater van kiwi, dit programma update kiwi naar de meest recente stabiele versie.</p>
         <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
-        <?php form_button("Start update", "action"); ?>
+        <?php form_button('Start update', 'action'); ?>
 
         <?php }, [
-            'action' => function(){
+            'action' => function () {
                 $_SESSION['step'] = Step::PROGRESS_UPDATE;
                 $_SESSION['install_progress'] = Progress::START;
             },
             'back' => Step::UPDATE,
         ]),
-    Step::SUCCESS_UPDATE => new Screen('Succesvolle update', function(){ ?>
+    Step::SUCCESS_UPDATE => new Screen('Succesvolle update', function () { ?>
         <p>Kiwi is succesvol geupdated. </p>
         <h4>Log:</h4>
         <p> <?php echo $_SESSION['log']; ?></p>
 
-        <?php form_button("Ga naar kiwi.", "action"); ?>
+        <?php form_button('Ga naar kiwi.', 'action'); ?>
 
         <?php }, [
             'action' => Step::SUCCESS_UPDATE,
         ]),
-    Step::PROGRESS_UPDATE => new Screen('Aan het updaten', function(){ ?>
+    Step::PROGRESS_UPDATE => new Screen('Aan het updaten', function () { ?>
         <p>Kiwi is aan het updaten, dit kan enkele minuten duren. </p>
         <p>Bezig met stap <?php echo $_SESSION['install_progress']; ?>  </p>
 
-        <?php }, [], function() use ($sec_type, $admin_email, $admin_name, $admin_pass) {
-            switch ($_SESSION['install_progress']) {
+        <?php }, [], function () use ($sec_type, $admin_email, $admin_name, $admin_pass) {
+        switch ($_SESSION['install_progress']) {
                 case Progress::START:
                     extend_time_limit();
                     $_SESSION['install_progress'] = Progress::DOWNLOAD;
@@ -545,42 +587,44 @@ $screens = [
                     restore_backup();
                     $_SESSION['install_progress'] = Progress::FINISH;
                     break;
+                default:
+                    break;
             }
 
-            if (Progress::FINISH == $_SESSION['install_progress']) {
-                $_SESSION['step'] = Step::SUCCESS_UPDATE;
-            } else {
-                $_SESSION['step'] = Step::PROGRESS_UPDATE;
-            }
+        if (Progress::FINISH == $_SESSION['install_progress']) {
+            $_SESSION['step'] = Step::SUCCESS_UPDATE;
+        } else {
+            $_SESSION['step'] = Step::PROGRESS_UPDATE;
+        }
 
-            if ($_SESSION['install_error']) {
-                $_SESSION['step'] = Step::FAILURE;
-            }
-        }),
-    Step::PROGRESS_INSTALL => new Screen('Aan het installeren', function(){ ?>
+        if ($_SESSION['install_error']) {
+            $_SESSION['step'] = Step::FAILURE;
+        }
+    }),
+    Step::PROGRESS_INSTALL => new Screen('Aan het installeren', function () { ?>
         <p>Kiwi is aan het installeren, dit kan enkele minuten duren. </p>
         <p>Bezig met stap <?php echo $_SESSION['install_progress']; ?>  </p>
 
-        <?php }, [], function() use ($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type,  $admin_email, $admin_name, $admin_pass) {
-            switch ($_SESSION['install_progress']) {
+        <?php }, [], function () use ($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type, $admin_email, $admin_name, $admin_pass) {
+        switch ($_SESSION['install_progress']) {
                 case Progress::START:
                     $result = generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type);
                     $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DATABASE;
                     break;
-        
+
                 case Progress::DATABASE:
                     $result = database_connect($db_host, $db_name, $db_password, $db_username);
                     $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DOWNLOAD;
                     break;
-        
+
                 case Progress::DOWNLOAD:
                     $result = download_kiwi();
                     $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DOCTRINE;
                     break;
-        
+
                 case Progress::DOCTRINE:
                     $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
                     $_SESSION['install_error'] = !$result;
@@ -590,26 +634,28 @@ $screens = [
                         $_SESSION['install_progress'] = Progress::FINISH;
                     }
                     break;
-        
+
                 case Progress::BACKUP:
                     restore_backup();
                     $_SESSION['install_progress'] = Progress::FINISH;
                     break;
+                default:
+                    break;
             }
-        
-            if (Progress::FINISH == $_SESSION['install_progress']) {
-                $_SESSION['step'] = Step::SUCCESS_INSTALL;
-            } else {
-                $_SESSION['step'] = Step::PROGRESS_INSTALL;
-            }
-        
-            if ($_SESSION['install_error']) {
-                $_SESSION['step'] = Step::FAILURE;
-            }
-        }),
+
+        if (Progress::FINISH == $_SESSION['install_progress']) {
+            $_SESSION['step'] = Step::SUCCESS_INSTALL;
+        } else {
+            $_SESSION['step'] = Step::PROGRESS_INSTALL;
+        }
+
+        if ($_SESSION['install_error']) {
+            $_SESSION['step'] = Step::FAILURE;
+        }
+    }),
 ];
 
-set_exception_handler(function($exception) use ($screens) {
+set_exception_handler(function ($exception) use ($screens) {
     Log::console($exception);
     $_SESSION['step'] = Step::FAILURE;
     render($screens[$_SESSION['step']], null, 0);
@@ -638,21 +684,21 @@ render($step, $error, $error_type);
 
 //region FUNCTIONS
 
-use App\Kernel;
-use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Query\QueryException;
 use Doctrine\ORM\UnexpectedResultException;
+use RecursiveFilterIterator;
+use RecursiveIterator;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
-function form_button($label="Terug", $name="back")
+function form_button($label = 'Terug', $name = 'back')
 {
-?>
+    ?>
 <form role="form" method="post" enctype="multipart/form-data" id="step1-backfrom">
-    <input type="hidden" name="<?php echo $name ?>" value="<?php echo $_SESSION['step'] ?>" />
-    <input type="submit" class="button grow" value="<?php echo $label ?>">
+    <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $_SESSION['step']; ?>" />
+    <input type="submit" class="button grow" value="<?php echo $label; ?>">
 </form>
 <?php
 }
@@ -662,10 +708,27 @@ function detect_kiwi()
     // detect kiwi in some meaningful way.
     // check .env.local.php
     //.env.* wildcard.
-    $envpath = dirname(__FILE__, 3).'/kiwi/.env*';
+    $envpath = kiwidir(Dir::KIWI_DIR).'/.env*';
 
     $list = glob($envpath);
-    return (count($list) > 1);
+
+    return count($list) > 1;
+}
+
+function kiwidir($name)
+{
+    return dirname(__FILE__, 3).$name;
+}
+
+function get_dir_exceptions($dir)
+{
+    // TO-DO: find a way to get non-overwritable dir to this installer.
+    if (Dir::KIWI_DIR == $dir) {
+        return ['uploads'];
+    }
+    if (Dir::PUBLIC_DIR == $dir) {
+        return [];
+    }
 }
 
 function detect_kiwi_message()
@@ -725,88 +788,93 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
 {
     if (detect_kiwi()) {
         Log::msg('Environment file found.');
-    } else {
-        Log::msg('No environment file found.');
-        $vars = [];
 
-        //production env
-        $vars['APP_DEBUG'] = 0;
-        $vars['APP_ENV'] = 'prod';
-
-        $random_val = '';
-        for ($i = 0; $i < 32; ++$i) {
-            $random_val = $random_val.chr(rand(65, 90));
-        }
-
-        $vars['APP_SECRET'] = $random_val;
-
-        $random_val2 = '';
-        for ($i = 0; $i < 16; ++$i) {
-            $random_val2 = $random_val2.chr(rand(65, 90));
-        }
-
-        $vars['USERPROVIDER_KEY'] = $random_val2;
-
-        //bunny
-        if ('bunny' == $sec_type) {
-            $vars['BUNNY_SECRET'] = $app_secret;
-            $vars['BUNNY_ID'] = $app_id;
-            $vars['BUNNY_URL'] = $bunny_url;
-        }
-
-        //mailer
-        if ('stmp' == $email_type) {
-            $vars['MAILER_URL'] = $mailer_url;
-            $vars['DEFAULT_FROM'] = $mailer_email;
-        } else {
-            $vars['MAILER_URL'] = 'null://localhost';
-        }
-
-        if ('mariadb' == $db_type) {
-            //database
-            $vars['DATABASE_URL'] = 'mysql://'.$db_username.':'.$db_password.'@'.$db_host.':3306/'.$db_name.'?serverVersion=mariadb-10.5.8';
-        } else {
-            //database
-            $vars['DATABASE_URL'] = 'mysql://'.$db_username.':'.$db_password.'@'.$db_host.':3306/'.$db_name.'?serverVersion=5.7';
-        }
-
-        //org name
-        if ('' != $org_name) {
-            $vars['ORG_NAME'] = $org_name;
-        }
-
-        //php
-        $envdir = dirname(__FILE__, 3).'/kiwi';
-        $envpath = $envdir.'/.env.local.php';
-        if (!file_exists($envdir) && !mkdir($envdir)) {
-            Log::msg("Could not create folder {$envdir}, make sure the parent directory is writable.");
-            return false;
-        }
-        
-        $envfile = fopen($envpath, 'w');
-        if (!$envfile) {
-            Log::msg("Could not write to {$envpath}, make sure the directory is writable.");
-            return false;
-        }
-
-        //php start
-        $line = "<?php\n";
-        $line .= "return [\n";
-        foreach ($vars as $key => $value) {
-            $line .= "\t'".addslashes($key)."' => '".addslashes($value)."',\n";
-        }
-        $line .= "];\n";
-        fwrite($envfile, $line);
-
-        Log::msg('Environment file created.');
         return true;
     }
+
+    Log::msg('No environment file found.');
+    $vars = [];
+
+    //production env
+    $vars['APP_DEBUG'] = 0;
+    $vars['APP_ENV'] = 'prod';
+
+    $random_val = '';
+    for ($i = 0; $i < 32; ++$i) {
+        $random_val = $random_val.chr(rand(65, 90));
+    }
+
+    $vars['APP_SECRET'] = $random_val;
+
+    $random_val2 = '';
+    for ($i = 0; $i < 16; ++$i) {
+        $random_val2 = $random_val2.chr(rand(65, 90));
+    }
+
+    $vars['USERPROVIDER_KEY'] = $random_val2;
+
+    //bunny
+    if ('bunny' == $sec_type) {
+        $vars['BUNNY_SECRET'] = $app_secret;
+        $vars['BUNNY_ID'] = $app_id;
+        $vars['BUNNY_URL'] = $bunny_url;
+    }
+
+    //mailer
+    if ('stmp' == $email_type) {
+        $vars['MAILER_URL'] = $mailer_url;
+        $vars['DEFAULT_FROM'] = $mailer_email;
+    } else {
+        $vars['MAILER_URL'] = 'null://localhost';
+    }
+
+    if ('mariadb' == $db_type) {
+        //database
+        $vars['DATABASE_URL'] = 'mysql://'.$db_username.':'.$db_password.'@'.$db_host.':3306/'.$db_name.'?serverVersion=mariadb-10.5.8';
+    } else {
+        //database
+        $vars['DATABASE_URL'] = 'mysql://'.$db_username.':'.$db_password.'@'.$db_host.':3306/'.$db_name.'?serverVersion=5.7';
+    }
+
+    //org name
+    if ('' != $org_name) {
+        $vars['ORG_NAME'] = $org_name;
+    }
+
+    //php
+    $envdir = kiwidir(Dir::KIWI_DIR);
+    $envpath = $envdir.'/.env.local.php';
+    if (!file_exists($envdir) && !mkdir($envdir)) {
+        Log::msg("Could not create folder {$envdir}, make sure the parent directory is writable.");
+
+        return false;
+    }
+
+    $envfile = fopen($envpath, 'w');
+    if (!$envfile) {
+        Log::msg("Could not write to {$envpath}, make sure the directory is writable.");
+
+        return false;
+    }
+
+    //php start
+    $line = "<?php\n";
+    $line .= "return [\n";
+    foreach ($vars as $key => $value) {
+        $line .= "\t'".addslashes($key)."' => '".addslashes($value)."',\n";
+    }
+    $line .= "];\n";
+    fwrite($envfile, $line);
+
+    Log::msg('Environment file created.');
+
+    return true;
 }
 
 function download_kiwi()
 {
     //Delete previous temp file and make a new one.
-    $tempPath = dirname(__FILE__, 3).'/tempkiwi.zip';
+    $tempPath = kiwidir(Dir::ROOT_DIR).'/tempkiwi.zip';
     if (file_exists($tempPath)) {
         unlink($tempPath);
     }
@@ -814,6 +882,7 @@ function download_kiwi()
 
     if (!$tempFile) {
         Log::msg("Could not write to {$tempPath}, make sure the directory is writable.");
+
         return false;
     }
 
@@ -831,6 +900,7 @@ function download_kiwi()
         //Fatal error, stop immediatily
         Log::msg('Curl error found');
         Log::msg(curl_error($ch));
+
         return false;
     }
 
@@ -848,6 +918,7 @@ function download_kiwi()
         //Fatal error, stop immediatily
         Log::msg('Curl error found');
         Log::msg(curl_error($ch));
+
         return false;
     }
 
@@ -856,7 +927,7 @@ function download_kiwi()
     Log::msg('Kiwi download succesfull.');
 
     //check if there are files to backup.
-    if (file_exists(dirname(__FILE__, 3).'/kiwi') && file_exists(dirname(__FILE__, 3).'/public_html')) {
+    if (file_exists(kiwidir(Dir::KIWI_DIR)) && file_exists(kiwidir(Dir::PUBLIC_DIR))) {
         Log::msg('Legacy kiwi folders found.');
         create_backup();
     } else {
@@ -866,29 +937,31 @@ function download_kiwi()
     // Unzip the fresh kiwi release.
     $zip = new ZipArchive();
     $zip->open($tempPath);
-    $zip->extractTo(dirname(__FILE__, 3));
+    $zip->extractTo(kiwidir(Dir::ROOT_DIR));
     $zip->close();
 
     if (file_exists($tempPath)) {
         unlink($tempPath);
     }
     Log::msg('Unzipped the new kiwi files.');
+
     return true;
 }
 
 function extend_time_limit()
 {
-    $accessfile = fopen(__DIR__ . "/.htaccess", 'w');
+    $accessfile = fopen(__DIR__.'/.htaccess', 'w');
     if (!$accessfile) {
         Log::msg("Could not write to {$accessfile}, make sure the directory is writable.");
+
         return false;
     }
 
     //php start
-    $access = "#Extend execution time
+    $access = '#Extend execution time
 <IfModule mod_php5.c>
     php_value max_execution_time 0
-</IfModule>";
+</IfModule>';
     fwrite($accessfile, $access);
 }
 
@@ -925,13 +998,13 @@ function database_connect($db_host, $db_name, $db_password, $db_username)
 
 function get_application()
 {
-    if (!@include_once dirname(__FILE__, 3).'/kiwi/vendor/autoload.php') {
-        throw new FileNotFoundException("Dependency autoloader was not found");
+    if (!@include_once kiwidir(Dir::KIWI_DIR).'/vendor/autoload.php') {
+        throw new FileNotFoundException('Dependency autoloader was not found');
     }
 
     // Initialize symfony, to run symfony and doctine commands.
-    if (!include_once dirname(__FILE__, 3).'/kiwi/config/bootstrap.php') {
-        throw new FileNotFoundException("Symfony bootstrap was not found");
+    if (!include_once kiwidir(Dir::KIWI_DIR).'/config/bootstrap.php') {
+        throw new FileNotFoundException('Symfony bootstrap was not found');
     }
 
     // Production enviroment, because dev bundles are not included in the release
@@ -994,43 +1067,45 @@ function create_user($application, $admin_email, $admin_name, $admin_pass)
 
 function create_backup()
 {
-    //backup before overwriting the main file.
-    $backupPath = dirname(__FILE__, 3).'/backup_kiwi.zip';
-    $backup = new ZipArchive();
-    $backup->open($backupPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+    // Make backup dir if not existing.
+    if (!file_exists(kiwidir(Dir::BACKUP_DIR))) {
+        mkdir(kiwidir(Dir::BACKUP_DIR));
+    }
 
-    $rootPath = dirname(__FILE__, 3).'/kiwi';
-    $files = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($rootPath),
+    // Backup before overwriting the main file.
+    $backup = new ZipArchive();
+    $backup->open(kiwidir(Dir::BACKUP_KIWI), ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    $dirit = new RecursiveDirectoryIterator(kiwidir(Dir::KIWI_DIR));
+    $filterit = new DirFilter($dirit, get_dir_exceptions(Dir::KIWI_DIR));
+    $files = new RecursiveIteratorIterator($filterit,
         RecursiveIteratorIterator::LEAVES_ONLY
     );
 
-    $rootPath = dirname(__FILE__, 3);
     foreach ($files as $file) {
         // Skip directories (they would be added automatically)
         if (!$file->isDir()) {
             // Get real and relative path for current file
             $filePath = $file->getRealPath();
-            $relativePath = substr($filePath, strlen($rootPath) + 1);
+            $relativePath = substr($filePath, strlen(kiwidir(Dir::ROOT_DIR)) + 1);
 
             // Add current file to archive
             $backup->addFile($filePath, $relativePath);
         }
     }
 
-    $rootPath = dirname(__FILE__, 3).'/public_html';
-    $files = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($rootPath),
+    $dirit = new RecursiveDirectoryIterator(kiwidir(Dir::PUBLIC_DIR));
+    $filterit = new DirFilter($dirit, get_dir_exceptions(Dir::PUBLIC_DIR));
+    $files = new RecursiveIteratorIterator($filterit,
         RecursiveIteratorIterator::LEAVES_ONLY
     );
 
-    $rootPath = dirname(__FILE__, 3);
     foreach ($files as $file) {
         // Skip directories (they would be added automatically)
         if (!$file->isDir()) {
             // Get real and relative path for current file
             $filePath = $file->getRealPath();
-            $relativePath = substr($filePath, strlen($rootPath) + 1);
+            $relativePath = substr($filePath, strlen(kiwidir(Dir::ROOT_DIR)) + 1);
 
             // Add current file to archive
             $backup->addFile($filePath, $relativePath);
@@ -1043,28 +1118,25 @@ function create_backup()
 
 function restore_backup()
 {
-    //Backup and stuff.
-    $backupPath = dirname(__FILE__, 3).'/backup_kiwi.zip';
-    if (!file_exists($backupPath)) {
+    // If the kiwi backup exists, restore
+    if (!file_exists(kiwidir(Dir::BACKUP_KIWI))) {
         echo 'Restoring the previous kiwi files... <br>';
 
-        $dir = dirname(__FILE__, 3).'/kiwi';
-        $di = new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS);
+        $di = new RecursiveDirectoryIterator(kiwidir(Dir::KIWI_DIR), FilesystemIterator::SKIP_DOTS);
         $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($ri as $file) {
             $file->isDir() ? rmdir($file) : unlink($file);
         }
 
-        $dir = dirname(__FILE__, 3).'/public_html';
-        $di = new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS);
+        $di = new RecursiveDirectoryIterator(kiwidir(Dir::PUBLIC_DIR), FilesystemIterator::SKIP_DOTS);
         $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($ri as $file) {
             $file->isDir() ? rmdir($file) : unlink($file);
         }
 
         $zip = new ZipArchive();
-        $zip->open($backupPath);
-        $zip->extractTo(dirname(__FILE__, 3));
+        $zip->open(kiwidir(Dir::KIWI_DIR));
+        $zip->extractTo(kiwidir(Dir::ROOT_DIR));
         $zip->close();
 
         Log::msg('Restored kiwi from the backup.');
@@ -1075,7 +1147,7 @@ function restore_backup()
 
 function render($step, $error, $error_type)
 {
-//region HTML_HEADER
+    //region HTML_HEADER
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -1214,7 +1286,7 @@ function render($step, $error, $error_type)
 //endregion HTML_HEADER
 //region HTML_FORMS
 call_user_func($step->render);
-//endregion HTML_FORMS
+    //endregion HTML_FORMS
 //region HTML_FOOTER
 ?>
                         </div>
