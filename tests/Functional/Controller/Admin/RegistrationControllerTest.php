@@ -44,25 +44,38 @@ class RegistrationControllerTest extends AuthWebTestCase
 
     public function testNewAction(): void
     {
-//        $fixtures = $this->loadFixtures([
-//            LocalAccountFixture::class,
-//            LocationFixture::class,
-//            PriceOptionFixture::class,
-//            ActivityFixture::class,
-//        ])->getReferenceRepository();
-//
-//        $this->login();
-//
-//        //$crawler = $this->client->request('GET', '/admin/activity/'.$fixtures->getReference('Activity 0')->getId());
-//        $crawler = $this->client->request('GET', '/');
-//        $this->assertResponseIsSuccessful();
-//        $link = $crawler
-//            ->filter('a[class^="activity"]') // find all links with the text "Greet"
-//            ->eq(0) // select the second link in the list
-//            ->link()
-//        ;
-        //$this->assertGreaterThan(0, $crawler->filter('//button[@class="button add icon"]'));
-        $this->markTestIncomplete();
+        $fixtures = $this->loadFixtures([
+            LocalAccountFixture::class,
+            LocationFixture::class,
+            PriceOptionFixture::class,
+            ActivityFixture::class,
+        ])->getReferenceRepository();
+
+        $this->login();
+
+        $crawler = $this->client->request('GET', '/admin/activity/');
+
+        $this->assertSelectorTextContains('html body main a', 'Nieuw');
+        $this->assertResponseIsSuccessful();
+        $link = $crawler
+            ->filter('html body main a') // find all links with the text "Greet"
+            ->first()
+            ->link()
+        ;
+
+        $crawler = $this->client->click($link);
+        //$this->assertResponseIsSuccessful();
+
+        $send_button = $crawler->selectButton('Toevoegen');
+        $form = $send_button->form();
+        $form['activity_new[name]'] = 'name!';
+
+        //$crawler = $crawler->filter('html main form');
+        //$form = $crawler->form();
+
+        var_dump($form);
+
+        $crawler = $this->client->submit($form);
     }
 
     public function testDeleteAction(): void
