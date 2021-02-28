@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Helper;
+namespace Tests\Helper;
 
 /**
  * Test data builder.

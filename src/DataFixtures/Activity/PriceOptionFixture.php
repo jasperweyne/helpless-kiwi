@@ -4,11 +4,12 @@ namespace App\DataFixtures\Activity;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
-use App\Tests\Helper\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Tests\Helper\TestData;
 
-class PriceOptionFixture extends Fixture
+class PriceOptionFixture extends Fixture implements DependentFixtureInterface
 {
     public const PRICE_OPTION_REFERENCE = 'price';
 
@@ -16,21 +17,22 @@ class PriceOptionFixture extends Fixture
     {
         $activities = $manager->getRepository(Activity::class)->findAll();
 
-        foreach (self::generate($activities) as $object) {
+        $options = self::generate($activities)->return();
+        foreach ($options as $object) {
             $manager->persist($object);
         }
 
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             ActivityFixture::class,
         ];
     }
 
-    public static function generate(array $activities)
+    public static function generate(array $activities): TestData
     {
         return TestData::from(new PriceOption())
             ->with('name', 'free')
@@ -40,6 +42,6 @@ class PriceOptionFixture extends Fixture
             ->doWith('activity', function (PriceOption $priceOption, Activity $activity) {
                 $priceOption->setActivity($activity);
             }, ...$activities)
-            ->return();
+        ;
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Tests\Functional\Controller\Admin;
 
-use App\Controller\Admin\RegistrationController;
 use App\DataFixtures\Activity\ActivityFixture;
 use App\DataFixtures\Activity\PriceOptionFixture;
-use App\DataFixtures\Location\LocationFixture;
 use App\DataFixtures\Security\LocalAccountFixture;
-use App\Tests\Helper\AuthWebTestCase;
+use App\Entity\Activity\Activity;
+use Doctrine\ORM\EntityManagerInterface;
+use Tests\Helper\AuthWebTestCase;
 
 /**
  * Class RegistrationControllerTest.
@@ -17,9 +17,9 @@ use App\Tests\Helper\AuthWebTestCase;
 class RegistrationControllerTest extends AuthWebTestCase
 {
     /**
-     * @var RegistrationController
+     * @var \Doctrine\ORM\EntityManagerInterface
      */
-    protected $registrationController;
+    private $em;
 
     /**
      * {@inheritdoc}
@@ -27,9 +27,16 @@ class RegistrationControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->login();
+        $this->client->followRedirects(true);
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->registrationController = new RegistrationController();
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            PriceOptionFixture::class,
+            ActivityFixture::class,
+        ]);
+
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -39,43 +46,24 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         parent::tearDown();
 
-        unset($this->registrationController);
+        unset($this->em);
     }
 
     public function testNewAction(): void
     {
-        $fixtures = $this->loadFixtures([
-            LocalAccountFixture::class,
-            LocationFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-        ])->getReferenceRepository();
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
 
-        $this->login();
+        $originalCount = $activity->getOptions()->count();
 
-        $crawler = $this->client->request('GET', '/admin/activity/');
-
-        $this->assertSelectorTextContains('html body main a', 'Nieuw');
-        $this->assertResponseIsSuccessful();
-        $link = $crawler
-            ->filter('html body main a') // find all links with the text "Greet"
-            ->first()
-            ->link()
-        ;
-
-        $crawler = $this->client->click($link);
-        //$this->assertResponseIsSuccessful();
-
-        $send_button = $crawler->selectButton('Toevoegen');
-        $form = $send_button->form();
-        $form['activity_new[name]'] = 'name!';
-
-        //$crawler = $crawler->filter('html main form');
-        //$form = $crawler->form();
-
-        var_dump($form);
-
+        $crawler = $this->client->request('GET', '/admin/activity/register/new/'.$activity->getId());
+        $form = $crawler->selectButton('Toevoegen')->form();
         $crawler = $this->client->submit($form);
+
+        $newCount = $activity->getOptions()->count();
+
+        var_dump($crawler->filter('.messages')->extract(['_text']));
+
+        // $this->assertEquals(1, $newCount - $originalCount);
     }
 
     public function testDeleteAction(): void

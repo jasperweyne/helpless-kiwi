@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Helper;
+namespace Tests\Helper;
 
 use App\DataFixtures\Security\LocalAccountFixture;
 use App\Entity\Security\LocalAccount;

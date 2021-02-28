@@ -5,44 +5,44 @@ namespace App\DataFixtures\Activity;
 use App\DataFixtures\Location\LocationFixture;
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
-use App\Tests\Helper\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Tests\Helper\TestData;
 
-class ActivityFixture extends Fixture
+class ActivityFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
         $locations = $this->getReference(LocationFixture::LOCATION_REFERENCE);
 
-        foreach (self::generate([$locations]) as $object) {
+        $activity = self::generate([$locations])->return();
+        foreach ($activity as $object) {
             $manager->persist($object);
             $this->setReference($object->getName(), $object);
         }
 
         $manager->flush();
-//        \DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver::commit();
-//        die;
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             LocationFixture::class,
         ];
     }
 
-    public static function generate(array $locations)
+    public static function generate(array $locations): TestData
     {
         $colors = [
-            //            'red',
-            //            'orange',
-            //            'yellow',
-            //            'green',
-            //            'cyan',
-            //            'ltblue',
-            //            'blue',
-            //            'purple',
+            // 'red',
+            // 'orange',
+            // 'yellow',
+            // 'green',
+            // 'cyan',
+            // 'ltblue',
+            // 'blue',
+            // 'purple',
             'pink',
         ];
 
@@ -61,6 +61,6 @@ class ActivityFixture extends Fixture
             ->doWith('location', function (Activity $activity, Location $location) {
                 $activity->setLocation($location);
             }, ...$locations)
-            ->return();
+        ;
     }
 }
