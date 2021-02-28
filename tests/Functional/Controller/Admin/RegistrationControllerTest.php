@@ -28,7 +28,6 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         parent::setUp();
         $this->login();
-        $this->client->followRedirects(true);
 
         $this->loadFixtures([
             LocalAccountFixture::class,
@@ -49,21 +48,36 @@ class RegistrationControllerTest extends AuthWebTestCase
         unset($this->em);
     }
 
-    public function testNewAction(): void
+    public function testNewGetAction(): void
     {
+        // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
 
-        $originalCount = $activity->getOptions()->count();
+        // Act
+        $this->client->request('GET', "/admin/activity/register/new/{$id}");
 
-        $crawler = $this->client->request('GET', '/admin/activity/register/new/'.$activity->getId());
-        $form = $crawler->selectButton('Toevoegen')->form();
-        $crawler = $this->client->submit($form);
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+    
+    public function testNewPostAction(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $originalCount = $activity->getRegistrations()->count();
+        $id = $activity->getId();
 
-        $newCount = $activity->getOptions()->count();
+        // Act
+        $this->client->request('GET', "/admin/activity/register/new/{$id}");
+        $this->client->submitForm('Toevoegen');
 
-        var_dump($crawler->filter('.messages')->extract(['_text']));
-
-        // $this->assertEquals(1, $newCount - $originalCount);
+        // Assert
+        $activity = $this->em->getRepository(Activity::class)->find($id);
+        $newCount = $activity->getRegistrations()->count();
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
+        // $this->assertSelectorTextContains('.messages', 'aangemeld');
     }
 
     public function testDeleteAction(): void

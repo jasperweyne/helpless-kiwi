@@ -4,6 +4,8 @@ namespace Tests\Helper;
 
 use App\DataFixtures\Security\LocalAccountFixture;
 use App\Entity\Security\LocalAccount;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
@@ -19,7 +21,7 @@ class AuthWebTestCase extends WebTestCase
     use FixturesTrait;
 
     /**
-     * @var client
+     * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
      */
     protected $client;
 
@@ -31,6 +33,16 @@ class AuthWebTestCase extends WebTestCase
         parent::setUp();
 
         $this->client = static::createClient();
+        $this->client->followRedirects(true);
+        
+        // Get all database tables
+        $em = self::$container->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
+
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
     }
 
     /**
