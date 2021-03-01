@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures\Activity;
+namespace Tests\Helper\Database\Activity;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;

@@ -2,9 +2,9 @@
 
 namespace Tests\Functional\Controller\Admin;
 
-use App\DataFixtures\Activity\ActivityFixture;
-use App\DataFixtures\Activity\PriceOptionFixture;
-use App\DataFixtures\Security\LocalAccountFixture;
+use Tests\Helper\Database\Activity\ActivityFixture;
+use Tests\Helper\Database\Activity\PriceOptionFixture;
+use Tests\Helper\Database\Security\LocalAccountFixture;
 use App\Entity\Activity\Activity;
 use Doctrine\ORM\EntityManagerInterface;
 use Tests\Helper\AuthWebTestCase;

@@ -2,7 +2,7 @@
 
 namespace Tests\Helper;
 
-use App\DataFixtures\Security\LocalAccountFixture;
+use Tests\Helper\Database\Security\LocalAccountFixture;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;

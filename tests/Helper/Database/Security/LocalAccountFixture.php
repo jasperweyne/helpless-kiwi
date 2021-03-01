@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures\Security;
+namespace Tests\Helper\Database\Security;
 
 use App\Entity\Security\LocalAccount;
 use Doctrine\Bundle\FixturesBundle\Fixture;

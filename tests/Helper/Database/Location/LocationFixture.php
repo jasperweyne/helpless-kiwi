@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures\Location;
+namespace Tests\Helper\Database\Location;
 
 use App\Entity\Location\Location;
 use Doctrine\Bundle\FixturesBundle\Fixture;
