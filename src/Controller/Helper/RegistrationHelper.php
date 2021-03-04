@@ -42,7 +42,7 @@ class RegistrationHelper extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($registration);
 
-            $this->sendConvermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by');
+            $this->sendConvermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by', 'aangemeld!');
 
             return null;
         }
@@ -65,7 +65,7 @@ class RegistrationHelper extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $registration->setDeleteDate($now);
 
-            $this->sendConvermationMail($registration, $em, 'Afmeldbericht ', 'email/removedregistration_by');
+            $this->sendConvermationMail($registration, $em, 'Afmeldbericht ', 'email/removedregistration_by', 'afgemeld!');
 
             return null;
         }
@@ -177,11 +177,12 @@ class RegistrationHelper extends AbstractController
         Registration $registration,
         $em,
         $title,
-        $template
+        $template,
+        $message
     ) {
         $em->flush();
         $person = $this->personRegistry->find($registration->getPersonId());
-        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' afgemeld!');
+        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' '.$message);
 
         $title = $title.' '.$registration->getActivity()->getName();
         $body = $this->renderView($template.'.html.twig', [

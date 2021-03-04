@@ -2,12 +2,12 @@
 
 namespace Tests\Functional\Controller\Admin;
 
-use Tests\Helper\Database\Activity\ActivityFixture;
-use Tests\Helper\Database\Activity\PriceOptionFixture;
-use Tests\Helper\Database\Security\LocalAccountFixture;
 use App\Entity\Activity\Activity;
 use Doctrine\ORM\EntityManagerInterface;
 use Tests\Helper\AuthWebTestCase;
+use Tests\Helper\Database\Activity\ActivityFixture;
+use Tests\Helper\Database\Activity\PriceOptionFixture;
+use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
  * Class RegistrationControllerTest.
@@ -60,7 +60,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Assert
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
-    
+
     public function testNewPostAction(): void
     {
         // Arrange
@@ -77,7 +77,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $newCount = $activity->getRegistrations()->count();
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
-        // $this->assertSelectorTextContains('.messages', 'aangemeld');
+        $this->assertSelectorTextContains('.container', 'aangemeld');
     }
 
     public function testDeleteAction(): void
