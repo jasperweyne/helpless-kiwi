@@ -10,10 +10,12 @@ abstract class Step
     const DATABASE_CHOICE = 'database-choice';
     const DATABASE = 'database';
     const EMAILER_CHOICE = 'emailer-choice';
+    const BACKUP_OVERWRITE_WARNING = 'overwrite';
     const EMAILER = 'emailer';
     const SECURITY = 'security';
     const BUNNY = 'bunny';
     const ADMIN = 'admin';
+    const UPDATE_PASSWORD = 'password';
     const CONFIRM_INSTALL = 'confirm-install';
     const SUCCESS_INSTALL = 'success-install';
     const FAILURE = 'failure';
@@ -133,6 +135,7 @@ $db_password = $_SESSION['db_pass'] ?? '';
 $email_type = $_SESSION['email_type'] ?? '';
 $mailer_url = $_SESSION['mailer_url'] ?? '';
 $mailer_email = $_SESSION['mailer_email'] ?? '';
+$updater_pass = $_SESSION['updater_pass'] ?? '';
 $org_name = $_SESSION['org_name'] ?? '';
 $sec_type = $_SESSION['sec_type'] ?? '';
 $admin_name = $_SESSION['admin_name'] ?? '';
@@ -172,11 +175,37 @@ $screens = [
             'back' => Step::INTRO,
         ]),
     Step::INTRO_UPDATE => new Screen('Updaten', function () { ?>
-        <p>Welkom by de kiwi update of installatie optie. </p>
-        <?php form_button('intro', 'action'); ?>
+        <p>Welkom by de kiwi update. Voor wachtwoord in aub.</p>
+        <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
+            <div class="form-group">
+                <label for="wachtwoord">Updater wachtwoord<sup>*</sup></label>
+                <input type="text" class="form-control" id="password" name="password" placeholder=""
+                required>
+            </div>
+            <input type="submit" class="button grow" value="Verifieer">
+        </form>
+        <?php }, [
+            'action' => Step::BACKUP_OVERWRITE_WARNING,
+            'back' => Step::INTRO,
+            'password' => function ($value) use (&$updater_pass, &$error, &$error_type) {
+                $updater_pass = trim($value);
+                if (validate_updater_password($updater_pass)) {
+                    //$_SESSION['admin_email'] = $value;
+                } else {
+                    $error = 'The updater password is incorrect.';
+                    $error_type = 'validation';
+
+                    unset($_POST['action']);
+                }
+            },
+        ]),
+    Step::BACKUP_OVERWRITE_WARNING => new Screen('WAARSCHUWING', function () { ?>
+        <p>PAS OP, de lokale back-up op de server wordt herschreven. Download en sla deze op als u hem wilt bewaren. </p>
+        <?php form_button('Ik ben me bewust', 'action'); ?>
         <?php }, [
             'action' => Step::CONFIRM_UPDATE,
-            'back' => Step::INTRO,
+            'back' => Step::INTRO_UPDATE,
         ]),
     Step::DATABASE_CHOICE => new Screen('Database configuratie', function () use ($db_type) { ?>
         <p>Kies de database van de server. </p>
@@ -348,14 +377,21 @@ $screens = [
                 }
             },
         ]),
-    Step::SECURITY => new Screen('Security', function () use ($sec_type) { ?>
-        <p>Kies de security modus van Kiwi. </p>
+    Step::SECURITY => new Screen('Security', function () use ($sec_type, $updater_pass) { ?>
+        <p>Kies de security modus van Kiwi en geef een updater wachtwoord op.</p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
             <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
 
             <div class="form-group">
                 <label class="radio-inline"><input type="radio" name="sec_type" value="admin" <?php if ('bunny' != $sec_type) { ?>checked<?php } ?>>Lokale userdata</label>
                 <label class="radio-inline"><input type="radio" name="sec_type" value="bunny" <?php if ('bunny' == $sec_type) { ?>checked<?php } ?>>Bunny</label>
+            </div>
+
+            <div class="form-group">
+                    <label for="updater_pass">Database username<sup>*</sup></label>
+                    <input id="updater_pass" name="updater_pass" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
+                    <?php echo refill($updater_pass); ?>
+                    required>
             </div>
 
             <input type="submit" class="button grow" value="Security instellen">
@@ -381,6 +417,10 @@ $screens = [
             'sec_type' => function ($value) use (&$sec_type) {
                 $sec_type = trim($value);
                 $_SESSION['sec_type'] = $value;
+            },
+            'updater_pass' => function ($value) use (&$updater_pass) {
+                $updater_pass = trim($value);
+                $_SESSION['updater_pass'] = $value;
             },
         ]),
     Step::BUNNY => new Screen('Bunny', function () use ($app_id, $app_secret, $bunny_url) { ?>
@@ -534,9 +574,10 @@ $screens = [
         <?php }, [
             'action' => Step::CONFIRM_UPDATE,
         ]),
-    Step::CONFIRM_UPDATE => new Screen('Check alle data', function () { ?>
-        <p>Dit is de online updater van kiwi, dit programma update kiwi naar de meest recente stabiele versie.</p>
+    Step::CONFIRM_UPDATE => new Screen('Klaar om te gaan.', function () { ?>
+        <p>De online updater van kiwi is klaar op kiwi naar de meest recente stabiele versie te updaten.</p>
         <p>Dit is volledig automatisch, dus zonder handmatig verzetten van opties.</p>
+        <p>Controleer voor de laatste keer of je alles klaar hebt staan.</p>
         <?php form_button('Start update', 'action'); ?>
 
         <?php }, [
@@ -605,10 +646,10 @@ $screens = [
         <p>Kiwi is aan het installeren, dit kan enkele minuten duren. </p>
         <p>Bezig met stap <?php echo $_SESSION['install_progress']; ?>  </p>
 
-        <?php }, [], function () use ($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type, $admin_email, $admin_name, $admin_pass) {
+        <?php }, [], function () use ($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $updater_pass, $email_type, $admin_email, $admin_name, $admin_pass) {
         switch ($_SESSION['install_progress']) {
                 case Progress::START:
-                    $result = generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type);
+                    $result = generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $updater_pass, $email_type);
                     $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DATABASE;
                     break;
@@ -665,12 +706,14 @@ $step = $screens[$_SESSION['step']];
 
 //Handle the steps of the installation process.
 if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
-    foreach ($step->actions as $key => $action) {
-        if (isset($_POST[$key])) {
-            if (is_string($action)) {
-                $_SESSION['step'] = $action;
-            } else {
-                call_user_func($action, $_POST[$key]);
+    if (isset($_POST['action'])) {
+        foreach ($screens[$_POST['action']]->actions as $key => $action) {
+            if (isset($_POST[$key])) {
+                if (is_string($action)) {
+                    $_SESSION['step'] = $action;
+                } else {
+                    call_user_func($action, $_POST[$key]);
+                }
             }
         }
     }
@@ -760,6 +803,12 @@ function detect_kiwi_value()
     }
 }
 
+function validate_updater_password($pass)
+{
+    //TO-DO: real password validator
+    return true;
+}
+
 function validate_email($email)
 {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
@@ -784,7 +833,7 @@ function refill($var)
     return 'value = "'.$var.'"';
 }
 
-function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $email_type)
+function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $updater_pass, $email_type)
 {
     if (detect_kiwi()) {
         Log::msg('Environment file found.');
@@ -812,7 +861,7 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
     }
 
     $vars['USERPROVIDER_KEY'] = $random_val2;
-
+    $vars['UPDATER_PASSWORD'] = $updater_pass;
     //bunny
     if ('bunny' == $sec_type) {
         $vars['BUNNY_SECRET'] = $app_secret;
