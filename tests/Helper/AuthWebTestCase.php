@@ -12,9 +12,7 @@ use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
- * Class RegistrationControllerTest.
- *
- * @covers \App\Controller\Admin\RegistrationController
+ * Extends the WebTestCase class with support for logging in and fixtures.
  */
 class AuthWebTestCase extends WebTestCase
 {
