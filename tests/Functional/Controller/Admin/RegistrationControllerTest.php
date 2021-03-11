@@ -2,20 +2,24 @@
 
 namespace Tests\Functional\Controller\Admin;
 
-use App\Controller\Admin\RegistrationController;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Entity\Activity\Activity;
+use Doctrine\ORM\EntityManagerInterface;
+use Tests\Helper\AuthWebTestCase;
+use Tests\Helper\Database\Activity\ActivityFixture;
+use Tests\Helper\Database\Activity\PriceOptionFixture;
+use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
  * Class RegistrationControllerTest.
  *
  * @covers \App\Controller\Admin\RegistrationController
  */
-class RegistrationControllerTest extends WebTestCase
+class RegistrationControllerTest extends AuthWebTestCase
 {
     /**
-     * @var RegistrationController
+     * @var \Doctrine\ORM\EntityManagerInterface
      */
-    protected $registrationController;
+    private $em;
 
     /**
      * {@inheritdoc}
@@ -23,9 +27,15 @@ class RegistrationControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->login();
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->registrationController = new RegistrationController();
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            PriceOptionFixture::class,
+            ActivityFixture::class,
+        ]);
+
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -35,13 +45,39 @@ class RegistrationControllerTest extends WebTestCase
     {
         parent::tearDown();
 
-        unset($this->registrationController);
+        unset($this->em);
     }
 
-    public function testNewAction(): void
+    public function testNewGetAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', "/admin/activity/register/new/{$id}");
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testNewPostAction(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $originalCount = $activity->getRegistrations()->count();
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', "/admin/activity/register/new/{$id}");
+        $this->client->submitForm('Toevoegen');
+
+        // Assert
+        $activity = $this->em->getRepository(Activity::class)->find($id);
+        $newCount = $activity->getRegistrations()->count();
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
+        $this->assertSelectorTextContains('.container', 'aangemeld');
     }
 
     public function testDeleteAction(): void
