@@ -4,14 +4,16 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\ActivityController;
 use App\Log\EventService;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Tests\Helper\AuthWebTestCase;
 
 /**
  * Class ActivityControllerTest.
  *
  * @covers \App\Controller\Admin\ActivityController
  */
-class ActivityControllerTest extends WebTestCase
+class ActivityControllerTest extends AuthWebTestCase
 {
     /**
      * @var ActivityController
@@ -29,10 +31,9 @@ class ActivityControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
+        $this->login();
 
-        $this->events = self::$container->get(EventService::class);
-        $this->activityController = new ActivityController($this->events);
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -44,6 +45,7 @@ class ActivityControllerTest extends WebTestCase
 
         unset($this->activityController);
         unset($this->events);
+        unset($this->em);
     }
 
     public function testIndexAction(): void
@@ -54,8 +56,36 @@ class ActivityControllerTest extends WebTestCase
 
     public function testNewAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $local_file = __DIR__.'/../../../assets/Faint.png';
+        $activity_name = 'testname';
+
+        // Act
+        $crawler = $this->client->request('GET', '/admin/activity/new');
+
+        // Act
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $form['activity_new[name]'] = $activity_name;
+        $form['activity_new[description]'] = 'added through testing';
+        $form['activity_new[location][address]'] = 'In php unittest';
+        $form['activity_new[deadline][date]'] = '2013-03-15';
+        $form['activity_new[deadline][time]'] = '23:59';
+        $form['activity_new[start][date]'] = '2013-03-15';
+        $form['activity_new[start][time]'] = '23:59';
+        $form['activity_new[end][date]'] = '2013-03-15';
+        $form['activity_new[end][time]'] = '23:59';
+        $form['activity_new[imageFile][file]'] = new UploadedFile(
+            $local_file,
+            'Faint.png',
+            'image/png',
+            null,
+            null,
+            true
+        );
+        $form['activity_new[color]'] = 1;
+
+        $crawler = $this->client->submit($form);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Activiteit '.$activity_name);
     }
 
     public function testShowAction(): void
