@@ -158,12 +158,12 @@ $screens = [
         <p>Welkom by de kiwi update of installatie optie. </p>
         <?php detect_kiwi_message(); ?>
         <form role="form" method="post">
-            <input type="hidden" name="action" value="<?php detect_kiwi_value(); ?>" />
+            <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
             <input type="submit" class="button grow" value="intro" />
         </form>
         <?php }, [
             'action' => function ($value) {
-                $_SESSION['step'] = $value;
+                $_SESSION['step'] = detect_kiwi_step();
             },
         ]),
     Step::INTRO_INSTALL => new Screen('Installeren', function () { ?>
@@ -191,7 +191,8 @@ $screens = [
             'password' => function ($value) use (&$updater_pass, &$error, &$error_type) {
                 $updater_pass = trim($value);
                 if (validate_updater_password($updater_pass)) {
-                    //$_SESSION['admin_email'] = $value;
+
+                    $_SESSION['admin_email'] = $value;
                 } else {
                     $error = 'The updater password is incorrect.';
                     $error_type = 'validation';
@@ -200,7 +201,7 @@ $screens = [
                 }
             },
         ]),
-    Step::BACKUP_OVERWRITE_WARNING => new Screen('WAARSCHUWING', function () { ?>
+    Step::BACKUP_OVERWRITE_WARNING =>new Screen('WAARSCHUWING', function () { ?>
         <p>PAS OP, de lokale back-up op de server wordt herschreven. Download en sla deze op als u hem wilt bewaren. </p>
         <?php form_button('Ik ben me bewust', 'action'); ?>
         <?php }, [
@@ -377,7 +378,7 @@ $screens = [
                 }
             },
         ]),
-    Step::SECURITY => new Screen('Security', function () use ($sec_type, $updater_pass) { ?>
+    Step::SECURITY => new Screen('Security', function () use ($sec_type,$updater_pass) { ?>
         <p>Kies de security modus van Kiwi en geef een updater wachtwoord op.</p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
             <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
@@ -388,8 +389,8 @@ $screens = [
             </div>
 
             <div class="form-group">
-                    <label for="updater_pass">Database username<sup>*</sup></label>
-                    <input id="updater_pass" name="updater_pass" type="text" class="form-control" placeholder="EXAMPEL MAIL URL"
+                    <label for="updater_pass">Updater wachtwoord<sup>*</sup></label>
+                    <input id="updater_pass" name="updater_pass" type="text" class="form-control" placeholder="wachtwoord123"
                     <?php echo refill($updater_pass); ?>
                     required>
             </div>
@@ -418,7 +419,7 @@ $screens = [
                 $sec_type = trim($value);
                 $_SESSION['sec_type'] = $value;
             },
-            'updater_pass' => function ($value) use (&$updater_pass) {
+            'updater_pass'=> function ($value) use (&$updater_pass) {
                 $updater_pass = trim($value);
                 $_SESSION['updater_pass'] = $value;
             },
@@ -707,21 +708,19 @@ $step = $screens[$_SESSION['step']];
 //Handle the steps of the installation process.
 if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
     if (isset($_POST['action'])) {
-        foreach ($screens[$_POST['action']]->actions as $key => $action) {
-            if (isset($_POST[$key])) {
-                if (is_string($action)) {
-                    $_SESSION['step'] = $action;
-                } else {
-                    call_user_func($action, $_POST[$key]);
-                }
-            }
-        }
+        $posting_step = $_POST['action'];
+        handle_post($posting_step,$screens,'action');
+    }
+    if (isset($_POST['back'])) {
+        $posting_step = $_POST['back'];
+        handle_post($posting_step,$screens,'back');
     }
 }
 
 if (!is_null($step->exec)) {
     call_user_func($step->exec);
 }
+
 $step = $screens[$_SESSION['step']];
 render($step, $error, $error_type);
 
@@ -729,8 +728,6 @@ render($step, $error, $error_type);
 
 use Doctrine\DBAL\Query\QueryException;
 use Doctrine\ORM\UnexpectedResultException;
-use RecursiveFilterIterator;
-use RecursiveIterator;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -746,6 +743,45 @@ function form_button($label = 'Terug', $name = 'back')
 <?php
 }
 
+
+function handle_post($posting_step, $screens, $last_act_key) {
+    
+    // If the last_act is not in the post, dont do anything.
+    if (!isset($_POST[$last_act_key])) {
+        // error.
+        return;
+    }
+    
+    //Get the action associated with the post. 
+    $post_acts = $screens[$posting_step]->actions;
+
+    // We always want to do the "back" and "action" acts last, so we unset and do it manually after loop.  
+    unset($post_acts[$last_act_key]);
+    
+    // Run all functions that are not back or action.
+    // These functions can change action or back, unset, etc
+    foreach ($post_acts as $key => $act) {
+        if (isset($_POST[$key])) {
+            if (is_string($act)) {
+                // This should not do anything.
+            } else {
+                call_user_func($act, $_POST[$key]);
+            }
+        }
+    }
+    
+    $last_act = $screens[$posting_step]->actions[$last_act_key];
+    if (isset($_POST[$last_act_key])){
+        if (is_string($last_act)) {
+            $_SESSION['step'] = $last_act;        
+        } else {
+            
+            call_user_func($last_act, $_POST[$last_act_key]);
+        }
+    }
+}
+
+
 function detect_kiwi()
 {
     // detect kiwi in some meaningful way.
@@ -754,8 +790,21 @@ function detect_kiwi()
     $envpath = kiwidir(Dir::KIWI_DIR).'/.env*';
 
     $list = glob($envpath);
+    if (count($list) < 2) {
+        return false;
+    } 
 
-    return count($list) > 1;
+    $env_vars = get_env_vars();
+    
+    if (isset($env_vars['UPDATER_PASSWORD'])) {
+        return true;
+    }
+    
+    return false;
+}
+
+function get_env_vars(){
+    return include_once kiwidir(Dir::KIWI_DIR).'/.env.local.php';
 }
 
 function kiwidir($name)
@@ -788,6 +837,16 @@ function detect_kiwi_message()
     }
 }
 
+function detect_kiwi_step(){
+    $detected = detect_kiwi();
+
+    if ($detected) {
+        return Step::INTRO_UPDATE;
+    } else {
+        return Step::INTRO_INSTALL;
+    }
+}
+
 function detect_kiwi_value()
 {
     $detected = detect_kiwi();
@@ -803,10 +862,16 @@ function detect_kiwi_value()
     }
 }
 
-function validate_updater_password($pass)
-{
+function validate_updater_password($pass) {
     //TO-DO: real password validator
-    return true;
+    $env_vars = get_env_vars();
+    $env_pass = $env_vars['UPDATER_PASSWORD']);
+
+    if ($env_pass==trim($pass)) {
+        return true;
+    }
+
+    return false;
 }
 
 function validate_email($email)
@@ -833,7 +898,7 @@ function refill($var)
     return 'value = "'.$var.'"';
 }
 
-function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $updater_pass, $email_type)
+function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $updater_pass,$email_type)
 {
     if (detect_kiwi()) {
         Log::msg('Environment file found.');
