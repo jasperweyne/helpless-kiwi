@@ -25,7 +25,7 @@ class GroupTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->groupType = new GroupType();
     }
 
@@ -41,13 +41,13 @@ class GroupTypeTest extends KernelTestCase
 
     public function testBuildForm(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testConfigureOptions(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

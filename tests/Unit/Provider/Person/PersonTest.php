@@ -26,7 +26,7 @@ class PersonTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->person = new Person();
     }
 
@@ -102,25 +102,25 @@ class PersonTest extends KernelTestCase
 
     public function testGetName(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetShortname(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetCanonical(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function test__toString(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

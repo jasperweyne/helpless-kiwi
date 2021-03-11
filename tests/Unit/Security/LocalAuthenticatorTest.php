@@ -4,10 +4,10 @@ namespace Tests\Unit\Security;
 
 use App\Security\LocalAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class LocalAuthenticatorTest.
@@ -72,31 +72,31 @@ class LocalAuthenticatorTest extends KernelTestCase
 
     public function testSupports(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetCredentials(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetUser(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testCheckCredentials(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testOnAuthenticationSuccess(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

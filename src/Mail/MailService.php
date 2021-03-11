@@ -26,11 +26,11 @@ class MailService
         $this->params = $params;
     }
 
-    public function message($to, string $title, string $body)
+    public function message($to, string $title, string $body, array $attachments = [])
     {
         if (is_null($to))
             return;
-        
+
         if (!is_iterable($to)) {
             $to = [$to];
         }
@@ -43,7 +43,7 @@ class MailService
         foreach ($to as $person) {
             if (is_null($person->getEmail()))
                 continue;
-            
+
             if ('' == trim($person->getName() ?? $person->getShortname() ?? '')) {
                 $addresses[] = $person->getEmail();
             } else {
@@ -62,6 +62,10 @@ class MailService
             'html' => $body,
             'plain' => $body_plain,
         ]);
+
+        foreach ($attachments as $attachment) {
+            $message->attach($attachment);
+        }
 
         $msgEntity = new Mail();
         $msgEntity

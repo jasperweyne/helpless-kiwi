@@ -48,67 +48,67 @@ class ActivityControllerTest extends WebTestCase
 
     public function testIndexAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testNewAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testShowAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testEditAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testImageAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testDeleteAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testPriceNewAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testPriceEditAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testPresentEditAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testSetAmountPresent(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testResetAmountPresent(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

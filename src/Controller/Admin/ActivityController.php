@@ -2,18 +2,16 @@
 
 namespace App\Controller\Admin;
 
-use App\Template\Annotation\MenuItem;
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
-use App\Entity\Activity\PriceOption;
-use App\Mail\MailService;
-use App\Repository\ActivityRepository;
+use App\Log\EventService;
+use App\Template\Annotation\MenuItem;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.
@@ -99,7 +97,7 @@ class ActivityController extends AbstractController
             'registrations' => $regs,
             'deregistrations' => $deregs,
             'reserve' => $reserve,
-            'present' => $present
+            'present' => $present,
         ]);
     }
 
@@ -219,7 +217,7 @@ class ActivityController extends AbstractController
         $repository = $em->getRepository(Registration::class);
 
         if ($form->isSubmitted() && $form->isValid()) {
-			$regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
+            $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
             if (count($regs) > 0 && $originalPrice < $price->getPrice()) {
                 $this->addFlash('error', 'Prijs kan niet verhoogd worden als er al deelnemers geregistreerd zijn');
 
@@ -241,18 +239,17 @@ class ActivityController extends AbstractController
     }
 
     /**
-     * Creates a form to set participent presence
-     * 
+     * Creates a form to set participent presence.
+     *
      * @Route("/{id}/present", name="present")
      */
-
     public function presentEditAction(Request $request, Activity $activity)
     {
         $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);
-    
+
         $em = $this->getDoctrine()->getManager();
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash('success', 'Aanwezigheid aangepast');
@@ -260,26 +257,26 @@ class ActivityController extends AbstractController
 
         return $this->render('admin/activity/present.html.twig', [
             'activity' => $activity,
-            'form' => $form->createView()
-            ]);
+            'form' => $form->createView(),
+        ]);
     }
 
-            /**
-     * Creates a form to set amount participent present
-     * 
+    /**
+     * Creates a form to set amount participent present.
+     *
      * @Route("/{id}/setamountpresent", name="amount_present", methods={"GET", "POST"})
      */
-
     public function setAmountPresent(Request $request, Activity $activity)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount',$activity);
+        $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash('success', 'Aanwezigen genoteerd!');
+
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
 
@@ -289,23 +286,23 @@ class ActivityController extends AbstractController
         ]);
     }
 
-     /**
-     * Creates a form to reset amount participent present
-     * 
+    /**
+     * Creates a form to reset amount participent present.
+     *
      * @Route("/{id}/resetamountpresent", name="reset_amount_present")
      */
-
     public function resetAmountPresent(Request $request, Activity $activity)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Activity\ActivityCountPresent',$activity);
+        $form = $this->createForm('App\Form\Activity\ActivityCountPresent', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $activity->setPresent(null);
             $em->flush();
             $this->addFlash('success', 'Aanwezigen geteld!');
+
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
 

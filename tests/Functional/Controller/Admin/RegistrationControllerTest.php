@@ -24,7 +24,7 @@ class RegistrationControllerTest extends WebTestCase
     {
         parent::setUp();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->registrationController = new RegistrationController();
     }
 
@@ -40,31 +40,31 @@ class RegistrationControllerTest extends WebTestCase
 
     public function testNewAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testDeleteAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testReserveNewAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testReserveMoveUpAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testReserveMoveDownAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

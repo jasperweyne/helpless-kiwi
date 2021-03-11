@@ -184,7 +184,7 @@ class PriceOptionTest extends KernelTestCase
 
     public function test__toString(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
@@ -200,13 +200,13 @@ class PriceOptionTest extends KernelTestCase
 
     public function testAddRegistration(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testRemoveRegistration(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

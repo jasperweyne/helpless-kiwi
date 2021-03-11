@@ -28,7 +28,7 @@ class RegistrationTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->registration = new Registration();
     }
 
@@ -84,13 +84,13 @@ class RegistrationTest extends KernelTestCase
 
     public function testGetPersonId(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testSetPersonId(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
@@ -116,43 +116,43 @@ class RegistrationTest extends KernelTestCase
 
     public function testIsReserve(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetReservePosition(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testSetReservePosition(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetNewDate(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testSetNewDate(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetDeleteDate(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testSetDeleteDate(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 

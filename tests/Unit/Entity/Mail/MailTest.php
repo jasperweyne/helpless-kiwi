@@ -28,7 +28,7 @@ class MailTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->mail = new Mail();
     }
 
@@ -94,13 +94,13 @@ class MailTest extends KernelTestCase
 
     public function testGetPersonId(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testSetPersonId(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
@@ -116,13 +116,13 @@ class MailTest extends KernelTestCase
 
     public function testAddRecipient(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testRemoveRecipient(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 

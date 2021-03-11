@@ -5,9 +5,9 @@ namespace Tests\Unit\Mail;
 use App\Mail\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Swift_Mailer;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class MailServiceTest.
@@ -72,7 +72,7 @@ class MailServiceTest extends KernelTestCase
 
     public function testMessage(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

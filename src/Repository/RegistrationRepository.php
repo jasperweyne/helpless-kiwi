@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Order;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
+use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -113,8 +113,9 @@ class RegistrationRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
 
-        if (is_null($reg))
+        if (is_null($reg)) {
             return $this->findPrependPosition($activity);
+        }
 
         return $reg->getReservePosition();
     }
@@ -133,9 +134,9 @@ class RegistrationRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
 
-
-        if (is_null($reg))
+        if (is_null($reg)) {
             return $this->findAppendPosition($activity);
+        }
 
         return $reg->getReservePosition();
     }

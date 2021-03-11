@@ -24,7 +24,7 @@ class MailControllerTest extends WebTestCase
     {
         parent::setUp();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->mailController = new MailController();
     }
 
@@ -40,13 +40,13 @@ class MailControllerTest extends WebTestCase
 
     public function testIndexAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testShowAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

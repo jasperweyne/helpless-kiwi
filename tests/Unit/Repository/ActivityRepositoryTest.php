@@ -48,13 +48,13 @@ class ActivityRepositoryTest extends KernelTestCase
 
     public function testFindUpcoming(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testFindUpcomingByGroup(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

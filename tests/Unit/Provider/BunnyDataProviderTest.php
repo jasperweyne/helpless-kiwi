@@ -6,8 +6,8 @@ use App\Provider\BunnyDataProvider;
 use App\Security\OAuth2UserProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenIDConnectClient\OpenIDConnectProvider;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class BunnyDataProviderTest.
@@ -72,25 +72,25 @@ class BunnyDataProviderTest extends KernelTestCase
 
     public function testGetAddress(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testGetRequest(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testFindPerson(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
     public function testFindPersons(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

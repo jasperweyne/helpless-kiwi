@@ -1,0 +1,20 @@
+image:
+  file: .gitpod.Dockerfile
+
+# List the ports you want to expose and what to do when they are served. See https://www.gitpod.io/docs/config-ports/
+ports:
+  - port: 8000
+    onOpen: open-browser
+
+# List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
+tasks:
+  - init: composer install && yarn install && yarn run build && printf "SECURE_SCHEME=http\nDATABASE_URL=mysql://root:@localhost:3306/kiwi" > .env.local && php bin/console doctrine:database:create && php bin/console doctrine:schema:create
+    command: php bin/console server:run
+
+vscode:
+  extensions:
+    - sonarsource.sonarlint-vscode@1.19.0:0efl2ERJ3aA2ElF84T/Qjg==
+    - thenouillet.symfony-vscode@1.0.2:OIK1fwaa9M5k3WymFhShAA==
+    - ecmel.vscode-html-css@1.8.0:KMfC3CfzwPKNTZusWoRuYA==
+    - mblode.twig-language-2@0.9.1:RU6BsxXlTQVjCzHru+HmBw==
+    - tabnine.tabnine-vscode@3.1.11:TrOGC+uTC6k193ZaAykXBg==

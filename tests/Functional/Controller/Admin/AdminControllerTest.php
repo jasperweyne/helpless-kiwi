@@ -24,7 +24,7 @@ class AdminControllerTest extends WebTestCase
     {
         parent::setUp();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->adminController = new AdminController();
     }
 
@@ -40,7 +40,7 @@ class AdminControllerTest extends WebTestCase
 
     public function testIndexAction(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }

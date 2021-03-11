@@ -23,7 +23,7 @@ class OptionRepository extends ServiceEntityRepository
     /**
      * @return PriceOption[] Returns an array of PriceOption objects
      */
-    public function findUpcomingByGroup(Activity $activity,$groups)
+    public function findUpcomingByGroup(Activity $activity, $groups)
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.activity = :activity')
@@ -34,5 +34,4 @@ class OptionRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    
 }

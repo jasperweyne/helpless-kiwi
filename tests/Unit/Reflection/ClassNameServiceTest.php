@@ -25,7 +25,7 @@ class ClassNameServiceTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @todo Correctly instantiate tested object to use it. */
+        /* @todo Correctly instantiate tested object to use it. */
         $this->classNameService = new ClassNameService();
     }
 
@@ -41,7 +41,7 @@ class ClassNameServiceTest extends KernelTestCase
 
     public function testFqcnToName(): void
     {
-        /** @todo This test is incomplete. */
+        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 }
