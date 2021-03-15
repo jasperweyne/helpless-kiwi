@@ -5,3 +5,6 @@ FROM gitpod/workspace-mysql
 # RUN brew install bastet
 #
 # More information: https://www.gitpod.io/docs/config-docker/
+
+RUN sudo apt-get update && \
+    sudo apt-get -y install php-xdebug
