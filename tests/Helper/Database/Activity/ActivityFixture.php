@@ -2,24 +2,28 @@
 
 namespace Tests\Helper\Database\Activity;
 
-use Tests\Helper\Database\Location\LocationFixture;
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Tests\Helper\Database\Location\LocationFixture;
 use Tests\Helper\TestData;
 
 class ActivityFixture extends Fixture implements DependentFixtureInterface
 {
+    public const ACTIVITY_REFERENCE = 'activity-';
+
     public function load(ObjectManager $manager)
     {
         $locations = $this->getReference(LocationFixture::LOCATION_REFERENCE);
+        $activityCount = 0;
 
         $activity = self::generate([$locations])->return();
         foreach ($activity as $object) {
+            $this->setReference($this::ACTIVITY_REFERENCE.$activityCount, $object);
             $manager->persist($object);
-            $this->setReference($object->getName(), $object);
+            ++$activityCount;
         }
 
         $manager->flush();
