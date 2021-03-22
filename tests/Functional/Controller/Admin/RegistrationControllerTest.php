@@ -3,10 +3,12 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\Registration;
 use Doctrine\ORM\EntityManagerInterface;
 use Tests\Helper\AuthWebTestCase;
 use Tests\Helper\Database\Activity\ActivityFixture;
 use Tests\Helper\Database\Activity\PriceOptionFixture;
+use Tests\Helper\Database\Activity\RegistrationFixture;
 use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
@@ -33,6 +35,7 @@ class RegistrationControllerTest extends AuthWebTestCase
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,
+            RegistrationFixture::class,
         ]);
 
         $this->em = self::$container->get(EntityManagerInterface::class);
@@ -76,31 +79,78 @@ class RegistrationControllerTest extends AuthWebTestCase
         $activity = $this->em->getRepository(Activity::class)->find($id);
         $newCount = $activity->getRegistrations()->count();
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
         $this->assertSelectorTextContains('.container', 'aangemeld');
+        $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
     public function testDeleteAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $registration = $this->em->getRepository(Registration::class)->findAll()[0];
+        $id = $registration->getId();
+        $this->assertEquals(null, $registration->getDeleteDate());
+
+        // Act
+        $this->client->request('GET', "/admin/activity/register/delete/{$id}");
+        $this->client->submitForm('Ja, meld af');
+
+        // Assert
+        $registration = $this->em->getRepository(Registration::class)->find($id);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'afgemeld');
+        $this->assertNotNull($registration->getDeleteDate());
     }
 
     public function testReserveNewAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $originalCount = $activity->getRegistrations()->count();
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', "admin/activity/register/reserve/new/{$id}");
+        $this->client->submitForm('Toevoegen');
+
+        // Assert
+        $activity = $this->em->getRepository(Activity::class)->find($id);
+        $newCount = $activity->getRegistrations()->count();
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
+        $this->assertSelectorTextContains('.container', 'aangemeld op de reservelijst');
     }
 
     public function testReserveMoveUpAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $secondReserveId = $reserves[1]->getId();
+
+        // Act
+        $this->client->request('GET', "/admin/activity/register/reserve/move/{$secondReserveId}/up");
+
+        // Assert
+        $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $updatedFirstReserveId = $updatedReserves[0]->getId();
+        $this->assertEquals($updatedFirstReserveId, $secondReserveId);
+        $this->assertSelectorTextContains('.container', 'naar boven verplaatst!');
     }
 
     public function testReserveMoveDownAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $firstReserveId = $reserves[0]->getId();
+
+        // Act
+        $this->client->request('GET', "/admin/activity/register/reserve/move/{$firstReserveId}/down");
+
+        // Assert
+        $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $updatedRegistrationId = $updatedReserves[1]->getId();
+        $this->assertEquals($updatedRegistrationId, $firstReserveId);
+        $this->assertSelectorTextContains('.container', 'naar beneden verplaatst!');
     }
 }
