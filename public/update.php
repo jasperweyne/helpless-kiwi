@@ -1,6 +1,14 @@
 <?php
-session_start();
-set_time_limit(0);
+
+//Check if test
+$unit_test = $_SESSION['unit_test'] ?? false;
+
+var_dump($unit_test);
+
+if (!$unit_test) {
+    session_start();
+    set_time_limit(0);
+}
 
 abstract class Step
 {
@@ -33,7 +41,9 @@ abstract class Progress
     const DATABASE = 'database';
     const DOCTRINE = 'doctrine';
     const DOWNLOAD = 'download';
-    const BACKUP = 'backup';
+    const SQL_BACKUP = 'sql_backup';
+    const KIWI_BACKUP = 'kiwi_backup';
+    const RESTORE = 'restore';
 }
 
 abstract class Dir
@@ -42,6 +52,7 @@ abstract class Dir
     const KIWI_DIR = '/kiwi';
     const PUBLIC_DIR = '/public_html';
     const BACKUP_DIR = '/back_up';
+    const HT_ACCESS = '/public_html/kiwi/htaccess';
     const BACKUP_KIWI = '/back_up/kiwi_backup.zip';
     const BACKUP_SQL = '/back_up/sql_dump.sql';
 }
@@ -90,7 +101,7 @@ class DirFilter extends RecursiveFilterIterator
 
     public function accept()
     {
-        return !($this->current()->is_dir() && in_array($this->current()->getFilename(), $this->exclude));
+        return !(is_dir($this->current()) && in_array($this->current()->getFilename(), $this->exclude));
     }
 
     public function getChildren()
@@ -105,7 +116,7 @@ class DirFilter extends RecursiveFilterIterator
 }
 
 //Delete session cookie and redirect at button click
-if (isset($_SESSION['step'])) {
+if (isset($_SESSION['step']) && !$unit_test) {
     if ((Step::SUCCESS_INSTALL == $_SESSION['step'] || Step::SUCCESS_UPDATE == $_SESSION['step']) && isset($_POST['action']) && $_SESSION['step'] == $_POST['action']) {
         unset($_SESSION);
         session_destroy();
@@ -115,7 +126,7 @@ if (isset($_SESSION['step'])) {
 }
 
 //Autoload when installing to display progress.
-if (isset($_SESSION['step']) && isset($_SESSION['install_progress'])) {
+if (isset($_SESSION['step']) && isset($_SESSION['install_progress']) && !$unit_test) {
     if (
         (Step::PROGRESS_INSTALL == $_SESSION['step'] || Step::PROGRESS_UPDATE == $_SESSION['step']) || (
         (Step::CONFIRM_INSTALL == $_SESSION['step'] || Step::CONFIRM_UPDATE == $_SESSION['step']) &&
@@ -127,6 +138,7 @@ if (isset($_SESSION['step']) && isset($_SESSION['install_progress'])) {
 
 //region LOAD_SESSION_DATA
 //Define variables, get the session data for each variable and set to a placeholder if empty in session.
+
 $db_type = $_SESSION['db_type'] ?? '';
 $db_name = $_SESSION['db_name'] ?? '';
 $db_host = $_SESSION['db_host'] ?? '';
@@ -149,9 +161,6 @@ $_SESSION['install_progress'] ??= Progress::START;
 $_SESSION['log'] ??= '';
 $_SESSION['install_error'] ??= false;
 //endregion LOAD_SESSION_DATA
-
-$error = null;
-$error_type = 0;
 
 $screens = [
     Step::INTRO => new Screen('Updaten of installeren', function () { ?>
@@ -191,7 +200,6 @@ $screens = [
             'password' => function ($value) use (&$updater_pass, &$error, &$error_type) {
                 $updater_pass = trim($value);
                 if (validate_updater_password($updater_pass)) {
-
                     $_SESSION['admin_email'] = $value;
                 } else {
                     $error = 'The updater password is incorrect.';
@@ -201,7 +209,7 @@ $screens = [
                 }
             },
         ]),
-    Step::BACKUP_OVERWRITE_WARNING =>new Screen('WAARSCHUWING', function () { ?>
+    Step::BACKUP_OVERWRITE_WARNING => new Screen('WAARSCHUWING', function () { ?>
         <p>PAS OP, de lokale back-up op de server wordt herschreven. Download en sla deze op als u hem wilt bewaren. </p>
         <?php form_button('Ik ben me bewust', 'action'); ?>
         <?php }, [
@@ -378,7 +386,7 @@ $screens = [
                 }
             },
         ]),
-    Step::SECURITY => new Screen('Security', function () use ($sec_type,$updater_pass) { ?>
+    Step::SECURITY => new Screen('Security', function () use ($sec_type, $updater_pass) { ?>
         <p>Kies de security modus van Kiwi en geef een updater wachtwoord op.</p>
         <form role="form" method="post" enctype="multipart/form-data" id="step1-form">
             <input type="hidden" name="action" value="<?php echo $_SESSION['step']; ?>" />
@@ -419,7 +427,7 @@ $screens = [
                 $sec_type = trim($value);
                 $_SESSION['sec_type'] = $value;
             },
-            'updater_pass'=> function ($value) use (&$updater_pass) {
+            'updater_pass' => function ($value) use (&$updater_pass) {
                 $updater_pass = trim($value);
                 $_SESSION['updater_pass'] = $value;
             },
@@ -606,6 +614,18 @@ $screens = [
         switch ($_SESSION['install_progress']) {
                 case Progress::START:
                     extend_time_limit();
+                    $_SESSION['install_progress'] = Progress::KIWI_BACKUP;
+                    break;
+
+                case Progress::KIWI_BACKUP:
+                    $result = create_backup();
+                    $_SESSION['install_error'] = !$result;
+                    $_SESSION['install_progress'] = Progress::SQL_BACKUP;
+                    break;
+
+                case Progress::SQL_BACKUP:
+                    $result = database_backup();
+                    $_SESSION['install_error'] = !$result;
                     $_SESSION['install_progress'] = Progress::DOWNLOAD;
                     break;
 
@@ -619,13 +639,13 @@ $screens = [
                     $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
                     $_SESSION['install_error'] = !$result;
                     if ($_SESSION['install_error']) {
-                        $_SESSION['install_progress'] = Progress::BACKUP;
+                        $_SESSION['install_progress'] = Progress::RESTORE;
                     } else {
                         $_SESSION['install_progress'] = Progress::FINISH;
                     }
                     break;
 
-                case Progress::BACKUP:
+                case Progress::RESTORE:
                     restore_backup();
                     $_SESSION['install_progress'] = Progress::FINISH;
                     break;
@@ -671,16 +691,17 @@ $screens = [
                     $result = doctrine_commands($sec_type, $admin_email, $admin_name, $admin_pass);
                     $_SESSION['install_error'] = !$result;
                     if ($_SESSION['install_error']) {
-                        $_SESSION['install_progress'] = Progress::BACKUP;
+                        $_SESSION['install_progress'] = Progress::RESTORE;
                     } else {
                         $_SESSION['install_progress'] = Progress::FINISH;
                     }
                     break;
 
-                case Progress::BACKUP:
+                case Progress::RESTORE:
                     restore_backup();
                     $_SESSION['install_progress'] = Progress::FINISH;
                     break;
+
                 default:
                     break;
             }
@@ -697,41 +718,41 @@ $screens = [
     }),
 ];
 
-set_exception_handler(function ($exception) use ($screens) {
-    Log::console($exception);
-    $_SESSION['step'] = Step::FAILURE;
-    render($screens[$_SESSION['step']], null, 0);
-});
+$error = null;
+$error_type = 0;
 
 $step = $screens[$_SESSION['step']];
 
 //Handle the steps of the installation process.
-if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
+if (!$unit_test && 'POST' == $_SERVER['REQUEST_METHOD'] && isset($_SESSION)) {
     if (isset($_POST['action'])) {
         $posting_step = $_POST['action'];
-        handle_post($posting_step,$screens,'action');
+        handle_post($posting_step, $screens, 'action');
     }
     if (isset($_POST['back'])) {
         $posting_step = $_POST['back'];
-        handle_post($posting_step,$screens,'back');
+        handle_post($posting_step, $screens, 'back');
     }
 }
 
-if (!is_null($step->exec)) {
+if (!$unit_test && !is_null($step->exec)) {
     call_user_func($step->exec);
 }
 
 $step = $screens[$_SESSION['step']];
-render($step, $error, $error_type);
+
+if (!$unit_test) {
+    render($step, $error, $error_type);
+}
 
 //region FUNCTIONS
 
 use Doctrine\DBAL\Query\QueryException;
 use Doctrine\ORM\UnexpectedResultException;
+use Ifsnop\Mysqldump\Mysqldump;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 function form_button($label = 'Terug', $name = 'back')
 {
@@ -743,21 +764,26 @@ function form_button($label = 'Terug', $name = 'back')
 <?php
 }
 
+set_exception_handler(function ($exception) use ($screens) {
+    Log::console($exception);
+    $_SESSION['step'] = Step::FAILURE;
+    render($screens[$_SESSION['step']], null, 0);
+});
 
-function handle_post($posting_step, $screens, $last_act_key) {
-    
+function handle_post($posting_step, $screens, $last_act_key)
+{
     // If the last_act is not in the post, dont do anything.
     if (!isset($_POST[$last_act_key])) {
         // error.
         return;
     }
-    
-    //Get the action associated with the post. 
+
+    //Get the action associated with the post.
     $post_acts = $screens[$posting_step]->actions;
 
-    // We always want to do the "back" and "action" acts last, so we unset and do it manually after loop.  
+    // We always want to do the "back" and "action" acts last, so we unset and do it manually after loop.
     unset($post_acts[$last_act_key]);
-    
+
     // Run all functions that are not back or action.
     // These functions can change action or back, unset, etc
     foreach ($post_acts as $key => $act) {
@@ -769,18 +795,16 @@ function handle_post($posting_step, $screens, $last_act_key) {
             }
         }
     }
-    
+
     $last_act = $screens[$posting_step]->actions[$last_act_key];
-    if (isset($_POST[$last_act_key])){
+    if (isset($_POST[$last_act_key])) {
         if (is_string($last_act)) {
-            $_SESSION['step'] = $last_act;        
+            $_SESSION['step'] = $last_act;
         } else {
-            
             call_user_func($last_act, $_POST[$last_act_key]);
         }
     }
 }
-
 
 function detect_kiwi()
 {
@@ -792,24 +816,42 @@ function detect_kiwi()
     $list = glob($envpath);
     if (count($list) < 2) {
         return false;
-    } 
+    }
 
     $env_vars = get_env_vars();
-    
+
     if (isset($env_vars['UPDATER_PASSWORD'])) {
         return true;
     }
-    
+
     return false;
 }
 
-function get_env_vars(){
-    return include_once kiwidir(Dir::KIWI_DIR).'/.env.local.php';
+function get_env_vars()
+{
+    if ($_SESSION['unit_test'] && isset($_SESSION['unit_test_dir'])) {
+        return $_SESSION['unit_test_env'];
+    } else {
+        return include_once kiwidir(Dir::KIWI_DIR).'/.env.local.php';
+    }
 }
 
 function kiwidir($name)
 {
-    return dirname(__FILE__, 3).$name;
+    if ($_SESSION['unit_test'] && isset($_SESSION['unit_test_dir'])) {
+        return $_SESSION['unit_test_dir'].$name;
+    } else {
+        return dirname(__FILE__, 3).$name;
+    }
+}
+
+function symfony_autoload()
+{
+    if ($_SESSION['unit_test'] && isset($_SESSION['unit_autoload'])) {
+        return $_SESSION['unit_autoload'];
+    } else {
+        return kiwidir(Dir::KIWI_DIR).'/vendor/autoload.php';
+    }
 }
 
 function get_dir_exceptions($dir)
@@ -837,7 +879,8 @@ function detect_kiwi_message()
     }
 }
 
-function detect_kiwi_step(){
+function detect_kiwi_step()
+{
     $detected = detect_kiwi();
 
     if ($detected) {
@@ -862,12 +905,13 @@ function detect_kiwi_value()
     }
 }
 
-function validate_updater_password($pass) {
+function validate_updater_password($pass)
+{
     //TO-DO: real password validator
     $env_vars = get_env_vars();
-    $env_pass = $env_vars['UPDATER_PASSWORD']);
+    $env_pass = $env_vars['UPDATER_PASSWORD'];
 
-    if ($env_pass==trim($pass)) {
+    if ($env_pass == trim($pass)) {
         return true;
     }
 
@@ -898,7 +942,7 @@ function refill($var)
     return 'value = "'.$var.'"';
 }
 
-function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $updater_pass,$email_type)
+function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_password, $db_username, $db_type, $mailer_email, $mailer_url, $org_name, $sec_type, $updater_pass, $email_type)
 {
     if (detect_kiwi()) {
         Log::msg('Environment file found.');
@@ -981,6 +1025,7 @@ function generate_env($app_id, $app_secret, $bunny_url, $db_host, $db_name, $db_
     fwrite($envfile, $line);
 
     Log::msg('Environment file created.');
+    fclose($envfile);
 
     return true;
 }
@@ -1077,6 +1122,8 @@ function extend_time_limit()
     php_value max_execution_time 0
 </IfModule>';
     fwrite($accessfile, $access);
+
+    fclose($accessfile);
 }
 
 function database_connect($db_host, $db_name, $db_password, $db_username)
@@ -1106,13 +1153,54 @@ function database_connect($db_host, $db_name, $db_password, $db_username)
         "))[0]) {
             echo "\n";
             Log::msg('Database was empty, and usable by kiwi.');
+        } else {
+            Log::msg('Database is being backup.');
         }
+    }
+}
+
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+
+function database_backup()
+{
+    $env_vars = get_env_vars();
+
+    if (!$_SESSION['unit_test'] && !@include_once symfony_autoload()) {
+        throw new FileNotFoundException('Dependency autoloader was not found');
+    }
+
+    $sql_url = $env_vars['DATABASE_URL'];
+
+    $firstpart = stristr($sql_url, '//', true).'host='.substr(stristr($sql_url, '@', false), 1);
+    $secondpart = stristr($firstpart, '/', false);
+    $host = stristr($firstpart, '/', true).';dbname='.substr($secondpart, 1);
+
+    $firstpart = stristr($sql_url, '//', false);
+    $secondpart = stristr($firstpart, ':', false);
+    $db_username = substr(stristr($firstpart, ':', true), 2);
+    $db_password = substr(stristr($secondpart, '@', true), 1);
+
+    // Make backup dir if it doesn't exist yet
+    if (!file_exists(kiwidir(Dir::BACKUP_DIR))) {
+        mkdir(kiwidir(Dir::BACKUP_DIR));
+    }
+
+    // Remove old backup
+    if (file_exists(kiwidir(Dir::BACKUP_SQL))) {
+        unlink(kiwidir(Dir::BACKUP_SQL));
+    }
+
+    try {
+        $dump = new  Mysqldump($host, $db_username, $db_password);
+        $dump->start(kiwidir(Dir::BACKUP_SQL));
+    } catch (Exception $e) {
+        throw new ConnectionException($e);
     }
 }
 
 function get_application()
 {
-    if (!@include_once kiwidir(Dir::KIWI_DIR).'/vendor/autoload.php') {
+    if (!@include_once symfony_autoload()) {
         throw new FileNotFoundException('Dependency autoloader was not found');
     }
 
@@ -1186,7 +1274,12 @@ function create_backup()
         mkdir(kiwidir(Dir::BACKUP_DIR));
     }
 
-    // Backup before overwriting the main file.
+    // Remove old backup
+    if (file_exists(kiwidir(Dir::BACKUP_KIWI))) {
+        unlink(kiwidir(Dir::BACKUP_KIWI));
+    }
+
+    // Start backup
     $backup = new ZipArchive();
     $backup->open(kiwidir(Dir::BACKUP_KIWI), ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
@@ -1225,6 +1318,7 @@ function create_backup()
             $backup->addFile($filePath, $relativePath);
         }
     }
+
     // Zip archive will be created only after closing object
     $backup->close();
     Log::msg('Legacy kiwi backup created.');
