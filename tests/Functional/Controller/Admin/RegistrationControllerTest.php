@@ -15,6 +15,8 @@ use Tests\Helper\Database\Security\LocalAccountFixture;
  * Class RegistrationControllerTest.
  *
  * @covers \App\Controller\Admin\RegistrationController
+ *
+ * @author A-Daneel
  */
 class RegistrationControllerTest extends AuthWebTestCase
 {
@@ -51,7 +53,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         unset($this->em);
     }
 
-    public function testNewGetAction(): void
+    public function testNewActionGet(): void
     {
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
@@ -64,7 +66,10 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testNewPostAction(): void
+    /**
+     *  @depends testNewActionGet
+     */
+    public function testNewActionPost(): void
     {
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
@@ -83,7 +88,23 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
-    public function testDeleteAction(): void
+    public function testDeleteActionGet(): void
+    {
+        // Arrange
+        $registration = $this->em->getRepository(Registration::class)->findAll()[0];
+        $id = $registration->getId();
+
+        // Act
+        $this->client->request('GET', "/admin/activity/register/delete/{$id}");
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     *  @depends testDeleteActionGet
+     */
+    public function testDeleteActionPost(): void
     {
         // Arrange
         $registration = $this->em->getRepository(Registration::class)->findAll()[0];
@@ -101,7 +122,23 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->assertNotNull($registration->getDeleteDate());
     }
 
-    public function testReserveNewAction(): void
+    public function testReserveNewActionGet(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', "admin/activity/register/reserve/new/{$id}");
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @depends testReserveNewActionGet
+     */
+    public function testReserveNewActionPost(): void
     {
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
