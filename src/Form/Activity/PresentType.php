@@ -6,6 +6,7 @@ use App\Entity\Activity\Registration;
 use App\Provider\Person\PersonRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -23,6 +24,7 @@ class PresentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $builder = $event->getForm();
             $registration = $event->getData();
             if (!$registration instanceof Registration) {
                 return;
@@ -31,16 +33,19 @@ class PresentType extends AbstractType
                 return;
             }
 
-            $builder = $event->getForm();
-            $builder->add('present', ChoiceType::class, [
-                'choices' => [
-                    'Onbekend' => null,
-                    'Aanwezig' => true,
-                    'Afwezig' => false,
-                ],
-                'label' => $this->personRegistry->find($registration->getPersonId()),
-                'required' => true,
-            ]);
+            $builder
+                ->add('present', ChoiceType::class, [
+                    'choices' => [
+                        'Onbekend' => null,
+                        'Aanwezig' => true,
+                        'Afwezig' => false,
+                    ],
+                    'label' => $this->personRegistry->find($registration->getPersonId()),
+                    'required' => true,
+                ])
+                ->add('comment', TextType::class, [
+                    'required' => false,
+                ]);
         });
     }
 
