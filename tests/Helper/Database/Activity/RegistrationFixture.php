@@ -15,9 +15,9 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $priceOption = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'0');
-        $activities = $this->getReference(ActivityFixture::ACTIVITY_REFERENCE.'0');
+        $activity = $this->getReference(ActivityFixture::ACTIVITY_REFERENCE.'0');
 
-        $registrations = self::generate($priceOption, $activities)->return();
+        $registrations = self::generate($priceOption, $activity)->return();
         foreach ($registrations as $object) {
             $manager->persist($object);
         }
@@ -33,14 +33,14 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
-    public static function generate($priceOption, $activities): TestData
+    public static function generate($priceOption, $activity): TestData
     {
         $counter = Order::create(RegistrationRepository::MINORDER());
 
         return TestData::from(new Registration())
             ->with('id', '')
             ->with('option', $priceOption)
-            ->with('activity', $activities)
+            ->with('activity', $activity)
             ->with('person_id', '1', '2', '3')
             ->do('reserve_position', function ($registration) use (&$counter) {
                 $counter = Order::calc($counter, Order::create('b'), fn ($a, $b) => $a + $b);
