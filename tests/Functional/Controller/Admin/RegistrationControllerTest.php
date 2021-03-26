@@ -129,7 +129,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', "admin/activity/register/reserve/new/{$id}");
+        $this->client->request('GET', "/admin/activity/register/reserve/new/{$id}");
 
         // Assert
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -146,7 +146,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', "admin/activity/register/reserve/new/{$id}");
+        $this->client->request('GET', "/admin/activity/register/reserve/new/{$id}");
         $this->client->submitForm('Toevoegen');
 
         // Assert
