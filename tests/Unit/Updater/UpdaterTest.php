@@ -85,7 +85,6 @@ class UpdaterTest extends KernelTestCase
         $temp_testing_dir = $kiwi_root.Dir::TEMP_DIR;
         if (!file_exists($temp_testing_dir)) {
             mkdir($temp_testing_dir);
-            chmod($temp_testing_dir, 0777);
         }
     }
 
@@ -175,12 +174,19 @@ class UpdaterTest extends KernelTestCase
         $_SESSION = $this->session_vars;
         include_once $this->updater_file;
 
-        database_connect($_SESSION['db_host'],
+        if (file_exists($this->dev_dir.Dir::LOCAL_ENV)) {
+            database_connect($_SESSION['db_host'],
                         $_SESSION['db_name'],
                         $_SESSION['db_pass'],
                         $_SESSION['db_user']);
 
-        $this->assertFalse($_SESSION['install_error']);
+            $this->assertFalse($_SESSION['install_error']);
+
+            $this->assertFileExists(kiwidir(Dir::BACKUP_SQL));
+        } else {
+            $this->markTestSkipped();
+        }
+
         // Check if database dump exist. If so, then it is a succesfull backup.
     }
 
@@ -217,25 +223,33 @@ class UpdaterTest extends KernelTestCase
             'install_error' => false, ];
     }
 
-    public static function remove_dir($dir)
+    public static function remove_dir($topdir)
     {
-        $files = array_diff(scandir($dir), ['.', '..']);
+        // This is a very slow function.
+        // However it is very robust, it will and does delete everything in the given dir.
 
+        $dirit = new \RecursiveDirectoryIterator($topdir, \FilesystemIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($dirit,
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        // Unlink files
         foreach ($files as $file) {
-            if (is_dir("$dir/$file")) {
-                self::remove_dir("$dir/$file");
-            } else {
-                chmod("$dir/$file", 0777);
-                unlink("$dir/$file");
-            }
+            unlink($file);
         }
 
-        if (2 == count(scandir($dir))) {
-            chmod($dir, 0777);
+        $dirit = new \RecursiveDirectoryIterator($topdir, \FilesystemIterator::SKIP_DOTS);
+        $dirs = new \RecursiveIteratorIterator($dirit,
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        // Remove dirs
+        foreach ($dirs as $dir) {
             rmdir($dir);
-        } else {
-            self::remove_dir($dir);
         }
+
+        // Remove the top dir.
+        rmdir($topdir);
     }
 
     public function getDatabase($env_vars)

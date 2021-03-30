@@ -1243,7 +1243,7 @@ function database_backup()
 {
     $env_vars = get_env_vars();
 
-    if (!@include_once symfony_autoload()) {
+    if (!include_once symfony_autoload()) {
         throw new FileNotFoundException('Dependency autoloader was not found');
     }
 
@@ -1278,7 +1278,7 @@ function database_backup()
 
 function get_application()
 {
-    if (!@include_once symfony_autoload()) {
+    if (!include_once symfony_autoload()) {
         throw new FileNotFoundException('Dependency autoloader was not found');
     }
 
