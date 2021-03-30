@@ -33,7 +33,17 @@ class UpdaterTest extends KernelTestCase
     /**
      * @var string
      */
+    protected $bootstrapper_file;
+
+    /**
+     * @var string
+     */
     protected $temp_testing_dir;
+
+    /**
+     * @var string
+     */
+    protected $dev_dir;
 
     /**
      * {@inheritdoc}
@@ -44,18 +54,20 @@ class UpdaterTest extends KernelTestCase
         self::bootKernel();
 
         // Get root.
-        $kiwi_root = dirname(__FILE__, 4);
+        $this->dev_dir = dirname(__FILE__, 4);
 
         // Get updater file path
-        $this->updater_file = $kiwi_root.'/public/update.php';
+        $this->updater_file = $this->dev_dir.'/public/update.php';
 
         // Dev autoloader, loading the downloaded one misses out on new composer additions.
-        $this->autoload_file = $kiwi_root.'/vendor/autoload.php';
+        $this->autoload_file = $this->dev_dir.'/vendor/autoload.php';
 
-        $this->temp_testing_dir = $kiwi_root.Dir::TEMP_DIR;
+        $this->bootstrapper_file = $this->dev_dir.'/config/bootstrap.php';
+
+        $this->temp_testing_dir = $this->dev_dir.Dir::TEMP_DIR;
 
         // Load .env vars
-        $this->loadEnvVars($kiwi_root);
+        $this->loadEnvVars();
 
         // Load all test vars.
         $this->loadSessionVar();
@@ -73,6 +85,7 @@ class UpdaterTest extends KernelTestCase
         $temp_testing_dir = $kiwi_root.Dir::TEMP_DIR;
         if (!file_exists($temp_testing_dir)) {
             mkdir($temp_testing_dir);
+            chmod($temp_testing_dir, 0777);
         }
     }
 
@@ -144,10 +157,31 @@ class UpdaterTest extends KernelTestCase
         $_SESSION = $this->session_vars;
         include_once $this->updater_file;
 
-        database_backup();
+        if (file_exists($this->dev_dir.Dir::LOCAL_ENV)) {
+            database_backup();
+            $this->assertFileExists(kiwidir(Dir::BACKUP_SQL));
+        } else {
+            $this->markTestSkipped();
+        }
 
         // Check if database dump exist. If so, then it is a succesfull backup.
-        $this->assertFileExists(kiwidir(Dir::BACKUP_SQL));
+    }
+
+    /**
+     * @depends testDownload
+     */
+    public function testDatabaseConnect(): void
+    {
+        $_SESSION = $this->session_vars;
+        include_once $this->updater_file;
+
+        database_connect($_SESSION['db_host'],
+                        $_SESSION['db_name'],
+                        $_SESSION['db_pass'],
+                        $_SESSION['db_user']);
+
+        $this->assertFalse($_SESSION['install_error']);
+        // Check if database dump exist. If so, then it is a succesfull backup.
     }
 
     public function loadSessionVar()
@@ -164,6 +198,7 @@ class UpdaterTest extends KernelTestCase
             'unit_test_dir' => $this->temp_testing_dir,
             'unit_test_env' => $this->env_vars,
             'unit_autoload' => $this->autoload_file,
+            'unit_bootstrapper' => $this->bootstrapper_file,
             'email_type' => 'stmp',
             'mailer_url' => 'mailer://url',
             'mailer_email' => 'mail@mail.com',
@@ -190,25 +225,17 @@ class UpdaterTest extends KernelTestCase
             if (is_dir("$dir/$file")) {
                 self::remove_dir("$dir/$file");
             } else {
+                chmod("$dir/$file", 0777);
                 unlink("$dir/$file");
             }
         }
 
         if (2 == count(scandir($dir))) {
+            chmod($dir, 0777);
             rmdir($dir);
         } else {
             self::remove_dir($dir);
         }
-    }
-
-    public static function delTree($dir)
-    {
-        $files = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
-        }
-
-        return rmdir($dir);
     }
 
     public function getDatabase($env_vars)
@@ -218,7 +245,7 @@ class UpdaterTest extends KernelTestCase
         $firstpart = stristr($sql_url, '//', true).'host='.stristr($sql_url, '@', false);
         $secondpart = stristr($firstpart, '/', false);
         $thirdpart = stristr($sql_url, '@', false);
-        $host = 'http://'.substr(stristr($thirdpart, '/', true), 1);
+        $host = substr(stristr($thirdpart, ':', true), 1);
         $name = substr($secondpart, 1);
 
         $firstpart = stristr($sql_url, '//', false);
@@ -235,11 +262,17 @@ class UpdaterTest extends KernelTestCase
             'db_pass' => $db_password, ];
     }
 
-    public function loadEnvVars($root)
+    public function loadEnvVars()
     {
-        $dotenv = new Dotenv();
-        $dotenv->load($root.'/.env.local');
-        $this->env_vars = $_ENV;
+        if (file_exists($this->dev_dir.Dir::LOCAL_ENV)) {
+            $dotenv = new Dotenv();
+            $dotenv->load($this->dev_dir.Dir::LOCAL_ENV);
+            $this->env_vars = $_ENV;
+        } else {
+            $dotenv = new Dotenv();
+            $dotenv->load($this->dev_dir.Dir::TEST_ENV);
+            $this->env_vars = $_ENV;
+        }
     }
 }
 
@@ -252,4 +285,6 @@ abstract class Dir
     const BACKUP_KIWI = '/back_up/kiwi_backup.zip';
     const BACKUP_SQL = '/back_up/sql_dump.sql';
     const TEMP_DIR = '/temp_update_test_dir';
+    const LOCAL_ENV = '/.env.local';
+    const TEST_ENV = '/.env.test';
 }
