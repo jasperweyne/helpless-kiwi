@@ -174,8 +174,6 @@ $_SESSION['log'] ??= '';
 $_SESSION['install_error'] ??= false;
 //endregion LOAD_SESSION_DATA
 
-database_connect($db_host, $db_name, $db_password, $db_username);
-
 $screens = [
     Step::INTRO => new Screen('Updaten of installeren', function () { ?>
         <p>Welkom by de kiwi update of installatie optie. </p>
