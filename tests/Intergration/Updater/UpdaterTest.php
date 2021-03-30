@@ -1,12 +1,15 @@
 <?php
 
-namespace Tests\Unit\Updater;
+namespace Tests\Intergration\Updater;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Dotenv\Dotenv;
 
 /**
  * Class UpdaterTest.
+ *
+ * The code coverage annontation do not really allow for code outside class.
+ * This means the code coverage report does not work for updater.
  */
 class UpdaterTest extends KernelTestCase
 {
