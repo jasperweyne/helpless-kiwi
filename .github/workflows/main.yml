@@ -58,7 +58,7 @@ jobs:
 
     - name: Extract platform requirements composer.lock
       if: github.ref == 'refs/heads/master'
-      run: echo "`jq 'platform' composer.lock`" > requirements.json
+      run: echo "`jq .platform ./kiwi/composer.lock`" > requirements.json
      
     - name: Upload requirements file
       uses: actions/upload-artifact@v1
@@ -152,7 +152,7 @@ jobs:
         with:
           tag_name: ${{ env.DATE }}
           release_name: Release ${{ env.DATE }}
-          draft: false
+          draft: true
           prerelease: false
       
       - name: Upload Release Asset
@@ -176,21 +176,11 @@ jobs:
           asset_path: requirements.json
           asset_name: requirements.json
           asset_content_type: application/json
-        
-      - name: Generate hashes for release assets
-        uses: MCJack123/ghaction-generate-release-hashes@v1
-        id: gen-hashes
-        with:
-          hash-type: sha512
-          file-name: hashes.txt
-          
-      - name: Upload Asset Hashes
-        id: upload-asset-hashes
-        uses: actions/upload-release-asset@v1
+
+      - name: Publish Release
+        id: publish_release
+        uses: eregon/publish-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.KIWIRELEASETOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: hashes.txt
-          asset_name: hashes.txt
-          asset_content_type: text/plain
+          release_id: ${{ steps.create_release.outputs.id }}
