@@ -45,12 +45,19 @@ class RegistrationController extends AbstractController
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($activity->getAuthor());
-        $returnData = $helper->newAction($request, $activity);
-        if (!is_null($returnData)) {
-            return $this->render('organise/activity/registration/new.html.twig', $returnData);
-        }
+        $form = $helper->createRegistrationNewForm($activity);
+        $form->handleRequest($request);
 
-        return $this->handleRedirect($activity->getId());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $helper->newAction($form->getData());
+
+            return $this->handleRedirect($activity->getId());
+        } else {
+            return $this->render('admin/activity/registration/new.html.twig', [
+                'activity' => $activity,
+                'form' => $form->createView(),
+            ]);
+        }
     }
 
     /**
@@ -64,12 +71,20 @@ class RegistrationController extends AbstractController
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
-        $returnData = $helper->deleteAction($request, $registration);
-        if (!is_null($returnData)) {
-            return $this->render('organise/activity/registration/delete.html.twig', $returnData);
-        }
+        $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
+        $form = $helper->createRegistrationDeleteForm($url);
+        $form->handleRequest($request);
 
-        return $this->handleRedirect($registration->getActivity()->getId());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $helper->deleteAction($registration);
+
+            return $this->handleRedirect($registration->getActivity()->getId());
+        } else {
+            return $this->render('admin/activity/registration/delete.html.twig', [
+                'registration' => $registration,
+                'form' => $form->createView(),
+            ]);
+        }
     }
 
     /**
@@ -81,12 +96,20 @@ class RegistrationController extends AbstractController
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($activity->getAuthor());
-        $returnData = $helper->reserveNewAction($request, $activity);
-        if (!is_null($returnData)) {
-            return $this->render('organise/activity/registration/new.html.twig', $returnData);
-        }
+        $form = $helper->createReserveNewForm($activity);
+        $form->handleRequest($request);
 
-        return $this->handleRedirect($activity->getId());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $helper->reserveNewAction($form->getData());
+
+            return $this->handleRedirect($activity->getId());
+        } else {
+            return $this->render('admin/activity/registration/new.html.twig', [
+                'activity' => $activity,
+                'form' => $form->createView(),
+                'reserve' => true,
+            ]);
+        }
     }
 
     /**

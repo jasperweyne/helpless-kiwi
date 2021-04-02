@@ -6,8 +6,6 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationHelper extends AbstractController
 {
@@ -22,8 +20,12 @@ class RegistrationHelper extends AbstractController
         $this->personRegistry = $personRegistry;
     }
 
-    public function newAction(
-        Request $request,
+    /**
+     * Creates a form to create a new Registration.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createRegistrationNewForm(
         Activity $activity
     ) {
         $registration = new Registration();
@@ -32,56 +34,60 @@ class RegistrationHelper extends AbstractController
         $now = new \DateTime('now');
         $registration->setNewDate($now);
 
-        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
+        return $this->createForm('App\Form\Activity\RegistrationType', $registration, [
             'allowed_options' => $activity->getOptions(),
         ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($registration);
-
-            $this->sendConvermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by', 'aangemeld!');
-
-            return null;
-        }
-
-        return [
-            'activity' => $activity,
-            'form' => $form->createView(),
-        ];
     }
 
-    public function deleteAction(
-        Request $request,
+    /**
+     * Persist addition of the Registration to the database.
+     */
+    public function newAction(
         Registration $registration
     ) {
-        $form = $this->createRegistrationDeleteForm($request, $registration);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($registration);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $now = new \DateTime('now');
-            $em = $this->getDoctrine()->getManager();
-            $registration->setDeleteDate($now);
-
-            $this->sendConvermationMail($registration, $em, 'Afmeldbericht ', 'email/removedregistration_by', 'afgemeld!');
-
-            return null;
-        }
-
-        return [
-            'registration' => $registration,
-            'form' => $form->createView(),
-        ];
+        $this->sendConvermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by', 'aangemeld!');
     }
 
-    public function reserveNewAction(
-        Request $request,
+    /**
+     * Creates a form to check out all checked in users.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createRegistrationDeleteForm(
+        $actionUrl
+    ) {
+        return $this->createFormBuilder()
+            ->setAction($actionUrl)
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+
+    /**
+     *  Persist removal of the Registration to the database.
+     */
+    public function deleteAction(
+        Registration $registration
+    ) {
+        $now = new \DateTime('now');
+        $em = $this->getDoctrine()->getManager();
+        $registration->setDeleteDate($now);
+
+        $this->sendConvermationMail($registration, $em, 'Afmeldbericht ', 'email/removedregistration_by', 'afgemeld!');
+    }
+
+    /**
+     * Creates a form to check out all checked in users.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createReserveNewForm(
         Activity $activity
     ) {
         $em = $this->getDoctrine()->getManager();
-
         $position = $em->getRepository(Registration::class)->findAppendPosition($activity);
 
         $registration = new Registration();
@@ -93,27 +99,23 @@ class RegistrationHelper extends AbstractController
         $now = new \DateTime('now');
         $registration->setNewDate($now);
 
-        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
+        return $this->createForm('App\Form\Activity\RegistrationType', $registration, [
             'allowed_options' => $activity->getOptions(),
         ]);
+    }
 
-        $form->handleRequest($request);
+    /**
+     * Persist addition of the Reserve to the database.
+     */
+    public function reserveNewAction(
+        Registration $registration
+    ) {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($registration);
+        $em->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($registration);
-            $em->flush();
-
-            $person = $this->personRegistry->find($registration->getPersonId());
-            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld op de reservelijst!');
-
-            return null;
-        }
-
-        return [
-            'activity' => $activity,
-            'form' => $form->createView(),
-            'reserve' => true,
-        ];
+        $person = $this->personRegistry->find($registration->getPersonId());
+        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld op de reservelijst!');
     }
 
     public function reserveMoveUpAction(
@@ -134,11 +136,6 @@ class RegistrationHelper extends AbstractController
         return $registration->getActivity()->getId();
     }
 
-    /**
-     * Displays a form to edit an existing activity entity.
-     *
-     * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
-     */
     public function reserveMoveDownAction(
         Registration $registration
     ) {
@@ -155,22 +152,6 @@ class RegistrationHelper extends AbstractController
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
         return $registration->getActivity()->getId();
-    }
-
-    /**
-     * Creates a form to check out all checked in users.
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createRegistrationDeleteForm(
-        Request $request,
-        Registration $registration
-    ) {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]))
-            ->setMethod('DELETE')
-            ->getForm()
-                ;
     }
 
     private function sendConvermationMail(
