@@ -1066,55 +1066,85 @@ function download_kiwi()
         throw new DownloadException("Could not write to {$tempPath}, make sure the directory is writable.");
     }
 
-    $release_url = 'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases/latest';
-
+    // Release info download.
     $ch = curl_init();
-
+    $release_url = 'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases/latest';
     curl_setopt($ch, CURLOPT_URL, $release_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['User-Agent:jasperweyne']);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
     $release_info = curl_exec($ch);
-    if (empty(!curl_error($ch))) {
-        //Fatal error, stop immediatily
-        Log::msg('Curl error found');
-        Log::msg(curl_error($ch));
+    handle_curl_error($ch);
 
-        throw new DownloadException('Curl error found\n'.curl_error($ch));
+    // Get url from release info
+    $decoded_release_info = json_decode($release_info, true);
+    $files = $decoded_release_info['assets'];
+
+    $checksum_url = null;
+    $download_url = null;
+    $requirements_url = null;
+    foreach ($files as $file) {
+        if ('kiwi.zip' == $file['name']) {
+            $download_url = $file['browser_download_url'];
+        }
+        if ('requirements.json' == $file['name']) {
+            $requirements_url = $file['browser_download_url'];
+        }
+        if ('hashes.txt' == $file['name']) {
+            $checksum_url = $file['browser_download_url'];
+        }
     }
 
-    $decoded_release_info = json_decode($release_info, true);
-    $download_url = $decoded_release_info['assets']['0']['browser_download_url'];
+    //check if url found
+    if (is_null($download_url)) {
+        throw new DownloadException('Kiwi download url not found.');
+    }
+    if (is_null($requirements_url)) {
+        throw new DownloadException('Requirements download url not found.');
+    }
+    if (is_null($checksum_url)) {
+        throw new DownloadException('Checksum download url not found.');
+    }
 
+    //Checksum download
+    curl_setopt($ch, CURLOPT_URL, $checksum_url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $checksum = curl_exec($ch);
+    handle_curl_error($ch);
+
+    //Get checksums from txt file.
+    $lines = explode("\n", $checksum);
+    $req_checksum = trim(stristr($lines[0], ' '));
+    $kiwi_checksum = trim(stristr($lines[1], ' '));
+
+    //Requirements
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_URL, $requirements_url);
+    $requirements = curl_exec($ch);
+    handle_curl_error($ch);
+
+    check_requirements_hash($req_checksum, $requirements);
+    check_php($requirements);
+
+    //Download
     curl_setopt($ch, CURLOPT_URL, $download_url);
     curl_setopt($ch, CURLOPT_TIMEOUT, 50);
     curl_setopt($ch, CURLOPT_FILE, $tempFile);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
     curl_exec($ch);
-
-    if (empty(!curl_error($ch))) {
-        //Fatal error, stop immediatily
-        Log::msg('Curl error found');
-        Log::msg(curl_error($ch));
-
-        throw new DownloadException('Curl error found\n'.curl_error($ch));
-    }
+    handle_curl_error($ch);
 
     curl_close($ch);
     fclose($tempFile);
-    Log::msg('Kiwi download succesfull.');
 
-    check_php();
+    Log::msg('Kiwi download succesfull.');
+    check_kiwi_hash($kiwi_checksum, kiwidir(Dir::DOWNLOAD_ZIP));
 
     //check if there are files to backup.
-    if (!isset($_SESSION['unit_test']) && file_exists(kiwidir(Dir::KIWI_DIR)) && file_exists(kiwidir(Dir::PUBLIC_DIR))) {
-        Log::msg('Legacy kiwi folders found.');
-        create_backup();
-    } else {
-        Log::msg('No previous kiwi files found.');
-    }
+    handle_kiwi_backup();
 
     // Unzip the fresh kiwi release.
     $zip = new ZipArchive();
@@ -1128,32 +1158,68 @@ function download_kiwi()
     Log::msg('Unzipped the new kiwi files.');
 }
 
-function check_php()
+function handle_kiwi_backup()
 {
-    $tempPath = kiwidir(Dir::DOWNLOAD_ZIP);
-
-    // Unzip the fresh kiwi release.
-    $zip = new ZipArchive();
-    $zip->open($tempPath);
-    $composer_lock = $zip->getFromName('kiwi/composer.lock');
-    $zip->close();
-
-    if (false == $composer_lock) {
-        Log::msg('WARNING: php check skipped due to no lock file');
+    if (!isset($_SESSION['unit_test']) && file_exists(kiwidir(Dir::KIWI_DIR)) && file_exists(kiwidir(Dir::PUBLIC_DIR))) {
+        Log::msg('Legacy kiwi folders found.');
+        create_backup();
     } else {
-        $composer_json = json_decode($composer_lock);
-        $req_version = $composer_json->platform->php;
+        Log::msg('No previous kiwi files found.');
+    }
+}
 
-        if (version_compare(PHP_VERSION, $req_version, '<')) {
-            Log::msg('PHP is outdated. Kiwi requires '.$req_version.', currently installed '.PHP_VERSION);
+function handle_curl_error($ch)
+{
+    if (empty(!curl_error($ch))) {
+        //Fatal error, stop immediatily
+        Log::msg('Curl error found');
+        Log::msg(curl_error($ch));
 
-            if (file_exists($tempPath)) {
-                unlink($tempPath);
+        throw new DownloadException('Curl error found\n'.curl_error($ch));
+    }
+}
+
+function check_kiwi_hash($checksum, $file)
+{
+    $filesum = hash_file('sha512', $file);
+
+    if (0 != strcmp($filesum, $checksum)) {
+        unlink(kiwidir(Dir::DOWNLOAD_ZIP));
+        throw new DownloadException('Kiwi.zip checksum does not match');
+    }
+}
+
+function check_requirements_hash($checksum, $requirements)
+{
+    $hash = hash('sha512', $requirements);
+    if (0 != strcmp($hash, $checksum)) {
+        throw new DownloadException('Requirements.json checksum does not match');
+    }
+}
+
+function check_php($requirements)
+{
+    $platform = json_decode($requirements);
+
+    foreach ($platform as $key => $value) {
+        if ('php' == $key) {
+            // check php version
+            $req_version = $value;
+            if (version_compare(PHP_VERSION, $req_version, '<')) {
+                Log::msg('PHP is outdated. Kiwi requires '.$req_version.', currently installed '.PHP_VERSION);
+                throw new DownloadException('PHP is outdated. Kiwi requires '.$req_version.', currently installed '.PHP_VERSION);
+            } else {
+                Log::msg('PHP version sufficient.');
             }
-
-            throw new DownloadException();
         } else {
-            Log::msg('PHP version sufficient.');
+            // Check extensions
+            $ext = substr(stristr($key, '-'), 1);
+            if (!extension_loaded($ext)) {
+                Log::msg('PHP is missing the '.$ext.' extension');
+                throw new DownloadException('PHP is missing the '.$ext.' extension');
+            } else {
+                Log::msg('PHP extension '.$ext.' found');
+            }
         }
     }
 }
