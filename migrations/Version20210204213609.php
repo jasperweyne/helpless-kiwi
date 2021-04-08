@@ -24,8 +24,7 @@ final class Version20210204213609 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE kiwi_oauth2_access_token (id VARCHAR(255) NOT NULL, access_token JSON NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('DROP TABLE kiwi_oauth2access_token');
+        $this->addSql('RENAME TABLE kiwi_oauth2access_token TO kiwi_oauth2_access_token');
         $this->addSql('ALTER TABLE kiwi_activity ADD present INT DEFAULT NULL');
         $this->addSql('ALTER TABLE kiwi_activity ADD CONSTRAINT FK_CDE345B85E9E89CB FOREIGN KEY (location) REFERENCES kiwi_location (id)');
         $this->addSql('ALTER TABLE kiwi_activity ADD CONSTRAINT FK_CDE345B8ED07F46C FOREIGN KEY (primairy_author) REFERENCES kiwi_taxonomy (id)');
@@ -46,8 +45,7 @@ final class Version20210204213609 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE kiwi_oauth2access_token (id VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, access_token JSON NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB COMMENT = \'\' ');
-        $this->addSql('DROP TABLE kiwi_oauth2_access_token');
+        $this->addSql('RENAME TABLE kiwi_oauth2_access_token TO kiwi_oauth2access_token');
         $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_CDE345B85E9E89CB');
         $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_CDE345B8ED07F46C');
         $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_CDE345B8466F2FFC');
