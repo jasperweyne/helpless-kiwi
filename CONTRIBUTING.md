@@ -161,8 +161,26 @@ be prefixed by `#`. An example:
 We love tests! Kiwi is a big project, and code coverage improvements help the
 stability and maintainability of the project. Please refer to the
 [Symfony Testing documentation](https://symfony.com/doc/current/testing.html)
-for more information and guidance on how to write your tests. When contributing
-tests, make sure that your tests are comprehensive.
+for more information and guidance on how to write your tests. Note that when
+running tests, the pdo_sqlite extension must be installed if the database is not
+configured locally.
+
+Three types of tests are included in Kiwi: functional tests, integration tests
+and unit tests. Functional tests are reserved for testing controllers and
+commands, and test the full integration of the software from a user-like
+interface.
+
+For all other classes in src, unit tests and optionally integration tests should
+be written as well. Unit tests are independent of the behaviour of dependencies,
+while integration tests should explicitly test whether the code correctly
+interacts with its dependencies.
+
+These tests should test "expected" behaviour. In practice, this means the happy
+path. However, if a sad path is expected (eg. an exception is a normal type of
+result), than this should be tested as well. Multiple asserts may be placed in a
+test, but these asserts should be all semantically related to each other, and a
+message must be added to indicate the problem. It is encourage to structure test
+code to an Arrange/Act/Assert structure.
 
 ## Directory structure
 
@@ -205,7 +223,12 @@ built upon it.
     ├─ Security/                    # Authentication code
     ├─ */...                        # Additional helper classes
     └─ Kernel.php                   # Symfony Kernel file, in general should not be modified
- ├─ tests/                          # Automatic tests (e.g. Unit tests)
+ └─ tests/                          # Automatic tests (e.g. Unit tests)
+    ├─ Functional/                  # Tests the fully-integrated functionality of routes (Controllers) and commands
+    └─ Helper/                      # Helper code for running any type of test tests
+       └─ Database/                 # Contains the database fixtures used during testing
+    └─ Integration/                 # Integration tests of classes and methods, with their dependencies attached
+    └─ Unit/                        # Unit tests of individual classes and methods (dependencies should be mocked)
  └─ templates/                      # Twig templates for HTML generation
     ├─ email/                       # E-mail templates (should not extend templates/layout.html)
     ├─ layout.html                  # Base HTML template for website, all other templates should extend it (or a child template)
