@@ -1,5 +1,4 @@
 <?php
-//@codeCoverageIgnoreStart
 
 //Check if test
 $unit_test = $_SESSION['unit_test'] ?? false;
@@ -1501,8 +1500,6 @@ function restore_backup()
         Log::msg('No backup found.');
     }
 }
-
-//@codeCoverageIgnoreEnd
 
 function render($step, $error, $error_type)
 {
