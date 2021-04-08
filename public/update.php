@@ -810,10 +810,11 @@ function handleEndofInstall($step)
 
 function check_updater_location()
 {
-    $name = dirname(__FILE__);
+    $p1 = basename(__DIR__);
+    $p2 = basename(dirname(__DIR__));
 
-    if ('public_html\kiwi' != substr($name, -16)) {
-        throw new ScriptLocationException('The script is in the wrong location. It should like '.Dir::PUBLIC_DIR.'\kiwi\updater.php'.', but it currently looks like '.dirname(__FILE__));
+    if ($p1 !== 'kiwi' || $p2 !== 'public_html') {
+        throw new ScriptLocationException('The script is in the wrong location. Its direct parents should be public_html/kiwi, but it\'s currently placed in '.$p2.'/'.$p1);
     }
 }
 
