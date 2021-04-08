@@ -2,9 +2,9 @@
 
 namespace App\Provider;
 
-use App\Provider\Person\PersonProviderInterface;
 use App\Entity\Security\OAuth2AccessToken;
 use App\Provider\Person\Person;
+use App\Provider\Person\PersonProviderInterface;
 use App\Security\OAuth2User;
 use App\Security\OAuth2UserProvider;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,17 +35,19 @@ class BunnyDataProvider implements PersonProviderInterface
 
     public function getAddress(): ?string
     {
-        if (!isset($_ENV['BUNNY_ADDRESS']))
+        if (!isset($_ENV['BUNNY_ADDRESS'])) {
             return null;
-            
-        return ($_ENV['SECURE_SCHEME'] ?? 'https') . '://' . $_ENV['BUNNY_ADDRESS'];
+        }
+
+        return ($_ENV['SECURE_SCHEME'] ?? 'https').'://'.$_ENV['BUNNY_ADDRESS'];
     }
 
     public function getRequest(string $method, string $uri, array $options = []): ?RequestInterface
     {
         $user = $this->tokens->getToken()->getUser();
-        if (!$user instanceof OAuth2User || is_null($this->getAddress()))
+        if (!$user instanceof OAuth2User || is_null($this->getAddress())) {
             return null;
+        }
 
         $dbToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
         $accessToken = $dbToken->getAccessToken();
@@ -56,12 +58,12 @@ class BunnyDataProvider implements PersonProviderInterface
             } catch (\Exception $e) {
                 return null;
             }
-            
+
             $dbToken = $this->em->getRepository(OAuth2AccessToken::class)->find($user->getId());
             $accessToken = $dbToken->getAccessToken();
         }
-        
-        return $this->provider->getAuthenticatedRequest($method, $this->getAddress() . $uri, $accessToken, $options);
+
+        return $this->provider->getAuthenticatedRequest($method, $this->getAddress().$uri, $accessToken, $options);
     }
 
     public function findPerson(string $id): ?Person
@@ -72,6 +74,21 @@ class BunnyDataProvider implements PersonProviderInterface
 
         foreach ($this->cache as $person) {
             if ($person->getId() == $id) {
+                return $person;
+            }
+        }
+
+        return null;
+    }
+
+    public function findPersonByEmail(string $email): ?Person
+    {
+        if (is_null($this->cache)) {
+            $this->findPersons();
+        }
+
+        foreach ($this->cache as $person) {
+            if ($person->getEmail() == $email) {
                 return $person;
             }
         }
@@ -91,7 +108,7 @@ class BunnyDataProvider implements PersonProviderInterface
                 } catch (\Exception $e) {
                     // refresh and retry
                     $this->userProvider->refreshUser($this->tokens->getToken()->getUser());
-    
+
                     $request = $this->getRequest('GET', '/api/person/');
                     $response = $this->provider->getParsedResponse($request);
                 }
