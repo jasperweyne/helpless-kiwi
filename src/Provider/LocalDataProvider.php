@@ -23,6 +23,13 @@ class LocalDataProvider implements PersonProviderInterface
         return $this->convert($auth);
     }
 
+    public function findPersonByEmail(string $email): ?Person
+    {
+        $auth = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]);
+
+        return $this->convert($auth);
+    }
+
     public function findPersons(): array
     {
         return array_map([$this, 'convert'], $this->em->getRepository(LocalAccount::class)->findAll());
@@ -30,8 +37,9 @@ class LocalDataProvider implements PersonProviderInterface
 
     private function convert(?LocalAccount $auth): ?Person
     {
-        if (is_null($auth))
+        if (is_null($auth)) {
             return null;
+        }
 
         return $auth->getPerson();
     }

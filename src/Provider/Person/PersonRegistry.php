@@ -13,13 +13,31 @@ final class PersonRegistry
 
     public function find(?string $id)
     {
-        if (is_null($id))
+        if (is_null($id)) {
             return null;
-            
+        }
+
         foreach ($this->providers as $provider) {
             $result = $provider->findPerson($id);
-            if ($result)
+            if ($result) {
                 return $result;
+            }
+        }
+
+        return null;
+    }
+
+    public function findPersonByEmail(?string $email)
+    {
+        if (is_null($email)) {
+            return null;
+        }
+
+        foreach ($this->providers as $provider) {
+            $result = $provider->findPersonByEmail($email);
+            if ($result) {
+                return $result;
+            }
         }
 
         return null;
@@ -31,7 +49,7 @@ final class PersonRegistry
         foreach ($this->providers as $provider) {
             $result = array_merge($result, $provider->findPersons());
         }
-        
+
         return $result;
     }
 }
