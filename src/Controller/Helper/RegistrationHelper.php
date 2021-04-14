@@ -14,7 +14,7 @@ class RegistrationHelper extends AbstractController
 
     public function __construct(
         \App\Mail\MailService $mailer,
-        \App\Provider\Person\PersonRegistry $personRegistry
+        \App\Provider\Person\PersonRegistryInterface $personRegistry
     ) {
         $this->mailer = $mailer;
         $this->personRegistry = $personRegistry;
@@ -47,7 +47,6 @@ class RegistrationHelper extends AbstractController
     ) {
         $em = $this->getDoctrine()->getManager();
         $em->persist($registration);
-
         $this->sendConvermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by', 'aangemeld!');
     }
 
