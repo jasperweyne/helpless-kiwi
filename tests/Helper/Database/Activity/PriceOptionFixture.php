@@ -11,15 +11,18 @@ use Tests\Helper\TestData;
 
 class PriceOptionFixture extends Fixture implements DependentFixtureInterface
 {
-    public const PRICE_OPTION_REFERENCE = 'price';
+    public const PRICE_OPTION_REFERENCE = 'price-';
 
     public function load(ObjectManager $manager)
     {
         $activities = $manager->getRepository(Activity::class)->findAll();
+        $priceCount = 0;
 
         $options = self::generate($activities)->return();
         foreach ($options as $object) {
+            $this->setReference($this::PRICE_OPTION_REFERENCE.$priceCount, $object);
             $manager->persist($object);
+            ++$priceCount;
         }
 
         $manager->flush();
