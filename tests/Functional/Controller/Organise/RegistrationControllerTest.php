@@ -18,6 +18,7 @@ use Tests\Helper\Database\Security\LocalAccountFixture;
  * Class RegistrationControllerTest.
  *
  * @covers \App\Controller\Organise\RegistrationController
+ * @covers \App\Controller\Helper\RegistrationHelper
  *
  * @author A-Daneel
  */
