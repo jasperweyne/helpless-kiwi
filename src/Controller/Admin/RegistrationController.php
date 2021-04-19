@@ -22,14 +22,13 @@ class RegistrationController extends RegistrationHelper
      */
     public function newAction(
         Request $request,
-        Activity $activity,
-        RegistrationHelper $helper
+        Activity $activity
     ) {
-        $form = $helper->createRegistrationNewForm($activity);
+        $form = $this->createRegistrationNewForm($activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->storeRegistration($form->getData());
+            $this->storeRegistration($form->getData());
 
             return $this->handleRedirect($activity->getId());
         } else {
@@ -47,15 +46,14 @@ class RegistrationController extends RegistrationHelper
      */
     public function deleteAction(
         Request $request,
-        Registration $registration,
-        RegistrationHelper $helper
+        Registration $registration
     ) {
         $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
-        $form = $helper->createRegistrationDeleteForm($url);
+        $form = $this->createRegistrationDeleteForm($url);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->removeRegistration($registration);
+            $this->removeRegistration($registration);
 
             return $this->handleRedirect($registration->getActivity()->getId());
         } else {
@@ -73,14 +71,13 @@ class RegistrationController extends RegistrationHelper
      */
     public function reserveNewAction(
         Request $request,
-        Activity $activity,
-        RegistrationHelper $helper
+        Activity $activity
     ) {
-        $form = $helper->createReserveNewForm($activity);
+        $form = $this->createReserveNewForm($activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->storeNewReserve($form->getData());
+            $this->storeNewReserve($form->getData());
 
             return $this->handleRedirect($activity->getId());
         } else {
@@ -98,10 +95,9 @@ class RegistrationController extends RegistrationHelper
      * @Route("/reserve/move/{id}/up", name="reserve_move_up", methods={"GET", "POST"})
      */
     public function reserveMoveUpAction(
-        Registration $registration,
-        RegistrationHelper $helper
+        Registration $registration
     ) {
-        $returnData = $helper->promoteReserve($registration);
+        $returnData = $this->promoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }
@@ -112,10 +108,9 @@ class RegistrationController extends RegistrationHelper
      * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
      */
     public function reserveMoveDownAction(
-        Registration $registration,
-        RegistrationHelper $helper
+        Registration $registration
     ) {
-        $returnData = $helper->demoteReserve($registration);
+        $returnData = $this->demoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }
