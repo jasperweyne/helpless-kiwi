@@ -47,7 +47,7 @@ class RegistrationHelper extends AbstractController
     ) {
         $em = $this->getDoctrine()->getManager();
         $em->persist($registration);
-        $this->sendConvermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by', 'aangemeld!');
+        $this->sendConfermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by', 'aangemeld!');
     }
 
     /**
@@ -75,7 +75,7 @@ class RegistrationHelper extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $registration->setDeleteDate($now);
 
-        $this->sendConvermationMail($registration, $em, 'Afmeldbericht ', 'email/removedregistration_by', 'afgemeld!');
+        $this->sendConfermationMail($registration, $em, 'Afmeldbericht ', 'email/removedregistration_by', 'afgemeld!');
     }
 
     /**
@@ -153,7 +153,7 @@ class RegistrationHelper extends AbstractController
         return $registration->getActivity()->getId();
     }
 
-    private function sendConvermationMail(
+    private function sendConfermationMail(
         Registration $registration,
         $em,
         $title,

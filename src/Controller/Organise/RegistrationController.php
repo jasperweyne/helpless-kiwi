@@ -11,12 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Activity controller.
+ * Activity controller for the organise endpoint.
  *
  * @Route("/organise/activity/register", name="organise_activity_registration_")
  */
 class RegistrationController extends RegistrationHelper
 {
+    /**
+     * Make sure edits can only be made to acitivity's you have created.
+     */
     protected function blockUnauthorisedUsers(Group $group)
     {
         $e = $this->createAccessDeniedException('Not authorised for the correct group.');
@@ -34,7 +37,7 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
-     * Displays a form to edit an existing activity entity.
+     * Displays a form to edit an activity you are organizing.
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
@@ -52,7 +55,7 @@ class RegistrationController extends RegistrationHelper
 
             return $this->handleRedirect($activity->getId());
         } else {
-            return $this->render('admin/activity/registration/new.html.twig', [
+            return $this->render('organise/activity/registration/new.html.twig', [
                 'activity' => $activity,
                 'form' => $form->createView(),
             ]);
@@ -60,7 +63,7 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
-     * Deletes a person entity.
+     * Deletes a person from an entity you have organized.
      *
      * @Route("/delete/{id}", name="delete")
      */
@@ -79,7 +82,7 @@ class RegistrationController extends RegistrationHelper
 
             return $this->handleRedirect($registration->getActivity()->getId());
         } else {
-            return $this->render('admin/activity/registration/delete.html.twig', [
+            return $this->render('organise/activity/registration/delete.html.twig', [
                 'registration' => $registration,
                 'form' => $form->createView(),
             ]);
@@ -87,6 +90,8 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
+     * Add someone to the reserve list of an activity you are organizing.
+     *
      * @Route("/reserve/new/{id}", name="reserve_new", methods={"GET", "POST"})
      */
     public function reserveNewAction(
@@ -103,7 +108,7 @@ class RegistrationController extends RegistrationHelper
 
             return $this->handleRedirect($activity->getId());
         } else {
-            return $this->render('admin/activity/registration/new.html.twig', [
+            return $this->render('organise/activity/registration/new.html.twig', [
                 'activity' => $activity,
                 'form' => $form->createView(),
                 'reserve' => true,
@@ -112,6 +117,8 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
+     * Promote someone in the reserve list of an activity you are organizing.
+     *
      * @Route("/reserve/move/{id}/up", name="reserve_move_up", methods={"GET", "POST"})
      */
     public function reserveMoveUpAction(
@@ -125,6 +132,8 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
+     * Demote someone in the reserve list of an activity you are organizing.
+     *
      * @Route("/reserve/move/{id}/down", name="reserve_move_down", methods={"GET", "POST"})
      */
     public function reserveMoveDownAction(
