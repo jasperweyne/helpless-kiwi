@@ -25,7 +25,7 @@ class RegistrationHelper extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    public function createRegistrationNewForm(
+    protected function createRegistrationNewForm(
         Activity $activity
     ) {
         $registration = new Registration();
@@ -42,7 +42,7 @@ class RegistrationHelper extends AbstractController
     /**
      * Persist addition of the Registration to the database.
      */
-    public function newAction(
+    protected function storeRegistration(
         Registration $registration
     ) {
         $em = $this->getDoctrine()->getManager();
@@ -55,7 +55,7 @@ class RegistrationHelper extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    public function createRegistrationDeleteForm(
+    protected function createRegistrationDeleteForm(
         $actionUrl
     ) {
         return $this->createFormBuilder()
@@ -68,7 +68,7 @@ class RegistrationHelper extends AbstractController
     /**
      *  Persist removal of the Registration to the database.
      */
-    public function deleteAction(
+    protected function removeRegistration(
         Registration $registration
     ) {
         $now = new \DateTime('now');
@@ -83,7 +83,7 @@ class RegistrationHelper extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    public function createReserveNewForm(
+    protected function createReserveNewForm(
         Activity $activity
     ) {
         $em = $this->getDoctrine()->getManager();
@@ -106,7 +106,7 @@ class RegistrationHelper extends AbstractController
     /**
      * Persist addition of the Reserve to the database.
      */
-    public function reserveNewAction(
+    protected function storeNewReserve(
         Registration $registration
     ) {
         $em = $this->getDoctrine()->getManager();
@@ -117,7 +117,7 @@ class RegistrationHelper extends AbstractController
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld op de reservelijst!');
     }
 
-    public function reserveMoveUpAction(
+    protected function promoteReserve(
         Registration $registration
     ) {
         $em = $this->getDoctrine()->getManager();
@@ -135,7 +135,7 @@ class RegistrationHelper extends AbstractController
         return $registration->getActivity()->getId();
     }
 
-    public function reserveMoveDownAction(
+    protected function demoteReserve(
         Registration $registration
     ) {
         $em = $this->getDoctrine()->getManager();

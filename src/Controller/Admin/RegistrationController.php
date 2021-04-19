@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Controller\Helper\RegistrationHelper;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/admin/activity/register", name="admin_activity_registration_")
  */
-class RegistrationController extends AbstractController
+class RegistrationController extends RegistrationHelper
 {
     /**
      * Displays a form to edit an existing activity entity.
@@ -30,7 +29,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->newAction($form->getData());
+            $helper->storeRegistration($form->getData());
 
             return $this->handleRedirect($activity->getId());
         } else {
@@ -56,7 +55,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->deleteAction($registration);
+            $helper->removeRegistration($registration);
 
             return $this->handleRedirect($registration->getActivity()->getId());
         } else {
@@ -79,7 +78,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->reserveNewAction($form->getData());
+            $helper->storeNewReserve($form->getData());
 
             return $this->handleRedirect($activity->getId());
         } else {
@@ -98,7 +97,7 @@ class RegistrationController extends AbstractController
         Registration $registration,
         RegistrationHelper $helper
     ) {
-        $returnData = $helper->reserveMoveUpAction($registration);
+        $returnData = $helper->promoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }
@@ -110,7 +109,7 @@ class RegistrationController extends AbstractController
         Registration $registration,
         RegistrationHelper $helper
     ) {
-        $returnData = $helper->reserveMoveDownAction($registration);
+        $returnData = $helper->demoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }

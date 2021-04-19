@@ -7,7 +7,6 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/organise/activity/register", name="organise_activity_registration_")
  */
-class RegistrationController extends AbstractController
+class RegistrationController extends RegistrationHelper
 {
     protected function blockUnauthorisedUsers(Group $group)
     {
@@ -49,7 +48,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->newAction($form->getData());
+            $helper->storeRegistration($form->getData());
 
             return $this->handleRedirect($activity->getId());
         } else {
@@ -76,7 +75,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->deleteAction($registration);
+            $helper->removeRegistration($registration);
 
             return $this->handleRedirect($registration->getActivity()->getId());
         } else {
@@ -100,7 +99,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $helper->reserveNewAction($form->getData());
+            $helper->storeNewReserve($form->getData());
 
             return $this->handleRedirect($activity->getId());
         } else {
@@ -120,7 +119,7 @@ class RegistrationController extends AbstractController
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
-        $returnData = $helper->reserveMoveUpAction($registration);
+        $returnData = $helper->promoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }
@@ -133,7 +132,7 @@ class RegistrationController extends AbstractController
         RegistrationHelper $helper
     ) {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
-        $returnData = $helper->reserveMoveDownAction($registration);
+        $returnData = $helper->demoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }
