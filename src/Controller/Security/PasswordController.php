@@ -3,15 +3,15 @@
 namespace App\Controller\Security;
 
 use App\Entity\Person\Person;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Security\LocalAccount;
 use App\Mail\MailService;
 use App\Security\LocalUserProvider;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use App\Security\PasswordResetService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 /**
  * Password controller.
@@ -37,32 +37,15 @@ class PasswordController extends AbstractController
      */
     public function resetAction(LocalAccount $auth, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
         if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
-            $this->passwordReset->resetPasswordRequestToken($auth);
-
-            $this->addFlash('error', 'Invalid password token.');
-
-            return $this->redirectToRoute('app_login');
+            $this->handleInvalidToken($auth);
         }
 
         $form = $this->createForm('App\Form\Security\NewPasswordType', []);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $pass = $data['password'];
-
-            $this->passwordReset->resetPasswordRequestToken($auth, false);
-            $auth->setPassword($this->passwordEncoder->encodePassword($auth, $pass));
-
-            $em->persist($auth);
-            $em->flush();
-
-            $this->addFlash('success', 'Wachtwoord aangepast!');
-
-            return $this->redirectToRoute('app_login');
+            $this->handleValidToken($form, $auth, 'Wachtwoord aangepast!');
         }
 
         return $this->render('security/reset.html.twig', [
@@ -77,32 +60,16 @@ class PasswordController extends AbstractController
      */
     public function registerAction(LocalAccount $auth, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
         if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
-            $this->passwordReset->resetPasswordRequestToken($auth);
-
-            $this->addFlash('error', 'Invalid password token.');
-
-            return $this->redirectToRoute('app_login');
+            $this->handleInvalidToken($auth);
         }
 
         $form = $this->createForm('App\Form\Security\NewPasswordType', []);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $pass = $data['password'];
-
-            $this->passwordReset->resetPasswordRequestToken($auth, false);
-            $auth->setPassword($this->passwordEncoder->encodePassword($auth, $pass));
-
-            $em->persist($auth);
-            $em->flush();
-
-            $this->addFlash('success', 'Account succesvol geregistreerd, log in!');
-
-            return $this->redirectToRoute('app_login');
+            $succesMessage = 'Account succesvol geregistreed, log in!';
+            $this->handleValidToken($form, $auth, $succesMessage);
         }
 
         return $this->render('security/register.html.twig', [
@@ -161,5 +128,36 @@ class PasswordController extends AbstractController
         return $this->render('security/request.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Handle an invalid auth token.
+     */
+    private function handleInvalidToken(LocalAccount $auth)
+    {
+        $this->passwordReset->resetPasswordRequestToken($auth);
+        $this->addFlash('error', 'Invalid password token.');
+
+        return $this->redirectToRoute('app_login');
+    }
+
+    /**
+     * Handle a valid auth token.
+     */
+    private function handleValidToken($form, LocalAccount $auth, string $message)
+    {
+        $data = $form->getData();
+        $pass = $data['password'];
+
+        $this->passwordReset->resetPasswordRequestToken($auth, false);
+        $auth->setPassword($this->passwordEncoder->encodePassword($auth, $pass));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($auth);
+        $em->flush();
+
+        $this->addFlash('success', $message);
+
+        return $this->redirectToRoute('app_login');
     }
 }
