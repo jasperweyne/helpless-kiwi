@@ -2,7 +2,6 @@
 
 namespace App\Controller\Security;
 
-use App\Entity\Person\Person;
 use App\Entity\Security\LocalAccount;
 use App\Mail\MailService;
 use App\Security\LocalUserProvider;
@@ -93,14 +92,14 @@ class PasswordController extends AbstractController
             $data = $form->getData();
             $mail = $data['email'];
 
-            $person = $em->getRepository(Person::class)->findOneBy(['email' => $mail]);
-            if (!$person) {
-                $person = new Person();
-                $person
+            $localAccount = $em->getRepository(LocalAccount::class)->findOneBy(['email' => $mail]);
+            if (!$localAccount) {
+                $localAccount = new LocalAccount();
+                $localAccount
                     ->setEmail($mail)
                 ;
 
-                $em->persist($person);
+                $em->persist($localAccount);
                 $em->flush();
             }
 
@@ -113,11 +112,11 @@ class PasswordController extends AbstractController
                     'token' => $token,
                 ]);
 
-                $mailer->message($person, 'Wachtwoord vergeten', $body);
+                $mailer->message($localAccount, 'Wachtwoord vergeten', $body);
             } catch (UsernameNotFoundException $exception) {
                 $body = $this->renderView('email/unknownemail.html.twig');
 
-                $mailer->message($person, 'Wachtwoord vergeten', $body);
+                $mailer->message($localAccount, 'Wachtwoord vergeten', $body);
             }
 
             $this->addFlash('success', 'Er is een mail met instructies gestuurd naar '.$mail);
