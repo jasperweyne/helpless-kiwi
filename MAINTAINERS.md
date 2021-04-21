@@ -9,22 +9,23 @@ terms and guidelines were devised to bring everyone together on equal grounds.
 
 This project is intended for use by organised groups of people: associations
 organisations, sports clubs or anything alike. Regardless of group size, each
-of these entities has a unique perspective that should be weighed equally to 
-any other. Therefore, a group of people (hereafter referred to as organisation) 
-may apply for maintainer status. With maintainer status, your organisation will
-be able to weigh in on the direction and priorities of the project. In return, 
-and in the spirit of free, open source software, we ask that your organisation 
-actively participates in the development and maintenance of the project. (Note: 
-individuals that are not affiliated to any organisation are welcome to apply 
-for maintainer status too.)
+of these entities has a unique perspective that should be weighed equally to
+any other. Therefore, such a group of people, hereinafter referred to as an
+organisation, may apply for maintainer status. With maintainer status, your
+organisation will be able to weigh in on the direction and priorities of the
+project. In return, and in the spirit of free, open source software, we ask that
+your organisation actively participates in the development and maintenance of
+the project. (Note: individuals that are not affiliated to any organisation are
+welcome to apply for maintainer status too.)
 
 ## Terms of maintainer status
-Each entity with maintainer status shall provide one or more maintainers, who'll
-participate in the development. They're always the point of contact, except for
-notices on the maintainer status of the organisation or for notices on changes
-in the list the maintainers representing an organisation. All communication
-among maintainers takes place through an online channel, indicated after being
-granted maintainer status.
+Each organisation with maintainer status shall provide one or more maintainers.
+These maintainers will participate in the development of the project on behalf
+of their organisation. They're always the point of contact, except for notices
+on the maintainer status of the organisation or for notices on changes in the
+list the maintainers representing an organisation. All communication among
+maintainers takes place through an online channel, indicated after being granted
+maintainer status.
 
 At least once every six months, a vote is held on the priorities and agreements
 for the next six months. A vote will be announced by the project owner at least
@@ -34,8 +35,8 @@ to week before the vote.
 
 Each entity with maintainer status gets a single vote. If multiple maintainers
 representing a single entity are present, only of them may cast a vote on behalf
-of the entity they represent. For any changes to these terms and guidelines, as
-well as the contribution guidelines and the code of conduct, a vote must be held.
+of the entity they represent. For any changes to these terms, as well as the
+contribution guidelines and the code of conduct, a vote must be held.
 
 Maintainers are expected to be active, supportive and responsive. Upon questions
 or requests from fellow maintainers, a response or indication of acknowledgement
@@ -107,12 +108,11 @@ During your review, consider the following points:
   breaking BC. Any BC breaks you plan on merging MUST be discussed with the
   maintainer team prior to merging.
 * Is this a new feature? If so:
-    * If no issue is linked, does the PR contain information indicating the need
-      for the feature? If not, ask them to provide that information, preferably
-      in an issue.
-    * Are the new tests actually meaningful? Do they sensibly test the behaviour,
-      similarly to how a user would experience it? If not, **do not merge** the
-      feature until they are!
+    * If no issue is linked, does the PR indicate the need for the feature? If
+      not, ask them to provide that information, preferably in an issue.
+    * Are the new tests actually meaningful? Do they actually test the changed
+      behaviour? Do the tests resemble the expectations of users? If not, **do**
+      **not merge** the feature until they are!
     * Is the feature necessary for general use cases? Kiwi isn't, nor should it
       be, a monolithic piece of software. In general, settings to change the
       behaviour of Kiwi are to be avoided! If a proposed feature does not is not
