@@ -3,16 +3,27 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\ActivityController;
+use App\Entity\Activity\Activity;
 use App\Log\EventService;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Doctrine\ORM\EntityManagerInterface;
+use Tests\Helper\AuthWebTestCase;
+use Tests\Helper\Database\Activity\ActivityFixture;
+use Tests\Helper\Database\Activity\PriceOptionFixture;
+use Tests\Helper\Database\Activity\RegistrationFixture;
+use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
  * Class ActivityControllerTest.
  *
  * @covers \App\Controller\Admin\ActivityController
  */
-class ActivityControllerTest extends WebTestCase
+class ActivityControllerTest extends AuthWebTestCase
 {
+    /**
+     * @var \Doctrine\ORM\EntityManagerInterface
+     */
+    private $em;
+
     /**
      * @var ActivityController
      */
@@ -29,10 +40,20 @@ class ActivityControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
+        //self::bootKernel();
+        $this->login();
+
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            PriceOptionFixture::class,
+            ActivityFixture::class,
+            RegistrationFixture::class,
+        ]);
 
         $this->events = self::$container->get(EventService::class);
         $this->activityController = new ActivityController($this->events);
+
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -44,6 +65,7 @@ class ActivityControllerTest extends WebTestCase
 
         unset($this->activityController);
         unset($this->events);
+        unset($this->em);
     }
 
     public function testIndexAction(): void
@@ -96,8 +118,21 @@ class ActivityControllerTest extends WebTestCase
 
     public function testPresentEditAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        //Arange
+        $activities = $this->em->getRepository(Activity::class)->findAll();
+        $id = $activities[0]->getId();
+        $comment = 'This is a test person for testing purposes';
+
+        //Act
+        $crawler = $this->client->request('GET', "/admin/activity/{$id}/present");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['activity_edit_present[registrations][0][present]'] = 2;
+        $form['activity_edit_present[registrations][0][comment]'] = $comment;
+        $this->client->submitForm('Opslaan');
+
+        //Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Aanwezigheid');
     }
 
     public function testSetAmountPresent(): void

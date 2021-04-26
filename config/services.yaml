@@ -90,3 +90,4 @@ services:
                 scopes: 'profile email admin'
             -
                 signer: '@Lcobucci\JWT\Signer\Rsa\Sha256'
+

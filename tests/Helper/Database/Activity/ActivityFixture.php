@@ -2,12 +2,12 @@
 
 namespace Tests\Helper\Database\Activity;
 
-use Tests\Helper\Database\Location\LocationFixture;
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Tests\Helper\Database\Location\LocationFixture;
 use Tests\Helper\TestData;
 
 class ActivityFixture extends Fixture implements DependentFixtureInterface

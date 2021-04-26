@@ -16,7 +16,7 @@ class PresentType extends AbstractType
 {
     protected $personRegistry;
 
-    public function __construct(PersonRegistry $personRegistry)
+    public function __construct(PersonRegistry $personRegistry = null)
     {
         $this->personRegistry = $personRegistry;
     }
@@ -47,6 +47,24 @@ class PresentType extends AbstractType
                     'required' => false,
                 ]);
         });
+    }
+
+    public function buildFormTest(FormBuilderInterface $builder, array $options)
+    {
+        var_dump('hier?');
+        $builder
+            ->add('present', ChoiceType::class, [
+                'choices' => [
+                    'Onbekend' => null,
+                    'Aanwezig' => true,
+                    'Afwezig' => false,
+                ],
+                'label' => 'test',
+                'required' => true,
+        ])
+                ->add('comment', TextType::class, [
+                    'required' => false,
+                ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
