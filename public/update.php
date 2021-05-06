@@ -4,7 +4,7 @@ use App\Kernel;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
@@ -151,18 +151,18 @@ class IntegrationTool
     /**
      * Run a Kiwi command.
      *
-     * @param array  $command The command and arguments to run, supplied for ArrayInput
+     * @param string $command The command to run
      * @param string $stdout  The string variable where the output will be stored
      *
      * @return int The status code of the command
      */
-    public function runCommand(array $command, &$stdout = null): int
+    public function runCommand(string $command, &$stdout = null): int
     {
         // loadApplication must be called first, as it loads the autoloader
         $app = $this->loadApplication();
 
         // Run the command
-        $input = new ArrayInput($command);
+        $input = new StringInput($command);
         $output = new BufferedOutput();
         $result = $app->run($input, $output);
 
@@ -663,7 +663,7 @@ class DatabaseTool
      */
     public function canMigrate()
     {
-        return 0 !== $this->integration->runCommand(['command' => 'doctrine:migrations:up-to-date']);
+        return 0 !== $this->integration->runCommand('doctrine:migrations:up-to-date');
     }
 
     /**
@@ -672,11 +672,7 @@ class DatabaseTool
     public function migrateDb()
     {
         $output = '';
-        $result = $this->integration->runCommand([
-            'command' => 'doctrine:migrations:migrate',
-            '-n' => true,
-            '--allow-no-migration' => true,
-        ], $output);
+        $result = $this->integration->runCommand('doctrine:migrations:migrate -n --allow-no-migration', $output);
 
         if (0 !== $result) {
             throw new \Exception($output);
@@ -710,7 +706,12 @@ class DatabaseTool
      */
     protected function restoreDatabaseBackup()
     {
-        // todo
+        $backupPath = $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'backup';
+        $backup = $backupPath.DIRECTORY_SEPARATOR.'database.sql';
+
+        $db = new mysqli($this->host, $this->user, $this->pass, $this->name);
+        $dump = new MySQLImport($db);
+        $dump->load($backup);
     }
 }
 
@@ -843,12 +844,12 @@ class DownloadTool
         $currentVersion = date_create_from_format('d/m/Y', $version);
         $latestVersion = date_create_from_format('d/m/Y', $latest['tag_name']);
 
-        // If conversion failed, assume out of date
-        if (!$currentVersion || !$latestVersion) {
+        // If conversion failed and raw strings are not equal, assume out of date
+        if ((!$currentVersion || !$latestVersion) && $latest !== $version) {
             return false;
         }
 
-        return $latest == $version || $latestVersion > $currentVersion;
+        return $currentVersion >= $latestVersion;
     }
 
     /**
@@ -1001,26 +1002,24 @@ class Updater
     protected $integration;
     protected $env;
     protected $interface;
+    protected $download;
+    protected $archive;
+    protected $database;
 
     public function __construct()
     {
+        // Check if script location is correct
         $this->integration = new IntegrationTool();
+        $this->integration->envIsValid();
+
+        // Setup base dependencies
         $this->env = new EnvFileTool($this->integration->getRootPath());
         $this->interface = new UserInterface($this->env);
-    }
-
-    public function exception(\Exception $e)
-    {
-        Log::console($e->getMessage());
-        $all = Log::read(true);
-        $this->interface->render('Probleem!', $all);
+        $this->download = new DownloadTool('jasperweyne', 'helpless-kiwi');
     }
 
     public function run()
     {
-        // Check if script location is correct
-        $this->integration->envIsValid();
-
         // Check if login is possible
         $this->env->hasVar('UPDATER_PASSWORD') || $this->interface->registerPassword();
 
@@ -1028,76 +1027,18 @@ class Updater
         $this->interface->isLoggedIn() || $this->interface->login();
 
         // Check if database is configured and exists
-        $database = new DatabaseTool($this->env->getVar('DATABASE_URL'), $this->integration);
-        $database->exists(true) || $this->interface->registerDatabase();
+        $this->archive = new ArchiveTool();
+        $this->database = new DatabaseTool($this->env->getVar('DATABASE_URL'), $this->integration);
+        $this->database->exists(true) || $this->interface->registerDatabase();
 
         // Check if backup should be reverted
-        $archive = new ArchiveTool();
-        // $archive->backupExists() || $this->interface->revertBackup($archive);
+        $this->revert();
 
         // Only one session may run an update (step), lock the install process
-        $download = new DownloadTool('jasperweyne', 'helpless-kiwi');
-        $latest = $download->getLatestVersion();
-        if ($this->isInstalling()) {
-            try {
-                // Lock the install process
-                $this->lock();
-
-                // Check if database backup has been made
-                // if (!$database->hasBackup()) {
-                //     $database->createBackup();
-                //     $this->break();
-                // }
-
-                // Check if file backup can be/has been made
-                // if ($this->integration->hasApplication() && $archive->hasBackup()) {
-                //     $archive->createBackup();
-                //     $this->break();
-                // }
-
-                // Check if version is downloaded
-                $installpath = $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'install';
-                $downloadfile = $installpath.DIRECTORY_SEPARATOR.$latest.'.zip';
-                if (!file_exists($downloadfile)) {
-                    $download->downloadVersion($latest, $downloadfile);
-                    $this->break();
-                }
-
-                // Check if download is unpacked
-                $extractdir = $installpath.DIRECTORY_SEPARATOR.'extract';
-                if (!file_exists($extractdir)) {
-                    $archive->extractArchive($downloadfile, $extractdir);
-                    $this->break();
-                }
-
-                // Check if unpacked version has been moved
-                if (!$download->isUpToDate($this->env->getVar('INSTALLED_VERSION'))) {
-                    $result = $archive->moveFilesRecursive(
-                        $extractdir,
-                        $this->integration->getCommonPath()
-                    );
-                    $this->break();
-                }
-
-                // Run migrations if presentry
-                if (!$database->canMigrate()) {
-                    $database->migrateDb();
-                    $this->break();
-                }
-
-                // Installation finished succesfully, remove backups
-                // todo
-            } finally {
-                // Always unlock the installation on exceptions
-                $this->endInstallation();
-            }
-        }
+        $this->update();
 
         // Check if default environment parameters are setVar
         $this->env->defaults();
-
-        // Check if application is installed and up to date
-        $this->integration->hasApplication();
 
         // Check if application name is confirm_update
         $this->env->hasVar('ORG_NAME') || $this->interface->registerName();
@@ -1109,8 +1050,8 @@ class Updater
         $this->env->hasVar('BUNNY_ENABLED') || $this->interface->registerUser();
 
         // Check if application is up to date
-        if (!$download->isUpToDate($this->env->getVar('INSTALLED_VERSION'))) {
-            $compatible = $download->isCompatible($download->getLatestVersion());
+        if (!$this->download->isUpToDate($this->env->getVar('INSTALLED_VERSION'))) {
+            $compatible = $this->download->isCompatible($this->download->getLatestVersion());
             $this->interface->update($compatible);
         }
 
@@ -1118,9 +1059,99 @@ class Updater
         $this->interface->render('Up-to-date!', '<p>Je draait de laatste versie van Kiwi.</p>');
     }
 
+    protected function update()
+    {
+        if ($this->isInstalling()) {
+            try {
+                // Lock the install process
+                $this->lock();
+
+                // Download variables
+                $latest = $this->download->getLatestVersion();
+                $installpath = $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'install';
+                $downloadfile = $installpath.DIRECTORY_SEPARATOR.$latest.'.zip';
+
+                // Check if backup can be made
+                if ($this->integration->hasApplication() && !file_exists($downloadfile)) {
+                    // Check if database backup has been made
+                    if (!$this->database->hasBackup()) {
+                        $this->database->createBackup();
+                        $this->break();
+                    }
+
+                    // Check if file backup can be/has been made
+                    if (!$this->archive->hasBackup()) {
+                        $this->archive->createBackup();
+                        $this->break();
+                    }
+                }
+
+                // Check if version is downloaded
+                if (!file_exists($downloadfile)) {
+                    $this->download->downloadVersion($latest, $downloadfile);
+                    $this->break();
+                }
+
+                // Check if download is unpacked
+                $extractdir = $installpath.DIRECTORY_SEPARATOR.'extract';
+                if (!file_exists($extractdir)) {
+                    $this->archive->extractArchive($downloadfile, $extractdir);
+                    $this->break();
+                }
+
+                // Check if unpacked version has been moved
+                if (!$this->download->isUpToDate($this->env->getVar('INSTALLED_VERSION'))) {
+                    $result = $this->archive->moveFilesRecursive(
+                        $extractdir,
+                        $this->integration->getCommonPath()
+                    );
+                    $this->break();
+                }
+
+                // Run migrations if presentry
+                if (!$this->database->canMigrate()) {
+                    $this->database->migrateDb();
+                    $this->break();
+                }
+
+                // Installation finished succesfully, remove backups
+                // todo
+            } finally {
+                // Always unlock the installation on exceptions
+                $this->endInstallation();
+            }
+        }
+    }
+
+    protected function revert()
+    {
+        if ($this->isInstalling()) {
+            try {
+                // Lock the install process
+                $this->lock();
+
+                // Check if database backup has been made
+                if (!$this->database->hasBackup()) {
+                    $this->database->revertBackup();
+                    $this->break();
+                }
+
+                // Check if file backup can be/has been made
+                if (!$this->archive->hasBackup()) {
+                    $this->archive->revertBackup();
+                    $this->break();
+                }
+            } finally {
+                // Always unlock the installation on exceptions
+                $this->endInstallation();
+            }
+        }
+    }
+
     protected function break()
     {
         $this->unlock();
+        header('Refresh: 1');
         $this->interface->displayLog();
     }
 
@@ -1333,7 +1364,7 @@ class UserInterface
             $email_type = $_POST['email_type'];
 
             // Test configuration
-            if (validate_url($mailer_url) && validate_email($mailer_email)) {
+            if ($this->validate_url($mailer_url) && $this->validate_email($mailer_email)) {
                 if ('smtp' === $email_type) {
                     $this->env->setVar('MAILER_URL', $mailer_url);
                     $this->env->setVar('DEFAULT_FROM', $mailer_email);
@@ -1368,6 +1399,16 @@ class UserInterface
         ');
     }
 
+    protected function validate_email($email)
+    {
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
+
+    protected function validate_url($url)
+    {
+        return filter_var($url, FILTER_VALIDATE_URL);
+    }
+
     protected function fill($posted): string
     {
         return $posted ? ' value="'.$posted.'" ' : '';
@@ -1378,10 +1419,9 @@ class UserInterface
         return ' value="'.$value.'" '.($value === $posted ? 'checked ' : '');
     }
 
-    public function render($title, $step)
+    public static function render($title, $step, $error = null)
     {
-        //region HTML_HEADER
-?>
+        //region HTML_HEADER ?>
 <!DOCTYPE HTML>
 <html lang="nl">
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
@@ -1513,15 +1553,15 @@ class UserInterface
                         <h3 class="panel-title">Helpless Kiwi &mdash; <?php echo $title; ?></h3>
                     </div>
                     <div class="panel-body">
-                        <?php if (isset($this->error) && 'validation' == $this->error_type) {
-    echo '<p>'.$this->error.' </p> <br>';
-} ?>
+                        <?php if ($error) {
+            echo '<p>'.$error.' </p> <br>';
+        } ?>
 <?php
 //endregion HTML_HEADER
 //region HTML_FORMS
 echo $step;
         //endregion HTML_FORMS
-//region HTML_FOOTER ?>
+//region HTML_FOOTER?>
                         </div>
                     </div>
                 </div>
@@ -1536,9 +1576,11 @@ echo $step;
     }
 }
 
-$application = new Updater();
-
 set_time_limit(0);
-set_exception_handler([$application, 'exception']);
+set_exception_handler(function (\Exception $e) {
+    Log::console($e->getMessage());
+    UserInterface::render('Probleem!', Log::read(true));
+});
 
+$application = new Updater();
 $application->run();
