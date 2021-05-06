@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e219dad96963848bda8a1ed8549f3121",
+    "content-hash": "4f2560d1b9f9f9d06402cabd927568b7",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -127,6 +127,49 @@
                 }
             ],
             "time": "2020-08-25T05:50:16+00:00"
+        },
+        {
+            "name": "dg/mysql-dump",
+            "version": "v1.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dg/MySQL-dump.git",
+                "reference": "e0e287b715b43293773a8b0edf8514f606e01780"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dg/MySQL-dump/zipball/e0e287b715b43293773a8b0edf8514f606e01780",
+                "reference": "e0e287b715b43293773a8b0edf8514f606e01780",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "http://davidgrudl.com"
+                }
+            ],
+            "description": "MySQL database dump.",
+            "homepage": "https://github.com/dg/MySQL-dump",
+            "keywords": [
+                "mysql"
+            ],
+            "support": {
+                "source": "https://github.com/dg/MySQL-dump/tree/master"
+            },
+            "time": "2019-09-10T21:36:25+00:00"
         },
         {
             "name": "doctrine/annotations",

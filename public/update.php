@@ -3,7 +3,6 @@
 use App\Kernel;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Query\QueryException;
-use Ifsnop\Mysqldump\Mysqldump;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -701,8 +700,9 @@ class DatabaseTool
             unlink($backup);
         }
 
-        $dump = new Mysqldump($this->host, $this->user, $this->pass);
-        $dump->start($backup);
+        $db = new mysqli($this->host, $this->user, $this->pass, $this->name);
+        $dump = new MySQLDump($db);
+        $dump->save($backup);
     }
 
     /**
