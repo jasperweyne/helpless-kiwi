@@ -1,11 +1,9 @@
 <?php
 
 use App\Kernel;
-use Doctrine\DBAL\Query\QueryException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class Log
 {
@@ -40,9 +38,9 @@ class Log
      *
      * @return string The HTML formatted log
      */
-    public static function read(bool $clear = true)
+    public static function read(bool $clear = false)
     {
-        $log = $_SESSION['log'];
+        $log = $_SESSION['log'] ?? null;
         if ($clear) {
             unset($_SESSION['log']);
         }
@@ -122,9 +120,9 @@ class IntegrationTool
      *
      * @return string The public path used by Kiwi
      */
-    public function getPublicPath()
+    public function getPublicPath(string $common = null): string
     {
-        return $this->getCommonPath().DIRECTORY_SEPARATOR.'public_html'.DIRECTORY_SEPARATOR.'kiwi';
+        return ($common ?? $this->getCommonPath()).DIRECTORY_SEPARATOR.'public_html'.DIRECTORY_SEPARATOR.'kiwi';
     }
 
     /**
@@ -132,9 +130,9 @@ class IntegrationTool
      *
      * @return string The root path for the Kiwi source
      */
-    public function getRootPath()
+    public function getRootPath(string $common = null)
     {
-        return $this->getCommonPath().DIRECTORY_SEPARATOR.'kiwi';
+        return ($common ?? $this->getCommonPath()).DIRECTORY_SEPARATOR.'kiwi';
     }
 
     /**
@@ -180,7 +178,7 @@ class IntegrationTool
     {
         if (!$this->application) {
             if (!$this->hasApplication()) {
-                throw new FileNotFoundException('Symfony is not installed.');
+                throw new \Exception('Symfony is not installed.');
             }
 
             include_once $this->getAutoloaderPath();
@@ -240,12 +238,14 @@ class EnvFileTool
     /**
      * Load the environment settings from the filesystem.
      */
-    public function load()
+    public function load(bool $forceLoad = false)
     {
-        if ($this->exists()) {
-            $this->buffer = require $this->file();
-        } else {
-            $this->buffer = [];
+        if ($forceLoad || !$this->buffer) {
+            if ($this->exists()) {
+                $this->buffer = require $this->file();
+            } else {
+                $this->buffer = [];
+            }
         }
     }
 
@@ -411,11 +411,10 @@ class DatabaseTool
     public function exists($createIfEmpty = false)
     {
         // Try connect to the database host
-        $connection = mysqli_connect($this->host, $this->user, $this->pass);
+        $connection = @mysqli_connect($this->host, $this->user, $this->pass);
         if (!$connection) {
             return false;
         }
-        Log::msg('Succesfully connected to the database server.');
 
         // Check whether database exists
         $res = mysqli_query($connection, 'SHOW DATABASES');
@@ -431,11 +430,9 @@ class DatabaseTool
 
         // Create database if it doesn't exist
         if (!$found && $createIfEmpty) {
-            Log::msg('No matching data base found.');
-
             $sql = 'CREATE DATABASE '.$this->name;
             if (!$connection->query($sql)) {
-                throw new QueryException('Error creating database: '.$connection->error);
+                throw new \Exception('Error creating database: '.$connection->error);
             }
 
             Log::msg('Database created successfully.');
@@ -531,6 +528,7 @@ class DownloadTool
     protected $user;
     protected $repository;
     protected $releases;
+    protected $checksums;
 
     /**
      * Init the updater with remote repository information.
@@ -546,6 +544,7 @@ class DownloadTool
         $this->repository = $repository;
         $this->server = $server;
         $this->releases = false;
+        $this->checksums = [];
     }
 
     /**
@@ -627,7 +626,7 @@ class DownloadTool
         // Find the asset by name
         foreach ($this->releases[$version]['assets'] ?? [] as $asset) {
             if ($asset['name'] == $name) {
-                return $asset['url'];
+                return $asset['browser_download_url'];
             }
         }
 
@@ -643,7 +642,7 @@ class DownloadTool
      *
      * @return bool true if $version >= latest remote version
      */
-    public function isUpToDate(string $version)
+    public function isUpToDate(?string $version)
     {
         // Retrieve latest release
         $this->getReleases();
@@ -651,11 +650,11 @@ class DownloadTool
         $latest = current($this->releases);
 
         // Convert version strings to dates
-        $currentVersion = date_create_from_format('d/m/Y', $version);
-        $latestVersion = date_create_from_format('d/m/Y', $latest['tag_name']);
+        $currentVersion = date_create_from_format('d/m/Y', $version ?? '');
+        $latestVersion = date_create_from_format('d/m/Y', $latest['tag_name'] ?? '');
 
         // If conversion failed and raw strings are not equal, assume out of date
-        if ((!$currentVersion || !$latestVersion) && $latest !== $version) {
+        if ((!$currentVersion || !$latestVersion) && $latest['tag_name'] !== $version) {
             return false;
         }
 
@@ -727,13 +726,14 @@ class DownloadTool
      *
      * @return string asset contents
      */
-    protected function downloadAndVerifyAsset(string $version, string $name, $path = false)
+    protected function downloadAndVerifyAsset(string $version, string $name, ?string $path = null)
     {
         $url = $this->getAssetUrl($version, $name);
         $contents = $this->downloadContent($url, $path);
 
-        $checksums = $this->getChecksums($version);
-        if ($checksums[$name] !== hash('sha512', $contents)) {
+        $chksums = $this->getChecksums($version);
+        if ($path && $chksums[$name] !== hash_file('sha512', $path)) {
+            unlink($path);
             throw new \Exception('Invalid data downloaded');
         }
 
@@ -749,17 +749,19 @@ class DownloadTool
      */
     public function getChecksums(string $version)
     {
-        $url = $this->getAssetUrl($version, 'hashes.txt');
-        $checksumData = $this->downloadContent($url);
+        if (!array_key_exists($version, $this->checksums)) {
+            $url = $this->getAssetUrl($version, 'hashes.txt');
+            $checksumData = trim($this->downloadContent($url));
 
-        // Read data
-        $checksums = [];
-        foreach (explode('\n', $checksumData) as $rule) {
-            list($asset, $checksum) = preg_split('/\s+/', $rule);
-            $checksums[$asset] = $checksum;
+            // Read data
+            $this->checksums[$version] = [];
+            foreach (explode("\n", $checksumData) as $rule) {
+                list($asset, $checksum) = preg_split('/\s+/', $rule);
+                $this->checksums[$version][$asset] = $checksum;
+            }
         }
 
-        return $checksums;
+        return $this->checksums[$version];
     }
 
     /**
@@ -769,34 +771,41 @@ class DownloadTool
      *
      * @return string Github's response
      */
-    protected function downloadContent(string $url, $path = false)
+    protected function downloadContent(string $url, string $path = null)
     {
         //use curl if possible
         if (function_exists('curl_version')) {
+            $file = null;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
             curl_setopt($ch, CURLOPT_USERAGENT, 'helpless-kiwi');
-            if (false !== $path) {
+            if ($path) {
                 if (!file_exists(dirname($path))) {
                     mkdir(dirname($path));
                 }
                 touch($path);
-                $file = fopen($path, 'w+');
+                $file = fopen($path, 'w');
                 curl_setopt($ch, CURLOPT_FILE, $file);
                 curl_setopt($ch, CURLOPT_HEADER, 0);
             }
             $content = curl_exec($ch);
             curl_close($ch);
-            if (false !== $path) {
+            if ($path) {
                 fclose($file);
             }
-
-            //fallback - might raise a warning with proxies
         } else {
+            //fallback - might raise issues
             $content = file_get_contents($url);
+            if ($path) {
+                if (!file_exists(dirname($path))) {
+                    mkdir(dirname($path));
+                }
+                touch($path);
+                file_put_contents($path, $content);
+            }
         }
 
         if (empty($content)) {
@@ -807,120 +816,8 @@ class DownloadTool
     }
 }
 
-class UpdaterTool
+class ArchiveTool
 {
-    protected $integration;
-    protected $database;
-    protected $download;
-    protected $break;
-
-    public function __construct(
-        IntegrationTool $integration,
-        DatabaseTool $database,
-        DownloadTool $download,
-        callable $break = null
-    ) {
-        $this->integration = $integration;
-        $this->database = $database;
-        $this->download = $download;
-        $this->break = $break;
-    }
-
-    public function update()
-    {
-        if ($this->isInstalling()) {
-            try {
-                // Lock the install process
-                $this->lock();
-
-                // Download variables
-                $latest = $this->download->getLatestVersion();
-                $downloadfile = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latest.'.zip';
-
-                // Check if backup can be made
-                if ($this->integration->hasApplication() && !file_exists($downloadfile)) {
-                    // Check if file backup can be/has been made
-                    if (!file_exists($this->getFilesBackupPath())) {
-                        $this->compressArchive($this->integration->getCommonPath(), $this->getFilesBackupPath());
-                        Log::msg('File structure backup created');
-                        $this->break();
-                    }
-
-                    // Check if database backup has been made
-                    if (!file_exists($this->getDatabaseBackupPath())) {
-                        $this->database->createDump($this->getDatabaseBackupPath());
-                        Log::msg('Database backup created');
-                        $this->break();
-                    }
-                }
-
-                // Check if version is downloaded
-                if (!file_exists($downloadfile)) {
-                    $this->download->downloadVersion($latest, $downloadfile);
-                    Log::msg("Downloaded version $latest from Github");
-                    $this->break();
-                }
-
-                // Check if download is unpacked
-                if (!file_exists($this->getExtractPath())) {
-                    $this->extractArchive($downloadfile, $this->getExtractPath());
-                    Log::msg("Unpacked version $latest to extraction folder");
-                    $this->break();
-                }
-
-                // Check if unpacked version has been moved
-                if (!$this->download->isUpToDate($this->env->getVar('INSTALLED_VERSION'))) {
-                    $result = $this->moveFilesRecursive(
-                        $this->getExtractPath(),
-                        $this->integration->getCommonPath()
-                    );
-                    Log::msg('Kiwi installation was overrided with extraction folder contents');
-                    $this->break();
-                }
-
-                // Run migrations if presentry
-                if (!$this->database->canMigrate()) {
-                    $this->database->migrateDb();
-                    Log::msg('New database migrations were applied');
-                    $this->break();
-                }
-
-                // Installation finished succesfully, remove backups
-                // todo
-            } finally {
-                // Always unlock the installation on exceptions
-                $this->endInstallation();
-            }
-        }
-    }
-
-    public function revert()
-    {
-        if ($this->isInstalling()) {
-            try {
-                // Lock the install process
-                $this->lock();
-
-                // Check if database backup has been made
-                if (file_exists($this->getDatabaseBackupPath())) {
-                    $this->database->restoreDump($this->getDatabaseBackupPath());
-                    unlink($this->getDatabaseBackupPath());
-                    $this->break();
-                }
-
-                // Check if file backup can be/has been made
-                if (file_exists($this->getFilesBackupPath())) {
-                    $this->extractArchive($this->getFilesBackupPath(), $this->integration->getCommonPath());
-                    unlink($this->getFilesBackupPath());
-                    $this->break();
-                }
-            } finally {
-                // Always unlock the installation on exceptions
-                $this->endInstallation();
-            }
-        }
-    }
-
     /**
      * Extract the content.
      *
@@ -929,7 +826,7 @@ class UpdaterTool
      * @return string name (not path!) of the subdirectory where files where extracted
      *                should look like <user>-<repository>-<lastCommitHash>
      */
-    public function extractArchive($path, $dest)
+    public static function extractArchive($path, $dest)
     {
         $directory = '';
         $zip = new ZipArchive();
@@ -945,7 +842,7 @@ class UpdaterTool
         return $directory;
     }
 
-    public function compressArchive($path, $dest)
+    public static function compressArchive($path, $dest)
     {
         $backup = new ZipArchive();
         $backup->open($dest, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -981,37 +878,39 @@ class UpdaterTool
      *
      * @return bool execution status
      */
-    public function moveFilesRecursive($source, $destination)
+    public static function moveFilesRecursive($source, $destination)
     {
         $result = true;
 
-        if (file_exists($source) && is_dir($source)) {
-            if (!file_exists($destination)) {
-                mkdir($destination);
+        if (!is_dir($source)) {
+            return false;
+        }
+
+        if (!file_exists($destination)) {
+            mkdir($destination);
+        }
+
+        $files = scandir($source);
+        foreach ($files as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
             }
 
-            $files = scandir($source);
-            foreach ($files as $file) {
-                if (in_array($file, ['.', '..'])) {
-                    continue;
-                }
+            if (is_dir($source.DIRECTORY_SEPARATOR.$file)) {
+                $result = self::moveFilesRecursive(
+                    $source.DIRECTORY_SEPARATOR.$file,
+                    $destination.DIRECTORY_SEPARATOR.$file
+                );
+            } else {
+                $result = copy(
+                    $source.DIRECTORY_SEPARATOR.$file,
+                    $destination.DIRECTORY_SEPARATOR.$file
+                );
+                unlink($source.DIRECTORY_SEPARATOR.$file);
+            }
 
-                if (is_dir($source.DIRECTORY_SEPARATOR.$file)) {
-                    $result = $this->moveFilesRecursive(
-                        $source.DIRECTORY_SEPARATOR.$file,
-                        $destination.DIRECTORY_SEPARATOR.$file
-                    );
-                } else {
-                    $result = copy(
-                        $source.DIRECTORY_SEPARATOR.$file,
-                        $destination.DIRECTORY_SEPARATOR.$file
-                    );
-                    unlink($source.DIRECTORY_SEPARATOR.$file);
-                }
-
-                if (!$result) {
-                    break;
-                }
+            if (!$result) {
+                break;
             }
         }
 
@@ -1020,67 +919,12 @@ class UpdaterTool
         return $result;
     }
 
-    protected function break()
+    public static function removeFolderRecursive($path)
     {
-        if ($this->break) {
-            $this->unlock();
-            call_user_func($this->break);
-        }
-    }
-
-    protected function isLocked()
-    {
-        return file_exists($this->lockfile());
-    }
-
-    protected function lock()
-    {
-        if ($this->isLocked()) {
-            throw new \Exception('Installer already locked.');
+        if (!file_exists($path)) {
+            return;
         }
 
-        return touch($this->lockfile());
-    }
-
-    protected function unlock()
-    {
-        if (!$this->isLocked()) {
-            return true;
-        }
-
-        return unlink($this->lockfile());
-    }
-
-    protected function isInstalling()
-    {
-        return file_exists($this->installationfile());
-    }
-
-    public function beginInstallation()
-    {
-        // set maintanance mode, indicating installation
-        touch($this->installationfile());
-
-        // cleanup earlier installation data if necessary
-        $this->removeFolderRecursive($this->getBackupPath());
-        $this->removeFolderRecursive($this->integration->getInstallerPath());
-
-        // create required folders
-        mkdir($this->getBackupPath());
-        mkdir($this->integration->getInstallerPath());
-
-        // extend timelimit
-        $accessfile = fopen($this->integration->getPublicPath().DIRECTORY_SEPARATOR.'.htaccess', 'w');
-        $access = '#Extend execution time
-<IfModule mod_php5.c>
-    php_value max_execution_time 0
-</IfModule>';
-        fwrite($accessfile, $access);
-        fclose($accessfile);
-    }
-
-    protected function removeFolderRecursive($path)
-    {
         $it = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($files as $file) {
@@ -1092,43 +936,279 @@ class UpdaterTool
         }
         rmdir($path);
     }
+}
 
-    protected function endInstallation()
+class UpdaterTool
+{
+    const FILES_BACKUP = 'files.zip';
+    const DATABASE_BACKUP = 'database.sql';
+
+    protected $integration;
+    protected $database;
+    protected $download;
+    protected $env;
+    protected $break;
+
+    public function __construct(
+        IntegrationTool $integration,
+        DatabaseTool $database,
+        DownloadTool $download,
+        EnvFileTool $env,
+        callable $break = null
+    ) {
+        $this->integration = $integration;
+        $this->database = $database;
+        $this->download = $download;
+        $this->env = $env;
+        $this->break = $break;
+    }
+
+    public function beginProcess(string $process)
     {
-        // unset maintanance mode
-        unlink($this->installationfile());
+        $this->lock();
+
+        // cleanup earlier installation data if necessary
+        switch ($process) {
+            case 'update':
+                mkdir($this->integration->getInstallerPath());
+                break;
+            case 'backup':
+                ArchiveTool::removeFolderRecursive($this->getBackupPath());
+                mkdir($this->getBackupPath());
+                break;
+            case 'revert':
+                break;
+            default:
+                throw new \Exception('Unknown process type: '.$process);
+        }
+
+        // extend timelimit
+        if ('backup' !== $process) {
+            $accessfile = fopen($this->integration->getPublicPath().DIRECTORY_SEPARATOR.'.htaccess', 'w');
+            $access = '#Extend execution time
+<IfModule mod_php5.c>
+php_value max_execution_time 0
+</IfModule>';
+            fwrite($accessfile, $access);
+            fclose($accessfile);
+        }
+
+        // set maintanance mode, indicating installation
+        $installationfile = $this->getInstallerFile();
+        if (file_exists($installationfile)) {
+            throw new \Exception('Updater is already running a process');
+        }
+        file_put_contents($installationfile, $process);
 
         $this->unlock();
     }
 
-    private function installationfile()
+    public function run()
+    {
+        // Check if the updater is running a process
+        $installationfile = $this->getInstallerFile();
+        if (file_exists($installationfile)) {
+            $process = trim(file_get_contents($installationfile));
+            try {
+                // Lock the install process
+                $this->lock();
+
+                // Execute the current process
+                switch ($process) {
+                    case 'backup':
+                        $this->backup();
+                        break;
+                    case 'update':
+                        $this->update();
+                        break;
+                    case 'revert':
+                        $this->revert();
+                        break;
+                    default:
+                        throw new \Exception('Unknown updater process started');
+                }
+            } catch (\Throwable $e) {
+                Log::msg('Stopped, updater is put in revert mode');
+                file_put_contents($installationfile, 'revert');
+                throw $e;
+            } finally {
+                // Always unlock the installation on exceptions and completion
+                // Note: this is not called when exit()/die is called
+                $this->unlock();
+            }
+
+            unlink($installationfile);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function backupExists()
+    {
+        $filesBackup = $this->getBackupPath(self::FILES_BACKUP);
+        $databaseBackup = $this->getBackupPath(self::DATABASE_BACKUP);
+
+        return file_exists($filesBackup) || file_exists($databaseBackup);
+    }
+
+    protected function backup()
+    {
+        $filesBackup = $this->getBackupPath(self::FILES_BACKUP);
+        $databaseBackup = $this->getBackupPath(self::DATABASE_BACKUP);
+
+        // Check if backup can be made
+        if ($this->integration->hasApplication()) {
+            // Check if file backup can be/has been made
+            if (!file_exists($filesBackup)) {
+                ArchiveTool::compressArchive($this->integration->getCommonPath(), $filesBackup);
+                $this->break('File structure backup created');
+            }
+
+            // Check if database backup has been made
+            if (!file_exists($databaseBackup)) {
+                $this->database->createDump($databaseBackup);
+                $this->break('Database backup created');
+            }
+        }
+    }
+
+    protected function revert()
+    {
+        $filesBackup = $this->getBackupPath(self::FILES_BACKUP);
+        $databaseBackup = $this->getBackupPath(self::DATABASE_BACKUP);
+
+        // Check if database backup has been made
+        if (file_exists($databaseBackup)) {
+            $this->database->restoreDump($databaseBackup);
+            unlink($databaseBackup);
+            $this->break('Restored database backup');
+        }
+
+        // Check if file backup can be/has been made
+        if (file_exists($filesBackup)) {
+            ArchiveTool::extractArchive($filesBackup, $this->integration->getCommonPath());
+            file_put_contents($this->getInstallerFile(), 'revert');
+            unlink($filesBackup);
+            $this->break('Restored file structure backup');
+        }
+    }
+
+    protected function update()
+    {
+        // Download variables
+        $latest = $this->download->getLatestVersion();
+        $latestSafe = str_replace(['/', '\\', '.'], '_', $latest);
+        $downloadfile = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latestSafe.'.zip';
+        $notinstalledmarker = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latestSafe.'_isnotinstalled';
+
+        // Download version files
+        if (!file_exists($downloadfile)) {
+            // Check if version is downloaded
+            $downloadSuccess = $this->download->downloadVersion($latest, $downloadfile);
+            if (!$downloadSuccess) {
+                throw new \Exception("Problem when downloaded version $latest from Github");
+            }
+            touch($notinstalledmarker);
+            $this->break("Downloaded version $latest from Github");
+        }
+
+        // Install version files
+        if (file_exists($notinstalledmarker)) {
+            $this->installVersion($latest, $downloadfile);
+            unlink($notinstalledmarker);
+            $this->break('Kiwi installation was performed with extraction folder contents');
+        }
+
+        // Run migrations if present and cleanup
+        if ($this->database->canMigrate()) {
+            $this->database->migrateDb();
+            $this->break('New database migrations were applied');
+        }
+
+        // Installation finished succesfully, remove downloaded archive
+        unlink($downloadfile);
+        $this->env->setVar('INSTALLED_VERSION', $latest);
+        $this->env->save();
+    }
+
+    protected function installVersion($version, $file)
+    {
+        $versionSafe = str_replace(['/', '\\', '.'], '_', $version);
+        $extractpath = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$versionSafe;
+
+        // Check if download is unpacked
+        if (!file_exists($extractpath)) {
+            ArchiveTool::extractArchive($file, $extractpath);
+            $this->break("Unpacked version $version to extraction folder");
+        }
+
+        // Check if uploads can be moved
+        $uploadspath = $this->integration->getPublicPath().DIRECTORY_SEPARATOR.'uploads';
+        $uploadsextractpath = $this->integration->getPublicPath($extractpath).DIRECTORY_SEPARATOR.'uploads';
+        if (file_exists($uploadspath)) {
+            ArchiveTool::moveFilesRecursive($uploadspath, $uploadsextractpath);
+            $this->break('Moved uploads to extraction folder');
+        }
+
+        // Remove root files (excluding the environment variables)
+        if ($this->integration->hasApplication()) {
+            $this->env->load(true);
+            ArchiveTool::removeFolderRecursive($this->integration->getRootPath());
+            $this->env->save();
+            $this->break('Removed previous installation');
+        }
+
+        // Remove public folder (including this installer) and move in the new version
+        $installerfile = $this->getInstallerFile();
+        $process = trim(file_get_contents($installerfile));
+        ArchiveTool::removeFolderRecursive($this->integration->getPublicPath());
+        ArchiveTool::moveFilesRecursive($extractpath, $this->integration->getCommonPath());
+        file_put_contents($installerfile, $process);
+    }
+
+    protected function break(string $message = null)
+    {
+        if ($message) {
+            Log::msg($message);
+        }
+
+        if ($this->break) {
+            $this->unlock();
+            call_user_func($this->break);
+            exit;
+        }
+    }
+
+    protected function lock()
+    {
+        $lockfile = $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'installer.lock';
+        if (file_exists($lockfile)) {
+            throw new \Exception('Installer already locked.');
+        }
+
+        return touch($lockfile);
+    }
+
+    protected function unlock()
+    {
+        $lockfile = $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'installer.lock';
+        if (!file_exists($lockfile)) {
+            return true;
+        }
+
+        return unlink($lockfile);
+    }
+
+    private function getBackupPath(string $file = null)
+    {
+        return $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.'backup'.($file ? DIRECTORY_SEPARATOR.$file : '');
+    }
+
+    private function getInstallerFile()
     {
         return $this->integration->getPublicPath().DIRECTORY_SEPARATOR.'enable-maintenance.txt';
-    }
-
-    private function lockfile()
-    {
-        return $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'installer.lock';
-    }
-
-    private function getBackupPath()
-    {
-        return $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'backup';
-    }
-
-    private function getExtractPath()
-    {
-        return $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.'extract';
-    }
-
-    private function getDatabaseBackupPath()
-    {
-        return $this->getBackupPath().DIRECTORY_SEPARATOR.'database.sql';
-    }
-
-    private function getFilesBackupPath()
-    {
-        return $this->getBackupPath().DIRECTORY_SEPARATOR.'files.zip';
     }
 }
 
@@ -1304,6 +1384,9 @@ class UserInterface
         // Check if logged in
         $this->isLoggedIn() || $this->login();
 
+        // Check if default environment parameters are set
+        $this->env->defaults();
+
         // Check if database is configured
         $this->env->hasVar('DATABASE_URL') || $this->registerDatabase();
 
@@ -1311,22 +1394,20 @@ class UserInterface
         $database = new DatabaseTool($this->env->getVar('DATABASE_URL'), $this->integration);
         $database->exists(true) || $this->registerDatabase();
 
-        // Check if backup should be reverted
+        // Check if updater is in progress
         $download = new DownloadTool('jasperweyne', 'helpless-kiwi');
-        $updater = new UpdaterTool($this->integration, $database, $download, function () {
+        $updater = new UpdaterTool($this->integration, $database, $download, $this->env, function () {
             header('Refresh: 1');
             UserInterface::render('Voortgang', Log::read());
         });
-        $updater->revert();
 
-        // Only one session may run an update (step), lock the install process
-        $updater->update();
+        // Check if updater has finished process
+        if ($updater->run()) {
+            UserInterface::render('Success', Log::read(true).'<a class="button grow" href="./update.php">Doorgaan</a>');
+        }
 
         // Check if application is up to date
         $download->isUpToDate($this->env->getVar('INSTALLED_VERSION')) || $this->update($updater, $download);
-
-        // Check if default environment parameters are setVar
-        $this->env->defaults();
 
         // Check if application name is confirm_update
         $this->env->hasVar('ORG_NAME') || $this->registerName();
@@ -1380,7 +1461,7 @@ class UserInterface
         }
 
         $error = join(', ', $form->getErrors());
-        $this->render('Welkom bij de Kiwi installer', '<p>Welkom by de Kiwi installatie. Registreer een wachtwoord voor de installer.</p>'.$form->render(), $error);
+        $this->render('Welkom bij de Kiwi installer', '<p>Welkom bij de Kiwi installatie. Registreer een wachtwoord voor de installer.</p>'.$form->render(), $error);
     }
 
     protected function login()
@@ -1401,7 +1482,7 @@ class UserInterface
         }
 
         $error = join(', ', $form->getErrors());
-        $this->render('Welkom bij de Kiwi installer', '<p>Welkom by de Kiwi installatie. Log in om door te gaan.</p>'.$form->render(), $error);
+        $this->render('Welkom bij de Kiwi installer', '<p>Welkom bij de Kiwi installatie. Log in om door te gaan.</p>'.$form->render(), $error);
     }
 
     protected function registerDatabase()
@@ -1432,7 +1513,6 @@ class UserInterface
             if ($database->exists()) {
                 $this->env->setVar('DATABASE_URL', $url);
                 $this->env->save();
-                $_SESSION['secret'] = $_POST['password'];
 
                 return;
             }
@@ -1589,14 +1669,55 @@ class UserInterface
 
     protected function update(UpdaterTool $updater, DownloadTool $download)
     {
-        $form = new Form('update');
-        if ($form->isSubmitted() && $form->isValid()) {
-            $updater->beginInstallation();
-            header('Refresh: 1');
-            exit;
+        // Get latest version
+        $latest = $download->getLatestVersion();
+
+        // Setup base messages
+        $installed = $this->env->hasVar('INSTALLED_VERSION');
+
+        $message = 'Welkom!';
+        $title = 'Installer';
+
+        if ($installed) {
+            $message = "Er is een nieuwe versie van Kiwi beschikbaar, versie $latest.";
+            $title = 'Updater';
         }
 
-        $this->render('Update beschikbaar', '<p>Er is een nieuwe versie van Kiwi beschikbaar. Klik hier om te installeren.</p>'.$form->render());
+        // Check if server is compatible with new version
+        $compatible = $download->isCompatible($latest);
+        if (true !== $compatible) {
+            $problem = 'Er is een onbekend probleem om deze te kunnen installeren.';
+
+            if (is_array($compatible)) {
+                $problem = "Je mist de volgende PHP extensies om versie $latest van Kiwi te kunnen installeren:\n\n";
+                $problem .= implode("\n", $compatible);
+            } elseif (is_string($compatible)) {
+                $problem = "Je draait een verouderde versie van PHP. Update je PHP versie naar $compatible om door te kunnen gaan.";
+            }
+
+            $this->render($title, "<p>$message $problem</p>");
+        }
+
+        // Backup
+        $actionMsg = 'Klik hier om te installeren.';
+        $process = 'update';
+        if ($updater->backupExists()) {
+            $actionMsg .= "\nEr is een backup aanwezig, controleer zelf of deze recent is of verwijder hem en start de updater opnieuw om een nieuwe backup te maken!.";
+        } elseif ($installed) {
+            $actionMsg = 'Klik hier om eerst een backup te maken.';
+            $process = 'backup';
+        }
+
+        // Server configuration checks out, show update screen
+        $form = new Form('update');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $updater->beginProcess($process);
+            Log::msg("Starting $process process...");
+            header('Refresh: 1');
+            UserInterface::render('Voortgang', Log::read());
+        }
+
+        $this->render($title, "<p>$message $actionMsg</p>".$form->render());
     }
 
     public static function render(string $title, string $step, string $error = null)
@@ -1758,8 +1879,8 @@ echo $step;
 
 set_time_limit(0);
 set_exception_handler(function (\Throwable $e) {
-    Log::console($e->getMessage());
-    UserInterface::render('Probleem!', Log::read(true));
+    Log::console($e->getMessage()."\n".$e->getTraceAsString());
+    UserInterface::render('Probleem!', Log::read(true).'<a class="button grow" href="./update.php">Herstart updater</a>');
 });
 
 $application = new UserInterface();
