@@ -40,6 +40,6 @@ class HasLocalAccountCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
-        $output->writeln(count($accounts) > 0);
+        $output->writeln(count($accounts) > 0 ? '1' : '0');
     }
 }
