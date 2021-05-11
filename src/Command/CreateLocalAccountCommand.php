@@ -16,8 +16,6 @@ class CreateLocalAccountCommand extends Command
 {
     private $em;
     private $passwordEncoder;
-    private $raw_pass;
-    private $name;
 
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:create-account';
@@ -58,16 +56,12 @@ class CreateLocalAccountCommand extends Command
         ]);
         $helper = $this->getHelper('question');
 
-        if ($input->hasArgument('name')) {
-            $this->name = $input->getArgument('name');
-        } else {
+        if (!$input->hasArgument('name')) {
             $question = new Question('Public name: ');
-            $this->name = $helper->ask($input, $output, $question);
+            $input->setArgument('name', $helper->ask($input, $output, $question));
         }
 
-        if ($input->hasArgument('pass')) {
-            $this->raw_pass = $input->getArgument('pass');
-        } else {
+        if (!$input->hasArgument('pass')) {
             while (true) {
                 $question = new Question('Please enter a password: ');
                 $question->setHidden(true);
@@ -80,7 +74,7 @@ class CreateLocalAccountCommand extends Command
                 $pass_confirm = $helper->ask($input, $output, $question);
 
                 if ($pass === $pass_confirm && '' != $pass) {
-                    $this->raw_pass = $pass;
+                    $input->setArgument('pass', $pass);
                     break;
                 }
 
@@ -92,13 +86,15 @@ class CreateLocalAccountCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $email = $input->getArgument('email');
+        $name = $input->getArgument('name');
+        $pass = $input->getArgument('pass');
 
         $account = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]) ?? new LocalAccount();
         $account
             // Persons
-            ->setName($this->name)
+            ->setName($name)
             ->setEmail($email)
-            ->setPassword($this->passwordEncoder->encodePassword($account, $this->raw_pass))
+            ->setPassword($this->passwordEncoder->encodePassword($account, $pass))
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : [])
         ;
 
