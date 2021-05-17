@@ -654,8 +654,8 @@ class DownloadTool
         $latest = current($this->releases);
 
         // Convert version strings to dates
-        $currentVersion = date_create_from_format('d/m/Y', $version ?? '');
-        $latestVersion = date_create_from_format('d/m/Y', $latest['tag_name'] ?? '');
+        $currentVersion = date_create_from_format('Y-m-d', $version ?? '');
+        $latestVersion = date_create_from_format('Y-m-d', $latest['tag_name'] ?? '');
 
         // If conversion failed and raw strings are not equal, assume out of date
         if ((!$currentVersion || !$latestVersion) && $latest['tag_name'] !== $version) {

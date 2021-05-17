@@ -122,7 +122,7 @@ jobs:
             const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
             const d = new Date(commit_details.data.author.date)
             function pad(s) { return (s < 10) ? '0' + s : s; }
-            return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+            return [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-')
         
       - id: formatted-date
         run: |
