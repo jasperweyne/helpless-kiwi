@@ -1499,10 +1499,10 @@ class UserInterface
                     '5.7' => 'MySQL',
                 ],
             ])
-            ->add('db_user', 'text', ['label' => 'Database Gebruiker', 'required' => true])
-            ->add('db_pass', 'text', ['label' => 'Database Wachtwoord', 'required' => true])
-            ->add('db_host', 'text', ['label' => 'Database Host', 'required' => true])
-            ->add('db_name', 'text', ['label' => 'Database Naam', 'required' => true])
+            ->add('db_user', 'text', ['label' => 'Database Gebruiker', 'placeholder' => 'username'])
+            ->add('db_pass', 'text', ['label' => 'Database Wachtwoord', 'placeholder' => 'password'])
+            ->add('db_host', 'text', ['label' => 'Database Host', 'placeholder' => 'localhost'])
+            ->add('db_name', 'text', ['label' => 'Database Naam', 'placeholder' => 'kiwi'])
         ;
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1523,7 +1523,7 @@ class UserInterface
         }
 
         $error = join(', ', $form->getErrors());
-        $this->render('Database Configuratie', '<p>Welkom by de Kiwi installatie. Registreer een wachtwoord voor de installer.</p>'.$form->render(), $error);
+        $this->render('Database Configuratie', '<p>Geef de verbindingsinstellingen van je database op. Dit moet een lege database zijn. Als je niet zeker weet wat je instellingen zijn, neem dan contact op met je host.</p>'.$form->render(), $error);
     }
 
     protected function registerName()
