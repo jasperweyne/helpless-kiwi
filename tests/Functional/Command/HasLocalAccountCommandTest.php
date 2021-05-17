@@ -2,11 +2,11 @@
 
 namespace Tests\Functional\Command;
 
-use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
-use Tests\Helper\AuthWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Tests\Helper\AuthWebTestCase;
+use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
  * Class HasLocalAccountCommandTest.
@@ -40,7 +40,7 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
         unset($this->em);
     }
 
-    public function testExecute()
+    public function testExecuteEmpty()
     {
         // Arrange
         $application = new Application($this->client->getKernel());
@@ -49,10 +49,25 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
         $command = $application->find('app:has-account');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
-        
+
         // Assert
         $output = $commandTester->getDisplay();
-        $account = $this->em->getRepository(LocalAccount::class)->findAll();
-        $this->assertEquals(count($account) > 0 ? '1' : '0', trim($output));
+        $this->assertEquals('0', trim($output));
+    }
+
+    public function testExecuteWithFixtures()
+    {
+        // Arrange
+        $this->loadFixtures([LocalAccountFixture::class]);
+        $application = new Application($this->client->getKernel());
+
+        // Act
+        $command = $application->find('app:has-account');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        // Assert
+        $output = $commandTester->getDisplay();
+        $this->assertEquals('1', trim($output));
     }
 }
