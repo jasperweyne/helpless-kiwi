@@ -24,7 +24,7 @@ function xcopy($source, $dest, $permissions = 0755)
 
     // Simple copy for a file
     if (is_file($source)) {
-        return copy($source, $dest);
+        return copy($source, $dest) && chmod($dest, $permissions);
     }
 
     // Make destination directory

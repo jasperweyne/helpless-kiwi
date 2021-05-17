@@ -10,14 +10,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LoginController extends AbstractController
 {
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(Request $request, OAuth2Authenticator $authenticator, AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
+    public function login(Request $request,
+        OAuth2Authenticator $authenticator,
+        AuthenticationUtils $authenticationUtils): Response
     {
         // you can't login again while you already are, redirect
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -27,7 +28,8 @@ class LoginController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $bunny = isset($_ENV['BUNNY_ADDRESS']);
         $local = count($em->getRepository(LocalAccount::class)->findAll()) > 0;
-        if (($bunny && !$local) || $request->query->getAlpha('provider') == 'bunny') {
+        if (($bunny && !$local) ||
+            $request->query->getAlpha('provider') == 'bunny') {
             return $authenticator->start($request);
         }
 
@@ -36,14 +38,15 @@ class LoginController extends AbstractController
         if ($error) {
             $this->addFlash(
                 'error',
-                $translator->trans($error->getMessageKey(), $error->getMessageData(), 'security')
+                'Invalid credentials.'
             );
         }
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername]);
+        return $this->render('security/login.html.twig',
+            ['last_username' => $lastUsername]);
     }
 
     /**

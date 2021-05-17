@@ -2,7 +2,7 @@
 
 namespace App\Provider\Person;
 
-final class PersonRegistry
+final class PersonRegistry implements PersonRegistryInterface
 {
     private $providers;
 
@@ -13,13 +13,15 @@ final class PersonRegistry
 
     public function find(?string $id)
     {
-        if (is_null($id))
+        if (is_null($id)) {
             return null;
-            
+        }
+
         foreach ($this->providers as $provider) {
             $result = $provider->findPerson($id);
-            if ($result)
+            if ($result) {
                 return $result;
+            }
         }
 
         return null;
@@ -31,7 +33,7 @@ final class PersonRegistry
         foreach ($this->providers as $provider) {
             $result = array_merge($result, $provider->findPersons());
         }
-        
+
         return $result;
     }
 }

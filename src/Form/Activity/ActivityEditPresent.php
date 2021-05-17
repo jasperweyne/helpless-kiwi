@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Form\Activity;
+
+use App\Entity\Activity\Activity;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class ActivityEditPresent extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('registrations', CollectionType::class, [
+                'entry_type' => PresentType::class,
+                'label' => false,
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Activity::class,
+            'label' => false,
+        ]);
+    }
+}

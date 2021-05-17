@@ -6,7 +6,6 @@ use App\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RegistrationRepository")
  */
@@ -57,6 +56,11 @@ class Registration
     private $deletedate;
 
     /**
+     * @ORM\Column(name="present", type="boolean", nullable=true)
+     */
+    private $present;
+
+    /**
      * Get id.
      *
      * @return string
@@ -68,8 +72,6 @@ class Registration
 
     /**
      * Set id.
-     *
-     * @param string $id
      */
     public function setId(string $id): self
     {
@@ -163,5 +165,15 @@ class Registration
         $this->deletedate = $date;
 
         return $this;
+    }
+
+    public function getPresent()
+    {
+        return $this->present;
+    }
+
+    public function setPresent($present)
+    {
+        $this->present = $present;
     }
 }

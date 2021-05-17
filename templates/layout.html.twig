@@ -5,9 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% if page_title is defined %}{{ page_title }} - {% endif %}{{ org }}</title>
         {% block stylesheets %}
-            {% for file in encore_entry_css_files('main') %}
-                <link href="{{ preload(asset(file), { as: 'style' }) }}" rel="stylesheet" />
-            {% endfor %}
+            {{ encore_entry_link_tags('main') }}
         {% endblock %}
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <link rel="icon" href="{{ asset('android-icon.png') }}" sizes="192x192">
@@ -77,9 +75,7 @@
         </div>
         {% endblock %}
         {% block javascripts %}
-            {% for file in encore_entry_js_files('main') %}
-                <script src="{{ preload(asset(file), { as: 'script' }) }}" ></script>
-            {% endfor %}
+            {{ encore_entry_script_tags('main') }}
         {% endblock %}
 	</body>
 </html>

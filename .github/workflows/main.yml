@@ -25,8 +25,7 @@ jobs:
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
-        tools: composer:v1
+        php-version: '7.4.0'
       
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -59,7 +58,7 @@ jobs:
 
     - name: Extract platform requirements composer.lock
       if: github.ref == 'refs/heads/master'
-      run: echo "`jq .platform ./kiwi/composer.lock`" > requirements.json
+      run: "composer check-platform-reqs --working-dir ./kiwi --lock --no-dev --no-ansi 2>&1 | sed '1,1d' | tr '\n' ',' | sed 's/.$//' | jq -R 'split(\",\") | map(. | gsub(\" +\"; \" \") | split(\" \") | { key: .[0], value: .[1] }) | from_entries' > requirements.json"
      
     - name: Upload requirements file
       uses: actions/upload-artifact@v1
@@ -123,7 +122,7 @@ jobs:
             const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
             const d = new Date(commit_details.data.author.date)
             function pad(s) { return (s < 10) ? '0' + s : s; }
-            return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+            return [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-')
         
       - id: formatted-date
         run: |

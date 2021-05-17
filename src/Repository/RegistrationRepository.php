@@ -2,11 +2,11 @@
 
 namespace App\Repository;
 
-use App\Entity\Order;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
+use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Registration|null find($id, $lockMode = null, $lockVersion = null)
@@ -38,7 +38,7 @@ class RegistrationRepository extends ServiceEntityRepository
         return self::$max;
     }
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Registration::class);
     }
@@ -113,8 +113,9 @@ class RegistrationRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
 
-        if (is_null($reg))
+        if (is_null($reg)) {
             return $this->findPrependPosition($activity);
+        }
 
         return $reg->getReservePosition();
     }
@@ -133,9 +134,9 @@ class RegistrationRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
 
-
-        if (is_null($reg))
+        if (is_null($reg)) {
             return $this->findAppendPosition($activity);
+        }
 
         return $reg->getReservePosition();
     }
@@ -184,6 +185,22 @@ class RegistrationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * @return int Returns an integer
+     */
+    public function countPresent(Activity $activity)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p.id)')
+            ->andWhere('p.deletedate IS NULL')
+            ->andWhere('p.activity = :activity')
+            ->andWhere('p.present = TRUE')
+            ->setParameter('activity', $activity)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
     }
 
     // /**
