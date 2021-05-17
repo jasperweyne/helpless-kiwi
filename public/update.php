@@ -685,9 +685,12 @@ class DownloadTool
         $requirements = $this->getServerRequirements($version);
 
         // Check PHP version, if specified
-        $php = $requirements['php'] ?? null;
-        if ($php && version_compare(PHP_VERSION, $php, '<')) {
-            return $php;
+        if (isset($requirements['php'])) {
+            list($major, $minor) = explode('.', $requirements['php']);
+            $php = implode('.', [$major, $minor]);
+            if (version_compare(PHP_VERSION, $php, '<')) {
+                return $php;
+            }
         }
 
         // Check PHP extensions
