@@ -1432,7 +1432,7 @@ class UserInterface
 
         // Check if bunny is configured or admin account has been added
         if ('bunny' === $this->env->getVar('SECURITY_MODE')) {
-            $this->env->hasVar('BUNNY_URL') || $this->registerBunny();
+            $this->env->hasVar('BUNNY_ADDRESS') || $this->registerBunny();
         } elseif ('local' === $this->env->getVar('SECURITY_MODE')) {
             $database->hasAccount() || $this->registerUser($database);
         }
@@ -1638,7 +1638,7 @@ class UserInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $this->env->setVar('BUNNY_SECRET', $form->getData('app_secret'));
             $this->env->setVar('BUNNY_ID', $form->getData('app_id'));
-            $this->env->setVar('BUNNY_URL', $form->getData('bunny_url'));
+            $this->env->setVar('BUNNY_ADDRESS', $form->getData('bunny_url'));
             $this->env->save();
 
             return;
