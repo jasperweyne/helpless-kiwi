@@ -685,9 +685,12 @@ class DownloadTool
         $requirements = $this->getServerRequirements($version);
 
         // Check PHP version, if specified
-        $php = $requirements['php'] ?? null;
-        if ($php && version_compare(PHP_VERSION, $php, '<')) {
-            return $php;
+        if (isset($requirements['php'])) {
+            list($major, $minor) = explode('.', $requirements['php']);
+            $php = implode('.', [$major, $minor]);
+            if (version_compare(PHP_VERSION, $php, '<')) {
+                return $php;
+            }
         }
 
         // Check PHP extensions
@@ -994,17 +997,6 @@ class UpdaterTool
                 throw new \Exception('Unknown process type: '.$process);
         }
 
-        // extend timelimit
-        if ('backup' !== $process) {
-            $accessfile = fopen($this->integration->getPublicPath().DIRECTORY_SEPARATOR.'.htaccess', 'w');
-            $access = '#Extend execution time
-<IfModule mod_php5.c>
-php_value max_execution_time 0
-</IfModule>';
-            fwrite($accessfile, $access);
-            fclose($accessfile);
-        }
-
         // set maintanance mode, indicating installation
         $installationfile = $this->getInstallerFile();
         if (file_exists($installationfile)) {
@@ -1164,11 +1156,24 @@ php_value max_execution_time 0
             $this->break('Moved uploads to extraction folder');
         }
 
-        // Remove root files (excluding the environment variables)
+        // Remove root files (excluding the environment variables and bunny public key)
         if ($this->integration->hasApplication()) {
+            $bunnyPublicKeyPath = $this->integration->getRootPath().DIRECTORY_SEPARATOR.'public.key';
+            $bunnyPublicKey = null;
+
+            // Cache env and key
             $this->env->load(true);
+            if (file_exists($bunnyPublicKeyPath)) {
+                $bunnyPublicKey = file_get_contents($bunnyPublicKeyPath);
+            }
+
+            // Move files and load env and key
             ArchiveTool::removeFolderRecursive($this->integration->getRootPath());
             $this->env->save();
+            if ($bunnyPublicKey) {
+                file_put_contents($bunnyPublicKeyPath, $bunnyPublicKey);
+            }
+
             $this->break('Removed previous installation');
         }
 
@@ -1432,7 +1437,7 @@ class UserInterface
 
         // Check if bunny is configured or admin account has been added
         if ('bunny' === $this->env->getVar('SECURITY_MODE')) {
-            $this->env->hasVar('BUNNY_URL') || $this->registerBunny();
+            $this->env->hasVar('BUNNY_ADDRESS') || $this->registerBunny();
         } elseif ('local' === $this->env->getVar('SECURITY_MODE')) {
             $database->hasAccount() || $this->registerUser($database);
         }
@@ -1638,7 +1643,7 @@ class UserInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $this->env->setVar('BUNNY_SECRET', $form->getData('app_secret'));
             $this->env->setVar('BUNNY_ID', $form->getData('app_id'));
-            $this->env->setVar('BUNNY_URL', $form->getData('bunny_url'));
+            $this->env->setVar('BUNNY_ADDRESS', $form->getData('bunny_url'));
             $this->env->save();
 
             return;

@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Helper\Database\Group;
+namespace App\Tests\Database\Group;
 
 use App\Entity\Group\Relation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Tests\Helper\Database\Security\LocalAccountFixture;
-use Tests\Helper\TestData;
+use App\Tests\Database\Security\LocalAccountFixture;
+use App\Tests\TestData;
 
 class RelationFixture extends Fixture implements DependentFixtureInterface
 {

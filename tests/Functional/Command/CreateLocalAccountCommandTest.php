@@ -3,8 +3,8 @@
 namespace Tests\Functional\Command;
 
 use App\Entity\Security\LocalAccount;
+use App\Tests\AuthWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
-use Tests\Helper\AuthWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -53,7 +53,7 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         $commandTester->execute([
             'email' => $email,
             'name' => 'Test Account',
-            'pass' => 'test1234'
+            'pass' => 'test1234',
         ]);
 
         $output = $commandTester->getDisplay();
