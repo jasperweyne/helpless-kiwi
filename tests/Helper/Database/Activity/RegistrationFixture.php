@@ -5,6 +5,8 @@ namespace Tests\Helper\Database\Activity;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
+use App\Entity\Order;
+use App\Repository\RegistrationRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -12,14 +14,12 @@ use Tests\Helper\TestData;
 
 class RegistrationFixture extends Fixture implements DependentFixtureInterface
 {
-    public const REGISTRATION_REFERENCE = 'registration';
-
     public function load(ObjectManager $manager)
     {
-        $activities = $manager->getRepository(Activity::class)->findAll();
-        $priceoption = $manager->getRepository(PriceOption::class)->findAll();
+        $priceOption = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'0');
+        $activity = $this->getReference(ActivityFixture::ACTIVITY_REFERENCE.'0');
 
-        $registrations = self::generate($activities, $priceoption[0])->return();
+        $registrations = self::generate($priceOption, $activity)->return();
         foreach ($registrations as $object) {
             $manager->persist($object);
         }
@@ -30,19 +30,25 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            ActivityFixture::class,
             PriceOptionFixture::class,
+            ActivityFixture::class,
         ];
     }
 
-    public static function generate(array $activities, PriceOption $priceoption): TestData
+    public static function generate($priceOption, $activity): TestData
     {
+        $counter = Order::create(RegistrationRepository::MINORDER());
+
         return TestData::from(new Registration())
-            ->with('newdate', new \DateTime('second day January 2038 18:10'))
-            ->with('person_id', 0)
-            ->doWith('activity', function (Registration $registration, Activity $activity) {
-                $registration->setActivity($activity);
-            }, ...$activities)
-            ->with('option', $priceoption);
+            ->with('id', '')
+            ->with('option', $priceOption)
+            ->with('activity', $activity)
+            ->with('person_id', '1', '2', '3')
+            ->do('reserve_position', function ($registration) use (&$counter) {
+                $counter = Order::calc($counter, Order::create('b'), fn ($a, $b) => $a + $b);
+                $registration->setReservePosition($counter);
+            })
+            ->with('newdate', new \DateTime('first day January 2038'))
+        ;
     }
 }

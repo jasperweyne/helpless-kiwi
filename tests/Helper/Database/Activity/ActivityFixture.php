@@ -3,23 +3,30 @@
 namespace Tests\Helper\Database\Activity;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Group\Group;
 use App\Entity\Location\Location;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Tests\Helper\Database\Group\GroupFixture;
 use Tests\Helper\Database\Location\LocationFixture;
 use Tests\Helper\TestData;
 
 class ActivityFixture extends Fixture implements DependentFixtureInterface
 {
+    public const ACTIVITY_REFERENCE = 'activity-';
+
     public function load(ObjectManager $manager)
     {
         $locations = $this->getReference(LocationFixture::LOCATION_REFERENCE);
+        $group = $this->getReference(GroupFixture::GROUP_REFERENCE);
+        $activityCount = 0;
 
-        $activity = self::generate([$locations])->return();
+        $activity = self::generate([$locations], $group)->return();
         foreach ($activity as $object) {
+            $this->setReference($this::ACTIVITY_REFERENCE.$activityCount, $object);
             $manager->persist($object);
-            $this->setReference($object->getName(), $object);
+            ++$activityCount;
         }
 
         $manager->flush();
@@ -28,11 +35,12 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
+            GroupFixture::class,
             LocationFixture::class,
         ];
     }
 
-    public static function generate(array $locations): TestData
+    public static function generate(array $locations, Group $group): TestData
     {
         $colors = [
             // 'red',
@@ -51,6 +59,7 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
         return TestData::from(new Activity())
             ->with('description', 'lol')
             ->with('color', ...$colors)
+            ->with('author', $group)
             ->with('start', new \DateTime('second day January 2038 18:00'))
             ->with('end', new \DateTime('second day January 2038 20:00'))
             ->with('deadline', new \DateTime('first day January 2038'))
