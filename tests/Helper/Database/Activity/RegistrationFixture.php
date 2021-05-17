@@ -17,9 +17,9 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $activities = $manager->getRepository(Activity::class)->findAll();
-        $priceoption = $manager->getRepository(PriceOption::class)->findAll()[0];
+        $priceoption = $manager->getRepository(PriceOption::class)->findAll();
 
-        $registrations = self::generate($activities, $priceoption)->return();
+        $registrations = self::generate($activities, $priceoption[0])->return();
         foreach ($registrations as $object) {
             $manager->persist($object);
         }
@@ -35,16 +35,14 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
-    public static function generate(array $activities, priceOption $priceoption): TestData
+    public static function generate(array $activities, PriceOption $priceoption): TestData
     {
         return TestData::from(new Registration())
             ->with('newdate', new \DateTime('second day January 2038 18:10'))
             ->with('person_id', 0)
             ->doWith('activity', function (Registration $registration, Activity $activity) {
-            $registration->setActivity($activity);
-        }, ...$activities)
-            ->doWith('option', function (Registration $registration, PriceOption $priceoption) {
-            $registration->setOption($priceoption);
-        }, $priceoption);
+                $registration->setActivity($activity);
+            }, ...$activities)
+            ->with('option', $priceoption);
     }
 }
