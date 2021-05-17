@@ -1153,11 +1153,24 @@ class UpdaterTool
             $this->break('Moved uploads to extraction folder');
         }
 
-        // Remove root files (excluding the environment variables)
+        // Remove root files (excluding the environment variables and bunny public key)
         if ($this->integration->hasApplication()) {
+            $bunnyPublicKeyPath = $this->integration->getRootPath().DIRECTORY_SEPARATOR.'public.key';
+            $bunnyPublicKey = null;
+
+            // Cache env and key
             $this->env->load(true);
+            if (file_exists($bunnyPublicKeyPath)) {
+                $bunnyPublicKey = file_get_contents($bunnyPublicKeyPath);
+            }
+
+            // Move files and load env and key
             ArchiveTool::removeFolderRecursive($this->integration->getRootPath());
             $this->env->save();
+            if ($bunnyPublicKey) {
+                file_put_contents($bunnyPublicKeyPath, $bunnyPublicKey);
+            }
+
             $this->break('Removed previous installation');
         }
 
