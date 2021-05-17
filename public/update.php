@@ -994,17 +994,6 @@ class UpdaterTool
                 throw new \Exception('Unknown process type: '.$process);
         }
 
-        // extend timelimit
-        if ('backup' !== $process) {
-            $accessfile = fopen($this->integration->getPublicPath().DIRECTORY_SEPARATOR.'.htaccess', 'w');
-            $access = '#Extend execution time
-<IfModule mod_php5.c>
-php_value max_execution_time 0
-</IfModule>';
-            fwrite($accessfile, $access);
-            fclose($accessfile);
-        }
-
         // set maintanance mode, indicating installation
         $installationfile = $this->getInstallerFile();
         if (file_exists($installationfile)) {
