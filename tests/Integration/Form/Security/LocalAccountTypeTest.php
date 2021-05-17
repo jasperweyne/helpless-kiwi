@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Integration\Form\Security;
 
-use App\Form\Activity\ActivityEditPresent;
+use App\Form\Security\LocalAccountType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ActivityEditPresentTest.
+ * Class LocalAccountTypeTest.
  *
- * @covers \App\Form\Activity\ActivityEditPresent
+ * @covers \App\Form\Security\LocalAccountType
  */
-class ActivityEditPresentTest extends KernelTestCase
+class LocalAccountTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityEditPresent
+     * @var LocalAccountType
      */
-    protected $activityEditPresent;
+    protected $localAccountType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class ActivityEditPresentTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->activityEditPresent = new ActivityEditPresent();
+        $this->localAccountType = new LocalAccountType();
     }
 
     /**
@@ -36,7 +36,7 @@ class ActivityEditPresentTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->activityEditPresent);
+        unset($this->localAccountType);
     }
 
     public function testBuildForm(): void

@@ -1,27 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Integration\Form\Activity;
 
-use App\Form\Activity\PresentType;
-use App\Provider\Person\PersonRegistry;
+use App\Form\Activity\ActivityCountPresent;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class PresentTypeTest.
+ * Class ActivityCountPresentTest.
  *
- * @covers \App\Form\Activity\PresentType
+ * @covers \App\Form\Activity\ActivityCountPresent
  */
-class PresentTypeTest extends KernelTestCase
+class ActivityCountPresentTest extends KernelTestCase
 {
     /**
-     * @var PresentType
+     * @var ActivityCountPresent
      */
-    protected $presentType;
-
-    /**
-     * @var PersonRegistry
-     */
-    protected $personRegistry;
+    protected $activityCountPresent;
 
     /**
      * {@inheritdoc}
@@ -31,8 +25,8 @@ class PresentTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->personRegistry = self::$container->get(PersonRegistry::class);
-        $this->presentType = new PresentType($this->personRegistry);
+        /* @todo Correctly instantiate tested object to use it. */
+        $this->activityCountPresent = new ActivityCountPresent();
     }
 
     /**
@@ -42,8 +36,7 @@ class PresentTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->presentType);
-        unset($this->personRegistry);
+        unset($this->activityCountPresent);
     }
 
     public function testBuildForm(): void

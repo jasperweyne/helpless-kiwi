@@ -1,21 +1,27 @@
 <?php
 
-namespace Tests\Unit\Form\Activity\Admin;
+namespace Tests\Integration\Form\Activity;
 
-use App\Form\Activity\Admin\ActivityEditType;
+use App\Form\Activity\RegistrationType;
+use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ActivityEditTypeTest.
+ * Class RegistrationTypeTest.
  *
- * @covers \App\Form\Activity\Admin\ActivityEditType
+ * @covers \App\Form\Activity\RegistrationType
  */
-class ActivityEditTypeTest extends KernelTestCase
+class RegistrationTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityEditType
+     * @var RegistrationType
      */
-    protected $activityEditType;
+    protected $registrationType;
+
+    /**
+     * @var PersonRegistry
+     */
+    protected $personRegistry;
 
     /**
      * {@inheritdoc}
@@ -25,8 +31,8 @@ class ActivityEditTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->activityEditType = new ActivityEditType();
+        $this->personRegistry = self::$container->get(PersonRegistry::class);
+        $this->registrationType = new RegistrationType($this->personRegistry);
     }
 
     /**
@@ -36,7 +42,8 @@ class ActivityEditTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->activityEditType);
+        unset($this->registrationType);
+        unset($this->personRegistry);
     }
 
     public function testBuildForm(): void

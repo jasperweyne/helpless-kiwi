@@ -1,22 +1,22 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Integration\Form\Group;
 
-use App\Form\Activity\RegistrationType;
+use App\Form\Group\RelationType;
 use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class RegistrationTypeTest.
+ * Class RelationTypeTest.
  *
- * @covers \App\Form\Activity\RegistrationType
+ * @covers \App\Form\Group\RelationType
  */
-class RegistrationTypeTest extends KernelTestCase
+class RelationTypeTest extends KernelTestCase
 {
     /**
-     * @var RegistrationType
+     * @var RelationType
      */
-    protected $registrationType;
+    protected $relationType;
 
     /**
      * @var PersonRegistry
@@ -32,7 +32,7 @@ class RegistrationTypeTest extends KernelTestCase
         self::bootKernel();
 
         $this->personRegistry = self::$container->get(PersonRegistry::class);
-        $this->registrationType = new RegistrationType($this->personRegistry);
+        $this->relationType = new RelationType($this->personRegistry);
     }
 
     /**
@@ -42,7 +42,7 @@ class RegistrationTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->registrationType);
+        unset($this->relationType);
         unset($this->personRegistry);
     }
 

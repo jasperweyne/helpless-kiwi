@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Activity\Admin;
+namespace Tests\Integration\Form\Activity;
 
-use App\Form\Activity\Admin\ActivityNewType;
+use App\Form\Activity\ActivityEditPresent;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ActivityNewTypeTest.
+ * Class ActivityEditPresentTest.
  *
- * @covers \App\Form\Activity\Admin\ActivityNewType
+ * @covers \App\Form\Activity\ActivityEditPresent
  */
-class ActivityNewTypeTest extends KernelTestCase
+class ActivityEditPresentTest extends KernelTestCase
 {
     /**
-     * @var ActivityNewType
+     * @var ActivityEditPresent
      */
-    protected $activityNewType;
+    protected $activityEditPresent;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class ActivityNewTypeTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->activityNewType = new ActivityNewType();
+        $this->activityEditPresent = new ActivityEditPresent();
     }
 
     /**
@@ -36,7 +36,7 @@ class ActivityNewTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->activityNewType);
+        unset($this->activityEditPresent);
     }
 
     public function testBuildForm(): void

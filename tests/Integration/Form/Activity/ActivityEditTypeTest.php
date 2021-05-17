@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Group;
+namespace Tests\Integration\Form\Activity;
 
-use App\Form\Group\RelationAddType;
+use App\Form\Activity\ActivityEditType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class RelationAddTypeTest.
+ * Class ActivityEditTypeTest.
  *
- * @covers \App\Form\Group\RelationAddType
+ * @covers \App\Form\Activity\ActivityEditType
  */
-class RelationAddTypeTest extends KernelTestCase
+class ActivityEditTypeTest extends KernelTestCase
 {
     /**
-     * @var RelationAddType
+     * @var ActivityEditType
      */
-    protected $relationAddType;
+    protected $activityEditType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class RelationAddTypeTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->relationAddType = new RelationAddType();
+        $this->activityEditType = new ActivityEditType();
     }
 
     /**
@@ -36,16 +36,10 @@ class RelationAddTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->relationAddType);
+        unset($this->activityEditType);
     }
 
     public function testBuildForm(): void
-    {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
-    }
-
-    public function testConfigureOptions(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();

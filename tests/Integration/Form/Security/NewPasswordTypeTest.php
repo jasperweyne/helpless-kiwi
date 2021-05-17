@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Integration\Form\Security;
 
-use App\Form\Activity\ActivityNewType;
+use App\Form\Security\NewPasswordType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ActivityNewTypeTest.
+ * Class NewPasswordTypeTest.
  *
- * @covers \App\Form\Activity\ActivityNewType
+ * @covers \App\Form\Security\NewPasswordType
  */
-class ActivityNewTypeTest extends KernelTestCase
+class NewPasswordTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityNewType
+     * @var NewPasswordType
      */
-    protected $activityNewType;
+    protected $newPasswordType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class ActivityNewTypeTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->activityNewType = new ActivityNewType();
+        $this->newPasswordType = new NewPasswordType();
     }
 
     /**
@@ -36,10 +36,16 @@ class ActivityNewTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->activityNewType);
+        unset($this->newPasswordType);
     }
 
     public function testBuildForm(): void
+    {
+        /* @todo This test is incomplete. */
+        $this->markTestIncomplete();
+    }
+
+    public function testConfigureOptions(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();

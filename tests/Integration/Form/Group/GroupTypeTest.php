@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Integration\Form\Group;
 
-use App\Form\Activity\ActivityCountPresent;
+use App\Form\Group\GroupType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ActivityCountPresentTest.
+ * Class GroupTypeTest.
  *
- * @covers \App\Form\Activity\ActivityCountPresent
+ * @covers \App\Form\Group\GroupType
  */
-class ActivityCountPresentTest extends KernelTestCase
+class GroupTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityCountPresent
+     * @var GroupType
      */
-    protected $activityCountPresent;
+    protected $groupType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class ActivityCountPresentTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->activityCountPresent = new ActivityCountPresent();
+        $this->groupType = new GroupType();
     }
 
     /**
@@ -36,7 +36,7 @@ class ActivityCountPresentTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->activityCountPresent);
+        unset($this->groupType);
     }
 
     public function testBuildForm(): void

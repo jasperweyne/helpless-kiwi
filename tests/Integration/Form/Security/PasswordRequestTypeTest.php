@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Security;
+namespace Tests\Integration\Form\Security;
 
-use App\Form\Security\NewPasswordType;
+use App\Form\Security\PasswordRequestType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class NewPasswordTypeTest.
+ * Class PasswordRequestTypeTest.
  *
- * @covers \App\Form\Security\NewPasswordType
+ * @covers \App\Form\Security\PasswordRequestType
  */
-class NewPasswordTypeTest extends KernelTestCase
+class PasswordRequestTypeTest extends KernelTestCase
 {
     /**
-     * @var NewPasswordType
+     * @var PasswordRequestType
      */
-    protected $newPasswordType;
+    protected $passwordRequestType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class NewPasswordTypeTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->newPasswordType = new NewPasswordType();
+        $this->passwordRequestType = new PasswordRequestType();
     }
 
     /**
@@ -36,7 +36,7 @@ class NewPasswordTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->newPasswordType);
+        unset($this->passwordRequestType);
     }
 
     public function testBuildForm(): void

@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Security;
+namespace Tests\Integration\Form\Activity;
 
-use App\Form\Security\LocalAccountType;
+use App\Form\Activity\ActivityNewType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class LocalAccountTypeTest.
+ * Class ActivityNewTypeTest.
  *
- * @covers \App\Form\Security\LocalAccountType
+ * @covers \App\Form\Activity\ActivityNewType
  */
-class LocalAccountTypeTest extends KernelTestCase
+class ActivityNewTypeTest extends KernelTestCase
 {
     /**
-     * @var LocalAccountType
+     * @var ActivityNewType
      */
-    protected $localAccountType;
+    protected $activityNewType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class LocalAccountTypeTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->localAccountType = new LocalAccountType();
+        $this->activityNewType = new ActivityNewType();
     }
 
     /**
@@ -36,16 +36,10 @@ class LocalAccountTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->localAccountType);
+        unset($this->activityNewType);
     }
 
     public function testBuildForm(): void
-    {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
-    }
-
-    public function testConfigureOptions(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();

@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Integration\Form\Activity;
 
-use App\Form\Activity\ActivityImageType;
+use App\Form\Activity\PriceOptionType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ActivityImageTypeTest.
+ * Class PriceOptionTypeTest.
  *
- * @covers \App\Form\Activity\ActivityImageType
+ * @covers \App\Form\Activity\PriceOptionType
  */
-class ActivityImageTypeTest extends KernelTestCase
+class PriceOptionTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityImageType
+     * @var PriceOptionType
      */
-    protected $activityImageType;
+    protected $priceOptionType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class ActivityImageTypeTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->activityImageType = new ActivityImageType();
+        $this->priceOptionType = new PriceOptionType();
     }
 
     /**
@@ -36,7 +36,7 @@ class ActivityImageTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->activityImageType);
+        unset($this->priceOptionType);
     }
 
     public function testBuildForm(): void

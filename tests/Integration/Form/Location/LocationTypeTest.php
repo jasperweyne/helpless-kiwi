@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Form\Location;
+namespace Tests\Integration\Form\Location;
 
 use App\Form\Location\LocationType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

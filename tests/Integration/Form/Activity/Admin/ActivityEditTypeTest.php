@@ -1,27 +1,21 @@
 <?php
 
-namespace Tests\Unit\Form\Group;
+namespace Tests\Integration\Form\Activity\Admin;
 
-use App\Form\Group\RelationType;
-use App\Provider\Person\PersonRegistry;
+use App\Form\Activity\Admin\ActivityEditType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class RelationTypeTest.
+ * Class ActivityEditTypeTest.
  *
- * @covers \App\Form\Group\RelationType
+ * @covers \App\Form\Activity\Admin\ActivityEditType
  */
-class RelationTypeTest extends KernelTestCase
+class ActivityEditTypeTest extends KernelTestCase
 {
     /**
-     * @var RelationType
+     * @var ActivityEditType
      */
-    protected $relationType;
-
-    /**
-     * @var PersonRegistry
-     */
-    protected $personRegistry;
+    protected $activityEditType;
 
     /**
      * {@inheritdoc}
@@ -31,8 +25,8 @@ class RelationTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->personRegistry = self::$container->get(PersonRegistry::class);
-        $this->relationType = new RelationType($this->personRegistry);
+        /* @todo Correctly instantiate tested object to use it. */
+        $this->activityEditType = new ActivityEditType();
     }
 
     /**
@@ -42,8 +36,7 @@ class RelationTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->relationType);
-        unset($this->personRegistry);
+        unset($this->activityEditType);
     }
 
     public function testBuildForm(): void

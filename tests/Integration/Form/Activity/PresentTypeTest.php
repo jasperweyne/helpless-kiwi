@@ -1,21 +1,27 @@
 <?php
 
-namespace Tests\Unit\Form\Group;
+namespace Tests\Integration\Form\Activity;
 
-use App\Form\Group\GroupType;
+use App\Form\Activity\PresentType;
+use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class GroupTypeTest.
+ * Class PresentTypeTest.
  *
- * @covers \App\Form\Group\GroupType
+ * @covers \App\Form\Activity\PresentType
  */
-class GroupTypeTest extends KernelTestCase
+class PresentTypeTest extends KernelTestCase
 {
     /**
-     * @var GroupType
+     * @var PresentType
      */
-    protected $groupType;
+    protected $presentType;
+
+    /**
+     * @var PersonRegistry
+     */
+    protected $personRegistry;
 
     /**
      * {@inheritdoc}
@@ -25,8 +31,8 @@ class GroupTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->groupType = new GroupType();
+        $this->personRegistry = self::$container->get(PersonRegistry::class);
+        $this->presentType = new PresentType($this->personRegistry);
     }
 
     /**
@@ -36,7 +42,8 @@ class GroupTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->groupType);
+        unset($this->presentType);
+        unset($this->personRegistry);
     }
 
     public function testBuildForm(): void
