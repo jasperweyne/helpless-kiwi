@@ -1113,7 +1113,7 @@ php_value max_execution_time 0
         $latest = $this->download->getLatestVersion();
         $latestSafe = str_replace(['/', '\\', '.'], '_', $latest);
         $downloadfile = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latestSafe.'.zip';
-        $notinstalledmarker = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latestSafe.'_isnotinstalled';
+        $unpackedmarker = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latestSafe.'_unpacked';
 
         // Download version files
         if (!file_exists($downloadfile)) {
@@ -1122,14 +1122,13 @@ php_value max_execution_time 0
             if (!$downloadSuccess) {
                 throw new \Exception("Problem when downloaded version $latest from Github");
             }
-            touch($notinstalledmarker);
             $this->break("Downloaded version $latest from Github");
         }
 
         // Install version files
-        if (file_exists($notinstalledmarker)) {
+        if (!file_exists($unpackedmarker)) {
             $this->installVersion($latest, $downloadfile);
-            unlink($notinstalledmarker);
+            touch($unpackedmarker);
             $this->break('Kiwi installation was performed with extraction folder contents');
         }
 
@@ -1141,6 +1140,7 @@ php_value max_execution_time 0
 
         // Installation finished succesfully, remove downloaded archive
         unlink($downloadfile);
+        unlink($unpackedmarker);
         $this->env->setVar('INSTALLED_VERSION', $latest);
         $this->env->save();
     }
