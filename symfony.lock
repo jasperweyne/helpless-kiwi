@@ -23,6 +23,9 @@
             "config/packages/test/dama_doctrine_test_bundle.yaml"
         ]
     },
+    "dg/mysql-dump": {
+        "version": "v1.5.1"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -49,6 +52,9 @@
     },
     "doctrine/dbal": {
         "version": "2.10.4"
+    },
+    "doctrine/deprecations": {
+        "version": "v0.5.3"
     },
     "doctrine/doctrine-bundle": {
         "version": "2.0",
@@ -146,6 +152,9 @@
     },
     "jsvrcek/ics": {
         "version": "0.4"
+    },
+    "laminas/laminas-code": {
+        "version": "4.2.1"
     },
     "laminas/laminas-eventmanager": {
         "version": "3.3.0"
@@ -289,6 +298,9 @@
     "symfony/dependency-injection": {
         "version": "v4.4.16"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.4.0"
+    },
     "symfony/doctrine-bridge": {
         "version": "v4.4.16"
     },
@@ -418,6 +430,9 @@
             "tests/bootstrap.php"
         ]
     },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.22.1"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.20.0"
     },
@@ -500,6 +515,9 @@
     },
     "symfony/stopwatch": {
         "version": "v4.4.16"
+    },
+    "symfony/string": {
+        "version": "v5.2.6"
     },
     "symfony/swiftmailer-bundle": {
         "version": "2.5",
@@ -641,6 +659,9 @@
         "files": [
             "./config/packages/vich_uploader.yaml"
         ]
+    },
+    "webimpress/safe-writer": {
+        "version": "2.2.0"
     },
     "webmozart/assert": {
         "version": "1.9.1"
