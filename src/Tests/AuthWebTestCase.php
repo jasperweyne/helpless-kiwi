@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Helper;
+namespace App\Tests;
 
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,7 +9,7 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
-use Tests\Helper\Database\Security\LocalAccountFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
