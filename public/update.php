@@ -82,7 +82,7 @@ class IntegrationTool
 
         // Check request URI
         if ('/update.php' !== $_SERVER['REQUEST_URI']) {
-            throw new \Exception('The server is setup incorrectly. The request URI should be /updater.php, but it\'s '.$_SERVER['REQUEST_URI']);
+            throw new \Exception('The server is setup incorrectly. The request URI should be /update.php, but it\'s '.$_SERVER['REQUEST_URI']);
         }
 
         // Check whether the path is writable
