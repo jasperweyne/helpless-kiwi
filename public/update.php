@@ -329,18 +329,20 @@ class EnvFileTool
 
         // App secret
         if (!$this->hasVar('APP_SECRET')) {
+            $hexchars = '0123456789abcdef'; 
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
-                $random_val .= chr(random_int(65, 90));
+                $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
             }
             $this->setVar('APP_SECRET', $random_val);
         }
 
         // Userprovider Key
         if (!$this->hasVar('USERPROVIDER_KEY')) {
+            $hexchars = '0123456789abcdef'; 
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
-                $random_val .= chr(random_int(65, 90));
+                $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
             }
             $this->setVar('USERPROVIDER_KEY', $random_val);
         }
