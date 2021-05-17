@@ -182,7 +182,7 @@ class IntegrationTool
      *
      * @return Application The Kiwi application
      */
-    protected function loadApplication(): Application
+    public function loadApplication(): Application
     {
         if (!$this->application) {
             if (!$this->hasApplication()) {
@@ -516,6 +516,7 @@ class DatabaseTool
      */
     public function createDump(string $path)
     {
+        $this->integration->loadApplication();
         $db = new mysqli($this->host, $this->user, $this->pass, $this->name);
         $dump = new MySQLDump($db);
         $dump->save($path);
@@ -528,6 +529,7 @@ class DatabaseTool
      */
     public function restoreDump(string $path)
     {
+        $this->integration->loadApplication();
         $db = new mysqli($this->host, $this->user, $this->pass, $this->name);
         $dump = new MySQLImport($db);
         $dump->load($path);
