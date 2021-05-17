@@ -89,6 +89,14 @@ class IntegrationTool
         if (!is_writable($this->getCommonPath())) {
             throw new \Exception($this->getCommonPath().' is not writable by the updater script.');
         }
+
+        // Check whether the correct extensions are installed
+        $required = ['zip', 'json'];
+        foreach ($required as $requirement) {
+            if (!extension_loaded($requirement)) {
+                throw new \Exception("The $requirement extension is missing. Please install or enable the $requirement extension");
+            }
+        }
     }
 
     /**
