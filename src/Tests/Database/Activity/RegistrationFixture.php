@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Helper\Database\Activity;
+namespace App\Tests\Database\Activity;
 
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
@@ -8,7 +8,7 @@ use App\Repository\RegistrationRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Tests\Helper\TestData;
+use App\Tests\TestData;
 
 class RegistrationFixture extends Fixture implements DependentFixtureInterface
 {

@@ -6,13 +6,13 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Activity\RegistrationFixture;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Group\RelationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Tests\Helper\AuthWebTestCase;
-use Tests\Helper\Database\Activity\ActivityFixture;
-use Tests\Helper\Database\Activity\RegistrationFixture;
-use Tests\Helper\Database\Group\GroupFixture;
-use Tests\Helper\Database\Group\RelationFixture;
-use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
  * Class RegistrationControllerTest.

@@ -2,11 +2,11 @@
 
 namespace Tests\Functional\Command;
 
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Tests\Helper\AuthWebTestCase;
-use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
  * Class HasLocalAccountCommandTest.
