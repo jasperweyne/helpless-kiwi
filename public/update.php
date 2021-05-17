@@ -418,30 +418,32 @@ class DatabaseTool
             return false;
         }
 
-        // Check whether database exists
-        $res = mysqli_query($connection, 'SHOW DATABASES');
         $found = false;
-        while ($row = mysqli_fetch_assoc($res)) {
-            if ($row['Database'] == $this->name) {
+        try {
+            // Check whether database exists
+            $res = mysqli_query($connection, 'SHOW DATABASES');
+            while ($row = mysqli_fetch_assoc($res)) {
+                if ($row['Database'] == $this->name) {
+                    $found = true;
+                    break;
+                }
+            }
+            $res->close();
+            $connection->next_result();
+
+            // Create database if it doesn't exist
+            if (!$found && $createIfEmpty) {
+                $sql = 'CREATE DATABASE '.$this->name;
+                if (!$connection->query($sql)) {
+                    throw new \Exception('Error creating database: '.$connection->error);
+                }
+
+                Log::msg('Database created successfully.');
                 $found = true;
-                break;
             }
+        } finally {
+            $connection->close();
         }
-        $res->close();
-        $connection->next_result();
-
-        // Create database if it doesn't exist
-        if (!$found && $createIfEmpty) {
-            $sql = 'CREATE DATABASE '.$this->name;
-            if (!$connection->query($sql)) {
-                throw new \Exception('Error creating database: '.$connection->error);
-            }
-
-            Log::msg('Database created successfully.');
-            $found = true;
-        }
-
-        $connection->close();
 
         return $found;
     }
