@@ -9,6 +9,5 @@ twig:
     exception_controller: null
     globals:
         menu: '@App\Template\MenuBuilder'
-        personReg: '@App\Provider\Person\PersonRegistry'
         org: '%env(ORG_NAME)%'
-        bunny: '@App\Provider\BunnyDataProvider'
+        bunny_address: '%env(BUNNY_ADDRESS)%'

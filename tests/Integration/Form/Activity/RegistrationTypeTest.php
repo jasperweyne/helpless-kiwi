@@ -3,7 +3,7 @@
 namespace Tests\Integration\Form\Activity;
 
 use App\Form\Activity\RegistrationType;
-use App\Provider\Person\PersonRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -19,9 +19,9 @@ class RegistrationTypeTest extends KernelTestCase
     protected $registrationType;
 
     /**
-     * @var PersonRegistry
+     * @var EntityManagerInterface
      */
-    protected $personRegistry;
+    protected $em;
 
     /**
      * {@inheritdoc}
@@ -31,8 +31,8 @@ class RegistrationTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->personRegistry = self::$container->get(PersonRegistry::class);
-        $this->registrationType = new RegistrationType($this->personRegistry);
+        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->registrationType = new RegistrationType($this->em);
     }
 
     /**
@@ -43,7 +43,7 @@ class RegistrationTypeTest extends KernelTestCase
         parent::tearDown();
 
         unset($this->registrationType);
-        unset($this->personRegistry);
+        unset($this->em);
     }
 
     public function testBuildForm(): void

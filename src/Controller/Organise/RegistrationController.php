@@ -30,7 +30,7 @@ class RegistrationController extends RegistrationHelper
         }
 
         if (!$group->getRelations()->exists(function ($index, Relation $a) use ($current) {
-            return $a->getPersonId() === $current->getPerson()->getId();
+            return $a->getPerson() === $current->getPerson();
         })) {
             throw $e;
         }

@@ -3,18 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Security\LocalAccount;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Log\EventService;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
+use App\Log\EventService;
 use App\Mail\MailService;
-use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
 use App\Template\MenuExtensionInterface;
-use Doctrine\DBAL\Types\BooleanType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Security controller.
@@ -32,16 +30,18 @@ class SecurityController extends AbstractController implements MenuExtensionInte
 
     public function getMenuItems(string $menu)
     {
-        if ($menu != 'admin')
+        if ('admin' != $menu) {
             return [];
+        }
 
         $em = $this->getDoctrine()->getManager();
-        if (isset($_ENV['BUNNY_ADDRESS']) && count($em->getRepository(LocalAccount::class)->findAll()) == 0)
+        if (isset($_ENV['BUNNY_ADDRESS']) && 0 == count($em->getRepository(LocalAccount::class)->findAll())) {
             return [];
+        }
 
         return [[
-            'title' => "Accounts",
-            'activeCriteria' => "admin_security_",
+            'title' => 'Accounts',
+            'activeCriteria' => 'admin_security_',
             'path' => 'admin_security_index',
         ]];
     }
@@ -84,12 +84,12 @@ class SecurityController extends AbstractController implements MenuExtensionInte
             $em->flush();
 
             $body = $this->renderView('email/newaccount.html.twig', [
-                'name' => $account->getPerson()->getShortname(),
+                'name' => $account->getGivenName(),
                 'account' => $account,
                 'token' => $token,
             ]);
 
-            $mailer->message($account->getPerson(), 'Jouw account', $body);
+            $mailer->message($account, 'Jouw account', $body);
 
             return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
         }
@@ -118,7 +118,7 @@ class SecurityController extends AbstractController implements MenuExtensionInte
             'account' => $account,
         ]);
     }
-  
+
     /**
      * Displays a form to edit an existing activity entity.
      *
@@ -180,18 +180,19 @@ class SecurityController extends AbstractController implements MenuExtensionInte
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $roles = array();
+            $roles = [];
             if ($data['admin']) {
-                $roles[] = "ROLE_ADMIN";
+                $roles[] = 'ROLE_ADMIN';
             }
 
             $account->setRoles($roles);
 
             $em->persist($account);
             $em->flush();
-            
+
             $this->addFlash('success', 'Rollen bewerkt');
-            return $this->redirectToRoute('admin_security_show', ['person' => $account->getPerson()->getId()]);
+
+            return $this->redirectToRoute('admin_security_show', ['person' => $account]);
         }
 
         return $this->render('admin/security/roles.html.twig', [
@@ -199,7 +200,7 @@ class SecurityController extends AbstractController implements MenuExtensionInte
             'auth' => $account,
         ]);
     }
-    
+
     /**
      * Creates a form to check out all checked in users.
      *
@@ -220,7 +221,7 @@ class SecurityController extends AbstractController implements MenuExtensionInte
             ->setAction($this->generateUrl('admin_security_roles', ['id' => $account->getId()]))
             ->add('admin', CheckboxType::class, [
                 'required' => false,
-                'attr' => in_array("ROLE_ADMIN", $account->getRoles()) ? ['checked' => 'checked'] : [],
+                'attr' => in_array('ROLE_ADMIN', $account->getRoles()) ? ['checked' => 'checked'] : [],
             ])
             ->getForm()
         ;

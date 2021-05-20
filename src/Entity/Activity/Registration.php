@@ -3,6 +3,7 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Order;
+use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -26,9 +27,10 @@ class Registration
     private $option;
 
     /**
-     * @ORM\Column(type="guid")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      */
-    private $person_id;
+    private $person;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
@@ -92,14 +94,14 @@ class Registration
         return $this;
     }
 
-    public function getPersonId(): ?string
+    public function getPerson(): ?LocalAccount
     {
-        return $this->person_id;
+        return $this->person;
     }
 
-    public function setPersonId(?string $person_id): self
+    public function setPerson(?LocalAccount $person): self
     {
-        $this->person_id = $person_id;
+        $this->person = $person;
 
         return $this;
     }

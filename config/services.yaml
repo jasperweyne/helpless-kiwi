@@ -62,15 +62,9 @@ services:
         arguments:
             - !tagged app.menu_extension
 
-    App\Provider\Person\PersonRegistry:
-        arguments:
-            - !tagged app.person_provider
-
     _instanceof:
         App\Template\MenuExtensionInterface:
             tags: ['app.menu_extension']
-        App\Provider\Person\PersonProviderInterface:
-            tags: ['app.person_provider']
 
     OpenIDConnectClient\OpenIDConnectProvider:
         arguments:

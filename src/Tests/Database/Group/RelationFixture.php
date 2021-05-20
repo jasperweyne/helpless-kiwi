@@ -3,11 +3,11 @@
 namespace App\Tests\Database\Group;
 
 use App\Entity\Group\Relation;
+use App\Tests\Database\Security\LocalAccountFixture;
+use App\Tests\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use App\Tests\Database\Security\LocalAccountFixture;
-use App\Tests\TestData;
 
 class RelationFixture extends Fixture implements DependentFixtureInterface
 {
@@ -38,7 +38,7 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
     {
         return TestData::from(new Relation())
             ->with('group', $group)
-            ->with('person_id', $personId->getId())
+            ->with('person', $personId->getId())
         ;
     }
 }

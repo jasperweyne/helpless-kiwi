@@ -2,11 +2,10 @@
 
 namespace App\Entity\Security;
 
-use App\Provider\Person\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
@@ -28,7 +27,12 @@ class LocalAccount implements UserInterface, EquatableInterface
     /**
      * @ORM\Column(type="string", length=180)
      */
-    private $name;
+    private $givenName;
+
+    /**
+     * @ORM\Column(type="string", length=180)
+     */
+    private $familyName;
 
     /**
      * @var string The hashed password
@@ -70,8 +74,6 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     /**
      * Set id.
-     *
-     * @param string $id
      */
     public function setId(string $id): self
     {
@@ -134,7 +136,9 @@ class LocalAccount implements UserInterface, EquatableInterface
      */
     public function getName(): ?string
     {
-        return $this->name;
+        $name = \trim($this->getGivenName().' '.$this->getFamilyName());
+
+        return '' != $name ? $name : null;
     }
 
     /**
@@ -142,23 +146,56 @@ class LocalAccount implements UserInterface, EquatableInterface
      *
      * @param string $name
      */
-    public function setName(string $name): self
+    public function setName($name): ?string
     {
-        $this->name = $name;
+        $this->setFamilyName('');
+        $this->setGivenName($name);
 
         return $this;
     }
 
-    public function getPerson(): Person
+    /**
+     * Get name.
+     *
+     * @return string
+     */
+    public function getGivenName(): ?string
     {
-        $person = new Person();
-        $person
-            ->setId($this->getId())
-            ->setEmail($this->getEmail())
-            ->setFields(['name' => $this->getName()])
-        ;
+        return $this->givenName;
+    }
 
-        return $person;
+    /**
+     * Set name.
+     *
+     * @param string $name
+     */
+    public function setGivenName(string $givenName): self
+    {
+        $this->givenName = $givenName;
+
+        return $this;
+    }
+
+    /**
+     * Get name.
+     *
+     * @return string
+     */
+    public function getFamilyName(): ?string
+    {
+        return $this->familyName;
+    }
+
+    /**
+     * Set name.
+     *
+     * @param string $name
+     */
+    public function setFamilyName(string $familyName): self
+    {
+        $this->familyName = $familyName;
+
+        return $this;
     }
 
     /**
@@ -348,6 +385,18 @@ class LocalAccount implements UserInterface, EquatableInterface
         // not needed
 
         return $this;
+    }
+
+    public function getCanonical(): ?string
+    {
+        $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
+
+        return $this->getName() ?? $this->getEmail() ?? $pseudo;
+    }
+
+    public function __toString()
+    {
+        return $this->getCanonical();
     }
 
     public function __construct()

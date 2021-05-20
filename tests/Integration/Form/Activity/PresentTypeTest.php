@@ -3,7 +3,6 @@
 namespace Tests\Integration\Form\Activity;
 
 use App\Form\Activity\PresentType;
-use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -19,11 +18,6 @@ class PresentTypeTest extends KernelTestCase
     protected $presentType;
 
     /**
-     * @var PersonRegistry
-     */
-    protected $personRegistry;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -31,8 +25,7 @@ class PresentTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->personRegistry = self::$container->get(PersonRegistry::class);
-        $this->presentType = new PresentType($this->personRegistry);
+        $this->presentType = new PresentType();
     }
 
     /**
@@ -43,7 +36,6 @@ class PresentTypeTest extends KernelTestCase
         parent::tearDown();
 
         unset($this->presentType);
-        unset($this->personRegistry);
     }
 
     public function testBuildForm(): void

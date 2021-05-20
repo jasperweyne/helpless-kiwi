@@ -56,7 +56,7 @@
                         <tbody>
                         {% for modif in modifs %}
                             <tr>
-                                <td>{{ personReg.find(modif.personId).canonical ?? '' }}</td>
+                                <td>{{ modif.person.canonical ?? '' }}</td>
                                 <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
                             </tr>
                         {% else %}

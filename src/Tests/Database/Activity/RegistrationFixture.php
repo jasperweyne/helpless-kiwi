@@ -5,10 +5,10 @@ namespace App\Tests\Database\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use App\Repository\RegistrationRepository;
+use App\Tests\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use App\Tests\TestData;
 
 class RegistrationFixture extends Fixture implements DependentFixtureInterface
 {
@@ -41,7 +41,7 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
             ->with('id', '')
             ->with('option', $priceOption)
             ->with('activity', $activity)
-            ->with('person_id', '1', '2', '3')
+            ->with('person', '1', '2', '3')
             ->do('reserve_position', function ($registration) use (&$counter) {
                 $counter = Order::calc($counter, Order::create('b'), fn ($a, $b) => $a + $b);
                 $registration->setReservePosition($counter);

@@ -82,13 +82,13 @@ class RegistrationTest extends KernelTestCase
         $this->assertSame($expected, $property->getValue($this->registration));
     }
 
-    public function testGetPersonId(): void
+    public function testGetPerson(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
-    public function testSetPersonId(): void
+    public function testSetPerson(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();

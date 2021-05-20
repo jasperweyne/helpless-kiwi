@@ -37,7 +37,7 @@ class ActivityController extends AbstractController
 
         $groups = [];
         if ($user = $this->getUser()) {
-            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+            $groups = $em->getRepository(Group::class)->findAllFor($user);
         }
 
         $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
@@ -75,11 +75,11 @@ class ActivityController extends AbstractController
                     $this->addFlash('success', 'Afmelding gelukt!');
                     $title = 'Afmeldbevestiging '.$activity->getName();
                     $body = $this->renderView('email/removedregistration.html.twig', [
-                        'person' => $this->getUser()->getPerson(),
+                        'person' => $this->getUser(),
                         'activity' => $activity,
                         'title' => $title,
                     ]);
-                    $mailer->message($this->getUser()->getPerson(), $title, $body);
+                    $mailer->message($this->getUser(), $title, $body);
 
                     return $this->redirectToRoute(
                         'activity_show',
@@ -133,7 +133,7 @@ class ActivityController extends AbstractController
                 if (null !== $option) {
                     $registrations = $em->getRepository(Registration::class)->findBy([
                         'activity' => $activity,
-                        'person_id' => $this->getUser()->getPerson()->getId(),
+                        'person' => $this->getUser(),
                         'deletedate' => null,
                     ]);
                     if (count($registrations) > 0) {
@@ -149,7 +149,7 @@ class ActivityController extends AbstractController
                     $reg->setOption($option);
                     $now = new \DateTime('now');
                     $reg->setNewDate($now);
-                    $reg->setPersonId($this->getUser()->getPerson()->getId());
+                    $reg->setPerson($this->getUser());
                     $registrations = $em->getRepository(Registration::class)->findBy([
                         'activity' => $activity,
                         'reserve_position' => null,
@@ -174,12 +174,12 @@ class ActivityController extends AbstractController
                             'text/calendar'
                         );
                         $body = $this->renderView('email/newregistration.html.twig', [
-                            'person' => $this->getUser()->getPerson(),
+                            'person' => $this->getUser(),
                             'activity' => $activity,
                             'title' => $title,
                         ]);
                         $mailer->message(
-                            $this->getUser()->getPerson(),
+                            $this->getUser(),
                             $title,
                             $body,
                             [$ics]
@@ -218,7 +218,7 @@ class ActivityController extends AbstractController
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
         if ($user = $this->getUser()) {
-            $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
+            $groups = $em->getRepository(Group::class)->findAllFor($user);
         }
         $targetoptions = $em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
         $forms = [];
@@ -232,7 +232,7 @@ class ActivityController extends AbstractController
         if (null !== $this->getUser()) {
             $registration = $em->getRepository(Registration::class)->findOneBy([
                 'activity' => $activity,
-                'person_id' => $this->getUser()->getPerson()->getId(),
+                'person' => $this->getUser(),
                 'deletedate' => null,
             ]);
             if (null !== $registration) {
