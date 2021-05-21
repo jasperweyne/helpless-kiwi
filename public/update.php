@@ -337,7 +337,7 @@ class EnvFileTool
 
         // App secret
         if (!$this->hasVar('APP_SECRET')) {
-            $hexchars = '0123456789abcdef'; 
+            $hexchars = '0123456789abcdef';
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
                 $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
@@ -347,7 +347,7 @@ class EnvFileTool
 
         // Userprovider Key
         if (!$this->hasVar('USERPROVIDER_KEY')) {
-            $hexchars = '0123456789abcdef'; 
+            $hexchars = '0123456789abcdef';
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
                 $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
@@ -1158,24 +1158,11 @@ class UpdaterTool
             $this->break('Moved uploads to extraction folder');
         }
 
-        // Remove root files (excluding the environment variables and bunny public key)
+        // Remove root files (excluding the environment variables)
         if ($this->integration->hasApplication()) {
-            $bunnyPublicKeyPath = $this->integration->getRootPath().DIRECTORY_SEPARATOR.'public.key';
-            $bunnyPublicKey = null;
-
-            // Cache env and key
             $this->env->load(true);
-            if (file_exists($bunnyPublicKeyPath)) {
-                $bunnyPublicKey = file_get_contents($bunnyPublicKeyPath);
-            }
-
-            // Move files and load env and key
             ArchiveTool::removeFolderRecursive($this->integration->getRootPath());
             $this->env->save();
-            if ($bunnyPublicKey) {
-                file_put_contents($bunnyPublicKeyPath, $bunnyPublicKey);
-            }
-
             $this->break('Removed previous installation');
         }
 
@@ -1897,7 +1884,7 @@ echo $step;
 }
 
 set_time_limit(0);
-set_exception_handler(function (\Throwable $e) {
+set_exception_handler(function (Throwable $e) {
     Log::console($e->getMessage()."\n".$e->getTraceAsString());
     UserInterface::render('Probleem!', Log::read(true).'<a class="button grow" href="./update.php">Herstart updater</a>');
 });

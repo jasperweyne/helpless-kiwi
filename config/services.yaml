@@ -66,17 +66,30 @@ services:
         App\Template\MenuExtensionInterface:
             tags: ['app.menu_extension']
 
-    OpenIDConnectClient\OpenIDConnectProvider:
+    Drenso\OidcBundle\OidcClient:
         arguments:
-            -
-                clientId: '%env(BUNNY_ID)%'         # The client ID assigned to you by the provider
-                clientSecret: '%env(BUNNY_SECRET)%' # The client password assigned to you by the provider
-                redirectUri: '@=service("router").generate("app_login", [], 0)' # 0: ABSOLUTE_URL (see UrlGeneratorInterface)
-                urlAuthorize: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/authorize'
-                urlAccessToken: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/token'
-                urlResourceOwnerDetails: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/resource'
-                idTokenIssuer: 'https://%env(BUNNY_ADDRESS)%'
-                publicKey: 'file://%kernel.project_dir%/public.key'
-                scopes: 'profile email admin'
-            -
-                signer: '@Lcobucci\JWT\Signer\Rsa\Sha256'
+            $wellKnownUrl: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/.well-known/openid-configuration'
+            $clientId: '%env(BUNNY_ID)%'
+            $clientSecret: '%env(BUNNY_SECRET)%'
+    
+    security.authentication.provider.oidc:
+        class: Drenso\OidcBundle\Security\Authentication\Provider\OidcProvider
+        arguments:
+            - ''
+            - '@security.user_checker'
+            - '@security.token_storage'
+            - '@logger'
+
+    security.authentication.listener.oidc:
+        class: Drenso\OidcBundle\Security\Firewall\OidcListener
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@security.authentication.session_strategy'
+            - '@security.http_utils'
+            - ''
+            - ''
+            - ''
+            - { }
+            - '@logger'
+            - '@Drenso\OidcBundle\OidcClient'

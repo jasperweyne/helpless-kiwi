@@ -3,8 +3,8 @@
 namespace App\Controller\Security;
 
 use App\Entity\Security\LocalAccount;
-use App\Security\OAuth2Authenticator;
 use App\Template\Annotation\MenuItem;
+use Drenso\OidcBundle\OidcClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,9 +16,7 @@ class LoginController extends AbstractController
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(Request $request,
-        OAuth2Authenticator $authenticator,
-        AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils, OidcClient $oidc): Response
     {
         // you can't login again while you already are, redirect
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -28,9 +26,8 @@ class LoginController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $bunny = isset($_ENV['BUNNY_ADDRESS']);
         $local = count($em->getRepository(LocalAccount::class)->findAll()) > 0;
-        if (($bunny && !$local) ||
-            $request->query->getAlpha('provider') == 'bunny') {
-            return $authenticator->start($request);
+        if ($bunny && !$local || 'bunny' == $request->query->getAlpha('provider')) {
+            return $oidc->generateAuthorizationRedirect();
         }
 
         // get the login error if there is one
