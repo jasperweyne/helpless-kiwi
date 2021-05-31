@@ -146,7 +146,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      *
      * @param string $name
      */
-    public function setName($name): ?string
+    public function setName($name): self
     {
         $this->setFamilyName('');
         $this->setGivenName($name);
