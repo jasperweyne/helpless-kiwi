@@ -4,6 +4,7 @@ namespace App\Form\Group;
 
 use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
