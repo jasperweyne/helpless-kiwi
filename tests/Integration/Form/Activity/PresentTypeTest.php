@@ -73,6 +73,7 @@ class PresentTypeTest extends KernelTestCase
     }
 
     public function testConfigureOptions(): void
+    {
         $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")
             ->disableOriginalConstructor()
             ->getMock();
