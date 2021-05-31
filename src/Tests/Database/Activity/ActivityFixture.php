@@ -57,7 +57,9 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
         $i = 0;
 
         return TestData::from(new Activity())
+
             ->with('description', 'lol')
+
             ->with('color', ...$colors)
             ->with('author', $group)
             ->with('start', new \DateTime('second day January 2038 18:00'))

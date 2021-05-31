@@ -168,7 +168,9 @@ configured locally.
 Three types of tests are included in Kiwi: functional tests, integration tests
 and unit tests. Functional tests are reserved for testing controllers and
 commands, and test the full integration of the software from a user-like
-interface.
+interface. Integration tests are reserved for testing code that is heavily
+integrated with Symfony and is therefore impractical or even not necessarily
+useful to test as a standalone unit, such as forms.
 
 For all other classes in src, unit tests and optionally integration tests should
 be written as well. Unit tests are independent of the behaviour of dependencies,

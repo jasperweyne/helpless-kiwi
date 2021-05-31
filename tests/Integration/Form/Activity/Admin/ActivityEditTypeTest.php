@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Integration\Form\Admin\Activity;
+namespace Tests\Integration\Form\Activity\Admin;
 
 use App\Form\Activity\Admin\ActivityEditType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
