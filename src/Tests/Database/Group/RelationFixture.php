@@ -16,9 +16,9 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $group = $this->getReference(GroupFixture::GROUP_REFERENCE);
-        $personId = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
+        $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
 
-        $relations = self::generate($group, $personId)->return();
+        $relations = self::generate($group, $person)->return();
         foreach ($relations as $relation) {
             $manager->persist($relation);
         }
@@ -34,11 +34,11 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
-    public static function generate($group, $personId): TestData
+    public static function generate($group, $person): TestData
     {
         return TestData::from(new Relation())
             ->with('group', $group)
-            ->with('person', $personId->getId())
+            ->with('person', $person)
         ;
     }
 }
