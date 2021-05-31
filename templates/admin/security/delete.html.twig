@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% set page_title = 'Account' ~ (account.person ? ' van ' ~ account.person.canonical : '' ~ '" verwijderen'  %}
+{% set page_title = 'Account van ' ~ account.canonical ~ 'verwijderen' %}
 
 {% block body %}
     <div class="form">

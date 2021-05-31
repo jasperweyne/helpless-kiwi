@@ -25,7 +25,7 @@
             <tbody>
             {% for account in accounts %}
                 <tr>
-                    <td><a href="{{ path("admin_security_show", { 'id': account.id }) }}">{{ account.person.canonical }}</a></td>
+                    <td><a href="{{ path("admin_security_show", { 'id': account.id }) }}">{{ account.canonical }}</a></td>
                 </tr>
             {% else %}
                 <tr>
