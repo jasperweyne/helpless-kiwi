@@ -187,7 +187,7 @@ class Registration
         return $this->comment;
     }
 
-    public function setCOmment(?string $comment)
+    public function setComment(?string $comment)
     {
         $this->comment = $comment;
     }
