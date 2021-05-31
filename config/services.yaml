@@ -50,9 +50,6 @@ services:
         tags:
             - { name: doctrine.event_listener, event: onFlush }
 
-    App\DataCollector\AuthSecurityDataCollector:
-        decorates: data_collector.security
-
     App\EventListener\DoctrineTablePrefixListener:
         arguments: ["kiwi_"]
         tags:

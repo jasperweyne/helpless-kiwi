@@ -153,7 +153,7 @@ class RegistrationRepository extends ServiceEntityRepository
                 $qb->expr()->notIn(
                     'r.person',
                     $this->createQueryBuilder('b')
-                        ->select('b.person')
+                        ->select('IDENTITY(b.person)')
                         ->where('b.deletedate IS NULL')
                         ->andWhere('b.reserve_position IS NULL')
                         ->andWhere('b.activity = :val')
