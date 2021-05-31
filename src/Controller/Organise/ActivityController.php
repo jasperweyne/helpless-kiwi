@@ -28,7 +28,7 @@ class ActivityController extends AbstractController
         }
 
         if (!$group->getRelations()->exists(function ($index, Relation $a) use ($current) {
-            return $a->getPerson() === $current->getPerson();
+            return $a->getPerson() === $current;
         })) {
             throw $e;
         }
