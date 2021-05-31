@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Helper\Database\Activity;
+namespace App\Tests\Database\Activity;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Tests\Helper\TestData;
+use App\Tests\TestData;
 
 class PriceOptionFixture extends Fixture implements DependentFixtureInterface
 {

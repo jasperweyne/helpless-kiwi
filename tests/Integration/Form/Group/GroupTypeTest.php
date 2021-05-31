@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Form\Group;
+namespace Tests\Integration\Form\Group;
 
 use App\Form\Group\GroupType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

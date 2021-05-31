@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Helper\Database\Group;
+namespace App\Tests\Database\Group;
 
 use App\Entity\Group\Group;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Tests\Helper\TestData;
+use App\Tests\TestData;
 
 class GroupFixture extends Fixture
 {

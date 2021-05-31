@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Form\Security;
+namespace Tests\Integration\Form\Security;
 
 use App\Form\Security\PasswordRequestType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

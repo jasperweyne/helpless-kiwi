@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Form\Activity\Admin;
+namespace Tests\Integration\Form\Admin\Activity;
 
 use App\Form\Activity\Admin\ActivityNewType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

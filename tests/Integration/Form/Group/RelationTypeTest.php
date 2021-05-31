@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Form\Group;
+namespace Tests\Integration\Form\Group;
 
 use App\Form\Group\RelationType;
 use App\Provider\Person\PersonRegistry;

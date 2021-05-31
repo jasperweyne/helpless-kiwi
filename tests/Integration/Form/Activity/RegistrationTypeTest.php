@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Form\Activity;
+namespace Tests\Integration\Form\Activity;
 
 use App\Form\Activity\RegistrationType;
 use App\Provider\Person\PersonRegistry;

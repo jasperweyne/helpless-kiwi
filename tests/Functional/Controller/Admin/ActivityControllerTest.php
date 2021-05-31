@@ -5,13 +5,13 @@ namespace Tests\Functional\Controller\Admin;
 use App\Controller\Admin\ActivityController;
 use App\Entity\Activity\Activity;
 use App\Log\EventService;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Activity\PriceOptionFixture;
+use App\Tests\Database\Activity\RegistrationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Tests\Helper\Database\Activity\ActivityFixture;
-use Tests\Helper\Database\Activity\PriceOptionFixture;
-use Tests\Helper\Database\Activity\RegistrationFixture;
-use Tests\Helper\Database\Security\LocalAccountFixture;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Tests\Helper\AuthWebTestCase;
 
 /**
  * Class ActivityControllerTest.

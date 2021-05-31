@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Helper\Database\Activity;
+namespace App\Tests\Database\Activity;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Group\Group;
@@ -8,9 +8,9 @@ use App\Entity\Location\Location;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Tests\Helper\Database\Group\GroupFixture;
-use Tests\Helper\Database\Location\LocationFixture;
-use Tests\Helper\TestData;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Location\LocationFixture;
+use App\Tests\TestData;
 
 class ActivityFixture extends Fixture implements DependentFixtureInterface
 {
