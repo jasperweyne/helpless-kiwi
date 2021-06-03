@@ -6,14 +6,14 @@ use App\Entity\Security\LocalAccount;
 use DateTime;
 use Mockery;
 use ReflectionClass;
-use Tests\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class LocalAccountTest.
  *
  * @covers \App\Entity\Security\LocalAccount
  */
-class LocalAccountTest extends TestCase
+class LocalAccountTest extends KernelTestCase
 {
     /**
      * @var LocalAccount
@@ -82,8 +82,12 @@ class LocalAccountTest extends TestCase
 
     public function testGetUsername(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = '42';
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('email');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expected);
+        $this->assertSame($expected, $this->localAccount->getUsername());
     }
 
     public function testGetName(): void
@@ -94,8 +98,12 @@ class LocalAccountTest extends TestCase
 
     public function testSetName(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = 'Daneel';
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('givenName');
+        $property->setAccessible(true);
+        $this->localAccount->setGivenName($expected);
+        $this->assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetGivenName(): void
@@ -266,3 +274,4 @@ class LocalAccountTest extends TestCase
         $this->markTestIncomplete();
     }
 }
+
