@@ -3,8 +3,6 @@
 namespace Tests\Unit\Entity\Security;
 
 use App\Entity\Security\LocalAccount;
-use DateTime;
-use Mockery;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -72,7 +70,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testSetEmail(): void
     {
-        $expected = '42';
+        $expected = 'john@doe.eyes';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
@@ -82,7 +80,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetUsername(): void
     {
-        $expected = '42';
+        $expected = 'johndoe96';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
@@ -92,8 +90,22 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetName(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->assertNull($this->localAccount->getName());
+        $expectedJohn = 'John';
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('givenName');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expectedJohn);
+        $this->assertSame($expectedJohn, $this->localAccount->getName());
+
+        $expectedDoe = 'Doe';
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('familyName');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expectedDoe);
+
+        $expectedResult = 'John Doe';
+        $this->assertSame($expectedResult, $this->localAccount->getName());
     }
 
     public function testSetName(): void
@@ -148,7 +160,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetRoles(): void
     {
-        $expected = [];
+        $expected = ['ROLE_USER'];
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('roles');
         $property->setAccessible(true);
@@ -188,14 +200,14 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetSalt(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        //To-Do: implement or remove function
+        $this->markTestIncomplete('Testing an empty function');
     }
 
     public function testEraseCredentials(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        //To-Do: implement or remove function
+        $this->markTestIncomplete('Testing an empty function');
     }
 
     public function testSetPasswordRequestToken(): void
@@ -210,7 +222,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testSetPasswordRequestedAt(): void
     {
-        $expected = Mockery::mock(DateTime::class);
+        $expected = new \DateTime;
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
@@ -228,6 +240,9 @@ class LocalAccountTest extends KernelTestCase
         $this->assertSame($expected, $this->localAccount->getPasswordRequestedAt());
     }
 
+    /**
+    * @depends testGetPasswordRequestedAt
+    */
     public function testIsPasswordRequestNonExpired(): void
     {
         /** @todo This test is incomplete. */
@@ -236,7 +251,6 @@ class LocalAccountTest extends KernelTestCase
 
     public function testIsEqualTo(): void
     {
-        /** @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
@@ -252,26 +266,23 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetPasswordRequestSalt(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('why again do we test unused functions? maybe remove');
     }
 
     public function testSetPasswordRequestSalt(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('why again do we test unused functions? maybe remove');
     }
 
     public function testGetCanonical(): void
     {
         /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('this actually needs testing');
     }
 
     public function test__toString(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('do we need to test, it just regurgitates getCanonical');
     }
 }
 
