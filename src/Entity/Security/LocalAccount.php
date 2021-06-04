@@ -93,9 +93,9 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @see
      * @since
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
-        return (string) $this->email;
+        return '' != $this->email ? $this->email : null;
     }
 
     /**

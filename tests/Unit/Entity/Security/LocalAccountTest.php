@@ -120,7 +120,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetGivenName(): void
     {
-        $expected = '42';
+        $expected = 'John';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
@@ -130,7 +130,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testSetGivenName(): void
     {
-        $expected = '42';
+        $expected = 'John';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
@@ -140,7 +140,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetFamilyName(): void
     {
-        $expected = '42';
+        $expected = 'Doe';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('familyName');
         $property->setAccessible(true);
@@ -150,7 +150,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testSetFamilyName(): void
     {
-        $expected = '42';
+        $expected = 'Doe';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('familyName');
         $property->setAccessible(true);
@@ -180,7 +180,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetPassword(): void
     {
-        $expected = '42';
+        $expected = 'T0tallys3curePa$$w0rd';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('password');
         $property->setAccessible(true);
@@ -190,7 +190,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testSetPassword(): void
     {
-        $expected = '42';
+        $expected ='T0tallys3curePa$$w0rd';;
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('password');
         $property->setAccessible(true);
@@ -201,13 +201,13 @@ class LocalAccountTest extends KernelTestCase
     public function testGetSalt(): void
     {
         //To-Do: implement or remove function
-        $this->markTestIncomplete('Testing an empty function');
+        $this->assertNull($this->localAccount->getSalt());
     }
 
     public function testEraseCredentials(): void
     {
         //To-Do: implement or remove function
-        $this->markTestIncomplete('Testing an empty function');
+        $this->assertNull($this->localAccount->eraseCredentials());
     }
 
     public function testSetPasswordRequestToken(): void
@@ -245,13 +245,22 @@ class LocalAccountTest extends KernelTestCase
     */
     public function testIsPasswordRequestNonExpired(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new \DateTime;
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('passwordRequestedAt');
+        $property->setAccessible(true);
+        $this->localAccount->setPasswordRequestedAt($expected);
+        $this->assertTrue($this->localAccount->isPasswordRequestNonExpired(100));
     }
 
     public function testIsEqualTo(): void
     {
-        $this->markTestIncomplete();
+        $expected = 'john@doe.eyes';
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('email');
+        $property->setAccessible(true);
+        $this->localAccount->setEmail($expected);
+        $this->assertTrue($this->localAccount->isEqualTo($this->localAccount));
     }
 
     public function testGetPasswordRequestToken(): void
@@ -266,23 +275,84 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetPasswordRequestSalt(): void
     {
-        $this->markTestIncomplete('why again do we test unused functions? maybe remove');
+        $this->assertNull($this->localAccount->getPasswordRequestSalt());
     }
 
     public function testSetPasswordRequestSalt(): void
     {
-        $this->markTestIncomplete('why again do we test unused functions? maybe remove');
+        $this->assertSame($this->localAccount->setPasswordRequestSalt(), $this->localAccount);
     }
 
     public function testGetCanonical(): void
     {
-        /** @todo This test is incomplete. */
-        $this->markTestIncomplete('this actually needs testing');
+        $id = '141592653589';
+        $expectedPseudo = 'pseudonymized (14159265...)';
+        $email = 'john@doe.eyes';
+        $givenName = 'John';
+        $familyName = 'Doe';
+        $fullName = $givenName . ' ' . $familyName;
+
+        //testing with just an id, no email or name
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('id');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $id);
+        $this->assertSame($expectedPseudo, $this->localAccount->getCanonical());
+
+        //test with email
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('email');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $email);
+        $this->assertSame($email, $this->localAccount->getCanonical());
+
+        //test with full name
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('givenName');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $givenName);
+
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('familyName');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $familyName);
+        $this->assertSame($fullName, $this->localAccount->getCanonical());
     }
 
     public function test__toString(): void
     {
-        $this->markTestIncomplete('do we need to test, it just regurgitates getCanonical');
+        $id = '141592653589';
+        $expectedPseudo = 'pseudonymized (14159265...)';
+        $email = 'john@doe.eyes';
+        $givenName = 'John';
+        $familyName = 'Doe';
+        $fullName = $givenName . ' ' . $familyName;
+
+        //testing with just an id, no email or name
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('id');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $id);
+        $this->assertSame($expectedPseudo, $this->localAccount->getCanonical());
+
+        //test with email
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('email');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $email);
+        $this->assertSame($email, $this->localAccount->getCanonical());
+
+        //test with full name
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('givenName');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $givenName);
+
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('familyName');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $familyName);
+        $this->assertSame($fullName, $this->localAccount->getCanonical());
     }
 }
 
