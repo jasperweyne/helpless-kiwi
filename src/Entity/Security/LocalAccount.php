@@ -42,6 +42,13 @@ class LocalAccount implements UserInterface, EquatableInterface
     private $password;
 
     /**
+     * @var string The OpenID Connect subject claim value
+     *
+     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
+     */
+    private $oidc;
+
+    /**
      * @ORM\Column(type="json")
      */
     private $roles;
@@ -275,6 +282,28 @@ class LocalAccount implements UserInterface, EquatableInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * Get OpenID Connect subject claim.
+     *
+     * @return string
+     */
+    public function getOidc(): ?string
+    {
+        return $this->oidc;
+    }
+
+    /**
+     * Set the OpenID Connect subject claim.
+     *
+     * @param string $sub
+     */
+    public function setOidc(?string $sub): self
+    {
+        $this->oidc = $sub;
+
+        return $this;
     }
 
     /**

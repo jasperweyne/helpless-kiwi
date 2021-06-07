@@ -68,6 +68,7 @@ services:
             $wellKnownUrl: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/.well-known/openid-configuration'
             $clientId: '%env(BUNNY_ID)%'
             $clientSecret: '%env(BUNNY_SECRET)%'
+            $redirectRoute: 'app_login_check'
     
     security.authentication.provider.oidc:
         class: Drenso\OidcBundle\Security\Authentication\Provider\OidcProvider

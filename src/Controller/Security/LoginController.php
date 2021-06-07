@@ -27,7 +27,7 @@ class LoginController extends AbstractController
         $bunny = isset($_ENV['BUNNY_ADDRESS']);
         $local = count($em->getRepository(LocalAccount::class)->findAll()) > 0;
         if ($bunny && !$local || 'bunny' == $request->query->getAlpha('provider')) {
-            return $oidc->generateAuthorizationRedirect();
+            return $oidc->generateAuthorizationRedirect(null, ['openid', 'profile', 'email']);
         }
 
         // get the login error if there is one
@@ -44,6 +44,14 @@ class LoginController extends AbstractController
 
         return $this->render('security/login.html.twig',
             ['last_username' => $lastUsername]);
+    }
+
+    /**
+     * @Route("/login_check", name="app_login_check")
+     */
+    public function login_check()
+    {
+        return $this->redirect('/');
     }
 
     /**

@@ -50,16 +50,18 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
     public function loadUserByToken(OidcToken $token)
     {
         $repository = $this->em->getRepository(LocalAccount::class);
-        $user = $repository->find($token->getSub());
+        $user = $repository->findOneBy(['oidc' => $token->getSub()]);
 
         // If user does not exist, create it
         if (null === $user) {
             $user = new LocalAccount();
-            $user->setId($token->getSub());
+            $user->setOidc($token->getSub());
+            $user->setRoles([]);
             $this->em->persist($user);
         }
 
         // Update the user data
+        $user->setName($token->getFullName());
         $user->setGivenName($token->getGivenName());
         $user->setFamilyName($token->getFamilyName());
         $user->setEmail($token->getEmail());
