@@ -10,4 +10,5 @@ twig:
     globals:
         menu: '@App\Template\MenuBuilder'
         org: '%env(ORG_NAME)%'
-        bunny_address: '%env(BUNNY_ADDRESS)%'
+        oidc: '%env(OIDC_ADDRESS)%'
+        profile_url: '%env(PROFILE_URL)%'

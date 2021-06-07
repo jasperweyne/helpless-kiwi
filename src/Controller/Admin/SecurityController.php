@@ -8,7 +8,7 @@ use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
 use App\Mail\MailService;
 use App\Security\PasswordResetService;
-use App\Template\MenuExtensionInterface;
+use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/admin/security", name="admin_security_")
  */
-class SecurityController extends AbstractController implements MenuExtensionInterface
+class SecurityController extends AbstractController
 {
     private $events;
 
@@ -28,27 +28,10 @@ class SecurityController extends AbstractController implements MenuExtensionInte
         $this->events = $events;
     }
 
-    public function getMenuItems(string $menu)
-    {
-        if ('admin' != $menu) {
-            return [];
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        if (isset($_ENV['BUNNY_ADDRESS']) && 0 == count($em->getRepository(LocalAccount::class)->findAll())) {
-            return [];
-        }
-
-        return [[
-            'title' => 'Accounts',
-            'activeCriteria' => 'admin_security_',
-            'path' => 'admin_security_index',
-        ]];
-    }
-
     /**
      * Lists all local account entities.
      *
+     * @MenuItem(title="Accounts", menu="admin", activeCriteria="admin_security_")
      * @Route("/", name="index", methods={"GET", "POST"})
      */
     public function indexAction(Request $request)

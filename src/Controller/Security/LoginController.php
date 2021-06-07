@@ -2,7 +2,6 @@
 
 namespace App\Controller\Security;
 
-use App\Entity\Security\LocalAccount;
 use App\Template\Annotation\MenuItem;
 use Drenso\OidcBundle\OidcClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,10 +22,8 @@ class LoginController extends AbstractController
             return $this->redirect('/');
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $bunny = isset($_ENV['BUNNY_ADDRESS']);
-        $local = count($em->getRepository(LocalAccount::class)->findAll()) > 0;
-        if ($bunny && !$local || 'bunny' == $request->query->getAlpha('provider')) {
+        $oidcEnabled = isset($_ENV['OIDC_ADDRESS']);
+        if ('local' !== $request->query->getAlpha('provider') && $oidcEnabled) {
             return $oidc->generateAuthorizationRedirect(null, ['openid', 'profile', 'email']);
         }
 

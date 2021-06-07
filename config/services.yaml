@@ -5,13 +5,13 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
-    # Adds a environment variables even if Bunny is not used.
+    # Adds a environment variables even if OpenID Connect is not used.
     # This allows you to run cache:warmup even if your
     # environment variables are not available.
     # You should not need to change this value.
-    env(BUNNY_ID): ''
-    env(BUNNY_SECRET): ''
-    env(BUNNY_ADDRESS): ''
+    env(OIDC_ID): ''
+    env(OIDC_SECRET): ''
+    env(OIDC_ADDRESS): ''
 
 services:
     # default configuration for services in *this* file
@@ -65,9 +65,9 @@ services:
 
     Drenso\OidcBundle\OidcClient:
         arguments:
-            $wellKnownUrl: '%env(SECURE_SCHEME)%://%env(BUNNY_ADDRESS)%/.well-known/openid-configuration'
-            $clientId: '%env(BUNNY_ID)%'
-            $clientSecret: '%env(BUNNY_SECRET)%'
+            $wellKnownUrl: '%env(SECURE_SCHEME)%://%env(OIDC_ADDRESS)%/.well-known/openid-configuration'
+            $clientId: '%env(OIDC_ID)%'
+            $clientSecret: '%env(OIDC_SECRET)%'
             $redirectRoute: 'app_login_check'
     
     security.authentication.provider.oidc:
