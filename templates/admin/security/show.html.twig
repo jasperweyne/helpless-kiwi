@@ -9,17 +9,28 @@
     <table>
         <tbody>
             <tr>
-                <th>Naam</th>
-                <td>{{ account.name }}</td>
+            <tr>
+                <th>Voornaam</th>
+                <td>{{ account.givenName }}</td>
+            </tr>
+            <tr>
+                <th>Achternaam</th>
+                <td>{{ account.familyName }}</td>
             </tr>
             <tr>
                 <th>E-mail</th>
                 <td>{{ account.email }}</td>
             </tr>
             <tr>
-                <th>Account geactiveerd</th>
+                <th>{{ oidc ? 'Lokale login' : 'Geactiveerd' }}</th>
                 <td>{{ account.password ? 'Ja' : 'Nee' }}</td>
             </tr>
+            {% if oidc %}
+                <tr>
+                    <th>Externe login</th>
+                    <td>{{ account.oidc ? 'Ja' : 'Nee' }}</td>
+                </tr>
+            {% endif %}
             <tr>
                 <th>Rollen</th>
                 <td>
