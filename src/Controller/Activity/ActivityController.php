@@ -216,10 +216,6 @@ class ActivityController extends AbstractController
         ]);
         $reserve = $em->getRepository(Registration::class)->findReserve($activity);
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
         $groups = [];
         if ($user = $this->getUser()) {
             $groups = $em->getRepository(Group::class)->findAllFor($user->getPerson());
