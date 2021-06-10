@@ -114,7 +114,7 @@ class LocalAccountTest extends KernelTestCase
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
-        $this->localAccount->setGivenName($expected);
+        $this->localAccount->setName($expected);
         $this->assertSame($expected, $property->getValue($this->localAccount));
     }
 
@@ -319,7 +319,7 @@ class LocalAccountTest extends KernelTestCase
         $this->assertSame($fullName, $this->localAccount->getCanonical());
     }
 
-    public function test__toString(): void
+    public function testToString(): void
     {
         $id = '141592653589';
         $expectedPseudo = 'pseudonymized (14159265...)';
