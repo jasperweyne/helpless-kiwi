@@ -210,6 +210,26 @@ class LocalAccountTest extends KernelTestCase
         $this->assertNull($this->localAccount->eraseCredentials());
     }
 
+    public function testGetOidc(): void
+    {
+        $expected = 'magicalSubjectClaim';
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('oidc');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expected);
+        $this->assertSame($expected, $this->localAccount->getOidc());
+    }
+
+    public function testSetOidc(): void
+    {
+        $expected = 'magicalSubjectClaim';
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('oidc');
+        $property->setAccessible(true);
+        $this->localAccount->setOidc($expected);
+        $this->assertSame($expected, $property->getValue($this->localAccount));
+    }
+    
     public function testSetPasswordRequestToken(): void
     {
         $expected = null;
