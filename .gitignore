@@ -35,4 +35,5 @@ yarn-error.log
 /public/uploads/
 Thumbs.db
 /public.key
+/temp_update_test_dir
 ###< custom ###

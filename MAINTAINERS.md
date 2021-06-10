@@ -11,21 +11,21 @@ This project is intended for use by organised groups of people: associations
 organisations, sports clubs or anything alike. Regardless of group size, each
 of these entities has a unique perspective that should be weighed equally to
 any other. Therefore, such a group of people, hereinafter referred to as an
-organisation, may apply for maintainer status. With maintainer status, your
-organisation will be able to weigh in on the direction and priorities of the
-project. In return, and in the spirit of free, open source software, we ask that
-your organisation actively participates in the development and maintenance of
-the project. (Note: individuals that are not affiliated to any organisation are
-welcome to apply for maintainer status too.)
+organisation, may apply for **partner status**. As a partner, your organisation
+will be able to weigh in on the direction and priorities of the project. In 
+return, and in the spirit of free, open source software, we ask that your
+organisation actively participates in the development and maintenance of the
+project. (Note: individuals that are not affiliated to any organisation are
+welcome to apply as a maintainer.)
 
-## Terms of maintainer status
-Each organisation with maintainer status shall provide one or more maintainers.
-These maintainers will participate in the development of the project on behalf
-of their organisation. They're always the point of contact, except for notices
-on the maintainer status of the organisation or for notices on changes in the
-list the maintainers representing an organisation. All communication among
+## Terms of partner status
+Each partner organisation shall provide one or more maintainers. These
+maintainers will participate in the development of the project on behalf of
+their organisation. They're always the point of contact, except for notices
+on the partner status of the organisation or for notices on changes in the list
+the maintainers representing an organisation. All communication among
 maintainers takes place through an online channel, indicated after being granted
-maintainer status.
+partner status.
 
 At least once every six months, a vote is held on the priorities and agreements
 for the next six months. A vote will be announced by the project owner at least
@@ -33,7 +33,7 @@ two weeks in advance, through the online communication channel for maintainers,
 distinctly from any other communication. Any maintainer may introduce topics, up
 to week before the vote.
 
-Each entity with maintainer status gets a single vote. If multiple maintainers
+Each entity with partner status gets a single vote. If multiple maintainers
 representing a single entity are present, only of them may cast a vote on behalf
 of the entity they represent. For any changes to these terms, as well as the
 contribution guidelines and the code of conduct, a vote must be held.
@@ -46,14 +46,14 @@ are expected to adhere to all deadlines and agreements. General development
 meetings (whose schedule is decided upon during votes) shall be regularly
 attended by maintainers.
 
-Upon failure to adhere to these terms, maintainer status may be revoked, or a
+Upon failure to adhere to these terms, partner status may be revoked, or a
 single maintainer may be expelled. The project owner is responsible for granting,
 refusing or revoking maintainer status. Additional details may be requested by
 the project owner before a decision is made. A reason shall always be provided.
 Upon applying, the applicant provides the name and contact details of their
-maintainers. The names of entities with maintainer status, as well as their
-representative maintainers are published. To apply for maintainer status, please
-send an e-mail to jasperweyne+kiwi \[at\] gmail \[dot\] com.
+maintainers. The names of partner organisations, as well as their representative
+maintainers are published. To apply for maintainer status, please send an e-mail
+to jasperweyne+kiwi \[at\] gmail \[dot\] com.
 
 ## Guidelines for maintainers
 These guidelines are intended for _maintainers_ of the project. They build upon
