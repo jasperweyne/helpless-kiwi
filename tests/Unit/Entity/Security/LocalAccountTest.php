@@ -318,8 +318,8 @@ class LocalAccountTest extends KernelTestCase
         $property->setValue($this->localAccount, $familyName);
         $this->assertSame($fullName, $this->localAccount->getCanonical());
     }
-
-    public function testToString(): void
+ 
+    public function test__toString(): void
     {
         $id = '141592653589';
         $expectedPseudo = 'pseudonymized (14159265...)';
@@ -333,14 +333,14 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $id);
-        $this->assertSame($expectedPseudo, $this->localAccount->getCanonical());
+        $this->assertSame($expectedPseudo, $this->localAccount->__toString());
 
         //test with email
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $email);
-        $this->assertSame($email, $this->localAccount->getCanonical());
+        $this->assertSame($email, $this->localAccount->__toString());
 
         //test with full name
         $property = (new ReflectionClass(LocalAccount::class))
@@ -352,7 +352,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $familyName);
-        $this->assertSame($fullName, $this->localAccount->getCanonical());
+        $this->assertSame($fullName, $this->localAccount->__toString());
     }
 }
 
