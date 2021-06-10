@@ -215,7 +215,7 @@ class RegistrationTest extends KernelTestCase
 
     public function testGetComment()
     {
-        $expected = null;
+        $expected = 'TestComment';
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('comment');
         $property->setAccessible(true);
@@ -225,11 +225,11 @@ class RegistrationTest extends KernelTestCase
 
     public function testSetComment()
     {
-        $expected = null;
+        $expected = 'TestComment';
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('comment');
         $property->setAccessible(true);
-        $this->registration->setPresent($expected);
+        $this->registration->setComment($expected);
         $this->assertSame($expected, $property->getValue($this->registration));
     }
 }
