@@ -50,23 +50,6 @@ class RegistrationController extends RegistrationHelper
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($registration);
-            $em->flush();
-
-            $person = $personRegistry->find($registration->getPersonId());
-            $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld!');
-
-            if (true == $form['mail']->getData()) {
-                $title = 'Aanmeldbericht '.$registration->getActivity()->getName();
-                $body = $this->renderView('email/newregistration_by.html.twig', [
-                    'person' => $person,
-                    'activity' => $registration->getActivity(),
-                    'title' => $title,
-                    'by' => $this->getUser()->getPerson(),
-                ]);
-
-                $mailer->message($person, $title, $body);
-            }
             $this->storeRegistration($form->getData());
 
             return $this->handleRedirect($activity->getId());
