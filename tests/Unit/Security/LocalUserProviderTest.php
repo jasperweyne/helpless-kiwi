@@ -2,8 +2,13 @@
 
 namespace Tests\Unit\Security;
 
+use App\Entity\Security\LocalAccount;
 use App\Security\LocalUserProvider;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Drenso\OidcBundle\Security\Authentication\Token\OidcToken;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -19,7 +24,7 @@ class LocalUserProviderTest extends KernelTestCase
     protected $localUserProvider;
 
     /**
-     * @var EntityManagerInterface
+     * @var EntityManagerInterface&MockObject
      */
     protected $em;
 
@@ -29,9 +34,8 @@ class LocalUserProviderTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
-
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        /* @var EntityManagerInterface&MockObject */
+        $this->em = $this->createMock(EntityManager::class);
         $this->localUserProvider = new LocalUserProvider($this->em);
     }
 
@@ -56,6 +60,57 @@ class LocalUserProviderTest extends KernelTestCase
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();
+    }
+
+    public function testLoadUserByTokenNewAccount(): void
+    {
+        // Arrange data
+        $token = new OidcToken();
+        $token->setUserData(['sub' => '123']);
+
+        // Arrange stubs
+        /** @var ServiceEntityRepository&MockObject */
+        $repo = $this->createMock(ServiceEntityRepository::class);
+        $repo->method('findOneBy')->willReturn(null);
+        $this->em->method('getRepository')->willReturn($repo);
+
+        // Expect the object to be flushed to db
+        $this->em->expects($this->once())->method('persist');
+        $this->em->expects($this->once())->method('flush');
+
+        // Act
+        $return = $this->localUserProvider->loadUserByToken($token);
+
+        // Assert
+        if (!$return instanceof LocalAccount) {
+            throw new \Exception('Should always be an instance of LocalAccount');
+        }
+
+        $this->assertSame($token->getSub(), $return->getOidc());
+    }
+
+    public function testLoadUserByToken(): void
+    {
+        // Arrange data
+        $account = new LocalAccount();
+        $token = new OidcToken();
+        $token->setUserData(['sub' => '123', 'email' => 'foo@bar.com']);
+
+        // Arrange stubs
+        /** @var ServiceEntityRepository&MockObject */
+        $repo = $this->createMock(ServiceEntityRepository::class);
+        $repo->method('findOneBy')->willReturn($account);
+        $this->em->method('getRepository')->willReturn($repo);
+
+        // Expect the object to be flushed to db
+        $this->em->expects($this->once())->method('flush');
+
+        // Act
+        $return = $this->localUserProvider->loadUserByToken($token);
+
+        // Assert that $account has been updated to match token
+        $this->assertSame($account->getEmail(), $token->getEmail());
+        $this->assertSame($account, $return);
     }
 
     public function testLoadUserByUsername(): void
