@@ -5,6 +5,10 @@ namespace Tests\Functional\Controller\Admin;
 use App\Controller\Admin\ActivityController;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Activity\PriceOptionFixture;
+use App\Tests\Database\Activity\RegistrationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -33,6 +37,13 @@ class ActivityControllerTest extends AuthWebTestCase
         parent::setUp();
         $this->login();
 
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            PriceOptionFixture::class,
+            ActivityFixture::class,
+            RegistrationFixture::class,
+        ]);
+
         $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
@@ -50,7 +61,6 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
-        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 

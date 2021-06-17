@@ -2,8 +2,15 @@
 
 namespace Tests\Unit\Repository;
 
+use App\Entity\Activity\Activity;
+use App\Entity\Group\Group;
 use App\Repository\ActivityRepository;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Group\GroupFixture;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -13,6 +20,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class ActivityRepositoryTest extends KernelTestCase
 {
+    use FixturesTrait;
+
     /**
      * @var ActivityRepository
      */
@@ -33,6 +42,24 @@ class ActivityRepositoryTest extends KernelTestCase
 
         $this->registry = self::$container->get(ManagerRegistry::class);
         $this->activityRepository = new ActivityRepository($this->registry);
+
+        // Get all database tables
+        $em = self::$container->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
+
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
+
+        $this->loadFixtures([
+            GroupFixture::class,
+            ActivityFixture::class,
+        ]);
+
+        $this->em = static::$kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
     }
 
     /**
@@ -56,5 +83,16 @@ class ActivityRepositoryTest extends KernelTestCase
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();
+    }
+
+    public function testFindUpcomingByGroupWithoutHidden(): void
+    {
+        $groups = $this->em->getRepository(Group::class)->findAll();
+
+        $activities = $this->em
+            ->getRepository(Activity::class)
+            ->findUpcomingByGroupWithoutHidden($groups);
+
+        $this->assertTrue(count($activities) > 0);
     }
 }

@@ -374,4 +374,24 @@ class ActivityTest extends KernelTestCase
         $this->activity->setPresent($expected);
         $this->assertSame($expected, $property->getValue($this->activity));
     }
+
+    public function testGetHidden(): void
+    {
+        $expected = true;
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('hidden');
+        $property->setAccessible(true);
+        $property->setValue($this->activity, $expected);
+        $this->assertSame($expected, $this->activity->getHidden());
+    }
+
+    public function testSetHidden(): void
+    {
+        $expected = true;
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('hidden');
+        $property->setAccessible(true);
+        $this->activity->setHidden($expected);
+        $this->assertSame($expected, $property->getValue($this->activity));
+    }
 }

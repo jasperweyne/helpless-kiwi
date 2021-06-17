@@ -444,7 +444,7 @@ class Activity
         $this->present = $present;
     }
 
-    public function getHidden(): bool
+    public function getHidden(): ?bool
     {
         return $this->hidden;
     }
