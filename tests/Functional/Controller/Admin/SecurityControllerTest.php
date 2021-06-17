@@ -3,8 +3,11 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\SecurityController;
+use App\Entity\Security\LocalAccount;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class SecurityControllerTest.
@@ -30,6 +33,12 @@ class SecurityControllerTest extends AuthWebTestCase
     {
         parent::setUp();
         $this->login();
+
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+        ]);
+
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -38,6 +47,8 @@ class SecurityControllerTest extends AuthWebTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
+
+        unset($this->em);
     }
 
     public function testGetMenuItems(): void
@@ -91,7 +102,16 @@ class SecurityControllerTest extends AuthWebTestCase
 
     public function testRolesAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $id = $localUser->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', "/admin/security/{$id}/roles");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['form[admin]']->setValue(false);
+        $this->client->submit($form);
+        $this->assertSelectorTextContains('.container', 'Rollen bewerkt');
     }
 }
