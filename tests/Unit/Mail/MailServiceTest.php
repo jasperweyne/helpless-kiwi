@@ -2,8 +2,10 @@
 
 namespace Tests\Unit\Mail;
 
+use App\Entity\Security\LocalAccount;
 use App\Mail\MailService;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -22,22 +24,22 @@ class MailServiceTest extends KernelTestCase
     protected $mailService;
 
     /**
-     * @var Swift_Mailer
+     * @var Swift_Mailer&MockObject
      */
     protected $mailer;
 
     /**
-     * @var EntityManagerInterface
+     * @var EntityManagerInterface&MockObject
      */
     protected $em;
 
     /**
-     * @var TokenStorageInterface
+     * @var TokenStorageInterface&MockObject
      */
     protected $tokenStorage;
 
     /**
-     * @var ParameterBagInterface
+     * @var ParameterBagInterface&MockObject
      */
     protected $params;
 
@@ -49,10 +51,15 @@ class MailServiceTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->mailer = self::$container->get(Swift_Mailer::class);
-        $this->em = self::$container->get(EntityManagerInterface::class);
-        $this->tokenStorage = self::$container->get(TokenStorageInterface::class);
-        $this->params = self::$container->get(ParameterBagInterface::class);
+        /* @var Swift_mailer&MockObject */
+        $this->mailer = $this->createMock(Swift_Mailer::class);
+        /* @var EntityManagerInterface&MockObject */
+        $this->em = $this->createMock(EntityManagerInterface::class);
+        /* @var TokenStorageInterface&MockObject */
+        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
+        /* @var ParameterBagInterface&MockObject */
+        $this->params = $this->createMock(ParameterBagInterface::class);
+
         $this->mailService = new MailService($this->mailer, $this->em, $this->tokenStorage, $this->params);
     }
 
@@ -70,9 +77,24 @@ class MailServiceTest extends KernelTestCase
         unset($this->params);
     }
 
+    public function testMessageNull(): void
+    {
+        $this->em->expects($this->never())->method('persist');
+        $this->mailer->expects($this->never())->method('send');
+        $this->mailService->message(null, '', '');
+    }
+
     public function testMessage(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $recipient = new LocalAccount();
+        $recipient
+            ->setEmail('john.doe@foo.bar')
+            ->setName('John Doe')
+        ;
+
+        $this->em->expects($this->atLeastOnce())->method('persist');
+        $this->em->expects($this->once())->method('flush');
+        $this->mailer->expects($this->once())->method('send');
+        $this->mailService->message($recipient, '', '');
     }
 }
