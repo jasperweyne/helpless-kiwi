@@ -4,14 +4,14 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\SecurityController;
 use App\Log\EventService;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\AuthWebTestCase;
 
 /**
  * Class SecurityControllerTest.
  *
  * @covers \App\Controller\Admin\SecurityController
  */
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerTest extends AuthWebTestCase
 {
     /**
      * @var SecurityController
@@ -29,10 +29,7 @@ class SecurityControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
-
-        $this->events = self::$container->get(EventService::class);
-        $this->securityController = new SecurityController($this->events);
+        $this->login();
     }
 
     /**
@@ -41,9 +38,6 @@ class SecurityControllerTest extends WebTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        unset($this->securityController);
-        unset($this->events);
     }
 
     public function testGetMenuItems(): void
@@ -54,14 +48,27 @@ class SecurityControllerTest extends WebTestCase
 
     public function testIndexAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $this->client->request('GET', '/admin/security/');
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNewAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $crawler = $this->client->request('GET', '/admin/security/new');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $form['local_account[name]'] = 'John';
+        $form['local_account[email]'] = 'john@doe.eyes';
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        // TODO: figure our if this is actually the way to test this....
+        $this->assertEquals(1, $crawler->filter('.top > h3:nth-child(1)')->count());
     }
 
     public function testShowAction(): void
