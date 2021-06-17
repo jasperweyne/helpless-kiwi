@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entity\Log;
 
 use App\Entity\Log\Event;
+use App\Entity\Security\LocalAccount;
 use DateTime;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -113,14 +114,23 @@ class EventTest extends KernelTestCase
 
     public function testGetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = 'John Doe';
+        $property = (new ReflectionClass(Event::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $property->setValue($this->event, $expected);
+        $this->assertSame($expected, $property->getValue($this->event));
     }
 
     public function testSetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Event::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $this->event->setPerson($expected);
+        $this->assertSame($expected, $this->event->getPerson());
     }
 
     public function testGetObjectId(): void
