@@ -102,7 +102,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      */
     public function getEmail(): ?string
     {
-        return '' != $this->email ? $this->email : null;
+        return (string) $this->email;
     }
 
     /**
@@ -420,7 +420,7 @@ class LocalAccount implements UserInterface, EquatableInterface
     {
         $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
 
-        return $this->getName() ?? $this->getEmail() ?? $pseudo;
+        return $this->getName() ?: $this->getEmail() ?: $pseudo;
     }
 
     public function __toString()
