@@ -175,7 +175,7 @@ class SecurityController extends AbstractController
 
             $this->addFlash('success', 'Rollen bewerkt');
 
-            return $this->redirectToRoute('admin_security_show', ['person' => $account]);
+            return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
         }
 
         return $this->render('admin/security/roles.html.twig', [
