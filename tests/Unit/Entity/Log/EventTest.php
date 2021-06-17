@@ -114,12 +114,13 @@ class EventTest extends KernelTestCase
 
     public function testGetPerson(): void
     {
-        $expected = 'John Doe';
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
         $property = (new ReflectionClass(Event::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $property->getValue($this->event));
+        $this->assertSame($expected, $this->event->getPerson());
     }
 
     public function testSetPerson(): void

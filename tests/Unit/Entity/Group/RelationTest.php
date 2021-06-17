@@ -4,6 +4,7 @@ namespace Tests\Unit\Entity\Group;
 
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
+use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -93,14 +94,24 @@ class RelationTest extends KernelTestCase
 
     public function testGetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $property->setValue($this->relation, $expected);
+        $this->assertSame($expected, $this->relation->getPerson());
     }
 
     public function testSetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $this->relation->setPerson($expected);
+        $this->assertSame($expected, $this->relation->getPerson());
     }
 
     public function testGetParent(): void

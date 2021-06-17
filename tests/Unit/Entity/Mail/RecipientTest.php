@@ -4,6 +4,7 @@ namespace Tests\Unit\Entity\Mail;
 
 use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
+use App\Entity\Security\LocalAccount;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -53,14 +54,24 @@ class RecipientTest extends KernelTestCase
 
     public function testGetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Recipient::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $property->setValue($this->recipient, $expected);
+        $this->assertSame($expected, $this->recipient->getPerson());
     }
 
     public function testSetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Recipient::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $this->recipient->setPerson($expected);
+        $this->assertSame($expected, $this->recipient->getPerson());
     }
 
     public function testGetMail(): void

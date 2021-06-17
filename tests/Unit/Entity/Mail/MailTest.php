@@ -95,12 +95,13 @@ class MailTest extends KernelTestCase
 
     public function testGetPerson(): void
     {
-        $expected = 'John Doe';
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
         $property = (new ReflectionClass(Mail::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this->assertSame($expected, $property->getValue($this->mail));
+        $this->assertSame($expected, $this->mail->getPerson());
     }
 
     public function testSetPerson(): void
