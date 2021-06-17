@@ -103,8 +103,8 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testRolesAction(): void
     {
         // Arrange
-        $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        $id = $localUser->getId();
+        $localAdmin = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $id = $localAdmin->getId();
 
         // Act
         $crawler = $this->client->request('GET', "/admin/security/{$id}/roles");
@@ -113,5 +113,7 @@ class SecurityControllerTest extends AuthWebTestCase
         $form['form[admin]']->setValue(false);
         $this->client->submit($form);
         $this->assertSelectorTextContains('.container', 'Rollen bewerkt');
+        $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $this->assertEquals(["ROLE_USER"], $localUser->getRoles());
     }
 }
