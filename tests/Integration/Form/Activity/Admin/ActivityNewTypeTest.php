@@ -46,7 +46,7 @@ class ActivityNewTypeTest extends KernelTestCase
     {
         $location = new Location();
         $location->setAddress('test');
-        $local_file = __DIR__.'\..\..\..\..\assets\Faint.png';
+        $local_file = __DIR__.'/../../../../assets/Faint.png';
 
         $type = new Activity();
         $formdata = [
