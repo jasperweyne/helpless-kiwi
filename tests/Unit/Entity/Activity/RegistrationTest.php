@@ -5,6 +5,7 @@ namespace Tests\Unit\Entity\Activity;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
+use App\Entity\Security\LocalAccount;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -84,14 +85,24 @@ class RegistrationTest extends KernelTestCase
 
     public function testGetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $property->setValue($this->registration, $expected);
+        $this->assertSame($expected, $this->registration->getPerson());
     }
 
     public function testSetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $this->registration->setPerson($expected);
+        $this->assertSame($expected, $this->registration->getPerson());
     }
 
     public function testGetActivity(): void
