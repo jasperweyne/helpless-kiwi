@@ -2,16 +2,15 @@
 
 namespace App\Controller\Admin;
 
-use App\Template\Annotation\MenuItem;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Log\Doctrine\EntityUpdateEvent;
+use App\Log\EventService;
+use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
-use App\Log\EventService;
-use App\Log\Doctrine\EntityUpdateEvent;
-use App\Provider\Person\PersonRegistry;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Group category controller.
@@ -175,7 +174,7 @@ class GroupController extends AbstractController
      *
      * @Route("/relation/new/{id}", name="relation_new", methods={"GET", "POST"})
      */
-    public function relationNewAction(Request $request, Group $group, PersonRegistry $persons)
+    public function relationNewAction(Request $request, Group $group)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -190,7 +189,7 @@ class GroupController extends AbstractController
             $em->persist($relation);
             $em->flush();
 
-            $name = $persons->find($relation->getPersonId())->getCanonical();
+            $name = $relation->getPerson()->getCanonical();
             $this->addFlash('success', $name.' toegevoegd!');
 
             return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);

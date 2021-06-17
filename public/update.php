@@ -337,7 +337,7 @@ class EnvFileTool
 
         // App secret
         if (!$this->hasVar('APP_SECRET')) {
-            $hexchars = '0123456789abcdef'; 
+            $hexchars = '0123456789abcdef';
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
                 $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
@@ -347,7 +347,7 @@ class EnvFileTool
 
         // Userprovider Key
         if (!$this->hasVar('USERPROVIDER_KEY')) {
-            $hexchars = '0123456789abcdef'; 
+            $hexchars = '0123456789abcdef';
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
                 $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
@@ -1158,24 +1158,11 @@ class UpdaterTool
             $this->break('Moved uploads to extraction folder');
         }
 
-        // Remove root files (excluding the environment variables and bunny public key)
+        // Remove root files (excluding the environment variables)
         if ($this->integration->hasApplication()) {
-            $bunnyPublicKeyPath = $this->integration->getRootPath().DIRECTORY_SEPARATOR.'public.key';
-            $bunnyPublicKey = null;
-
-            // Cache env and key
             $this->env->load(true);
-            if (file_exists($bunnyPublicKeyPath)) {
-                $bunnyPublicKey = file_get_contents($bunnyPublicKeyPath);
-            }
-
-            // Move files and load env and key
             ArchiveTool::removeFolderRecursive($this->integration->getRootPath());
             $this->env->save();
-            if ($bunnyPublicKey) {
-                file_put_contents($bunnyPublicKeyPath, $bunnyPublicKey);
-            }
-
             $this->break('Removed previous installation');
         }
 
@@ -1437,15 +1424,18 @@ class UserInterface
         // Check if a security mode has been set
         $this->env->hasVar('SECURITY_MODE') || $this->registerSecurity();
 
-        // Check if bunny is configured or admin account has been added
-        if ('bunny' === $this->env->getVar('SECURITY_MODE')) {
-            $this->env->hasVar('BUNNY_ADDRESS') || $this->registerBunny();
-        } elseif ('local' === $this->env->getVar('SECURITY_MODE')) {
-            $database->hasAccount() || $this->registerUser($database);
+        // Check if OpenID Connect is configured
+        $adminHelp = '';
+        if ('oidc' === $this->env->getVar('SECURITY_MODE')) {
+            $this->env->hasVar('OIDC_ADDRESS') || $this->registerOidc();
+            $adminHelp = '<br>Om in te loggen bij lokale accounts, <a href="/login?provider=local">klik hier</a>';
         }
 
+        // Check if an admin account has been added
+        $database->hasAccount() || $this->registerUser($database);
+
         // Everything checks out, let the user know
-        $this->render('Up-to-date!', '<p>Je draait de laatste versie van Kiwi.</p>');
+        $this->render('Up-to-date!', "<p>Je draait de laatste versie van Kiwi.$adminHelp</p>");
     }
 
     /**
@@ -1606,8 +1596,8 @@ class UserInterface
         $form
             ->add('security', 'radio', [
                 'options' => [
-                    'local' => 'Lokale userdata',
-                    'bunny' => 'Bunny',
+                    'local' => 'Alleen Kiwi accounts',
+                    'oidc' => 'OpenID Connect accounts',
                 ],
             ])
         ;
@@ -1623,36 +1613,36 @@ class UserInterface
         $this->render('Naam organisatie', '<p>Stel in hoe je accounts wilt beheren.</p>'.$form->render(), $error);
     }
 
-    protected function registerBunny()
+    protected function registerOidc()
     {
-        $form = new Form('bunny');
+        $form = new Form('oidc');
         $form
-            ->add('app_id', 'text', [
-                'label' => 'App ID',
+            ->add('oidc_id', 'text', [
+                'label' => 'Client ID',
                 'required' => true,
             ])
-            ->add('app_secret', 'text', [
-                'label' => 'App Secret',
+            ->add('oidc_secret', 'text', [
+                'label' => 'Clients Secret',
                 'required' => true,
             ])
-            ->add('bunny_url', 'text', [
-                'label' => 'Bunny URL',
+            ->add('oidc_url', 'text', [
+                'label' => 'OpenID Connect Issuer URL',
                 'required' => true,
                 'filter' => FILTER_VALIDATE_URL,
             ])
         ;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->env->setVar('BUNNY_SECRET', $form->getData('app_secret'));
-            $this->env->setVar('BUNNY_ID', $form->getData('app_id'));
-            $this->env->setVar('BUNNY_ADDRESS', $form->getData('bunny_url'));
+            $this->env->setVar('OIDC_SECRET', $form->getData('oidc_secret'));
+            $this->env->setVar('OIDC_ID', $form->getData('oidc_id'));
+            $this->env->setVar('OIDC_ADDRESS', $form->getData('oidc_url'));
             $this->env->save();
 
             return;
         }
 
         $error = join(', ', $form->getErrors());
-        $this->render('Spooky Bunny configuratie', '<p>Stel de verbindingsinstellingen voor Bunny in.</p>'.$form->render(), $error);
+        $this->render('OpenID Connect configuratie', '<p>Stel de verbindingsinstellingen voor de OpenID Connect accounts in.</p>'.$form->render(), $error);
     }
 
     protected function registerUser(DatabaseTool $database)
@@ -1897,7 +1887,7 @@ echo $step;
 }
 
 set_time_limit(0);
-set_exception_handler(function (\Throwable $e) {
+set_exception_handler(function (Throwable $e) {
     Log::console($e->getMessage()."\n".$e->getTraceAsString());
     UserInterface::render('Probleem!', Log::read(true).'<a class="button grow" href="./update.php">Herstart updater</a>');
 });

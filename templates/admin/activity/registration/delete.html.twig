@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% set page_title = personReg.find(registration.personId).canonical ?? 'Onbekend' ~ ' afmelden voor ' ~ registration.activity.name  %}
+{% set page_title = registration.person.canonical ?? 'Onbekend' ~ ' afmelden voor ' ~ registration.activity.name  %}
 
 {% block body %}
     <div class="form">

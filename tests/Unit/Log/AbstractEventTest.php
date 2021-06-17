@@ -51,7 +51,7 @@ class AbstractEventTest extends KernelTestCase
         $this->assertSame($expected, $this->abstractEvent->getTime());
     }
 
-    public function testGetPersonId(): void
+    public function testGetPerson(): void
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();

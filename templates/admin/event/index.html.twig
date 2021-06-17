@@ -32,7 +32,7 @@
                 <tr>
                     <td>{{ event.title }}</td>
                     <td>{{ event.time|date('d-m-Y H:i') }}</td>
-                    <td>{{ personReg.find(event.personId).canonical ?? 'Onbekend' }}</td>
+                    <td>{{ event.person.canonical ?? 'Onbekend' }}</td>
                 </tr>
             {% else %}
                 <tr>

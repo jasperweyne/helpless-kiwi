@@ -1,6 +1,7 @@
 #Editted
 parameters:
     env(ORG_NAME): 'Kiwi'
+    env(PROFILE_URL): ''    
 
 twig:
     default_path: '%kernel.project_dir%/templates'
@@ -9,6 +10,6 @@ twig:
     exception_controller: null
     globals:
         menu: '@App\Template\MenuBuilder'
-        personReg: '@App\Provider\Person\PersonRegistry'
         org: '%env(ORG_NAME)%'
-        bunny: '@App\Provider\BunnyDataProvider'
+        oidc: '%env(OIDC_ADDRESS)%'
+        profile_url: '%env(PROFILE_URL)%'

@@ -3,13 +3,13 @@
 namespace App\Tests;
 
 use App\Entity\Security\LocalAccount;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
-use App\Tests\Database\Security\LocalAccountFixture;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
@@ -66,7 +66,7 @@ class AuthWebTestCase extends WebTestCase
 
         $user = new LocalAccount();
         $user->setEmail(LocalAccountFixture::USERNAME);
-        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_ADMIN']);
+        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_ADMIN', 'ROLE_USER']);
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 
