@@ -1,6 +1,6 @@
 
 <h2>{{ title }}</h2>
-<p>Hallo {{ person.shortname ?? person.name ?? '' }},<br />
+<p>Hallo {{ person.givenName ?? person.name ?? '' }},<br />
 {% if by.canonical|default('') %}
 	Je bent aangemeld voor {{ activity.name }}
 {% else %}
