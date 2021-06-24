@@ -22,7 +22,7 @@ class EventService
         if (null === $token || !\is_object($token->getUser())) {
             $this->person = null;
         } else {
-            $this->person = $token->getUser()->getPerson()->getId();
+            $this->person = $token->getUser();
         }
 
         $this->em = $em;
@@ -57,7 +57,7 @@ class EventService
         $entity
             ->setTime(new \DateTime())
             ->setDiscr(get_class($event))
-            ->setPersonId($this->person)
+            ->setPerson($this->person)
             ->setMeta(serialize($meta))
         ;
 
@@ -94,7 +94,7 @@ class EventService
 
         $fields = unserialize($entity->getMeta());
         $fields['time'] = $entity->getTime();
-        $fields['person'] = $entity->getPersonId();
+        $fields['person'] = $entity->getPerson();
         $fields['entityCb'] = $objectClosure;
         $fields['entityType'] = $objectType;
 

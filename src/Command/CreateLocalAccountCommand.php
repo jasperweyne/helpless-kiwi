@@ -7,10 +7,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Console\Input\InputOption;
 
 class CreateLocalAccountCommand extends Command
 {
@@ -56,12 +56,12 @@ class CreateLocalAccountCommand extends Command
         ]);
         $helper = $this->getHelper('question');
 
-        if (!$input->hasArgument('name')) {
+        if (!$input->getArgument('name')) {
             $question = new Question('Public name: ');
             $input->setArgument('name', $helper->ask($input, $output, $question));
         }
 
-        if (!$input->hasArgument('pass')) {
+        if (!$input->getArgument('pass')) {
             while (true) {
                 $question = new Question('Please enter a password: ');
                 $question->setHidden(true);
@@ -101,6 +101,6 @@ class CreateLocalAccountCommand extends Command
         $this->em->persist($account);
         $this->em->flush();
 
-        $output->writeln($account->getPerson()->getCanonical().' login registered!');
+        $output->writeln($account->getCanonical().' login registered!');
     }
 }

@@ -3,7 +3,6 @@
 namespace Tests\Integration\Form\Group;
 
 use App\Form\Group\RelationType;
-use App\Provider\Person\PersonRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -14,16 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class RelationTypeTest extends KernelTestCase
 {
     /**
-     * @var RelationType
-     */
-    protected $relationType;
-
-    /**
-     * @var PersonRegistry
-     */
-    protected $personRegistry;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -31,8 +20,7 @@ class RelationTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->personRegistry = self::$container->get(PersonRegistry::class);
-        $this->relationType = new RelationType($this->personRegistry);
+        $this->relationType = new RelationType();
     }
 
     /**
@@ -43,7 +31,6 @@ class RelationTypeTest extends KernelTestCase
         parent::tearDown();
 
         unset($this->relationType);
-        unset($this->personRegistry);
     }
 
     public function testBuildForm(): void

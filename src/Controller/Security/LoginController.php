@@ -2,9 +2,8 @@
 
 namespace App\Controller\Security;
 
-use App\Entity\Security\LocalAccount;
-use App\Security\OAuth2Authenticator;
 use App\Template\Annotation\MenuItem;
+use Drenso\OidcBundle\OidcClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,21 +15,16 @@ class LoginController extends AbstractController
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(Request $request,
-        OAuth2Authenticator $authenticator,
-        AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils, OidcClient $oidc): Response
     {
         // you can't login again while you already are, redirect
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect('/');
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $bunny = isset($_ENV['BUNNY_ADDRESS']);
-        $local = count($em->getRepository(LocalAccount::class)->findAll()) > 0;
-        if (($bunny && !$local) ||
-            $request->query->getAlpha('provider') == 'bunny') {
-            return $authenticator->start($request);
+        $oidcEnabled = isset($_ENV['OIDC_ADDRESS']);
+        if ('local' !== $request->query->getAlpha('provider') && $oidcEnabled) {
+            return $oidc->generateAuthorizationRedirect(null, ['openid', 'profile', 'email']);
         }
 
         // get the login error if there is one
@@ -47,6 +41,14 @@ class LoginController extends AbstractController
 
         return $this->render('security/login.html.twig',
             ['last_username' => $lastUsername]);
+    }
+
+    /**
+     * @Route("/login_check", name="app_login_check")
+     */
+    public function login_check()
+    {
+        return $this->redirect('/');
     }
 
     /**

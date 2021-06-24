@@ -10,14 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class RegistrationHelper extends AbstractController
 {
     private $mailer;
-    private $personRegistry;
 
     public function __construct(
-        \App\Mail\MailService $mailer,
-        \App\Provider\Person\PersonRegistryInterface $personRegistry
+        \App\Mail\MailService $mailer
     ) {
         $this->mailer = $mailer;
-        $this->personRegistry = $personRegistry;
     }
 
     /**
@@ -113,7 +110,7 @@ class RegistrationHelper extends AbstractController
         $em->persist($registration);
         $em->flush();
 
-        $person = $this->personRegistry->find($registration->getPersonId());
+        $person = $registration->getPerson();
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' aangemeld op de reservelijst!');
     }
 
@@ -129,7 +126,7 @@ class RegistrationHelper extends AbstractController
 
         $em->flush();
 
-        $person = $this->personRegistry->find($registration->getPersonId());
+        $person = $registration->getPerson();
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
 
         return $registration->getActivity()->getId();
@@ -147,7 +144,7 @@ class RegistrationHelper extends AbstractController
 
         $em->flush();
 
-        $person = $this->personRegistry->find($registration->getPersonId());
+        $person = $registration->getPerson();
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
         return $registration->getActivity()->getId();
@@ -161,7 +158,7 @@ class RegistrationHelper extends AbstractController
         $message
     ) {
         $em->flush();
-        $person = $this->personRegistry->find($registration->getPersonId());
+        $person = $registration->getPerson();
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' '.$message);
 
         $title = $title.' '.$registration->getActivity()->getName();
@@ -169,7 +166,7 @@ class RegistrationHelper extends AbstractController
             'person' => $person,
             'activity' => $registration->getActivity(),
             'title' => $title,
-            'by' => $this->getUser()->getPerson(),
+            'by' => $this->getUser(),
         ]);
 
         $this->mailer->message($person, $title, $body);

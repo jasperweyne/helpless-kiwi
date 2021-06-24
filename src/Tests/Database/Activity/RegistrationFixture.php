@@ -7,19 +7,22 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use App\Repository\RegistrationRepository;
+use App\Tests\Database\Security\LocalAccountFixture;
+use App\Tests\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use App\Tests\TestData;
 
 class RegistrationFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $priceOption = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'0');
+        $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
+        $priceOption1 = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'0');
+        $priceOption2 = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'1');
         $activity = $this->getReference(ActivityFixture::ACTIVITY_REFERENCE.'0');
 
-        $registrations = self::generate($priceOption, $activity)->return();
+        $registrations = self::generate([$priceOption1, $priceOption2], $activity, $person)->return();
         foreach ($registrations as $object) {
             $manager->persist($object);
         }
@@ -35,15 +38,15 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
-    public static function generate($priceOption, $activity): TestData
+    public static function generate($priceOption, $activity, $person): TestData
     {
         $counter = Order::create(RegistrationRepository::MINORDER());
 
         return TestData::from(new Registration())
             ->with('id', '')
-            ->with('option', $priceOption)
+            ->with('option', ...$priceOption)
             ->with('activity', $activity)
-            ->with('person_id', '1', '2', '3')
+            ->with('person', $person)
             ->do('reserve_position', function ($registration) use (&$counter) {
                 $counter = Order::calc($counter, Order::create('b'), fn ($a, $b) => $a + $b);
                 $registration->setReservePosition($counter);
