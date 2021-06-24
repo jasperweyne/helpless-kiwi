@@ -3,11 +3,6 @@
 namespace App\Form\Activity;
 
 use App\Entity\Activity\Registration;
-use App\Provider\Person\PersonRegistry;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use App\Entity\Security\LocalAccount;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
