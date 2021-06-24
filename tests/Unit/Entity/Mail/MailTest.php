@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entity\Mail;
 
 use App\Entity\Mail\Mail;
+use App\Entity\Security\LocalAccount;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
@@ -92,16 +93,26 @@ class MailTest extends KernelTestCase
         $this->assertSame($expected, $property->getValue($this->mail));
     }
 
-    public function testGetPersonId(): void
+    public function testGetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Mail::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $property->setValue($this->mail, $expected);
+        $this->assertSame($expected, $this->mail->getPerson());
     }
 
-    public function testSetPersonId(): void
+    public function testSetPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(Mail::class))
+            ->getProperty('person');
+        $property->setAccessible(true);
+        $this->mail->setPerson($expected);
+        $this->assertSame($expected, $this->mail->getPerson());
     }
 
     public function testGetRecipients(): void

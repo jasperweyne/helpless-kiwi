@@ -8,32 +8,22 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Entity\Security\LocalAccount;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationType extends AbstractType
 {
-    private $personRegistry;
-
-    public function __construct(PersonRegistry $personRegistry)
-    {
-        $this->personRegistry = $personRegistry;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('person_id', ChoiceType::class, [
+            ->add('person', EntityType::class, [
                 'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
-                'choice_loader' => new CallbackChoiceLoader(function () {
-                    $persons = [];
-                    foreach ($this->personRegistry->findAll() as $person) {
-                        $persons[$person->getCanonical()] = $person->getId();
-                    }
-
-                    return $persons;
-                }),
+                'class' => LocalAccount::class,
+                'choice_label' => 'canonical',
                 'required' => true,
             ])
             ->add('option', EntityType::class, [

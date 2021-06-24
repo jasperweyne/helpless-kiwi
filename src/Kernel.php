@@ -2,22 +2,17 @@
 
 namespace App;
 
-use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Drenso\OidcBundle\Security\Factory\OidcFactory;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-class Kernel extends BaseKernel implements CompilerPassInterface
+class Kernel extends BaseKernel
 {
-    public function process(\Symfony\Component\DependencyInjection\ContainerBuilder $container)
-    {
-        $container->autowire(Sha256::class, Sha256::class);
-    }
-
     use MicroKernelTrait;
 
     private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
@@ -57,5 +52,13 @@ class Kernel extends BaseKernel implements CompilerPassInterface
         $routes->import($confDir.'/{routes}/'.$this->environment.'/*'.self::CONFIG_EXTS, '/', 'glob');
         $routes->import($confDir.'/{routes}/*'.self::CONFIG_EXTS, '/', 'glob');
         $routes->import($confDir.'/{routes}'.self::CONFIG_EXTS, '/', 'glob');
+    }
+
+    protected function build(ContainerBuilder $container)
+    {
+        // Register the Oidc factory
+        $extension = $container->getExtension('security');
+        assert($extension instanceof SecurityExtension);
+        $extension->addSecurityListenerFactory(new OidcFactory());
     }
 }

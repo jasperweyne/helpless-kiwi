@@ -3,7 +3,6 @@
 namespace App\Log\Doctrine;
 
 use App\Entity\Log\Event;
-use App\Entity\Security\OAuth2AccessToken;
 use App\Log\EventService;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -28,7 +27,7 @@ class EntityEventListener
 
         // On create entity
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ($entity instanceof Event || $entity instanceof OAuth2AccessToken) {
+            if ($entity instanceof Event) {
                 continue;
             }
 
@@ -47,10 +46,10 @@ class EntityEventListener
 
         // On edit entity
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Event || $entity instanceof OAuth2AccessToken) {
+            if ($entity instanceof Event) {
                 continue;
             }
-            
+
             $metadata = $em->getClassMetadata(get_class($entity));
             $original = $this->extractFields($entity, $metadata);
 

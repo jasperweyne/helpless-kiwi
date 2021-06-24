@@ -4,6 +4,9 @@ namespace Tests\Functional\Controller\Activity;
 
 use App\Controller\Activity\ActivityController;
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
+use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Activity\ActivityFixture;
 use App\Tests\Database\Activity\PriceOptionFixture;
@@ -36,13 +39,13 @@ class ActivityControllerTest extends AuthWebTestCase
 
         // Get all database tables
         $this->em = self::$container->get(EntityManagerInterface::class);
-
         $this->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,
             RegistrationFixture::class,
         ]);
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -80,20 +83,64 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testUnregisterAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        /** @var LocalAccount */
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
+        /** @var Registration */
+        $reg = $this->em->getRepository(Registration::class)->findBy(['person' => $user])[0];
+        $id = $reg->getActivity()->getId();
+
+        // Act
+        $this->client->request('GET', "/activity/{$id}");
+        $this->client->submitForm('Afmelden');
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'gelukt');
+        /** @var Registration */
+        $dereg = $this->em->getRepository(Registration::class)->find($reg->getId());
+        $this->assertNotNull($dereg->getDeleteDate());
     }
 
     public function testRegisterAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        // Unload th Registration Fixture
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            PriceOptionFixture::class,
+            ActivityFixture::class,
+        ]);
+
+        // Retrieve data
+        /** @var LocalAccount */
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
+        /** @var PriceOption */
+        $option = $this->em->getRepository(PriceOption::class)->findAll()[0];
+        $id = $option->getActivity()->getId();
+
+        // Act
+        $this->client->request('GET', "/activity/{$id}");
+        $this->client->submitForm('Aanmelden');
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'gelukt');
+        $reg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user, 'option' => $option]);
+        $this->assertNotNull($reg);
     }
 
     public function testShowAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', "/activity/{$id}");
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testSingleUnregistrationForm(): void

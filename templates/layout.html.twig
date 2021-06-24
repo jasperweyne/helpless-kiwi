@@ -33,8 +33,8 @@
                 </nav>
                 <span class="personal">
                 {% if app.user %}
-                    {% if bunny.getAddress() %}
-                        <a href="{{ bunny.getAddress() }}">Mijn profiel</a>
+                    {% if profile_url %}
+                        <a href="{{ profile_url }}">Mijn profiel</a>
                     {% endif %}
                     <a href="{{ path('app_logout') }}">Uitloggen</a>
                 {% else %}

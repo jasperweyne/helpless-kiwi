@@ -23,7 +23,7 @@ class AbstractEvent
         return $this->time;
     }
 
-    public function getPersonId()
+    public function getPerson()
     {
         if (null === $this->time) {
             throw new \RuntimeException('Can only be called after the event has been retrieved from the database');

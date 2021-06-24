@@ -2,8 +2,9 @@
 
 namespace App\Entity\Mail;
 
-use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -18,9 +19,10 @@ class Mail
     private $id;
 
     /**
-     * @ORM\Column(type="guid", nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      */
-    private $person_id;
+    private $person;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Mail\Recipient", mappedBy="mail")
@@ -76,14 +78,14 @@ class Mail
         return $this;
     }
 
-    public function getPersonId(): ?string
+    public function getPerson(): ?LocalAccount
     {
-        return $this->person_id;
+        return $this->person;
     }
 
-    public function setPersonId(?string $person_id): self
+    public function setPerson(?LocalAccount $person): self
     {
-        $this->person_id = $person_id;
+        $this->person = $person;
 
         return $this;
     }
