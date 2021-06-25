@@ -63,6 +63,11 @@ class Registration
     private $present;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $comment;
+
+    /**
      * Get id.
      *
      * @return string
@@ -177,5 +182,15 @@ class Registration
     public function setPresent($present)
     {
         $this->present = $present;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment)
+    {
+        $this->comment = $comment;
     }
 }

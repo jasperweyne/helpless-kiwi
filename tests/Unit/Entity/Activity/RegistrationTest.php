@@ -5,6 +5,7 @@ namespace Tests\Unit\Entity\Activity;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
+use DateTime;
 use App\Entity\Security\LocalAccount;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -127,44 +128,72 @@ class RegistrationTest extends KernelTestCase
 
     public function testIsReserve(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = null;
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('reserve_position');
+        $property->setAccessible(true);
+        $property->setValue($this->registration, $expected);
+        $this->assertSame($expected, $this->registration->getReservePosition());
     }
 
     public function testGetReservePosition(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = null;
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('reserve_position');
+        $property->setAccessible(true);
+        $property->setValue($this->registration, $expected);
+        $this->assertSame($expected, $this->registration->getReservePosition());
     }
 
     public function testSetReservePosition(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = null;
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('reserve_position');
+        $property->setAccessible(true);
+        $this->registration->setReservePosition($expected);
+        $this->assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetNewDate(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new DateTime();
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('newdate');
+        $property->setAccessible(true);
+        $property->setValue($this->registration, $expected);
+        $this->assertSame($expected, $this->registration->getNewDate());
     }
 
     public function testSetNewDate(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new DateTime();
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('newdate');
+        $property->setAccessible(true);
+        $this->registration->setNewDate($expected);
+        $this->assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetDeleteDate(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new DateTime();
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('deletedate');
+        $property->setAccessible(true);
+        $property->setValue($this->registration, $expected);
+        $this->assertSame($expected, $this->registration->getDeleteDate());
     }
 
     public function testSetDeleteDate(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new DateTime();
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('deletedate');
+        $property->setAccessible(true);
+        $this->registration->setDeleteDate($expected);
+        $this->assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetPresent(): void
@@ -184,6 +213,26 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('present');
         $property->setAccessible(true);
         $this->registration->setPresent($expected);
+        $this->assertSame($expected, $property->getValue($this->registration));
+    }
+
+    public function testGetComment()
+    {
+        $expected = 'TestComment';
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('comment');
+        $property->setAccessible(true);
+        $property->setValue($this->registration, $expected);
+        $this->assertSame($expected, $this->registration->getComment());
+    }
+
+    public function testSetComment()
+    {
+        $expected = 'TestComment';
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('comment');
+        $property->setAccessible(true);
+        $this->registration->setComment($expected);
         $this->assertSame($expected, $property->getValue($this->registration));
     }
 }

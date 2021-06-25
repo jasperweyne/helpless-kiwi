@@ -25,6 +25,7 @@
                                     <th>Laatst bewerkt</th>
                                     <th>Acties</th>
                                     <th>Aanwezigheid</th>
+                                    <th>Opmerking</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,6 +46,7 @@
                                     {% elseif registration.present == true %}Aanwezig
                                     {% else %}Afwezig
                                     {% endif %}</td>
+                                    <td> {{registration.comment}} </td>
                                 </tr>
                             {% else %}
                                 <tr>
