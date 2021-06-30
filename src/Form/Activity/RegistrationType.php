@@ -30,7 +30,6 @@ class RegistrationType extends AbstractType
                 },
                 'required' => true,
             ])
-
         ;
     }
 

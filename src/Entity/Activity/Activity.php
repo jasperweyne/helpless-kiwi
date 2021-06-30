@@ -117,6 +117,11 @@ class Activity
     private $present;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $hidden = false;
+
+    /**
      * Get id.
      *
      * @return string
@@ -429,7 +434,7 @@ class Activity
         return $this;
     }
 
-    public function getPresent()
+    public function getPresent(): ?int
     {
         return $this->present;
     }
@@ -437,5 +442,15 @@ class Activity
     public function setPresent(?int $present)
     {
         $this->present = $present;
+    }
+
+    public function getHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden)
+    {
+        $this->hidden = $hidden;
     }
 }
