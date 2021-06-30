@@ -66,11 +66,6 @@ class ActivityEditTypeTest extends KernelTestCase
         $this->assertTrue($form->isSubmitted());
     }
 
-    public function testBuildForm(): void
-    {
-        $this->assertTrue(true);
-    }
-
     public function testConfigureOptions(): void
     {
         $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")

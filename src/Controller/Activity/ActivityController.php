@@ -40,7 +40,7 @@ class ActivityController extends AbstractController
             $groups = $em->getRepository(Group::class)->findAllFor($user);
         }
 
-        $activities = $em->getRepository(Activity::class)->findUpcomingByGroupWithoutHidden($groups);
+        $activities = $em->getRepository(Activity::class)->findVisableUpcomingByGroup($groups);
 
         return $this->render('activity/index.html.twig', [
             'activities' => $activities,

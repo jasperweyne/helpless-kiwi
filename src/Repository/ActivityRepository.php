@@ -50,7 +50,7 @@ class ActivityRepository extends ServiceEntityRepository
     /**
      * @return Activity[] Returns an array of Activity objects
      */
-    public function findUpcomingByGroupWithoutHidden($groups)
+    public function findVisableUpcomingByGroup($groups)
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')

@@ -85,13 +85,13 @@ class ActivityRepositoryTest extends KernelTestCase
         $this->markTestIncomplete();
     }
 
-    public function testFindUpcomingByGroupWithoutHidden(): void
+    public function testVisableUpcomingByGroup(): void
     {
         $groups = $this->em->getRepository(Group::class)->findAll();
 
         $activities = $this->em
             ->getRepository(Activity::class)
-            ->findUpcomingByGroupWithoutHidden($groups);
+            ->findVisableUpcomingByGroup($groups);
 
         $this->assertTrue(count($activities) > 0);
     }
