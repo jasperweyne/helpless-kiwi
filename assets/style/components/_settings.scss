@@ -4,6 +4,7 @@
  * Overrides default Foundation settings, found in style/admin/_settings.scss 
  */
 
+@use "sass:math";
 @import url('https://fonts.googleapis.com/css?family=Raleway:400,800&display=swap');
 
 // Colors
@@ -24,7 +25,7 @@ $nav-height: rem-calc(60px);
 $nav-width : rem-calc(300px);
 
 // Layout
-$padding: ($nav-height - 1) / 2;
+$padding: math.div(($nav-height - 1), 2);
 $grid-margin-gutters: (
   small: $padding,
   medium: $padding
