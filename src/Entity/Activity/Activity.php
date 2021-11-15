@@ -7,6 +7,7 @@ use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,6 +15,7 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * @GQL\Type
  * @ORM\Entity(repositoryClass="App\Repository\ActivityRepository")
  * @Vich\Uploadable
  */
@@ -29,6 +31,7 @@ class Activity
     /**
      * @ORM\Column(type="string", length=100, name="title")
      * @Assert\NotBlank
+     * @GQL\Field(type="String")
      */
     private $name;
 
