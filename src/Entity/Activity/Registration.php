@@ -5,9 +5,11 @@ namespace App\Entity\Activity;
 use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @GQL\Type
  * @ORM\Entity(repositoryClass="App\Repository\RegistrationRepository")
  */
 class Registration
@@ -39,6 +41,7 @@ class Registration
     private $activity;
 
     /**
+     * @GQL\Field(type="String")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $reserve_position;

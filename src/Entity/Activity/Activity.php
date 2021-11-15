@@ -47,6 +47,7 @@ class Activity
     private $options;
 
     /**
+     * @GQL\Field(type="[Registration]")
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="activity")
      */
     private $registrations;
