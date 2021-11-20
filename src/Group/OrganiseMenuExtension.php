@@ -54,24 +54,22 @@ class OrganiseMenuExtension implements MenuExtensionInterface
      */
     private function discoverMenuItems()
     {
-
         $this->menuItems = [];
 
-        if ($this->getUser() != null) {
-            $groups = $this->em->getRepository(Group::class)->findAllFor($this->getUser()->getPerson());
-            
+        if (null != $this->getUser()) {
+            $groups = $this->em->getRepository(Group::class)->findAllFor($this->getUser());
+
             foreach ($groups as $group) {
                 if (!$group->isActive()) {
                     continue;
                 }
-    
+
                 $this->menuItems[] = [
                     'title' => $group->getName(),
                     'path' => ['organise_index', ['id' => $group->getId()]],
                 ];
             }
         }
-
     }
 
     private function getUser()

@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% set page_title = 'Bewerk account' ~ (account.person ? ' van ' ~ account.person.canonical : '' %}
+{% set page_title = 'Bewerk account van ' ~ account.canonical %}
 
 {% block body %}
     <div class="form">

@@ -7,17 +7,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Console\Input\InputOption;
 
 class CreateLocalAccountCommand extends Command
 {
     private $em;
     private $passwordEncoder;
-    private $raw_pass;
-    private $name;
 
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:create-account';
@@ -42,6 +40,8 @@ class CreateLocalAccountCommand extends Command
 
             // possible arguments
             ->addArgument('email', InputArgument::REQUIRED, 'The e-mail address of the login.')
+            ->addArgument('name', InputArgument::OPTIONAL, 'The public name associated with the user.')
+            ->addArgument('pass', InputArgument::OPTIONAL, 'The password for login with the user.')
 
             // options
             ->addOption('admin', null, InputOption::VALUE_NONE, 'Make the user an admin');
@@ -56,45 +56,51 @@ class CreateLocalAccountCommand extends Command
         ]);
         $helper = $this->getHelper('question');
 
-        $question = new Question('Public name: ');
-        $this->name = $helper->ask($input, $output, $question);
+        if (!$input->getArgument('name')) {
+            $question = new Question('Public name: ');
+            $input->setArgument('name', $helper->ask($input, $output, $question));
+        }
 
-        while (true) {
-            $question = new Question('Please enter a password: ');
-            $question->setHidden(true);
-            $question->setHiddenFallback(false);
-            $pass = $helper->ask($input, $output, $question);
+        if (!$input->getArgument('pass')) {
+            while (true) {
+                $question = new Question('Please enter a password: ');
+                $question->setHidden(true);
+                $question->setHiddenFallback(false);
+                $pass = $helper->ask($input, $output, $question);
 
-            $question = new Question('Confirm the password: ');
-            $question->setHidden(true);
-            $question->setHiddenFallback(false);
-            $pass_confirm = $helper->ask($input, $output, $question);
+                $question = new Question('Confirm the password: ');
+                $question->setHidden(true);
+                $question->setHiddenFallback(false);
+                $pass_confirm = $helper->ask($input, $output, $question);
 
-            if ($pass === $pass_confirm && '' != $pass) {
-                $this->raw_pass = $pass;
-                break;
+                if ($pass === $pass_confirm && '' != $pass) {
+                    $input->setArgument('pass', $pass);
+                    break;
+                }
+
+                $output->writeln('Invalid input, please try again!');
             }
-
-            $output->writeln('Invalid input, please try again!');
         }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $email = $input->getArgument('email');
+        $name = $input->getArgument('name');
+        $pass = $input->getArgument('pass');
 
         $account = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]) ?? new LocalAccount();
         $account
             // Persons
-            ->setName($this->name)
+            ->setName($name)
             ->setEmail($email)
-            ->setPassword($this->passwordEncoder->encodePassword($account, $this->raw_pass))
+            ->setPassword($this->passwordEncoder->encodePassword($account, $pass))
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : [])
         ;
 
         $this->em->persist($account);
         $this->em->flush();
 
-        $output->writeln($account->getPerson()->getCanonical().' login registered!');
+        $output->writeln($account->getCanonical().' login registered!');
     }
 }

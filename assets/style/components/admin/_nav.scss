@@ -1,3 +1,5 @@
+@use "sass:math";
+
 #nav-state {
 	display: none;
 }
@@ -5,7 +7,7 @@
 .nav-toggle {
 	width         : auto;
 	height        : $nav-height;
-	padding       : ($nav-height - rem-calc(12)) / 2 $padding;
+	padding       : math.div(($nav-height - rem-calc(12)), 2) $padding;
 	cursor        : pointer;
     font-size     : rem-calc(12);
     font-weight   : $global-weight-bold;
@@ -212,7 +214,7 @@ nav {
             background: $nav-active;
 
             .sub {
-                margin-top : $padding / 2;
+                margin-top : math.div($padding, 2);
                 margin-left: $padding;
                 display    : block;
                 padding    : 0;

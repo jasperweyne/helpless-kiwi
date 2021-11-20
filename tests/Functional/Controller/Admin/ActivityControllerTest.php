@@ -4,9 +4,9 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\ActivityController;
 use App\Log\EventService;
+use App\Tests\AuthWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Tests\Helper\AuthWebTestCase;
 
 /**
  * Class ActivityControllerTest.

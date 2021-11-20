@@ -1,4 +1,12 @@
 # Install
+For easy installation, the install & update script is now provided. Right click
+[this link to the script](https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/master/public/update.php)
+and download it. Place it on your server, with the filename 'update.php'. Make
+sure its parent directories are /public_html/kiwi. Locate the script in your
+browser by navigating to https://__your.server.com__/update.php. Follow the
+instructions to install Kiwi.
+
+If you want to manually install Kiwi, please follow the steps below.
 
 ## Prerequisites
 Make sure php 7 is installed on your machine. If you're deploying to another

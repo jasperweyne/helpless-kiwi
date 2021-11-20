@@ -3,15 +3,18 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\SecurityController;
+use App\Entity\Security\LocalAccount;
 use App\Log\EventService;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class SecurityControllerTest.
  *
  * @covers \App\Controller\Admin\SecurityController
  */
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerTest extends AuthWebTestCase
 {
     /**
      * @var SecurityController
@@ -29,10 +32,13 @@ class SecurityControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
+        $this->login();
 
-        $this->events = self::$container->get(EventService::class);
-        $this->securityController = new SecurityController($this->events);
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+        ]);
+
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -42,8 +48,7 @@ class SecurityControllerTest extends WebTestCase
     {
         parent::tearDown();
 
-        unset($this->securityController);
-        unset($this->events);
+        unset($this->em);
     }
 
     public function testGetMenuItems(): void
@@ -54,14 +59,27 @@ class SecurityControllerTest extends WebTestCase
 
     public function testIndexAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $this->client->request('GET', '/admin/security/');
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNewAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $crawler = $this->client->request('GET', '/admin/security/new');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $form['local_account[name]'] = 'John';
+        $form['local_account[email]'] = 'john@doe.eyes';
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        // TODO: figure our if this is actually the way to test this....
+        $this->assertEquals(1, $crawler->filter('.top > h3:nth-child(1)')->count());
     }
 
     public function testShowAction(): void
@@ -84,7 +102,18 @@ class SecurityControllerTest extends WebTestCase
 
     public function testRolesAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $localAdmin = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $id = $localAdmin->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', "/admin/security/{$id}/roles");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['form[admin]']->setValue(false);
+        $this->client->submit($form);
+        $this->assertSelectorTextContains('.container', 'Rollen bewerkt');
+        $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $this->assertEquals(["ROLE_USER"], $localUser->getRoles());
     }
 }
