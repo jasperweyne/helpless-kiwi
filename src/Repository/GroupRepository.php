@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Group\Group;
-use App\Provider\Person\Person;
+use App\Entity\Security\LocalAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,11 +23,11 @@ class GroupRepository extends ServiceEntityRepository
     /**
      * @return Group[] Returns an array of Group objects
      */
-    public function findAllFor(Person $person)
+    public function findAllFor(LocalAccount $person)
     {
         return $this->createQueryBuilder('g')
             ->join('g.relations', 'r', 'WITH', 'r.group = g.id')
-            ->andWhere('r.person_id = :person')
+            ->andWhere('r.person = :person')
             ->setParameter('person', $person->getId())
             ->getQuery()
             ->getResult()

@@ -19,13 +19,25 @@
         <table>
             <thead>
                 <tr>
+                    <th>Naam</th>
                     <th>E-mail</th>
+                    <th>Administrator</th>
+                    <th>{{ oidc ? 'Lokale login' : 'Geactiveerd' }}</th>
+                    {% if oidc %}
+                        <th>Externe login</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
-            {% for account in accounts %}
+            {% for account in accounts|sort((a, b) => (a.person.canonical ?? '') <=> (b.person.canonical ?? '')) %}
                 <tr>
-                    <td><a href="{{ path("admin_security_show", { 'id': account.id }) }}">{{ account.person.canonical }}</a></td>
+                    <td><a href="{{ path("admin_security_show", { 'id': account.id }) }}">{{ account.canonical ?? '{onbekend}'}}</a></td>
+                    <td>{{ account.email }}</td>
+                    <td>{{ 'ROLE_ADMIN' in account.roles ? 'Ja' : 'Nee' }}</td>
+                    <td>{{ account.password ? 'Ja' : 'Nee' }}</td>
+                    {% if oidc %}
+                        <td>{{ account.oidc ? 'Ja' : 'Nee' }}</td>
+                    {% endif %}
                 </tr>
             {% else %}
                 <tr>

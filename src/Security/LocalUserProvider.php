@@ -4,12 +4,14 @@ namespace App\Security;
 
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
+use Drenso\OidcBundle\Security\Authentication\Token\OidcToken;
+use Drenso\OidcBundle\Security\UserProvider\OidcUserProviderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class LocalUserProvider implements UserProviderInterface
+class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterface
 {
     private $em;
 
@@ -36,6 +38,36 @@ class LocalUserProvider implements UserProviderInterface
     public function supportsClass($class)
     {
         return LocalAccount::class === $class || is_subclass_of($class, LocalAccount::class);
+    }
+
+    /**
+     * Call this method to create a new user from the data available in the token,
+     * but only if the user does not exists yet.
+     * If it does exist, return that user.
+     *
+     * @return UserInterface
+     */
+    public function loadUserByToken(OidcToken $token)
+    {
+        $repository = $this->em->getRepository(LocalAccount::class);
+        $user = $repository->findOneBy(['oidc' => $token->getSub()]);
+
+        // If user does not exist, create it
+        if (null === $user) {
+            $user = new LocalAccount();
+            $user->setOidc($token->getSub());
+            $user->setRoles([]);
+            $this->em->persist($user);
+        }
+
+        // Update the user data
+        $user->setName($token->getFullName());
+        $user->setGivenName($token->getGivenName());
+        $user->setFamilyName($token->getFamilyName());
+        $user->setEmail($token->getEmail());
+        $this->em->flush();
+
+        return $user;
     }
 
     /**

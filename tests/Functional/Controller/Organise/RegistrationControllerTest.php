@@ -6,13 +6,13 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Activity\RegistrationFixture;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Group\RelationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Tests\Helper\AuthWebTestCase;
-use Tests\Helper\Database\Activity\ActivityFixture;
-use Tests\Helper\Database\Activity\RegistrationFixture;
-use Tests\Helper\Database\Group\GroupFixture;
-use Tests\Helper\Database\Group\RelationFixture;
-use Tests\Helper\Database\Security\LocalAccountFixture;
 
 /**
  * Class RegistrationControllerTest.
@@ -81,7 +81,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $id = $activity->getId();
 
@@ -99,7 +99,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $originalCount = $activity->getRegistrations()->count();
         $id = $activity->getId();
@@ -120,7 +120,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $registration = $activity->getRegistrations()[0];
         $id = $registration->getId();
@@ -139,7 +139,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $registration = $activity->getRegistrations()[0];
         $id = $registration->getId();
@@ -159,7 +159,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $id = $activity->getId();
 
@@ -177,7 +177,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $originalCount = $activity->getRegistrations()->count();
         $id = $activity->getId();
@@ -198,7 +198,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
         $secondReserveId = $reserves[1]->getId();
@@ -217,7 +217,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => LocalAccountFixture::USERNAME])[0];
-        $relation = $this->em->getRepository(Relation::class)->findBy(['person_id' => $user->getId()])[0];
+        $relation = $this->em->getRepository(Relation::class)->findBy(['person' => $user])[0];
         $activity = $this->em->getRepository(Activity::class)->findBy(['author' => $relation->getGroup()->getId()])[0];
         $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
         $firstReserveId = $reserves[0]->getId();
