@@ -113,7 +113,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Verzenden')->form();
-        $form['password_request[email]'] = 'admin@test.nl';
+        $form['password_request[email]'] = LocalAccountFixture::USERNAME;
         $crawler = $this->client->submit($form);
 
         // Assert
