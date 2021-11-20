@@ -3,8 +3,11 @@
 namespace Tests\Functional\Controller\Security;
 
 use App\Controller\Security\PasswordController;
+use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -12,7 +15,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  *
  * @covers \App\Controller\Security\PasswordController
  */
-class PasswordControllerTest extends WebTestCase
+class PasswordControllerTest extends AuthWebTestCase
 {
     /**
      * @var PasswordController
@@ -40,6 +43,13 @@ class PasswordControllerTest extends WebTestCase
         $this->passwordEncoder = self::$container->get(UserPasswordEncoderInterface::class);
         $this->passwordReset = self::$container->get(PasswordResetService::class);
         $this->passwordController = new PasswordController($this->passwordEncoder, $this->passwordReset);
+        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->userProvider = new LocalUserProvider($this->em);
+
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+        ]);
+
     }
 
     /**
@@ -52,23 +62,62 @@ class PasswordControllerTest extends WebTestCase
         unset($this->passwordController);
         unset($this->passwordEncoder);
         unset($this->passwordReset);
+        unset($this->userProvider);
+        unset($this->em);
     }
 
     public function testResetAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth->setPasswordRequestedAt(new \DateTime());
+        $token = $this->passwordReset->generatePasswordRequestToken($auth);
+        $crawler = $this->client->request('GET', '/password/reset/' . $auth->getId() . '?token=' . $token);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Nieuw wachtwoord bevestigen')->form();
+        $newPassword = 'password123';
+        $form['new_password[password][first]'] = $newPassword;
+        $form['new_password[password][second]'] = $newPassword;
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Wachtwoord aangepast!');
     }
 
     public function testRegisterAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth->setPasswordRequestedAt(new \DateTime());
+        $token = $this->passwordReset->generatePasswordRequestToken($auth);
+        $crawler = $this->client->request('GET', '/password/register/' . $auth->getId() . '?token=' . $token);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Account activeren')->form();
+        $newPassword = 'password123';
+        $form['new_password[password][first]'] = $newPassword;
+        $form['new_password[password][second]'] = $newPassword;
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Account succesvol geregistreed, log in!');
     }
 
     public function testRequestAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $crawler = $this->client->request('GET', '/password/request');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Verzenden')->form();
+        $form['password_request[email]'] = 'admin@test.nl';
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar ' . LocalAccountFixture::USERNAME);
     }
 }
