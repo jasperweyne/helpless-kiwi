@@ -2,16 +2,16 @@
 
 namespace App\Entity\Activity;
 
+use App\Entity\Group\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Group\Group;
-
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OptionRepository")
- * 
+ * @GQL\Type
  */
 class PriceOption
 {
@@ -19,29 +19,34 @@ class PriceOption
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     * @GQL\Field(type="String")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100, name="title")
      * @Assert\NotBlank
+     * @GQL\Field(type="String")
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="options")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
+     * @GQL\Field(type="Activity")
      */
     private $activity;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
+     * @GQL\Field(type="Group")
      */
     private $target;
 
     /**
      * @ORM\Column(type="integer")
+     * @GQL\Field(type="Int")
      */
     private $price;
 
@@ -52,11 +57,13 @@ class PriceOption
 
     /**
      * @ORM\Column(type="string")
+     * @GQL\Field(type="String")
      */
     private $confirmationMsg;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="option")
+     * @GQL\Field(type="[Registration]")
      */
     private $registrations;
 
@@ -77,8 +84,6 @@ class PriceOption
 
     /**
      * Set id.
-     *
-     * @param string $id
      */
     public function setId(string $id): self
     {
@@ -99,8 +104,6 @@ class PriceOption
 
     /**
      * Set name.
-     *
-     * @param string $name
      */
     public function setName(string $name): self
     {
@@ -155,7 +158,6 @@ class PriceOption
         return $this;
     }
 
-    
     public function getConfirmationMsg(): ?string
     {
         return $this->confirmationMsg;

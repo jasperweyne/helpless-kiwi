@@ -5,70 +5,83 @@ namespace App\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GroupRepository")
  * @ORM\Table("taxonomy")
+ * @GQL\Type
  */
 class Group
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
+     * @GQL\Field(type="String")
      * @ORM\Column(type="guid")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100, name="title")
+     * @GQL\Field(type="String")
      * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @GQL\Field(type="String")
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
+     * @GQL\Field(type="Group")
      */
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Group", mappedBy="parent")
+     * @GQL\Field(type="Group")
      */
     protected $children;
 
     /**
      * @ORM\Column(type="boolean")
+     * @GQL\Field(type="Boolean")
      */
     private $readonly;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @GQL\Field(type="Boolean")
      */
     private $relationable;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @GQL\Field(type="Boolean")
      */
     private $subgroupable;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="group", orphanRemoval=true)
+     * @GQL\Field(type="Relation")
      */
     private $relations;
 
     /**
      * @ORM\Column(type="boolean")
+     * @GQL\Field(type="Boolean")
      */
     private $active;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @GQL\Field(type="Boolean")
      */
     private $register;
 
@@ -92,8 +105,6 @@ class Group
 
     /**
      * Set id.
-     *
-     * @param string $id
      */
     public function setId(string $id): self
     {
@@ -114,8 +125,6 @@ class Group
 
     /**
      * Set name.
-     *
-     * @param string $name
      */
     public function setName(string $name): self
     {
@@ -136,8 +145,6 @@ class Group
 
     /**
      * Set description.
-     *
-     * @param string $description
      */
     public function setDescription(string $description): self
     {

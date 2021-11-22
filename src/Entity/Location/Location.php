@@ -3,9 +3,11 @@
 namespace App\Entity\Location;
 
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 
 /**
  * @ORM\Entity
+ * @GQL\Type
  */
 class Location
 {
@@ -13,11 +15,13 @@ class Location
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     * @GQL\Field(type="String")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string")
+     * @GQL\Field(type="String")
      */
     private $address;
 

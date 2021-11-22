@@ -27,6 +27,7 @@ class Activity
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     * @GQL\Field(type="String")
      */
     private $id;
 
@@ -40,11 +41,13 @@ class Activity
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
+     * @GQL\Field(type="String")
      */
     private $description;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\PriceOption", mappedBy="activity")
+     * @GQL\Field(type="PriceOption")
      */
     private $options;
 
@@ -57,16 +60,19 @@ class Activity
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
+     * @GQL\Field(type="Location")
      */
     private $location;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
+     * @GQL\Field(type="Group")
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id", nullable=true)
      */
     private $author;
 
     /**
+     * @GQL\Field(type="Group")
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
      */
@@ -74,21 +80,25 @@ class Activity
 
     /**
      * @ORM\Column(type="string")
+     * @GQL\Field(type="String")
      */
     private $color;
 
     /**
      * @ORM\Column(type="datetime")
+     * @GQL\Field(type="DateTimeScalar")
      */
     private $start;
 
     /**
      * @ORM\Column(type="datetime")
+     * @GQL\Field(type="DateTimeScalar")
      */
     private $end;
 
     /**
      * @ORM\Column(type="datetime")
+     * @GQL\Field(type="DateTimeScalar")
      */
     private $deadline;
     /**
@@ -107,6 +117,7 @@ class Activity
 
     /**
      * @ORM\Column(type="datetime")
+     * @GQL\Field(type="DateTimeScalar")
      *
      * @var \DateTime
      */
@@ -114,11 +125,13 @@ class Activity
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @GQL\Field(type="Int")
      */
     private $capacity;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @GQL\Field(type="Int")
      */
     private $present;
 

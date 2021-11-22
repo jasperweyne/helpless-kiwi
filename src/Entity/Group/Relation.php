@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @GQL\Type
  */
 class Relation
 {
@@ -16,17 +17,20 @@ class Relation
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     * @GQL\Field(type="String")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @GQL\Field(type="String")
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
      * @ORM\JoinColumn(nullable=false)
+     * @GQL\Field(type="Group")
      */
     private $group;
 
@@ -38,11 +42,13 @@ class Relation
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Relation", inversedBy="children")
+     * @GQL\Field(type="Relation")
      */
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="parent")
+     * @GQL\Field(type="Relation")
      */
     private $children;
 

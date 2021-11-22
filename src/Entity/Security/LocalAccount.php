@@ -4,11 +4,13 @@ namespace App\Entity\Security;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
+ * @GQL\Type
  */
 class LocalAccount implements UserInterface, EquatableInterface
 {
@@ -16,21 +18,25 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     * @GQL\Field(type="String")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @GQL\Field(type="String")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=180)
+     * @GQL\Field(type="String")
      */
     private $givenName;
 
     /**
      * @ORM\Column(type="string", length=180)
+     * @GQL\Field(type="String")
      */
     private $familyName;
 

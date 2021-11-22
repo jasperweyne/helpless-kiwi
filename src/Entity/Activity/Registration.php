@@ -18,12 +18,14 @@ class Registration
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     * @GQL\Field(type="String")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
      * @ORM\JoinColumn(nullable=false)
+     * @GQL\Field(type="PriceOption")
      * @Assert\NotBlank
      */
     private $option;
@@ -37,12 +39,14 @@ class Registration
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
+     * @GQL\Field(type="Activity")
      */
     private $activity;
 
     /**
      * @GQL\Field(type="String")
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @GQL\Field(type="String!")
      */
     private $reserve_position;
 
@@ -50,6 +54,7 @@ class Registration
      * @var date
      *
      * @ORM\Column(name="newdate", type="datetime", nullable=false)
+     * @GQL\Field(type="DateTimeScalar")
      */
     private $newdate;
 
@@ -57,11 +62,13 @@ class Registration
      * @var date
      *
      * @ORM\Column(name="deletedate", type="datetime", nullable=true)
+     * @GQL\Field(type="DateTimeScalar")
      */
     private $deletedate;
 
     /**
      * @ORM\Column(name="present", type="boolean", nullable=true)
+     * @GQL\Field(type="Boolean")
      */
     private $present;
 
