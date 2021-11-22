@@ -49,7 +49,6 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->loadFixtures([
             LocalAccountFixture::class,
         ]);
-
     }
 
     /**
@@ -72,7 +71,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
-        $crawler = $this->client->request('GET', '/password/reset/' . $auth->getId() . '?token=' . $token);
+        $crawler = $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode($token));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Nieuw wachtwoord bevestigen')->form();
@@ -92,7 +91,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
-        $crawler = $this->client->request('GET', '/password/register/' . $auth->getId() . '?token=' . $token);
+        $crawler = $this->client->request('GET', '/password/register/'.$auth->getId().'?token='.urlencode($token));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Account activeren')->form();
@@ -118,6 +117,6 @@ class PasswordControllerTest extends AuthWebTestCase
 
         // Assert
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar ' . LocalAccountFixture::USERNAME);
+        $this->assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar '.LocalAccountFixture::USERNAME);
     }
 }

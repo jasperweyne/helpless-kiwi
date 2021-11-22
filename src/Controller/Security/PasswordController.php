@@ -109,7 +109,7 @@ class PasswordController extends AbstractController
 
                 $body = $this->renderView('email/resetpassword.html.twig', [
                     'auth' => $auth,
-                    'token' => $token,
+                    'token' => urlencode($token),
                 ]);
 
                 $mailer->message($localAccount, 'Wachtwoord vergeten', $body);
