@@ -141,7 +141,7 @@ class PasswordControllerTest extends AuthWebTestCase
     }
 
     /**
-    *   @testdox Request action with valid token
+    *   @testdox Request action with valid email
     */
     public function testRequestAction(): void
     {
