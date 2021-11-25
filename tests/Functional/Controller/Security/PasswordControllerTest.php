@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * Class PasswordControllerTest.
  *
+ * @author A-Daneel
  * @covers \App\Controller\Security\PasswordController
  */
 class PasswordControllerTest extends AuthWebTestCase
@@ -65,6 +66,9 @@ class PasswordControllerTest extends AuthWebTestCase
         unset($this->em);
     }
 
+    /**
+    *   @testdox Reset action with valid token
+    */
     public function testResetAction(): void
     {
         // Act
@@ -85,6 +89,23 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->assertSelectorTextContains('.container', 'Wachtwoord aangepast!');
     }
 
+    /**
+    *   @testdox Reset action with invalid token
+    */
+    public function testResetWithNonValidToken(): void
+    {
+        // Act
+        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth->setPasswordRequestedAt(new \DateTime());
+        $this->passwordReset->generatePasswordRequestToken($auth);
+        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("ladie"));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Invalid password token.');
+    }
+
+    /**
+    *   @testdox Register action with valid token
+    */
     public function testRegisterAction(): void
     {
         // Act
@@ -105,6 +126,23 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->assertSelectorTextContains('.container', 'Account succesvol geregistreed, log in!');
     }
 
+    /**
+    *   @testdox Register action with invalid token
+    */
+    public function testRegisterWithNonValidToken(): void
+    {
+        // Act
+        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth->setPasswordRequestedAt(new \DateTime());
+        $this->passwordReset->generatePasswordRequestToken($auth);
+        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("ladie"));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Invalid password token.');
+    }
+
+    /**
+    *   @testdox Request action with valid token
+    */
     public function testRequestAction(): void
     {
         // Act
@@ -118,16 +156,5 @@ class PasswordControllerTest extends AuthWebTestCase
         // Assert
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar '.LocalAccountFixture::USERNAME);
-    }
-
-    public function testNonValidToken(): void
-    {
-        // Act
-        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
-        $auth->setPasswordRequestedAt(new \DateTime());
-        $this->passwordReset->generatePasswordRequestToken($auth);
-        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("ladie"));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Invalid password token.');
     }
 }
