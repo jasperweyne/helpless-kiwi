@@ -119,4 +119,15 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar '.LocalAccountFixture::USERNAME);
     }
+
+    public function testNonValidToken(): void
+    {
+        // Act
+        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth->setPasswordRequestedAt(new \DateTime());
+        $this->passwordReset->generatePasswordRequestToken($auth);
+        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("ladie"));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Invalid password token.');
+    }
 }
