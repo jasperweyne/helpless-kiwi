@@ -98,7 +98,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
-        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("ladie"));
+        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("invalid-token"));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorTextContains('.container', 'Invalid password token.');
     }
@@ -135,7 +135,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
-        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("ladie"));
+        $this->client->request('GET', '/password/request/'.$auth->getId().'?token='.urlencode("invalid-token"));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorTextContains('.container', 'Invalid password token.');
     }
