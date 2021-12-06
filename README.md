@@ -44,7 +44,11 @@ support the project. Please review them, as well as our guidelines, in
 | [Jasper Weyne](https://github.com/jasperweyne/)    | Project Owner    |
 | [Machiel Kruger](https://github.com/mkrugr)        | ViaKunst         |
 | [David Koymans](https://github.com/DavidckPixel)   | ViaKunst         |
+| Arnold van Bemmelen                                | ViaKunst         |
 | [Peter Sabel (Zabel)](https://github.com/A-Daneel) | Particolarte     |
+| [Borre Pol Meeuwisse](https://github.com/Borrepol) | Particolarte     |
+| Karel Zijp                                         | Particolarte     |
+| [Eva Biesot](https://github.com/eeeevieb)          | Particolarte     |
 
 ## How to install/deploy
 Please refer to the [INSTALL.md](INSTALL.md) file. Making a quick change? You

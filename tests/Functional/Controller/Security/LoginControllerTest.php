@@ -22,22 +22,16 @@ class LoginControllerTest extends AuthWebTestCase
     {
         // Arrange
         $this->client->followRedirects(false);
-        $_ENV['OIDC_ADDRESS'] = 'accounts.google.com'; // use as example
-
-        // Force HTTPS as google won't respond to HTTP reqs
-        $oidc = self::$container->get(OidcClient::class);
-        $refl = new \ReflectionClass($oidc);
-        $prop = $refl->getProperty('wellKnownUrl');
-        $prop->setAccessible(true);
-        $prop->setValue($oidc, 'https://accounts.google.com/.well-known/openid-configuration');
+        self::setupOidc(self::$container);
 
         // Act
         $this->client->request('GET', '/login');
+        $address = self::unsetOidc();
 
         // Assert
         $response = $this->client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertStringContainsString($_ENV['OIDC_ADDRESS'], $response->headers->get('Location'));
+        $this->assertStringContainsString($address, $response->headers->get('Location'));
     }
 
     public function testLoginCheck(): void
@@ -57,5 +51,27 @@ class LoginControllerTest extends AuthWebTestCase
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();
+    }
+
+    public static function setupOidc($container): void
+    {
+        // setup Kiwi side of OIDC
+        $_ENV['OIDC_ADDRESS'] = 'accounts.google.com'; // use as example
+
+        // override OidcClient configuration from assets
+        $oidc = $container->get(OidcClient::class);
+        $refl = new \ReflectionClass($oidc);
+        $prop = $refl->getProperty('configuration');
+        $conf = file_get_contents(__DIR__.'/../../../assets/google-openid-configuration.json');
+        $prop->setAccessible(true);
+        $prop->setValue($oidc, json_decode($conf, true));
+    }
+
+    public static function unsetOidc(): string
+    {
+        $address = $_ENV['OIDC_ADDRESS'];
+        unset($_ENV['OIDC_ADDRESS']);
+
+        return $address;
     }
 }
