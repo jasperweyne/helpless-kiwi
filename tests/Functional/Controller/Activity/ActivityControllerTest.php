@@ -70,8 +70,9 @@ class ActivityControllerTest extends AuthWebTestCase
             ->first()->filter('h2');
 
         $exist = false;
-        foreach ($activities as $activitie) {
-            if ($activitie->getName() == $node->html() && true != $activitie->getHidden()) {
+        /* @var Activity */
+        foreach ($activities as $activity) {
+            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() && $activity->getVisibleAfter() < new \DateTime()) {
                 $exist = true;
             }
         }

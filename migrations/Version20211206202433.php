@@ -22,7 +22,7 @@ final class Version20211206202433 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE kiwi_activity ADD hidden TINYINT(1) DEFAULT \'0\' NOT NULL');
+        $this->addSql('ALTER TABLE kiwi_activity ADD visible_after DATETIME DEFAULT \'1970-01-01\'');
     }
 
     public function down(Schema $schema): void
@@ -30,6 +30,6 @@ final class Version20211206202433 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE kiwi_activity DROP hidden');
+        $this->addSql('ALTER TABLE kiwi_activity DROP visible_after');
     }
 }

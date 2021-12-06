@@ -117,9 +117,9 @@ class Activity
     private $present;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" : false})
+     * @ORM\Column(type="datetime", nullable=true, options={"default" : "1970-01-01"})
      */
-    private $hidden;
+    private $visibleAfter;
 
     /**
      * Get id.
@@ -415,6 +415,7 @@ class Activity
         $this->registrations = new ArrayCollection();
         $this->options = new ArrayCollection();
         $this->image = new EmbeddedFile();
+        $this->visibleAfter = new \DateTime();
     }
 
     public function hasCapacity(): bool
@@ -444,13 +445,23 @@ class Activity
         $this->present = $present;
     }
 
-    public function getHidden(): ?bool
+    /**
+     * Get the time after which the activity will be visible for users.
+     *
+     * @return \DateTime
+     */
+    public function getVisibleAfter(): ?\DateTime
     {
-        return $this->hidden;
+        return $this->visibleAfter;
     }
 
-    public function setHidden(bool $hidden)
+    /**
+     * Set the time after which the activity will be visible for users.
+     */
+    public function setVisibleAfter(?\DateTime $visibleAfter): self
     {
-        $this->hidden = $hidden;
+        $this->visibleAfter = $visibleAfter;
+
+        return $this;
     }
 }

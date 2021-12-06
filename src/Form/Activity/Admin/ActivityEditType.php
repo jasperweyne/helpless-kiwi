@@ -7,7 +7,6 @@ use App\Form\Location\LocationType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -21,6 +20,13 @@ class ActivityEditType extends AbstractType
         $builder
             ->add('name')
             ->add('description', TextareaType::class)
+            ->add('visibleAfter', DateTimeType::class, [
+                'date_widget' => 'single_text',
+                'time_widget' => 'single_text',
+                'label' => 'Zichtbaar vanaf',
+                'help' => 'Wis datum/tijd om activiteit te verbergen',
+                'required' => false,
+            ])
             ->add('location', LocationType::class)
             ->add('deadline', DateTimeType::class, [
                 'date_widget' => 'single_text',
@@ -75,10 +81,6 @@ class ActivityEditType extends AbstractType
                     'Paars' => 'purple',
                     'Roze' => 'pink',
                 ],
-            ])
-            ->add('hidden', CheckboxType::class, [
-                'label' => 'Maak Activiteit privé',
-                'required' => false,
             ])
         ;
     }
