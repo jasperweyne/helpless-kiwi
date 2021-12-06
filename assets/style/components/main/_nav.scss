@@ -93,7 +93,8 @@
     .menu {
         @include flex-grid-row();
         @include flex-direction(column);
-        @include flex-align($x: spaced, $y: middle);
+        @include flex-align($x: null, $y: middle);
+        justify-content: space-between;
 
         padding: 2rem;
         display: none;
