@@ -117,9 +117,9 @@ class Activity
     private $present;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $hidden = false;
+    private $hidden;
 
     /**
      * Get id.
