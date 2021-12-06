@@ -40,7 +40,7 @@ class ActivityController extends AbstractController
             $groups = $em->getRepository(Group::class)->findAllFor($user);
         }
 
-        $activities = $em->getRepository(Activity::class)->findUpcomingByGroup($groups);
+        $activities = $em->getRepository(Activity::class)->findVisibleUpcomingByGroup($groups);
 
         return $this->render('activity/index.html.twig', [
             'activities' => $activities,
@@ -103,7 +103,7 @@ class ActivityController extends AbstractController
         ICalProvider $iCalProvider
     ) {
         $em = $this->getDoctrine()->getManager();
-        $publicActivities = $em->getRepository(Activity::class)->findUpcomingByGroup([]); // Only return activities without target audience
+        $publicActivities = $em->getRepository(Activity::class)->findVisibleUpcomingByGroup([]); // Only return activities without target audience
 
         return new Response(
             $iCalProvider->IcalFeed($publicActivities)->export().''
