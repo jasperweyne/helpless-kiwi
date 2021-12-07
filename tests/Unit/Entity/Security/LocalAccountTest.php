@@ -2,7 +2,11 @@
 
 namespace Tests\Unit\Entity\Security;
 
+use App\Entity\Activity\Registration;
+use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
+use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -190,7 +194,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testSetPassword(): void
     {
-        $expected ='T0tallys3curePa$$w0rd';;
+        $expected = 'T0tallys3curePa$$w0rd';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('password');
         $property->setAccessible(true);
@@ -229,7 +233,7 @@ class LocalAccountTest extends KernelTestCase
         $this->localAccount->setOidc($expected);
         $this->assertSame($expected, $property->getValue($this->localAccount));
     }
-    
+
     public function testSetPasswordRequestToken(): void
     {
         $expected = null;
@@ -242,7 +246,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testSetPasswordRequestedAt(): void
     {
-        $expected = new \DateTime;
+        $expected = new \DateTime();
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
@@ -261,11 +265,11 @@ class LocalAccountTest extends KernelTestCase
     }
 
     /**
-    * @depends testGetPasswordRequestedAt
-    */
+     * @depends testGetPasswordRequestedAt
+     */
     public function testIsPasswordRequestNonExpired(): void
     {
-        $expected = new \DateTime;
+        $expected = new \DateTime();
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
@@ -310,7 +314,7 @@ class LocalAccountTest extends KernelTestCase
         $email = 'john@doe.eyes';
         $givenName = 'John';
         $familyName = 'Doe';
-        $fullName = $givenName . ' ' . $familyName;
+        $fullName = $givenName.' '.$familyName;
 
         //testing with just an id, no email or name
         $property = (new ReflectionClass(LocalAccount::class))
@@ -338,15 +342,15 @@ class LocalAccountTest extends KernelTestCase
         $property->setValue($this->localAccount, $familyName);
         $this->assertSame($fullName, $this->localAccount->getCanonical());
     }
- 
-    public function test__toString(): void
+
+    public function testToString(): void
     {
         $id = '141592653589';
         $expectedPseudo = 'pseudonymized (14159265...)';
         $email = 'john@doe.eyes';
         $givenName = 'John';
         $familyName = 'Doe';
-        $fullName = $givenName . ' ' . $familyName;
+        $fullName = $givenName.' '.$familyName;
 
         //testing with just an id, no email or name
         $property = (new ReflectionClass(LocalAccount::class))
@@ -374,5 +378,76 @@ class LocalAccountTest extends KernelTestCase
         $property->setValue($this->localAccount, $familyName);
         $this->assertSame($fullName, $this->localAccount->__toString());
     }
-}
 
+    public function testGetRegistrations(): void
+    {
+        $expected = new ArrayCollection();
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('registrations');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expected);
+        $this->assertSame($expected, $this->localAccount->getRegistrations());
+    }
+
+    public function testAddRegistration(): void
+    {
+        /** @var MockObject&Registration */
+        $expected = $this->createMock(Registration::class);
+        $expected->expects($this->once())->method('setPerson')->with($this->localAccount);
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('registrations');
+        $property->setAccessible(true);
+        $this->localAccount->addRegistration($expected);
+        $this->assertContains($expected, $property->getValue($this->localAccount));
+    }
+
+    public function testRemoveRegistration(): void
+    {
+        /** @var MockObject&Registration */
+        $expected = $this->createMock(Registration::class);
+        $expected->method('getPerson')->willReturn($this->localAccount);
+        $expected->expects($this->once())->method('setPerson')->with(null);
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('registrations');
+        $property->setAccessible(true);
+        $property->getValue($this->localAccount)->add($expected);
+        $this->localAccount->removeRegistration($expected);
+        $this->assertNotContains($expected, $property->getValue($this->localAccount));
+    }
+
+    public function testGetRelations(): void
+    {
+        $expected = new ArrayCollection();
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('relations');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expected);
+        $this->assertSame($expected, $this->localAccount->getRelations());
+    }
+
+    public function testAddRelation(): void
+    {
+        /** @var MockObject&Relation */
+        $expected = $this->createMock(Relation::class);
+        $expected->expects($this->once())->method('setPerson')->with($this->localAccount);
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('relations');
+        $property->setAccessible(true);
+        $this->localAccount->addRelation($expected);
+        $this->assertContains($expected, $property->getValue($this->localAccount));
+    }
+
+    public function testRemoveRelation(): void
+    {
+        /** @var MockObject&Relation */
+        $expected = $this->createMock(Relation::class);
+        $expected->method('getPerson')->willReturn($this->localAccount);
+        $expected->expects($this->once())->method('setPerson')->with(null);
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('relations');
+        $property->setAccessible(true);
+        $property->getValue($this->localAccount)->add($expected);
+        $this->localAccount->removeRelation($expected);
+        $this->assertNotContains($expected, $property->getValue($this->localAccount));
+    }
+}
