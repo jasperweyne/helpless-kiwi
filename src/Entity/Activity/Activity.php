@@ -15,9 +15,7 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @GQL\Type(builders={
- *   @GQL\FieldsBuilder("Aggregate", builderConfig={"name": "registrations", "property": "getRegistrations()"})
- * })
+ * @GQL\Type
  * @ORM\Entity(repositoryClass="App\Repository\ActivityRepository")
  * @Vich\Uploadable
  */

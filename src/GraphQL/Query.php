@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * @GQL\Type
  */
-class RootQuery
+class Query
 {
     private $em;
 
@@ -37,7 +37,7 @@ class RootQuery
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
 
-        return $this->em->getRepository(Activity::class)->findUpcomingByGroup($groups);
+        return $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup($groups);
     }
 
     /**

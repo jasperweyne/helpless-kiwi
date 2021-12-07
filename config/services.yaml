@@ -92,5 +92,5 @@ services:
             - '@logger'
             - '@Drenso\OidcBundle\OidcClient'
 
-    App\GraphQL\RootQuery:
+    App\GraphQL\Query:
         public: true

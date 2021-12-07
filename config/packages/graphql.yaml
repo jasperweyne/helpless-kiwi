@@ -1,7 +1,7 @@
 overblog_graphql:
     definitions:
         schema:
-            query: RootQuery
+            query: Query
         mappings:
             types:
                 -   type: annotation
@@ -10,7 +10,3 @@ overblog_graphql:
                 -   type: annotation
                     dir: "%kernel.project_dir%/src/GraphQL"
                     suffix: ~
-        builders:
-            fields:
-                - alias: "Aggregate"
-                  class: "App\\GraphQL\\Builder\\Aggregate"
