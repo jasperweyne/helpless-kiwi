@@ -30,6 +30,14 @@
                                 <td>{{ activity.description }}</td>
                             </tr>
                             <tr>
+                                <th>Zichtbaar vanaf</th>
+                                {% if activity.visibleAfter is null %}
+                                <td><i>verborgen</i></td>
+                                {% else %}
+                                <td>{{ activity.visibleAfter|date('d-m-Y H:i') }}</td>
+                                {% endif %}
+                            </tr>
+                            <tr>
                                 <th>Aanmelddeadline</th>
                                 <td>{{ activity.deadline|date('d-m-Y') }}</td>
                             </tr>

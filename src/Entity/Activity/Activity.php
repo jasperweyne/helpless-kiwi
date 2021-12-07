@@ -136,6 +136,11 @@ class Activity
     private $present;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true, options={"default" : "1970-01-01"})
+     */
+    private $visibleAfter;
+
+    /**
      * Get id.
      *
      * @return string
@@ -429,6 +434,7 @@ class Activity
         $this->registrations = new ArrayCollection();
         $this->options = new ArrayCollection();
         $this->image = new EmbeddedFile();
+        $this->visibleAfter = new \DateTime();
     }
 
     public function hasCapacity(): bool
@@ -448,7 +454,7 @@ class Activity
         return $this;
     }
 
-    public function getPresent()
+    public function getPresent(): ?int
     {
         return $this->present;
     }
@@ -456,5 +462,25 @@ class Activity
     public function setPresent(?int $present)
     {
         $this->present = $present;
+    }
+
+    /**
+     * Get the time after which the activity will be visible for users.
+     *
+     * @return \DateTime
+     */
+    public function getVisibleAfter(): ?\DateTime
+    {
+        return $this->visibleAfter;
+    }
+
+    /**
+     * Set the time after which the activity will be visible for users.
+     */
+    public function setVisibleAfter(?\DateTime $visibleAfter): self
+    {
+        $this->visibleAfter = $visibleAfter;
+
+        return $this;
     }
 }

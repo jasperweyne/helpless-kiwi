@@ -374,4 +374,24 @@ class ActivityTest extends KernelTestCase
         $this->activity->setPresent($expected);
         $this->assertSame($expected, $property->getValue($this->activity));
     }
+
+    public function testGetVisibleAfter(): void
+    {
+        $expected = new \DateTime();
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('visibleAfter');
+        $property->setAccessible(true);
+        $property->setValue($this->activity, $expected);
+        $this->assertSame($expected, $this->activity->getVisibleAfter());
+    }
+
+    public function testSetVisibleAfter(): void
+    {
+        $expected = new \DateTime();
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('visibleAfter');
+        $property->setAccessible(true);
+        $this->activity->setVisibleAfter($expected);
+        $this->assertSame($expected, $property->getValue($this->activity));
+    }
 }
