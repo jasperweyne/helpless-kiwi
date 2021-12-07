@@ -14,7 +14,7 @@ class DatetimeScalar
      */
     public static function serialize(\DateTime $value)
     {
-        return $value->format(\DateTimeInterface::RFC3339);
+        return $value->format(\DateTime::RFC3339);
     }
 
     /**
@@ -28,7 +28,7 @@ class DatetimeScalar
     }
 
     /**
-     * @param Node $valueNode
+     * @param \GraphQL\Language\AST\Node $valueNode
      *
      * @return string
      */
