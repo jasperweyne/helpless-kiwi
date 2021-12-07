@@ -2,13 +2,11 @@
 
 namespace Tests\Functional\GraphQL;
 
-use App\Controller\Activity\ActivityController;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Activity\ActivityFixture;
 use App\Tests\Database\Activity\PriceOptionFixture;
 use App\Tests\Database\Activity\RegistrationFixture;
 use App\Tests\Database\Security\LocalAccountFixture;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 /**
@@ -18,11 +16,6 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
  */
 class QueryTest extends AuthWebTestCase
 {
-    /**
-     * @var ActivityController
-     */
-    protected $activityController;
-
     /**
      * {@inheritdoc}
      */
@@ -36,18 +29,6 @@ class QueryTest extends AuthWebTestCase
             ActivityFixture::class,
             RegistrationFixture::class,
         ]);
-
-        $this->em = self::$container->get(EntityManagerInterface::class);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        unset($this->activityController);
     }
 
     public function testActivities(): void
@@ -56,7 +37,7 @@ class QueryTest extends AuthWebTestCase
         $query = <<<GRAPHQL
 {
     activities {
-        id
+        name
     }
 }
 GRAPHQL;
@@ -71,6 +52,48 @@ GRAPHQL;
         $this->assertCount(1, $data['data']['activities']);
     }
 
+    public function testUserLoggedOut(): void
+    {
+        // Arrange
+        $query = <<<GRAPHQL
+{
+    user {
+        email
+    }
+}
+GRAPHQL;
+
+        // Act
+        $data = self::graphqlQuery($this->client, $query);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayNotHasKey('errors', $data);
+        $this->assertNull($data['data']['user']);
+    }
+
+    public function testUserLoggedIn(): void
+    {
+        // Arrange
+        $query = <<<GRAPHQL
+{
+    user {
+        email
+    }
+}
+GRAPHQL;
+
+        // Act
+        $this->login();
+        $data = self::graphqlQuery($this->client, $query);
+        $this->logout();
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayNotHasKey('errors', $data);
+        $this->assertTrue(isset($data['data']['user']['email']));
+    }
+
     public function testAdmin(): void
     {
         // Arrange
@@ -78,7 +101,7 @@ GRAPHQL;
 {
     admin {
         activities {
-            id
+            name
         }
     }
 }
