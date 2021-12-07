@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 /**
  * @GQL\Type
+ * @GQL\Description("The root of all query operations.")
  */
 class Query
 {
@@ -28,12 +29,13 @@ class Query
     }
 
     /**
-     * @GQL\Field(name="activities", type="[Activity]")
+     * @GQL\Field(type="[Activity]")
+     * @GQL\Description("All currently visible activities.")
      */
-    public function findActivities(bool $loggedIn = false)
+    public function activities(bool $loggedIn = false)
     {
         $groups = [];
-        if ($loggedIn && $user = $this->getUser()) {
+        if ($loggedIn && $user = $this->user()) {
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
 
@@ -41,14 +43,10 @@ class Query
     }
 
     /**
-     * @GQL\Field(name="admin", type="AdminQuery")
+     * @GQL\Field(type="LocalAccount")
+     * @GQL\Description("The currently authenticated user.")
      */
-    public function getAdmin()
-    {
-        return $this->admin;
-    }
-
-    private function getUser(): ?LocalAccount
+    public function user(): ?LocalAccount
     {
         if (null === $token = $this->tokenStorage->getToken()) {
             return null;
@@ -60,5 +58,14 @@ class Query
         }
 
         return $user;
+    }
+
+    /**
+     * @GQL\Field(type="AdminQuery")
+     * @GQL\Description("Subquery for administration related data.")
+     */
+    public function admin(): AdminQuery
+    {
+        return $this->admin;
     }
 }

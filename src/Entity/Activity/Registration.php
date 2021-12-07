@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @GQL\Type
+ * @GQL\Description("A representation of a registration from a user for an activity.")
  * @ORM\Entity(repositoryClass="App\Repository\RegistrationRepository")
  */
 class Registration
@@ -18,57 +19,65 @@ class Registration
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
-     * @GQL\Field(type="String")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
      * @ORM\JoinColumn(nullable=false)
-     * @GQL\Field(type="PriceOption")
+     * @GQL\Field(type="PriceOption!")
+     * @GQL\Description("The specific registration option of the activity this registration points to.")
      * @Assert\NotBlank
      */
     private $option;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
+     * @ORM\ManyToOne(targetEntity=LocalAccount::class, inversedBy="registrations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @GQL\Field(type="LocalAccount")
+     * @GQL\Description("The user that is registered for the activity.")
+     * @GQL\Access("hasRole('ROLE_ADMIN')")
      */
     private $person;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
-     * @GQL\Field(type="Activity")
+     * @GQL\Field(type="Activity!")
+     * @GQL\Description("The activity for which the user registered.")
      */
     private $activity;
 
     /**
      * @GQL\Field(type="String")
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @GQL\Field(type="String!")
+     * @GQL\Field(type="String")
+     * @GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")
      */
     private $reserve_position;
 
     /**
-     * @var date
+     * @var \DateTime
      *
      * @ORM\Column(name="newdate", type="datetime", nullable=false)
-     * @GQL\Field(type="DateTimeScalar")
+     * @GQL\Field(name="created", type="DateTimeScalar!")
+     * @GQL\Description("The date and time the user registered for the activity.")
      */
     private $newdate;
 
     /**
-     * @var date
+     * @var \DateTime
      *
      * @ORM\Column(name="deletedate", type="datetime", nullable=true)
-     * @GQL\Field(type="DateTimeScalar")
+     * @GQL\Field(name="deleted", type="DateTimeScalar")
+     * @GQL\Description("The date and time the user deleted their registration for the activity.")
      */
     private $deletedate;
 
     /**
      * @ORM\Column(name="present", type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
+     * @GQL\Description("Whether the user was present during the activity.")
      */
     private $present;
 

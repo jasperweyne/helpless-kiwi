@@ -11,6 +11,7 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 /**
  * @ORM\Entity
  * @GQL\Type
+ * @GQL\Description("A representation of membership status for a user in a group.")
  */
 class Relation
 {
@@ -18,38 +19,44 @@ class Relation
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
-     * @GQL\Field(type="String")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
+     * @GQL\Description("A textual description of membership status of a user in a group.")
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
      * @ORM\JoinColumn(nullable=false)
-     * @GQL\Field(type="Group")
+     * @GQL\Field(type="Group!")
+     * @GQL\Description("The group the user is a member of.")
      */
     private $group;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @GQL\Field(type="LocalAccount")
+     * @GQL\Description("The user who is a member of a group.")
+     * @GQL\Access("hasRole('ROLE_ADMIN')")
      */
     private $person;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Relation", inversedBy="children")
      * @GQL\Field(type="Relation")
+     * @GQL\Description("The parent relation object, in case of multiple overlapping relations.")
      */
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="parent")
-     * @GQL\Field(type="Relation")
+     * @GQL\Field(type="[Relation]")
+     * @GQL\Description("The children relation objects, in case of multiple overlapping relations.")
      */
     private $children;
 
