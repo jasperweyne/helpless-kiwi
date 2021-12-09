@@ -19,20 +19,17 @@ class Query
 
     private $tokenStorage;
 
-    private $admin;
-
-    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage, AdminQuery $admin)
+    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
         $this->tokenStorage = $tokenStorage;
-        $this->admin = $admin;
     }
 
     /**
      * @GQL\Field(type="[Activity]")
      * @GQL\Description("All currently visible activities.")
      */
-    public function activities(bool $loggedIn = false)
+    public function current(bool $loggedIn = false)
     {
         $groups = [];
         if ($loggedIn && $user = $this->user()) {
@@ -40,6 +37,24 @@ class Query
         }
 
         return $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup($groups);
+    }
+
+    /**
+     * @GQL\Field(type="[Activity]")
+     * @GQL\Description("All activities stored in the database.")
+     */
+    public function activities()
+    {
+        return $this->em->getRepository(Activity::class)->findAll();
+    }
+
+    /**
+     * @GQL\Field(type="[Group]")
+     * @GQL\Description("All groups stored in the database.")
+     */
+    public function groups()
+    {
+        return $this->em->getRepository(Group::class)->findAll();
     }
 
     /**
@@ -61,11 +76,12 @@ class Query
     }
 
     /**
-     * @GQL\Field(type="AdminQuery")
-     * @GQL\Description("Subquery for administration related data.")
+     * @GQL\Field(type="[LocalAccount]")
+     * @GQL\Description("All users stored in the database.")
+     * @GQL\Access("hasRole('ROLE_ADMIN')")
      */
-    public function admin(): AdminQuery
+    public function users()
     {
-        return $this->admin;
+        return $this->em->getRepository(LocalAccount::class)->findAll();
     }
 }

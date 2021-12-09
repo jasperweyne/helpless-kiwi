@@ -31,12 +31,12 @@ class QueryTest extends AuthWebTestCase
         ]);
     }
 
-    public function testActivities(): void
+    public function testCurrent(): void
     {
         // Arrange
         $query = <<<GRAPHQL
 {
-    activities {
+    current {
         name
     }
 }
@@ -48,8 +48,8 @@ GRAPHQL;
         // Assert
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertArrayNotHasKey('errors', $data);
-        $this->assertTrue(isset($data['data']['activities']));
-        $this->assertCount(1, $data['data']['activities']);
+        $this->assertTrue(isset($data['data']['current']));
+        $this->assertCount(1, $data['data']['current']);
     }
 
     public function testUserLoggedOut(): void
@@ -94,15 +94,13 @@ GRAPHQL;
         $this->assertTrue(isset($data['data']['user']['email']));
     }
 
-    public function testAdmin(): void
+    public function testActivities(): void
     {
         // Arrange
         $query = <<<GRAPHQL
 {
-    admin {
-        activities {
-            name
-        }
+    activities {
+        name
     }
 }
 GRAPHQL;
@@ -112,12 +110,73 @@ GRAPHQL;
 
         // Assert
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue(isset($data['data']['admin']));
-        $this->assertArrayHasKey('activities', $data['data']['admin']);
-        $this->assertNull($data['data']['admin']['activities']);
+        $this->assertArrayNotHasKey('errors', $data);
+        $this->assertTrue(isset($data['data']['activities']));
+        $this->assertCount(1, $data['data']['activities']);
+    }
 
-        $this->assertTrue(isset($data['extensions']['warnings']));
-        $this->assertCount(1, $data['extensions']['warnings']);
+    public function testGroups(): void
+    {
+        // Arrange
+        $query = <<<GRAPHQL
+{
+    groups {
+        name
+    }
+}
+GRAPHQL;
+
+        // Act
+        $data = self::graphqlQuery($this->client, $query);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayNotHasKey('errors', $data);
+        $this->assertTrue(isset($data['data']['groups']));
+        $this->assertCount(1, $data['data']['groups']);
+    }
+
+    public function testUsersAnonymous(): void
+    {
+        // Arrange
+        $query = <<<GRAPHQL
+{
+    users {
+        email
+    }
+}
+GRAPHQL;
+
+        // Act
+        $data = self::graphqlQuery($this->client, $query);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayNotHasKey('errors', $data);
+        $this->assertNull($data['data']['users']);
+    }
+
+    public function testUsersAsAdmin(): void
+    {
+        // Arrange
+        $query = <<<GRAPHQL
+{
+    users {
+        email
+    }
+}
+GRAPHQL;
+
+        // Act
+        $this->login();
+        $data = self::graphqlQuery($this->client, $query);
+        $this->logout();
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayNotHasKey('errors', $data);
+        $this->assertTrue(isset($data['data']['users']));
+        $this->assertCount(1, $data['data']['users']);
     }
 
     public static function graphqlQuery(KernelBrowser $client, string $query, ?string $operation = null, ?array $variables = null): array
