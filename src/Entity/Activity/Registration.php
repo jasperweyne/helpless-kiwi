@@ -35,8 +35,8 @@ class Registration
      * @ORM\ManyToOne(targetEntity=LocalAccount::class, inversedBy="registrations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @GQL\Field(type="LocalAccount")
-     * @GQL\Description("The user that is registered for the activity.")
-     * @GQL\Access("hasRole('ROLE_ADMIN')")
+     * @GQL\Description("The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.")
+     * @GQL\Access("hasRole('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")
      */
     private $person;
 

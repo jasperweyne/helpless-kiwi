@@ -4,7 +4,9 @@ namespace Tests\Unit\Entity\Activity;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
 use App\Entity\Location\Location;
+use App\Entity\Security\LocalAccount;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
@@ -393,5 +395,46 @@ class ActivityTest extends KernelTestCase
         $property->setAccessible(true);
         $this->activity->setVisibleAfter($expected);
         $this->assertSame($expected, $property->getValue($this->activity));
+    }
+
+    public function testIsVisible(): void
+    {
+        /** @var MockObject&Group */
+        $expected = $this->createMock(Group::class);
+        $target = (new ReflectionClass(Activity::class))
+            ->getProperty('target');
+        $target->setAccessible(true);
+        $target->setValue($this->activity, $expected);
+        $end = (new ReflectionClass(Activity::class))
+            ->getProperty('end');
+        $end->setAccessible(true);
+        $end->setValue($this->activity, new \DateTime('tomorrow'));
+        $visibleAfter = (new ReflectionClass(Activity::class))
+            ->getProperty('visibleAfter');
+        $visibleAfter->setAccessible(true);
+        $visibleAfter->setValue($this->activity, new \DateTime('yesterday'));
+        $this->assertTrue($this->activity->isVisible([$expected]));
+    }
+
+    public function testIsVisibleBy(): void
+    {
+        // todo: update dependencies, as phpunit 7.5 doesn't support mocks when strict
+        $group = new Group();
+        $relation = (new Relation())->setGroup($group);
+        $value = (new LocalAccount())->addRelation($relation);
+
+        $target = (new ReflectionClass(Activity::class))
+            ->getProperty('target');
+        $target->setAccessible(true);
+        $target->setValue($this->activity, $group);
+        $end = (new ReflectionClass(Activity::class))
+            ->getProperty('end');
+        $end->setAccessible(true);
+        $end->setValue($this->activity, new \DateTime('tomorrow'));
+        $visibleAfter = (new ReflectionClass(Activity::class))
+            ->getProperty('visibleAfter');
+        $visibleAfter->setAccessible(true);
+        $visibleAfter->setValue($this->activity, new \DateTime('yesterday'));
+        $this->assertTrue($this->activity->isVisibleBy($value));
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
 use App\Entity\Location\Location;
+use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -493,5 +495,36 @@ class Activity
         $this->visibleAfter = $visibleAfter;
 
         return $this;
+    }
+
+    /**
+     * Is the activity currently visible, given a number of applicable groups.
+     */
+    public function isVisible(array $groups = []): bool
+    {
+        $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups);
+
+        return
+            $this->getEnd() > new \DateTime() &&
+            $in_groups &&
+            $this->getVisibleAfter() &&
+            $this->getVisibleAfter() < new \DateTime()
+        ;
+    }
+
+    /**
+     * Is the activity currently visible by a user.
+     */
+    public function isVisibleBy(?LocalAccount $user = null): bool
+    {
+        // gather the currently applicable groups
+        $groups = [];
+        if ($user) {
+            $groups = $user->getRelations()->map(function (Relation $relation) {
+                return $relation->getGroup();
+            })->toArray();
+        }
+
+        return $this->isVisible($groups);
     }
 }

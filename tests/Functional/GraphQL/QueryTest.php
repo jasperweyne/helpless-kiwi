@@ -38,6 +38,11 @@ class QueryTest extends AuthWebTestCase
 {
     current {
         name
+        registrations {
+            person {
+                givenName
+            }
+        }
     }
 }
 GRAPHQL;
@@ -50,6 +55,8 @@ GRAPHQL;
         $this->assertArrayNotHasKey('errors', $data);
         $this->assertTrue(isset($data['data']['current']));
         $this->assertCount(1, $data['data']['current']);
+        $this->assertNotEmpty($data['data']['current'][0]['registrations']);
+        $this->assertNotEmpty(isset($data['data']['current'][0]['registrations'][0]['person']['givenName']));
     }
 
     public function testUserLoggedOut(): void
