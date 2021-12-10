@@ -32,19 +32,19 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->login();
 
         /* @todo Correctly instantiate tested object to use it. */
         $this->activityController = new ActivityController();
 
         // Get all database tables
-        $this->em = self::$container->get(EntityManagerInterface::class);
         $this->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,
             RegistrationFixture::class,
         ]);
+
+        $this->login();
         $this->em = self::$container->get(EntityManagerInterface::class);
     }
 

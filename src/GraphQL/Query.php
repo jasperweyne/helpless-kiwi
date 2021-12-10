@@ -42,6 +42,7 @@ class Query
     /**
      * @GQL\Field(type="[Activity]")
      * @GQL\Description("All activities stored in the database.")
+     * @GQL\Access("isAuthenticated()")
      */
     public function activities()
     {
@@ -51,6 +52,7 @@ class Query
     /**
      * @GQL\Field(type="[Group]")
      * @GQL\Description("All groups stored in the database.")
+     * @GQL\Access("isAuthenticated()")
      */
     public function groups()
     {

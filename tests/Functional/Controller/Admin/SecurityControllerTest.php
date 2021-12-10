@@ -32,12 +32,12 @@ class SecurityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->login();
 
         $this->loadFixtures([
             LocalAccountFixture::class,
         ]);
 
+        $this->login();
         $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
@@ -114,6 +114,6 @@ class SecurityControllerTest extends AuthWebTestCase
         $this->client->submit($form);
         $this->assertSelectorTextContains('.container', 'Rollen bewerkt');
         $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        $this->assertEquals(["ROLE_USER"], $localUser->getRoles());
+        $this->assertEquals(['ROLE_USER'], $localUser->getRoles());
     }
 }

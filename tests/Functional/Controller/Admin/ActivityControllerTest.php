@@ -5,6 +5,7 @@ namespace Tests\Functional\Controller\Admin;
 use App\Controller\Admin\ActivityController;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -31,8 +32,13 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->login();
 
+        // Get all database tables
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+        ]);
+
+        $this->login();
         $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
