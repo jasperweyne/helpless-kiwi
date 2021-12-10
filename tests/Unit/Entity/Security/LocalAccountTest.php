@@ -182,6 +182,16 @@ class LocalAccountTest extends KernelTestCase
         $this->assertSame($expected, $property->getValue($this->localAccount));
     }
 
+    public function testIsAdmin(): void
+    {
+        $expected = ['ROLE_ADMIN'];
+        $property = (new ReflectionClass(LocalAccount::class))
+            ->getProperty('roles');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expected);
+        $this->assertTrue($this->localAccount->isAdmin());
+    }
+
     public function testGetPassword(): void
     {
         $expected = 'T0tallys3curePa$$w0rd';

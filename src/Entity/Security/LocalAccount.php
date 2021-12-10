@@ -37,6 +37,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\Column(type="string", length=180)
      * @GQL\Field(type="String")
      * @GQL\Description("The given name of the user (the first name in western cultures).")
+     * @GQL\Access("isAuthenticated()")
      */
     private $givenName;
 
@@ -44,6 +45,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\Column(type="string", length=180)
      * @GQL\Field(type="String")
      * @GQL\Description("The family name of the user (the last name in western cultures).")
+     * @GQL\Access("isAuthenticated()")
      */
     private $familyName;
 
@@ -265,6 +267,16 @@ class LocalAccount implements UserInterface, EquatableInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    /**
+     * @GQL\Field(type="Boolean!")
+     * @GQL\Description("Whether this user is an administrator.")
+     * @GQL\Access("isAuthenticated()")
+     */
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->getRoles());
     }
 
     /**
