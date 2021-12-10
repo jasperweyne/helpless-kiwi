@@ -49,7 +49,6 @@ class Registration
     private $activity;
 
     /**
-     * @GQL\Field(type="String")
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")
@@ -60,7 +59,7 @@ class Registration
      * @var \DateTime
      *
      * @ORM\Column(name="newdate", type="datetime", nullable=false)
-     * @GQL\Field(name="created", type="DateTimeScalar!")
+     * @GQL\Field(name="created", type="DateTimeScalar!", resolve="@=value.getNewDate()")
      * @GQL\Description("The date and time the user registered for the activity.")
      */
     private $newdate;
@@ -69,7 +68,7 @@ class Registration
      * @var \DateTime
      *
      * @ORM\Column(name="deletedate", type="datetime", nullable=true)
-     * @GQL\Field(name="deleted", type="DateTimeScalar")
+     * @GQL\Field(name="deleted", type="DateTimeScalar", resolve="@=value.getDeleteDate()")
      * @GQL\Description("The date and time the user deleted their registration for the activity.")
      */
     private $deletedate;
