@@ -5,12 +5,12 @@ namespace App\Tests\Database\Activity;
 use App\Entity\Activity\Activity;
 use App\Entity\Group\Group;
 use App\Entity\Location\Location;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Persistence\ObjectManager;
 use App\Tests\Database\Group\GroupFixture;
 use App\Tests\Database\Location\LocationFixture;
 use App\Tests\TestData;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
 
 class ActivityFixture extends Fixture implements DependentFixtureInterface
 {
@@ -66,6 +66,7 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
             ->with('end', new \DateTime('second day January 2038 20:00'))
             ->with('deadline', new \DateTime('first day January 2038'))
             ->with('imageUpdatedAt', new \DateTime('second day January 2038 18:00'))
+            ->with('visibleAfter', new \DateTime('1970-01-01'))
             ->do('name', function (Activity $activity) use (&$i) {
                 $activity->setName('Activity '.strval($i++));
             })

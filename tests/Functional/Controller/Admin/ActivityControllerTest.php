@@ -71,7 +71,6 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
-        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 

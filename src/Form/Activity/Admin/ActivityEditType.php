@@ -2,16 +2,16 @@
 
 namespace App\Form\Activity\Admin;
 
-use App\Form\Location\LocationType;
 use App\Entity\Activity\Activity;
+use App\Form\Location\LocationType;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActivityEditType extends AbstractType
 {
@@ -20,6 +20,13 @@ class ActivityEditType extends AbstractType
         $builder
             ->add('name')
             ->add('description', TextareaType::class)
+            ->add('visibleAfter', DateTimeType::class, [
+                'date_widget' => 'single_text',
+                'time_widget' => 'single_text',
+                'label' => 'Zichtbaar vanaf',
+                'help' => 'Wis datum/tijd om activiteit te verbergen',
+                'required' => false,
+            ])
             ->add('location', LocationType::class)
             ->add('deadline', DateTimeType::class, [
                 'date_widget' => 'single_text',
@@ -29,7 +36,7 @@ class ActivityEditType extends AbstractType
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
-                'placeholder' => "Geen groep",
+                'placeholder' => 'Geen groep',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
                         ->andWhere('t.active = TRUE');
@@ -42,7 +49,7 @@ class ActivityEditType extends AbstractType
                 'label' => 'Activiteit voor',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
-                'placeholder' => "Iedereen",
+                'placeholder' => 'Iedereen',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
                         ->andWhere('t.register = TRUE');

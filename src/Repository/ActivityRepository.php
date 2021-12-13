@@ -47,6 +47,23 @@ class ActivityRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return Activity[] Returns an array of Activity objects
+     */
+    public function findVisibleUpcomingByGroup($groups)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.end > CURRENT_TIMESTAMP()')
+            ->andWhere('(p.target IN (:groups)) OR (p.target is NULL)')
+            ->andWhere('p.visibleAfter IS NOT NULL')
+            ->andWhere('p.visibleAfter < CURRENT_TIMESTAMP()')
+            ->setParameter('groups', $groups)
+            ->orderBy('p.start', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Activity[] Returns an array of Activity objects
     //  */
