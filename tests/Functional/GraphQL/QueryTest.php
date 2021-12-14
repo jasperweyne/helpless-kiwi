@@ -31,7 +31,7 @@ class QueryTest extends AuthWebTestCase
         ]);
     }
 
-    public function testCurrent(): void
+    public function testCurrentAnonymous(): void
     {
         // Arrange
         $query = <<<GRAPHQL
@@ -49,6 +49,36 @@ GRAPHQL;
 
         // Act
         $data = self::graphqlQuery($this->client, $query);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayNotHasKey('errors', $data);
+        $this->assertTrue(isset($data['data']['current']));
+        $this->assertCount(1, $data['data']['current']);
+        $this->assertNotEmpty($data['data']['current'][0]['registrations']);
+        $this->assertNull($data['data']['current'][0]['registrations'][0]['person']['givenName']);
+    }
+
+    public function testCurrent(): void
+    {
+        // Arrange
+        $query = <<<GRAPHQL
+{
+    current {
+        name
+        registrations {
+            person {
+                givenName
+            }
+        }
+    }
+}
+GRAPHQL;
+
+        // Act
+        $this->login();
+        $data = self::graphqlQuery($this->client, $query);
+        $this->logout();
 
         // Assert
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
