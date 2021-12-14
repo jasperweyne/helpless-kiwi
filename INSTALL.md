@@ -74,16 +74,10 @@ sure you have your database connection configured correctly. Then, run:
 php bin/console doctrine:schema:update --force
 ```
 
-To add a user, first register a person with:
+To add a user with admin permissions use:
 
 ```bash
-php bin/console app:create-person [email] [name]
-```
-
-Then, add a login to that user with:
-
-```bash
-php bin/console app:set-auth --admin [email]
+php bin/console app:create-account --admin [email]
 ```
 
 Now, you'll want to build the assets. To do this continuously while editing them,
