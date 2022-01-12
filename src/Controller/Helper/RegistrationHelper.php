@@ -37,6 +37,19 @@ class RegistrationHelper extends AbstractController
     }
 
     /**
+     * Creates a form to create a edit Registration.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    protected function createRegistrationEditForm(
+        Registration $registration
+    ) {
+        return $this->createForm('App\Form\Activity\RegistrationEditType', $registration, [
+            'allowed_options' => $registration->getActivity()->getOptions(),
+        ]);
+    }
+
+    /**
      * Persist addition of the Registration to the database.
      */
     protected function storeRegistration(
