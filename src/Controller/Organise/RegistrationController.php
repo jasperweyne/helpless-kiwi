@@ -67,10 +67,10 @@ class RegistrationController extends RegistrationHelper
      * @Route("/edit/{id}", name="edit", methods={"GET", "POST"})
      */
     public function editAction(
-        Request $request,
-        Registration $registration
+        Request $request1,
+        Registration $registration1
     ) {
-        return $this->registrationEdit($request, $registration, 'organise/activity/registration/edit.html.twig', 'organise_activity_show');
+        return $this->registrationEdit($request1, $registration1, 'organise/activity/registration/edit.html.twig', 'organise_activity_show');
     }
 
     /**

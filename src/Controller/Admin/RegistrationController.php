@@ -40,7 +40,7 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
-     * Edit someones registration from an activity.
+     * Edit someones registration from an activity from admin.
      *
      * @Route("/edit/{id}", name="edit", methods={"GET", "POST"})
      */
