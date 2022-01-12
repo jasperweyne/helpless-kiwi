@@ -70,19 +70,7 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ) {
-        $form = $this->createRegistrationEditForm($registration);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->updateRegistration();
-
-            return $this->handleRedirect($registration->getActivity()->getId());
-        } else {
-            return $this->render('organise/activity/registration/edit.html.twig', [
-                'registration' => $registration,
-                'form' => $form->createView(),
-            ]);
-        }
+        return $this->registrationEdit($request, $registration, 'organise/activity/registration/edit.html.twig', 'organise_activity_show');
     }
 
     /**
