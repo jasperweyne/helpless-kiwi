@@ -48,14 +48,18 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ) {
+        //Create a form for editing registration from the Admin page
         $form = $this->createRegistrationEditForm($registration);
         $form->handleRequest($request);
 
+        //Check if the form is submitted and valid from Admin
         if ($form->isSubmitted() && $form->isValid()) {
+            //Update Registration Database
             $this->updateRegistration();
 
             return $this->handleRedirect($registration->getActivity()->getId());
         } else {
+            //Render the Admin Page edit registration page with correct form
             return $this->render('admin/activity/registration/edit.html.twig', [
                 'registration' => $registration,
                 'form' => $form->createView(),
