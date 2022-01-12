@@ -76,6 +76,16 @@ class RegistrationHelper extends AbstractController
     }
 
     /**
+     *  Persist update of the Registration to the database.
+     */
+    protected function updateRegistration(
+    ) {
+        $em = $this->getDoctrine()->getManager();
+        $em->flush();
+        $this->addFlash('success', 'Registratie aangepast!');
+    }
+
+    /**
      *  Persist removal of the Registration to the database.
      */
     protected function removeRegistration(

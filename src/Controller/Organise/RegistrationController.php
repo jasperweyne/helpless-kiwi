@@ -72,11 +72,9 @@ class RegistrationController extends RegistrationHelper
     ) {
         $form = $this->createRegistrationEditForm($registration);
         $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-            $this->addFlash('success', 'Registratie aangepast!');
+            $this->updateRegistration();
 
             return $this->handleRedirect($registration->getActivity()->getId());
         } else {
