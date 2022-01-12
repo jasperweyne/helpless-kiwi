@@ -44,7 +44,7 @@ class ActivityEditType extends AbstractType
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
-                'help' => 'De groep die de activiteit organiseerd.',
+                'help' => 'De groep die de activiteit organiseert.',
             ])
             ->add('target', EntityType::class, [
                 'label' => 'Activiteit voor',
