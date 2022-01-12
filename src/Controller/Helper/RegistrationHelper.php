@@ -6,6 +6,7 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class RegistrationHelper extends AbstractController
 {
@@ -37,6 +38,43 @@ class RegistrationHelper extends AbstractController
     }
 
     /**
+     * Creates a form to create a edit Registration.
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    protected function createRegistrationEditForm(
+        Registration $registration
+    ) {
+        return $this->createForm('App\Form\Activity\RegistrationEditType', $registration, [
+            'allowed_options' => $registration->getActivity()->getOptions(),
+        ]);
+    }
+
+    protected function registrationEdit(
+        Request $request,
+        Registration $registration,
+        string $page,
+        string $redirect
+    ) {
+        $form = $this->createRegistrationEditForm($registration);
+        $form->handleRequest($request);
+
+        //Check if the form is submitted and valid from Admin
+        if ($form->isSubmitted() && $form->isValid()) {
+            //Update Registration Database
+            $this->updateRegistration();
+
+            return $this->handleRedirect($registration->getActivity()->getId(), $redirect);
+        } else {
+            //Render the Admin Page edit registration page with correct form
+            return $this->render($page, [
+                'registration' => $registration,
+                'form' => $form->createView(),
+            ]);
+        }
+    }
+
+    /**
      * Persist addition of the Registration to the database.
      */
     protected function storeRegistration(
@@ -60,6 +98,16 @@ class RegistrationHelper extends AbstractController
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    /**
+     *  Persist update of the Registration to the database.
+     */
+    protected function updateRegistration(
+    ) {
+        $em = $this->getDoctrine()->getManager();
+        $em->flush();
+        $this->addFlash('success', 'Registratie aangepast!');
     }
 
     /**
@@ -170,5 +218,12 @@ class RegistrationHelper extends AbstractController
         ]);
 
         $this->mailer->message($person, $title, $body);
+    }
+
+    private function handleRedirect($id, $type)
+    {
+        return $this->redirectToRoute($type, [
+            'id' => $id,
+        ]);
     }
 }

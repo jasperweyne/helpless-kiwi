@@ -149,28 +149,15 @@ class ActivityControllerTest extends AuthWebTestCase
         //Arange
         $activities = $this->em->getRepository(Activity::class)->findAll();
         $id = $activities[0]->getId();
-        $comment = 'This is a test person for testing purposes';
-        $valueexists = false;
 
         //Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present");
         $form = $crawler->selectButton('Opslaan')->form();
         $form['activity_edit_present[registrations][0][present]']->setValue('2');
-        $form['activity_edit_present[registrations][0][comment]']->setValue($comment);
         $this->client->submit($form);
 
         //Assert
-        $activity = $this->em->getRepository(Activity::class)->find($id);
-        if ($activity) {
-            $registrations = $activity->getRegistrations();
-            foreach ($registrations as $register) {
-                if ($register->getComment() == $comment) {
-                    $valueexists = true;
-                }
-            }
-        }
         $this->assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
-        $this->assertTrue($valueexists);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

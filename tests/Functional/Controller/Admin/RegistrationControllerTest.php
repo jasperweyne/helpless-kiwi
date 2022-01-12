@@ -89,6 +89,27 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
+    public function testEditActionPost(): void
+    {
+        // Arrange
+        $registration = $this->em->getRepository(Registration::class)->findAll()[0];
+        $id = $registration->getId();
+        $crawler = $this->client->request('GET', "/admin/activity/register/edit/{$id}");
+        $comment = 'This is a test comment';
+
+        // Act
+        $form = $crawler->selectButton('Verander')->form();
+        $form['registration_edit[comment]'] = $comment;
+        $this->client->submit($form);
+
+        // Assert
+        $currentcomment = $this->em->getRepository(Registration::class)->find($id);
+        $newcomment = $currentcomment->getComment();
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals($comment, $newcomment);
+    }
+
     public function testDeleteActionGet(): void
     {
         // Arrange

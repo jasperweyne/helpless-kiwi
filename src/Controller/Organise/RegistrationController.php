@@ -62,6 +62,18 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
+     * Edit someones registration from an activity.
+     *
+     * @Route("/edit/{id}", name="edit", methods={"GET", "POST"})
+     */
+    public function editAction(
+        Request $request1,
+        Registration $registration1
+    ) {
+        return $this->registrationEdit($request1, $registration1, 'organise/activity/registration/edit.html.twig', 'organise_activity_show');
+    }
+
+    /**
      * Deletes a person from an entity you have organized.
      *
      * @Route("/delete/{id}", name="delete")

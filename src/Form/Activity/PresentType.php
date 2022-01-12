@@ -5,7 +5,6 @@ namespace App\Form\Activity;
 use App\Entity\Activity\Registration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -24,7 +23,7 @@ class PresentType extends AbstractType
             if (null != $registration->getDeleteDate()) {
                 return;
             }
-          
+
             $builder
                 ->add('present', ChoiceType::class, [
                     'choices' => [
@@ -34,9 +33,6 @@ class PresentType extends AbstractType
                     ],
                     'label' => $registration->getPerson(),
                     'required' => true,
-                ])
-                ->add('comment', TextType::class, [
-                    'required' => false,
                 ]);
         });
     }
