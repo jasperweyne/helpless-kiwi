@@ -116,6 +116,12 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
+    public function testEditActionPost(): void
+    {
+        /* @todo This test is incomplete. */
+        $this->markTestIncomplete();
+    }
+
     public function testDeleteActionGet(): void
     {
         // Arrange
