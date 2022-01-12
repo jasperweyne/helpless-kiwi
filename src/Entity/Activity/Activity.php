@@ -78,6 +78,7 @@ class Activity
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Expression("value >= this.getStart()",message = "Het einde van een activitiet moet na de start.")
      */
     private $end;
 

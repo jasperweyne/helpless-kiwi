@@ -71,21 +71,18 @@ class ActivityEditType extends AbstractType
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
                 'label' => 'Deadline aanmelden',
-                'data' => new \DateTime(),
                 'help' => 'Dit is de datum/tijd waarna je niet meer kan aanmelden.',
                 'required' => true,
             ])
             ->add('start', DateTimeType::class, [
                 'label' => 'Activiteit begint om',
                 'date_widget' => 'single_text',
-                'data' => new \DateTime(),
                 'time_widget' => 'single_text',
                 'required' => true,
             ])
             ->add('end', DateTimeType::class, [
                 'label' => 'Activiteit eindigt om',
                 'date_widget' => 'single_text',
-                'data' => new \DateTime(),
                 'time_widget' => 'single_text',
                 'help' => '  ',
                 'required' => true,
