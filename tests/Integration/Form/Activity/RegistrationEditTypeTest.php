@@ -2,6 +2,8 @@
 
 namespace Tests\Integration\Form\Activity;
 
+use App\Entity\Activity\Registration;
+use App\Form\Activity\RegistrationEditType;
 use App\Form\Activity\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -24,6 +26,11 @@ class RegistrationEditTypeTest extends KernelTestCase
     protected $em;
 
     /**
+     * @var RegistrationEditType
+     */
+    protected $registrationedittype;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -31,8 +38,7 @@ class RegistrationEditTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->em = self::$container->get(EntityManagerInterface::class);
-        $this->registrationType = new RegistrationType($this->em);
+        $this->registerationedittype = new RegistrationEditType();
     }
 
     /**
@@ -42,19 +48,21 @@ class RegistrationEditTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->registrationType);
-        unset($this->em);
+        unset($this->registrationedittype);
     }
 
-    public function testBuildForm(): void
+    public function testBindValidData()
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
-    }
+        $type = new Registration();
+        $formData = [
+            'comment' => 'test comment',
+        ];
 
-    public function testConfigureOptions(): void
-    {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $formfactory = self::$container->get('form.factory');
+        $form = $formfactory->create(RegistrationEditType::class, $type);
+
+        $form->submit($formData);
+        $this->assertTrue($form->isSynchronized());
+        $this->assertTrue($form->isSubmitted());
     }
 }

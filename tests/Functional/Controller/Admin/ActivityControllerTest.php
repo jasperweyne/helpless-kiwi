@@ -157,7 +157,6 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->submit($form);
 
         //Assert
-        $activity = $this->em->getRepository(Activity::class)->find($id);
         $this->assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
