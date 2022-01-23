@@ -46,13 +46,11 @@ support the project. Please review them, as well as our guidelines, in
 | [David Koymans](https://github.com/DavidckPixel)   | ViaKunst         |
 | Arnold van Bemmelen                                | ViaKunst         |
 | [Peter Sabel (Zabel)](https://github.com/A-Daneel) | Particolarte     |
-| [Borre Pol Meeuwisse](https://github.com/Borrepol) | Particolarte     |
-| Karel Zijp                                         | Particolarte     |
+| [Karel Zijp](https://github.com/zpks)              | Particolarte     |
 | [Eva Biesot](https://github.com/eeeevieb)          | Particolarte     |
 
 ## How to install/deploy
-Please refer to the [INSTALL.md](INSTALL.md) file. Making a quick change? You
-can use Gitpod to quickly deploy a development environment as well!
+Please refer to the [INSTALL.md](INSTALL.md) file, or the [DOCKER.md](DOCKER.md). Making a quick change? You can use Gitpod to quickly deploy a development environment as well!
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/jasperweyne/helpless-kiwi)
 
