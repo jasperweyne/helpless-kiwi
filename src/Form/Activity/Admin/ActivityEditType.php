@@ -22,11 +22,11 @@ class ActivityEditType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Naam',
-                'data' => 'Leuke activiteit naam',
+                'attr' => ['placeholder' => 'Leuke activiteit naam'],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Beschrijving',
-                'data' => 'Beschrijf hier de activiteit.',
+                'attr' => ['placeholder' => 'Beschrijf hier de activiteit'],
             ])
             ->add('location', LocationType::class, [
                 'label' => 'Locatie',
@@ -88,7 +88,7 @@ class ActivityEditType extends AbstractType
                 'required' => true,
             ])
             ->add('capacity', IntegerType::class, [
-                'label' => 'Capiciteit',
+                'label' => 'Capaciteit',
                 'data' => 20,
                 'help' => 'Het maximaal aantal aanmeldingen, hierna word je op de reserve lijst aangemeld.',
             ])

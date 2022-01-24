@@ -51,6 +51,7 @@ class Activity
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
+     * @Assert\NotBlank
      */
     private $location;
 
@@ -68,22 +69,27 @@ class Activity
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank
      */
     private $color;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotBlank
      */
     private $start;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\Expression("value >= this.getStart()",message = "Het einde van een activitiet moet na de start.")
+     * @Assert\NotBlank
+     * @Assert\Expression("value >= this.getStart()", message="Een activiteit kan niet eindigen voor de start.")
      */
     private $end;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotBlank
+     * @Assert\Expression("value < this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
      */
     private $deadline;
     /**
