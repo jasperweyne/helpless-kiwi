@@ -1,7 +1,6 @@
 ARG PHP_VERSION=7.4.25
-ARG NGINX_VERSION=1.18
 
-FROM php:${PHP_VERSION}-fpm-alpine AS app_php
+FROM php:${PHP_VERSION}-fpm-alpine
 
 ARG WORKDIR=/app
 
@@ -38,16 +37,10 @@ COPY docker/php/xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
 RUN mkdir -p ${WORKDIR}
 WORKDIR ${WORKDIR}
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
 COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
-	composer install --prefer-dist --no-autoloader --no-scripts  --no-progress; \
+	composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
 	composer clear-cache
-
-RUN set -eux \
-	&& mkdir -p var/cache var/log \
-	&& composer dump-autoload --classmap-authoritative
 
 VOLUME ${WORKDIR}/var
 
@@ -56,10 +49,3 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
-
-
-FROM nginx:${NGINX_VERSION}-alpine AS app_nginx
-
-COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/
-
-WORKDIR /app/public

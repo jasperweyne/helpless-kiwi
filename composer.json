@@ -54,7 +54,11 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "ocramius/package-versions": false,
+            "symfony/flex": false
+        }
     },
     "autoload": {
         "psr-4": {
@@ -92,6 +96,16 @@
         ],
         "fix": [
             "php-cs-fixer fix src"
+        ],
+        "db-rebuild": [
+            "php bin/console doctrine:database:drop --force --if-exists",
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:migrations:migrate -n"
+        ],
+        "db-rebuild-dev": [
+            "@db-rebuild",
+            "php bin/console app:create-account user@kiwi.nl user user",
+            "php bin/console app:create-account --admin admin@kiwi.nl admin admin"
         ]
     },
     "conflict": {
