@@ -93,7 +93,7 @@ class LocalAccount implements UserInterface, EquatableInterface
     private $registrations;
 
     /**
-     * @ORM\OneToMany(targetEntity=Registration::class, mappedBy="person")
+     * @ORM\OneToMany(targetEntity=Relation::class, mappedBy="person")
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("All group membership relations for the user.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
