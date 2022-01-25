@@ -38,7 +38,7 @@ class Relation
     private $group;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount", inversedBy="relations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @GQL\Field(type="LocalAccount")
      * @GQL\Description("The user who is a member of a group.")
