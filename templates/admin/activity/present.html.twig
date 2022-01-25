@@ -7,7 +7,22 @@
 {% block body %}
     <div class="form">
         {{ form_start(form) }}
-            {{ form_widget(form) }}
+        <table>
+            <thead>
+                <th>Name</th>
+                <th>Aanwezigheid</th>
+            </thead>
+            <tbody>
+                {% for registration in form.registrations %}
+                    {% if registration.count != 0 %}
+                        <tr>
+                            <td>{{ form_label(registration.present) }}</td>
+                            <td>{{ form_widget(registration.present) }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+            </table>
             <div class="button-group">
                 <button type="submit" class="button add icon">Opslaan</button>
                 <a href="{{ path('admin_activity_show', { 'id': activity.id }) }}" class="button secondary">Terug</a>

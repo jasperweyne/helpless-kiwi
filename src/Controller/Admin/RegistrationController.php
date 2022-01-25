@@ -40,6 +40,18 @@ class RegistrationController extends RegistrationHelper
     }
 
     /**
+     * Edit someones registration from an activity from admin.
+     *
+     * @Route("/edit/{id}", name="edit", methods={"GET", "POST"})
+     */
+    public function editAction(
+        Request $request,
+        Registration $registration
+    ) {
+        return $this->registrationEdit($request, $registration, 'admin/activity/registration/edit.html.twig', 'admin_activity_show');
+    }
+
+    /**
      * Remove someones registration from an activity.
      *
      * @Route("/delete/{id}", name="delete")

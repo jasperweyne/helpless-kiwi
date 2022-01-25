@@ -168,6 +168,32 @@
     "ocramius/proxy-manager": {
         "version": "2.2.3"
     },
+    "overblog/graphiql-bundle": {
+        "version": "0.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.1",
+            "ref": "96d185c63491cd15c1570f6243ec1808f4462970"
+        },
+        "files": [
+            "config/routes/dev/graphiql.yaml"
+        ]
+    },
+    "overblog/graphql-bundle": {
+        "version": "0.12",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.12",
+            "ref": "b122f3bfcfc0706c617a74afa8510af4799810f6"
+        },
+        "files": [
+            "config/graphql/types/.gitignore",
+            "config/packages/graphql.yaml",
+            "config/routes/graphql.yaml"
+        ]
+    },
     "paragonie/constant_time_encoding": {
         "version": "v2.4.0"
     },
@@ -647,6 +673,9 @@
     },
     "webmozart/assert": {
         "version": "1.9.1"
+    },
+    "webonyx/graphql-php": {
+        "version": "v0.13.9"
     },
     "welp/ical-bundle": {
         "version": "1.0.1"

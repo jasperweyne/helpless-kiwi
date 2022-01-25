@@ -32,8 +32,11 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->login();
 
+        /* @todo Correctly instantiate tested object to use it. */
+        $this->activityController = new ActivityController();
+
+        // Get all database tables
         $this->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
@@ -41,6 +44,7 @@ class ActivityControllerTest extends AuthWebTestCase
             RegistrationFixture::class,
         ]);
 
+        $this->login();
         $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
@@ -56,10 +60,25 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
+        // Arrange
+        $crawler = $this->client->request('GET', '/');
+        $activities = $this->em->getRepository(Activity::class)->findAll(['hidden' => false], ['start' => 'DESC']);
+
         // Act
-        $this->client->request('GET', '/');
+        $node = $crawler->filter('body > main > div.container > div.cardholder > div.grid-x')
+            ->first()->filter('div.cell')
+            ->first()->filter('h2');
+
+        $exist = false;
+        /* @var Activity */
+        foreach ($activities as $activity) {
+            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() && $activity->getVisibleAfter() < new \DateTime()) {
+                $exist = true;
+            }
+        }
 
         // Assert
+        $this->assertTrue($exist);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

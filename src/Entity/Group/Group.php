@@ -5,11 +5,14 @@ namespace App\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GroupRepository")
  * @ORM\Table("taxonomy")
+ * @GQL\Type
+ * @GQL\Description("A group of persons.")
  */
 class Group
 {
@@ -22,53 +25,73 @@ class Group
 
     /**
      * @ORM\Column(type="string", length=100, name="title")
+     * @GQL\Field(type="String!")
+     * @GQL\Description("The name of the group.")
      * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @GQL\Field(type="String")
+     * @GQL\Description("A textual description of the the group.")
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
+     * @GQL\Field(type="Group")
+     * @GQL\Description("The parent group of this (sub)group. Note that the members don't need to be a subset of the parent group.")
      */
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Group", mappedBy="parent")
+     * @GQL\Field(type="[Group]")
+     * @GQL\Description("The child (sub)groups of this group. Note that their members don't need to be a subset of this group.")
      */
     protected $children;
 
     /**
      * @ORM\Column(type="boolean")
+     * @GQL\Field(type="Boolean!")
+     * @GQL\Description("Whether the group can be modified.")
      */
     private $readonly;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @GQL\Field(type="Boolean")
+     * @GQL\Description("Whether the group can contain member users.")
      */
     private $relationable;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @GQL\Field(type="Boolean")
+     * @GQL\Description("Whether the group can contain children (sub)groups.")
      */
     private $subgroupable;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="group", orphanRemoval=true)
+     * @GQL\Field(type="[Relation]")
+     * @GQL\Description("The member users of this group.")
      */
     private $relations;
 
     /**
      * @ORM\Column(type="boolean")
+     * @GQL\Field(type="Boolean!")
+     * @GQL\Description("Whether the group is currently active, eg. whether it can organise activities.")
      */
     private $active;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @GQL\Field(type="Boolean")
+     * @GQL\Description("Whether the group can be currently used as a target group for activities.")
      */
     private $register;
 
@@ -92,8 +115,6 @@ class Group
 
     /**
      * Set id.
-     *
-     * @param string $id
      */
     public function setId(string $id): self
     {
@@ -114,8 +135,6 @@ class Group
 
     /**
      * Set name.
-     *
-     * @param string $name
      */
     public function setName(string $name): self
     {
@@ -136,8 +155,6 @@ class Group
 
     /**
      * Set description.
-     *
-     * @param string $description
      */
     public function setDescription(string $description): self
     {

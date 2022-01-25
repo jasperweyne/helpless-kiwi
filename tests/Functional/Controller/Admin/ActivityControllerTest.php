@@ -3,8 +3,13 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\ActivityController;
+use App\Entity\Activity\Activity;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Activity\PriceOptionFixture;
+use App\Tests\Database\Activity\RegistrationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -15,6 +20,11 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ActivityControllerTest extends AuthWebTestCase
 {
+    /**
+     * @var \Doctrine\ORM\EntityManagerInterface
+     */
+    private $em;
+
     /**
      * @var ActivityController
      */
@@ -31,9 +41,18 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            PriceOptionFixture::class,
+            ActivityFixture::class,
+            RegistrationFixture::class,
+        ]);
+
         $this->login();
 
         $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->events = self::$container->get(EventService::class);
+        $this->activityController = new ActivityController($this->events);
     }
 
     /**
@@ -50,7 +69,6 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
-        /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
 
@@ -126,8 +144,19 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testPresentEditAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        //Arange
+        $activities = $this->em->getRepository(Activity::class)->findAll();
+        $id = $activities[0]->getId();
+
+        //Act
+        $crawler = $this->client->request('GET', "/admin/activity/{$id}/present");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['activity_edit_present[registrations][0][present]']->setValue('2');
+        $this->client->submit($form);
+
+        //Assert
+        $this->assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testSetAmountPresent(): void

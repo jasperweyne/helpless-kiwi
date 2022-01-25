@@ -55,9 +55,12 @@ class AuthWebTestCase extends WebTestCase
 
     protected function login(): void
     {
-        $this->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
+        /** @var EntityManagerInterface */
+        $em = self::$container->get(EntityManagerInterface::class);
+        $users = $em->getRepository(LocalAccount::class)->findAll();
+        if (empty($users)) {
+            throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
+        }
 
         $session = $this->client->getContainer()->get('session');
 

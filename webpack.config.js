@@ -71,7 +71,7 @@ Encore
 
     // enables Sass/SCSS support
     .enableSassLoader(function (options) {
-        options.includePaths = ['./node_modules/foundation-sites/scss'];
+        options.sassOptions.includePaths = ['./node_modules/foundation-sites/scss'];
     })
 
     // enable PostCSS

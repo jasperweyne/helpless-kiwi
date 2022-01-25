@@ -24,7 +24,9 @@
                                     <th>Optie</th>
                                     <th>Laatst bewerkt</th>
                                     <th>Acties</th>
+                                    <th>Bewerk</th>
                                     <th>Aanwezigheid</th>
+                                    <th>Opmerking</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,10 +43,12 @@
                                     <td>{{ registration.option.name }}</td>
                                     <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                     <td><a href="{{ path('organise_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                    <td><a href="{{ path('organise_activity_registration_edit', { 'id': registration.id }) }}">Bewerken</a></td>
                                     <td>{% if registration.present is null %}Onbekend
                                     {% elseif registration.present == true %}Aanwezig
                                     {% else %}Afwezig
                                     {% endif %}</td>
+                                    <td> {{registration.comment}} </td>
                                 </tr>
                             {% else %}
                                 <tr>
@@ -100,6 +104,14 @@
                                 <tr>
                                     <th>Beschrijving</th>
                                     <td>{{ activity.description }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Zichtbaar vanaf</th>
+                                    {% if activity.visibleAfter is null %}
+                                    <td><i>verborgen</i></td>
+                                    {% else %}
+                                    <td>{{ activity.visibleAfter|date('d-m-Y H:i') }}</td>
+                                    {% endif %}
                                 </tr>
                                 <tr>
                                     <th>Aanmelddeadline</th>

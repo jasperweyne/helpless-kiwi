@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .feedback.button.grow {
     backdrop-filter: blur(3px);
     border-radius: $padding + 4rem;
@@ -22,7 +24,7 @@
         width: 80vw;
         max-width: 500px;
         border-radius: $padding + 4rem;
-        padding: $padding / 2;
+        padding: math.div($padding, 2);
         color: black;
         opacity: 0.5;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);

@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Form\Activity;
 
+use App\Entity\Activity\Registration;
 use App\Form\Activity\PresentType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -38,15 +39,36 @@ class PresentTypeTest extends KernelTestCase
         unset($this->presentType);
     }
 
+    public function testBindValidData()
+    {
+        $type = new Registration();
+        $formData = [
+            'present' => 2,
+        ];
+
+        $formfactory = self::$container->get('form.factory');
+        $form = $formfactory->create(PresentType::class, $type);
+
+        $form->submit($formData);
+        $this->assertTrue($form->isSynchronized());
+        $this->assertTrue($form->isSubmitted());
+    }
+
     public function testBuildForm(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $formbuildermock = $this->getMockBuilder("Symfony\Component\Form\Test\FormBuilderInterface")
+            ->disableOriginalConstructor()
+            ->getMock();
+        $formbuildermock->expects($this->exactly(1))->method('addEventListener');
+        $this->presentType->buildForm($formbuildermock, []);
     }
 
     public function testConfigureOptions(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resolver->expects($this->exactly(1))->method('setDefaults');
+        $this->presentType->configureOptions($resolver);
     }
 }
