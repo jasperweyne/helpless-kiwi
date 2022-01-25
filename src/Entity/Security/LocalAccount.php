@@ -2,13 +2,19 @@
 
 namespace App\Entity\Security;
 
+use App\Entity\Activity\Registration;
+use App\Entity\Group\Relation;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
+ * @GQL\Type
+ * @GQL\Description("A registered user who can log in and register for activities.")
  */
 class LocalAccount implements UserInterface, EquatableInterface
 {
@@ -21,16 +27,25 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @GQL\Field(type="String")
+     * @GQL\Description("The e-mail address of the user.")
+     * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=180)
+     * @GQL\Field(type="String")
+     * @GQL\Description("The given name of the user (the first name in western cultures).")
+     * @GQL\Access("isAuthenticated()")
      */
     private $givenName;
 
     /**
      * @ORM\Column(type="string", length=180)
+     * @GQL\Field(type="String")
+     * @GQL\Description("The family name of the user (the last name in western cultures).")
+     * @GQL\Access("isAuthenticated()")
      */
     private $familyName;
 
@@ -68,6 +83,22 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\Column(name="password_requested_at", type="datetime", nullable=true)
      */
     protected $passwordRequestedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Registration::class, mappedBy="person")
+     * @GQL\Field(type="[Registration]")
+     * @GQL\Description("All activity registrations for the user.")
+     * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     */
+    private $registrations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Registration::class, mappedBy="person")
+     * @GQL\Field(type="[Relation]")
+     * @GQL\Description("All group membership relations for the user.")
+     * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     */
+    private $relations;
 
     /**
      * Get id.
@@ -236,6 +267,16 @@ class LocalAccount implements UserInterface, EquatableInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    /**
+     * @GQL\Field(type="Boolean!")
+     * @GQL\Description("Whether this user is an administrator.")
+     * @GQL\Access("isAuthenticated()")
+     */
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->getRoles());
     }
 
     /**
@@ -431,5 +472,67 @@ class LocalAccount implements UserInterface, EquatableInterface
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->registrations = new ArrayCollection();
+        $this->relations = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|Registration[]
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->removeElement($registration)) {
+            // set the owning side to null (unless already changed)
+            if ($registration->getPerson() === $this) {
+                $registration->setPerson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Relation[]
+     */
+    public function getRelations(): Collection
+    {
+        return $this->relations;
+    }
+
+    public function addRelation(Relation $relation): self
+    {
+        if (!$this->relations->contains($relation)) {
+            $this->relations[] = $relation;
+            $relation->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Relation $relation): self
+    {
+        if ($this->relations->removeElement($relation)) {
+            // set the owning side to null (unless already changed)
+            if ($relation->getPerson() === $this) {
+                $relation->setPerson(null);
+            }
+        }
+
+        return $this;
     }
 }

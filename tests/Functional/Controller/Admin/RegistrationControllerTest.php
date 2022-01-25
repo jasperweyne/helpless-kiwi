@@ -32,7 +32,6 @@ class RegistrationControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->login();
 
         $this->loadFixtures([
             LocalAccountFixture::class,
@@ -41,6 +40,7 @@ class RegistrationControllerTest extends AuthWebTestCase
             RegistrationFixture::class,
         ]);
 
+        $this->login();
         $this->em = self::$container->get(EntityManagerInterface::class);
     }
 

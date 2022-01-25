@@ -3,9 +3,12 @@
 namespace App\Entity\Location;
 
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 
 /**
  * @ORM\Entity
+ * @GQL\Type
+ * @GQL\Description("A physical location where activities are organized.")
  */
 class Location
 {
@@ -18,6 +21,8 @@ class Location
 
     /**
      * @ORM\Column(type="string")
+     * @GQL\Field(type="String")
+     * @GQL\Description("The address of the location.")
      */
     private $address;
 

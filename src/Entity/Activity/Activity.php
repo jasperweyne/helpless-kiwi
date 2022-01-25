@@ -3,10 +3,13 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
 use App\Entity\Location\Location;
+use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,6 +17,8 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * @GQL\Type
+ * @GQL\Description("Information on a physical activity that users can register themselves to.")
  * @ORM\Entity(repositoryClass="App\Repository\ActivityRepository")
  * @Vich\Uploadable
  */
@@ -29,21 +34,29 @@ class Activity
     /**
      * @ORM\Column(type="string", length=100, name="title")
      * @Assert\NotBlank
+     * @GQL\Field(type="String!")
+     * @GQL\Description("The name of the activity.")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
+     * @GQL\Field(type="String!")
+     * @GQL\Description("A textual description of the activity.")
      */
     private $description;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\PriceOption", mappedBy="activity")
+     * @GQL\Field(type="[PriceOption]")
+     * @GQL\Description("The available registration options for the activity.")
      */
     private $options;
 
     /**
+     * @GQL\Field(type="[Registration]")
+     * @GQL\Description("All registrations stored for this activity, regardless of option.")
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="activity")
      */
     private $registrations;
@@ -51,6 +64,8 @@ class Activity
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
+     * @GQL\Field(type="Location!")
+     * @GQL\Description("The (physical) location of the activity.")
      * @Assert\NotBlank
      */
     private $location;
@@ -58,10 +73,14 @@ class Activity
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id", nullable=true)
+     * @GQL\Field(type="Group")
+     * @GQL\Description("The group that authored this activity.")
      */
     private $author;
 
     /**
+     * @GQL\Field(type="Group")
+     * @GQL\Description("The group of all users that can see and register to this activity.")
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
      */
@@ -69,18 +88,24 @@ class Activity
 
     /**
      * @ORM\Column(type="string")
+     * @GQL\Field(type="String!")
+     * @GQL\Description("The color associated with this activity, stored for presentation purposes.")
      * @Assert\NotBlank
      */
     private $color;
 
     /**
      * @ORM\Column(type="datetime")
+     * @GQL\Field(type="DateTimeScalar!")
+     * @GQL\Description("The date and time the activity starts.")
      * @Assert\NotBlank
      */
     private $start;
 
     /**
      * @ORM\Column(type="datetime")
+     * @GQL\Field(type="DateTimeScalar!")
+     * @GQL\Description("The date and time the activity ends.")
      * @Assert\NotBlank
      * @Assert\Expression("value >= this.getStart()", message="Een activiteit kan niet eindigen voor de start.")
      */
@@ -88,6 +113,8 @@ class Activity
 
     /**
      * @ORM\Column(type="datetime")
+     * @GQL\Field(type="DateTimeScalar!")
+     * @GQL\Description("The final date and time users may (de)register for this activity.")
      * @Assert\NotBlank
      * @Assert\Expression("value <= this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
      */
@@ -116,16 +143,22 @@ class Activity
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @GQL\Field(type="Int")
+     * @GQL\Description("The maximum number of users that can be registered for this activity.")
      */
     private $capacity;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @GQL\Field(type="Int")
+     * @GQL\Description("A stored number of users that were present at this activity.")
      */
     private $present;
 
     /**
      * @ORM\Column(type="datetime", nullable=true, options={"default" : "1970-01-01"})
+     * @GQL\Field(type="DateTimeScalar")
+     * @GQL\Description("The time after which the activity will be publicized.")
      */
     private $visibleAfter;
 
@@ -471,5 +504,36 @@ class Activity
         $this->visibleAfter = $visibleAfter;
 
         return $this;
+    }
+
+    /**
+     * Is the activity currently visible, given a number of applicable groups.
+     */
+    public function isVisible(array $groups = []): bool
+    {
+        $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups);
+
+        return
+            $this->getEnd() > new \DateTime() &&
+            $in_groups &&
+            $this->getVisibleAfter() &&
+            $this->getVisibleAfter() < new \DateTime()
+        ;
+    }
+
+    /**
+     * Is the activity currently visible by a user.
+     */
+    public function isVisibleBy(?LocalAccount $user = null): bool
+    {
+        // gather the currently applicable groups
+        $groups = [];
+        if ($user) {
+            $groups = $user->getRelations()->map(function (Relation $relation) {
+                return $relation->getGroup();
+            })->toArray();
+        }
+
+        return $this->isVisible($groups);
     }
 }

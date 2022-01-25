@@ -41,9 +41,6 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        //self::bootKernel();
-        $this->login();
-
         $this->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
@@ -51,10 +48,11 @@ class ActivityControllerTest extends AuthWebTestCase
             RegistrationFixture::class,
         ]);
 
-        $this->events = self::$container->get(EventService::class);
-        $this->activityController = new ActivityController($this->events);
+        $this->login();
 
         $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->events = self::$container->get(EventService::class);
+        $this->activityController = new ActivityController($this->events);
     }
 
     /**
