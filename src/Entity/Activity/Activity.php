@@ -89,9 +89,10 @@ class Activity
     /**
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank
-     * @Assert\Expression("value < this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
+     * @Assert\Expression("value <= this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
      */
     private $deadline;
+
     /**
      * @Vich\UploadableField(mapping="activities", fileNameProperty="image.name", size="image.size", mimeType="image.mimeType", originalName="image.originalName", dimensions="image.dimensions")
      *
