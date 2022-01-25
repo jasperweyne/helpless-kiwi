@@ -116,7 +116,7 @@ class Activity
      * @GQL\Field(type="DateTimeScalar!")
      * @GQL\Description("The final date and time users may (de)register for this activity.")
      * @Assert\NotBlank
-     * @Assert\Expression("value < this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
+     * @Assert\Expression("value <= this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
      */
     private $deadline;
 
