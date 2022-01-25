@@ -31,7 +31,9 @@ class RegistrationType extends AbstractType
                 },
                 'required' => true,
             ])
-            ->add('comment', TextType::class)
+            ->add('comment', TextType::class, [
+                'required' => false,
+            ])
         ;
     }
 
