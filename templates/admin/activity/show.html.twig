@@ -189,6 +189,7 @@
                                 <th>Optie</th>
                                 <th>Laatst bewerkt</th>
                                 <th>Acties</th>
+                                <th>Bewerk</th>
                                 <th>Aanwezigheid</th>
                                 <th>Opmerking</th>
                             </tr>
@@ -207,6 +208,7 @@
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                <td><a href="{{ path('admin_activity_registration_edit', { 'id': registration.id }) }}">Bewerk</a></td>
                                 <td>
                                 {% if registration.present is null %}Onbekend
                                 {% elseif registration.present == true %}Aanwezig

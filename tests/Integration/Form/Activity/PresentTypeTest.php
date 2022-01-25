@@ -44,7 +44,6 @@ class PresentTypeTest extends KernelTestCase
         $type = new Registration();
         $formData = [
             'present' => 2,
-            'comment' => 'This is a test comment for testing purposes',
         ];
 
         $formfactory = self::$container->get('form.factory');

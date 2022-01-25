@@ -66,6 +66,7 @@ class Activity
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
      * @GQL\Field(type="Location!")
      * @GQL\Description("The (physical) location of the activity.")
+     * @Assert\NotBlank
      */
     private $location;
 
@@ -89,6 +90,7 @@ class Activity
      * @ORM\Column(type="string")
      * @GQL\Field(type="String!")
      * @GQL\Description("The color associated with this activity, stored for presentation purposes.")
+     * @Assert\NotBlank
      */
     private $color;
 
@@ -96,6 +98,7 @@ class Activity
      * @ORM\Column(type="datetime")
      * @GQL\Field(type="DateTimeScalar!")
      * @GQL\Description("The date and time the activity starts.")
+     * @Assert\NotBlank
      */
     private $start;
 
@@ -103,6 +106,8 @@ class Activity
      * @ORM\Column(type="datetime")
      * @GQL\Field(type="DateTimeScalar!")
      * @GQL\Description("The date and time the activity ends.")
+     * @Assert\NotBlank
+     * @Assert\Expression("value >= this.getStart()", message="Een activiteit kan niet eindigen voor de start.")
      */
     private $end;
 
@@ -110,6 +115,8 @@ class Activity
      * @ORM\Column(type="datetime")
      * @GQL\Field(type="DateTimeScalar!")
      * @GQL\Description("The final date and time users may (de)register for this activity.")
+     * @Assert\NotBlank
+     * @Assert\Expression("value < this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
      */
     private $deadline;
 
@@ -150,6 +157,8 @@ class Activity
 
     /**
      * @ORM\Column(type="datetime", nullable=true, options={"default" : "1970-01-01"})
+     * @GQL\Field(type="DateTimeScalar")
+     * @GQL\Description("The time after which the activity will be publicized.")
      */
     private $visibleAfter;
 
