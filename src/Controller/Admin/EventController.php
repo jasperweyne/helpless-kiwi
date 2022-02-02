@@ -2,13 +2,13 @@
 
 namespace App\Controller\Admin;
 
-use App\Template\Annotation\MenuItem;
 use App\Entity\Log\Event;
 use App\Log\EventService;
+use App\Template\Annotation\MenuItem;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Event controller.
@@ -27,7 +27,7 @@ class EventController extends AbstractController
     /**
      * Lists all events.
      *
-     * @MenuItem(title="Gebeurtenislog", menu="admin")
+     * @MenuItem(title="Gebeurtenislog", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction(Request $request)
@@ -54,9 +54,9 @@ class EventController extends AbstractController
 
         $cqb = clone $qb;
         $count = current($cqb
-                    ->select('count('.$qb->getRootAlias().')')
-                    ->getQuery()
-                    ->getOneOrNullResult()
+            ->select('count('.$qb->getRootAlias().')')
+            ->getQuery()
+            ->getOneOrNullResult()
                 );
 
         $rqb = clone $qb;

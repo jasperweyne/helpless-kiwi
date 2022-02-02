@@ -245,6 +245,13 @@ class LocalAccount implements UserInterface, EquatableInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
+        foreach ($this->getRelations() as $rel) {
+            if ($rel->getGroup()->isActive()) {
+                $roles[] = 'ROLE_AUTHOR';
+                break;
+            }
+        }
+
         return array_unique($roles);
     }
 
@@ -534,5 +541,20 @@ class LocalAccount implements UserInterface, EquatableInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Group[]
+     */
+    public function getActiveGroups(): array
+    {
+        $groups = [];
+        foreach ($this->getRelations() as $relation) {
+            if ($relation->getGroup()->isActive()) {
+                $groups[] = $relation->getGroup();
+            }
+        }
+
+        return $groups;
     }
 }

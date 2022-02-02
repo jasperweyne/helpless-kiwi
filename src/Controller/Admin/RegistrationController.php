@@ -24,6 +24,8 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Activity $activity
     ) {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createRegistrationNewForm($activity);
         $form->handleRequest($request);
 
@@ -48,6 +50,8 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ) {
+        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+
         return $this->registrationEdit($request, $registration, 'admin/activity/registration/edit.html.twig', 'admin_activity_show');
     }
 
@@ -60,6 +64,8 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ) {
+        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+
         $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
         $form = $this->createRegistrationDeleteForm($url);
         $form->handleRequest($request);
@@ -85,6 +91,8 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Activity $activity
     ) {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createReserveNewForm($activity);
         $form->handleRequest($request);
 
@@ -109,6 +117,8 @@ class RegistrationController extends RegistrationHelper
     public function reserveMoveUpAction(
         Registration $registration
     ) {
+        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+
         $returnData = $this->promoteReserve($registration);
 
         return $this->handleRedirect($returnData);
@@ -122,6 +132,8 @@ class RegistrationController extends RegistrationHelper
     public function reserveMoveDownAction(
         Registration $registration
     ) {
+        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+
         $returnData = $this->demoteReserve($registration);
 
         return $this->handleRedirect($returnData);

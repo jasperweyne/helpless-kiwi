@@ -2,10 +2,10 @@
 
 namespace App\Controller\Admin;
 
-use App\Template\Annotation\MenuItem;
 use App\Entity\Mail\Mail;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Mail controller.
@@ -17,7 +17,7 @@ class MailController extends AbstractController
     /**
      * Lists all mails.
      *
-     * @MenuItem(title="Mails", menu="admin")
+     * @MenuItem(title="Mails", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction()

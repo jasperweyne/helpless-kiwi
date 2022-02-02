@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
+use App\Entity\Security\LocalAccount;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
@@ -37,7 +38,13 @@ class ActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $activities = $em->getRepository(Activity::class)->findBy([], ['start' => 'DESC']);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $activities = $em->getRepository(Activity::class)->findBy([], ['start' => 'DESC']);
+        } else {
+            /** @var LocalAccount $user */
+            $user = $this->getUser();
+            $activities = $em->getRepository(Activity::class)->findAuthor($user->getActiveGroups());
+        }
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
@@ -78,6 +85,8 @@ class ActivityController extends AbstractController
      */
     public function showAction(Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $em = $this->getDoctrine()->getManager();
 
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
@@ -108,6 +117,8 @@ class ActivityController extends AbstractController
      */
     public function editAction(Request $request, Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity);
         $form->handleRequest($request);
 
@@ -130,6 +141,8 @@ class ActivityController extends AbstractController
      */
     public function imageAction(Request $request, Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createForm('App\Form\Activity\ActivityImageType', $activity);
         $form->handleRequest($request);
 
@@ -152,6 +165,8 @@ class ActivityController extends AbstractController
      */
     public function deleteAction(Request $request, Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createDeleteForm($activity);
         $form->handleRequest($request);
 
@@ -176,6 +191,8 @@ class ActivityController extends AbstractController
      */
     public function priceNewAction(Request $request, Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $price = new PriceOption();
         $price->setActivity($activity);
 
@@ -208,6 +225,8 @@ class ActivityController extends AbstractController
      */
     public function priceEditAction(Request $request, PriceOption $price)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $activity = $price->getActivity();
         $originalPrice = $price->getPrice();
         $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
@@ -245,6 +264,8 @@ class ActivityController extends AbstractController
      */
     public function presentEditAction(Request $request, Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);
 
@@ -268,6 +289,8 @@ class ActivityController extends AbstractController
      */
     public function setAmountPresent(Request $request, Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount', $activity);
@@ -293,6 +316,8 @@ class ActivityController extends AbstractController
      */
     public function resetAmountPresent(Request $request, Activity $activity)
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm('App\Form\Activity\ActivityCountPresent', $activity);

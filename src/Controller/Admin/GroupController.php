@@ -95,7 +95,7 @@ class GroupController extends AbstractController
     /**
      * Lists all groups.
      *
-     * @MenuItem(title="Groepen", menu="admin")
+     * @MenuItem(title="Groepen", menu="admin", role="ROLE_ADMIN")
      * @Route("/{id?}", name="show", methods={"GET"})
      */
     public function showAction(Request $request, ?Group $group)

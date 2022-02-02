@@ -22,6 +22,20 @@ class ActivityRepository extends ServiceEntityRepository
     /**
      * @return Activity[] Returns an array of Activity objects
      */
+    public function findAuthor($groups)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('(p.target IN (:groups))')
+            ->setParameter('groups', $groups)
+            ->orderBy('p.start', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Activity[] Returns an array of Activity objects
+     */
     public function findUpcoming()
     {
         return $this->createQueryBuilder('p')

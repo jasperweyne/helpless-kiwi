@@ -27,7 +27,7 @@
                             <a href="{{(item.path ?? '') is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}">{{ item.title }}</a>
                         {% endif %}
                     {% endfor %}
-                    {% if is_granted("ROLE_ADMIN") %}
+                    {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_AUTHOR") %}
                         <a href="{{ path('admin_index') }}">Beheer</a>
                     {% endif %}
                 </nav>
