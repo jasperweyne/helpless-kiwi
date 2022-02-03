@@ -35,7 +35,10 @@ class MenuBuilder
             $items = [];
 
             foreach ($this->extensions as $extension) {
-                $items = array_merge($items, $extension->getMenuItems($menu));
+                foreach ($extension->getMenuItems($menu) as $item) {
+                    $title = $item['title'];
+                    $items[$title] = array_merge($items[$title] ?? [], $item);
+                }
             }
 
             usort($items, function ($a, $b) {
