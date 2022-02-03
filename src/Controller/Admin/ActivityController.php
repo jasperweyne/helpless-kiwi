@@ -240,7 +240,7 @@ class ActivityController extends AbstractController
      */
     public function priceEditAction(Request $request, PriceOption $price)
     {
-        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+        $this->denyAccessUnlessGranted('in_group', $price->getActivity()->getAuthor());
 
         $activity = $price->getActivity();
         $originalPrice = $price->getPrice();
