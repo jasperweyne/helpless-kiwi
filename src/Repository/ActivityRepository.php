@@ -25,9 +25,9 @@ class ActivityRepository extends ServiceEntityRepository
     public function findAuthor($groups)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('(p.target IN (:groups))')
+            ->andWhere('(p.author IN (:groups))')
             ->setParameter('groups', $groups)
-            ->orderBy('p.start', 'ASC')
+            ->orderBy('p.start', 'DESC')
             ->getQuery()
             ->getResult()
         ;

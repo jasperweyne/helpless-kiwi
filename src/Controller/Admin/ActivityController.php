@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use App\Entity\Security\LocalAccount;
+use App\Entity\Group\Group;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
@@ -41,10 +41,25 @@ class ActivityController extends AbstractController
         if ($this->isGranted('ROLE_ADMIN')) {
             $activities = $em->getRepository(Activity::class)->findBy([], ['start' => 'DESC']);
         } else {
-            /** @var LocalAccount $user */
-            $user = $this->getUser();
-            $activities = $em->getRepository(Activity::class)->findAuthor($user->getActiveGroups());
+            $groups = $em->getRepository(Group::class)->findAllFor($this->getUser());
+            $activities = $em->getRepository(Activity::class)->findAuthor($groups);
         }
+
+        return $this->render('admin/activity/index.html.twig', [
+            'activities' => $activities,
+        ]);
+    }
+
+    /**
+     * Lists all activities with a group as author.
+     *
+     * @Route("/group/{id}", name="group", methods={"GET"})
+     */
+    public function groupAction(Group $group)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $activities = $em->getRepository(Activity::class)->findBy(['author' => $group], ['start' => 'DESC']);
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
