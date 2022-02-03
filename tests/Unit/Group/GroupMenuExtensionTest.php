@@ -6,6 +6,7 @@ use App\Group\GroupMenuExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class GroupMenuExtensionTest.
@@ -15,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class GroupMenuExtensionTest extends KernelTestCase
 {
     /**
-     * @var GroupMenuExtension
+     * @var OrganiseMenuExtension
      */
     protected $groupMenuExtension;
 
@@ -23,6 +24,11 @@ class GroupMenuExtensionTest extends KernelTestCase
      * @var EntityManagerInterface
      */
     protected $em;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
 
     /**
      * {@inheritdoc}
@@ -33,7 +39,8 @@ class GroupMenuExtensionTest extends KernelTestCase
         self::bootKernel();
 
         $this->em = self::$container->get(EntityManagerInterface::class);
-        $this->groupMenuExtension = new GroupMenuExtension($this->em);
+        $this->tokenStorage = self::$container->get(TokenStorageInterface::class);
+        $this->groupMenuExtension = new GroupMenuExtension($this->em, $this->tokenStorage);
     }
 
     /**
@@ -45,6 +52,7 @@ class GroupMenuExtensionTest extends KernelTestCase
 
         unset($this->groupMenuExtension);
         unset($this->em);
+        unset($this->tokenStorage);
     }
 
     public function testGetMenuItems(): void
