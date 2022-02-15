@@ -1,23 +1,18 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=alert_status)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=coverage)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) 
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/jasperweyne/helpless-kiwi) [![Discord](https://img.shields.io/discord/838843751509393458?label=discord&logo=discord)](https://discord.gg/4HUmvEnXn8)
-
-| **Service** | **Master** | **Develop** |
-|---|---|---|
-| CI Status | ![CI](https://github.com/jasperweyne/helpless-kiwi/workflows/CI/badge.svg?branch=master) | ![CI](https://github.com/jasperweyne/helpless-kiwi/workflows/CI/badge.svg?branch=develop) |
 <p align="center">
-<img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/master/assets/image/readme-header.png" alt="helpless-kiwi" style="max-width:100%;">
+    <img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/master/assets/image/readme-header.png" alt="helpless-kiwi" style="max-width:100%;">
 </p>
-  <h1 align="center">Helpless Kiwi</h1>
-  <p align="center">An open source activity manager
-    <br />
-    <br />
-    <a href="https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=bug_report.md&title=">Report a bug</a>
-    -
-    <a href="https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=feature_request.md&title=">Request a feature</a>
-  </p>
-  <br />
-  <br />
+<h1 align="center">Helpless Kiwi</h1>
+<p align="center">An open source activity manager
+<br />
+<br />
+<a href="https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=bug_report.md&title=">Report a bug</a>
+·
+<a href="https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=feature_request.md&title=">Request a feature</a>
+<br />
+</p>
   
+[![sc-gate-shield]][sc-project-url] [![sc-reliability-shield]][sc-project-url] [![sc-maintainability-shield]][sc-project-url] [![sc-coverage-shield]][sc-project-url] [![sc-duplicate-lines-shield]][sc-project-url]
+![ci-shield] [![gitpod-shield]][gitpod-url] [![discord-shield]]([discord-url])
 
 - [About Helpless Kiwi](#about-helpless-kiwi)
 - [Getting Started](#getting-started)
@@ -62,25 +57,25 @@ project for a myriad of other 'issues', as shown below. Our goal is to get
 these, as much as possible, resolved. Any help with this is more then
 appreciated!
 
-[![sc-bugs-shield]][sc-project-url] [![sc-smells-shield]][sc-project-url]
-[![sc-duplication-shield]][sc-project-url] [![sc-vuln-shield]][sc-project-url] 
+
+[![sc-vuln-shield]][sc-project-url] [![sc-bugs-shield]][sc-project-url] [![sc-smells-shield]][sc-project-url]
 
 ## Partners
 <p align="center">
-<a href="https://viakunst-utrecht.nl/"><img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/develop/assets/image/readme-viakunst.png" alt="viakunst" height="50x"></a>
+<a href="https://viakunst-utrecht.nl/"><img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/develop/assets/image/readme-viakunst.png" alt="viakunst" height="50px"></a>
 <a href="https://particolarte.nl/"><img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/develop/assets/image/readme-particolarte.png" alt="particolarte" height="100px"></a>
 </p>
 
 ## Maintainers
-| **Name** | **Organisation** |
-|---|---|
-| [Jasper Weyne](https://github.com/jasperweyne) | Project Owner |
-| [Eva Biesot](https://github.com/eeeevieb) | Particolarte |
-| [Karel Zijp](https://github.com/zpks) | Particolarte |
-| [Peter Sabel (Zabel)](https://github.com/A-Daneel) | Particolarte |
-| Arnold van Bemmelen | ViaKunst |
-| [David Koymans](https://github.com/DavidckPixel) | ViaKunst |
-| [Machiel Kruger](https://github.com/mkrugr) | ViaKunst |
+| **Name**                                           | **Organisation** |
+| -------------------------------------------------- | ---------------- |
+| [Jasper Weyne](https://github.com/jasperweyne)     | Project Owner    |
+| [Eva Biesot](https://github.com/eeeevieb)          | Particolarte     |
+| [Karel Zijp](https://github.com/zpks)              | Particolarte     |
+| [Peter Sabel (Zabel)](https://github.com/A-Daneel) | Particolarte     |
+| Arnold van Bemmelen                                | ViaKunst         |
+| [David Koymans](https://github.com/DavidckPixel)   | ViaKunst         |
+| [Machiel Kruger](https://github.com/mkrugr)        | ViaKunst         |
 
 ## Contact
 You can either join the [discord](https://discord.gg/4HUmvEnXn8), file a [bug
@@ -89,16 +84,27 @@ report][bug-create-url], or make a [feature request][feature-create-url].
 ## License
 This work is [licensed](https://github.com/jasperweyne/helpless-kiwi/blob/develop/LICENSE) under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
+[sc-project-url]: https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi
 [sc-gate-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=alert_status
+[sc-reliability-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=reliability_rating
+[sc-maintainability-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=sqale_rating
+[sc-coverage-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=coverage
+[sc-duplicate-lines-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=duplicated_lines_density
 [sc-bugs-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=bugs
 [sc-smells-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=code_smells
 [sc-vuln-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=vulnerabilities
-[sc-duplication-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=duplicated_lines_density
-[sc-project-url]: https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi
-[discord-url]: https://discord.gg/4HUmvEnXn8
 
-[bug-create-url]: https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=bug_report.md&title=
-[feature-create-url]: https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=feature_request.md&title=
+[gitpod-url]: https://gitpod.io/#https://github.com/jasperweyne/helpless-kiwi
+[gitpod-shield]: https://img.shields.io/badge/Gitpod-ready--to--code-green?logo=gitpod
+
+[discord-url]: https://discord.gg/4HUmvEnXn8
+[discord-shield]: https://img.shields.io/discord/838843751509393458?label=discord&logo=discord
+
+[ci-shield]: https://github.com/jasperweyne/helpless-kiwi/workflows/CI/badge.svg?branch=develop
+
 
 [bug-list-url]: https://github.com/jasperweyne/helpless-kiwi/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+bug%22
+[bug-create-url]: https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=bug_report.md&title=
 [feature-list-url]: https://github.com/jasperweyne/helpless-kiwi/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+feature%22
+[feature-create-url]: https://github.com/jasperweyne/helpless-kiwi/issues/new?assignees=&labels=&template=feature_request.md&title=
+
