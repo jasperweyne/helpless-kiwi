@@ -33,16 +33,18 @@ Kiwi should give you insight into which activities do well, as well as allow
 your members a convenient and central way to view and sign up for them.
 
 ## Getting started
+#### Prerequisites
 Regardless of if you're going to develop or wanting to deploy. Kiwi has some
-requirements and dependencies. All of which you can find
-[here](PREREQUISITES.md).
+requirements and dependencies. For development with the docker stack or gitpod
+you don't need to worry about them. In case you want to deploy or run your own
+development stack you can find the prerequisites [here](PREREQUISITES.md). 
 
-### Deployment
+#### Deployment
 To get kiwi running on your own server you can do it manually or use our
 install script. Both ways are described in our [installation
 manual](DEPLOY.md).
 
-### Development
+#### Development
 There are currently three ways of running Kiwi
 1. You can [run it using Docker](DOCKER.md)
 2. You can [run a LAMP/WAMP stack](DEV.md)
