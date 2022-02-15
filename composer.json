@@ -56,8 +56,8 @@
         },
         "sort-packages": true,
         "allow-plugins": {
-            "ocramius/package-versions": false,
-            "symfony/flex": false
+            "ocramius/package-versions": true,
+            "symfony/flex": true
         }
     },
     "autoload": {

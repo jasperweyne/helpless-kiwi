@@ -56,3 +56,9 @@ Running the styleguide
 ```bash
 composer fix
 ```
+
+And you want to run any other commands, you can run the following line.  
+Just replace \[your-command\] with the command you want to run.
+```bash
+docker-compose exec php [your-command]
+```
