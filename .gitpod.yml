@@ -8,8 +8,8 @@ ports:
 
 # List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - init: composer install && yarn install && yarn run build && printf "SECURE_SCHEME=http\nDATABASE_URL=mysql://root:@localhost:3306/kiwi" > .env.local && php bin/console doctrine:database:create && php bin/console doctrine:schema:create
-    command: php bin/console server:run
+  - name: start docker stack
+    command: docker-compose up
 
 vscode:
   extensions:
