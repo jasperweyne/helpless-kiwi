@@ -17,6 +17,7 @@
 
 - [About Helpless Kiwi](#about-helpless-kiwi)
 - [Getting Started](#getting-started)
+	- [Prerequisites](#prerequisites)
 	- [Deployment](#deployment)
 	- [Development](#development)
 - [Contributing](#contributing)
