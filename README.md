@@ -12,6 +12,7 @@
 </p>
   
 [![sc-gate-shield]][sc-project-url] [![sc-reliability-shield]][sc-project-url] [![sc-maintainability-shield]][sc-project-url] [![sc-coverage-shield]][sc-project-url] [![sc-duplicate-lines-shield]][sc-project-url]
+
 ![ci-shield] [![gitpod-shield]][gitpod-url] [![discord-shield]]([discord-url])
 
 - [About Helpless Kiwi](#about-helpless-kiwi)
@@ -95,7 +96,7 @@ This work is [licensed](https://github.com/jasperweyne/helpless-kiwi/blob/develo
 [sc-vuln-shield]: https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=vulnerabilities
 
 [gitpod-url]: https://gitpod.io/#https://github.com/jasperweyne/helpless-kiwi
-[gitpod-shield]: https://img.shields.io/badge/Gitpod-ready--to--code-green?logo=gitpod
+[gitpod-shield]: https://img.shields.io/badge/Gitpod-ready--to--code-success?logo=gitpod
 
 [discord-url]: https://discord.gg/4HUmvEnXn8
 [discord-shield]: https://img.shields.io/discord/838843751509393458?label=discord&logo=discord
