@@ -1,6 +1,6 @@
 # Prerequisites
 Have docker-compose installed. Yes, it's that simple.  
-Don't have in installed yet, there's a detailed explanation on their
+If you don't have it installed yet, there's a detailed explanation on their
 [website](https://docs.docker.com/compose/install/).
 
 # How to use
@@ -13,7 +13,7 @@ Don't have in installed yet, there's a detailed explanation on their
 	* kiwi_symfony-dev
 	* kiwi_phpmyadmin-dev
 	* kiwi_database-dev
-* assuming they are, run `composer db-rebuild-dev`
+* assuming they are, run `docker-compose exec php composer db-rebuild-dev`
 * everything *should* be working now
 * navigate to localhost:8000, you should be greeted with kiwi's login screen
 * you can log in with either of the login credentials listed below
@@ -22,11 +22,11 @@ Don't have in installed yet, there's a detailed explanation on their
 
 ## Exposed services and info
 all ports are exposed on localhost, as of this writing we only support http.
-| port | service | username| password |
-| --- | --- | --- | --- |
-| 8000 | kiwi | user@kiwi.nl | user |
-| 8000 | kiwi | admin@kiwi.nl | admin |
-| 8080 | phpmyadmin | root | root |
+| port | service    | username      | password |
+| ---- | ---------- | ------------- | -------- |
+| 8000 | kiwi       | user@kiwi.nl  | user     |
+| 8000 | kiwi       | admin@kiwi.nl | admin    |
+| 8080 | phpmyadmin | root          | root     |
 
 
 ### Useful commands commands
