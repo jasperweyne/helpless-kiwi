@@ -34,10 +34,16 @@ Then, run:
 composer db-rebuild-dev
 ```
 This will create the needed database tables, and create 2 users. One with normal privileges and one with admin privileges. 
-| username | password | admin |
-| --- | --- | --- |
-| user@kiwi.nl | user | |
-| admin@kiwi.nl | admin | x |
+| username      | password  | admin |
+| ------------- | --------- | ----- |
+| user@kiwi.nl  | user      |       |
+| admin@kiwi.nl | admin     | x     | 
+
+In case you want to manually add an account you can use app:create-account.
+Run `php bin/console app:create-account --help` te see the options.
+
+Now we need to build the assets. You can either just build them with `yarn dev`
+or have them watched and continuously rebuild by running `yarn watch`.
 
 You can now start the server by running:
 
