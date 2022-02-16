@@ -44,17 +44,17 @@ docker-compose down
 
 Rebuilding the database for development 
 ```bash
-composer db-rebuild-dev
+docker-compose exec php composer db-rebuild-dev
 ```
 
 Running the complete testsuite
 ```bash
-composer test
+docker-compose exec php composer test
 ```
 
 Running the styleguide
 ```bash
-composer fix
+docker-compose exec php composer fix
 ```
 
 And you want to run any other commands, you can run the following line.  
