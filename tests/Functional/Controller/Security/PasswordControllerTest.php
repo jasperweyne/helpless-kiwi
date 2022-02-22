@@ -157,4 +157,24 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar '.LocalAccountFixture::USERNAME);
     }
+
+    /**
+    *   @testdox Request action with invalid email
+    */
+    public function testRequestActionWithInvalidEmail(): void
+    {
+        $inValidEmail = 'this@email.isnotvalid'; 
+
+        // Act
+        $crawler = $this->client->request('GET', '/password/request');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Verzenden')->form();
+        $form['password_request[email]'] = $inValidEmail;
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', "Er is een mail met instructies gestuurd naar ${inValidEmail}");
+    }
 }
