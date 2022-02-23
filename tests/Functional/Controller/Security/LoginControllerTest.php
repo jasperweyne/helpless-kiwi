@@ -13,11 +13,6 @@ use Drenso\OidcBundle\OidcClient;
  */
 class LoginControllerTest extends AuthWebTestCase
 {
-    public function testLogin(): void
-    {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
-    }
 
     public function testLoginWhileLoggedIn(): void
     {
@@ -63,6 +58,19 @@ class LoginControllerTest extends AuthWebTestCase
         // Assert
         // Testing actual OIDC flow is unfeasible, just check the redirect to home
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testLogin(): void
+    {
+        $crawler = $this->client->request('GET', '/login');
+
+        $form = $crawler->selectButton('Log in')->form();
+        $form['username'] = 'wrong';
+        $form['password'] = 'login';
+        $crawler = $this->client->submit($form);
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Invalid credentials.');
     }
 
     public function testLogout(): void
