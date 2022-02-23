@@ -3,6 +3,7 @@
 namespace Tests\Functional\Controller\Security;
 
 use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Drenso\OidcBundle\OidcClient;
 
 /**
@@ -16,6 +17,23 @@ class LoginControllerTest extends AuthWebTestCase
     {
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();
+    }
+
+    public function testLoginWhileLoggedIn(): void
+    {
+        // Arrange
+        $this->client->followRedirects(false);
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+        ]);
+        $this->login();
+
+        // Act
+        $this->client->request('GET', '/login');
+
+        // Assert
+        $response = $this->client->getResponse();
+        $this->assertEquals(302, $response->getStatusCode());
     }
 
     public function testLoginOidc(): void
@@ -49,8 +67,9 @@ class LoginControllerTest extends AuthWebTestCase
 
     public function testLogout(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->client->request('GET', '/logout');
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public static function setupOidc($container): void
