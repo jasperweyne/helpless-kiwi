@@ -37,10 +37,7 @@ class ActivityEditType extends AbstractType
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
                 'placeholder' => 'Geen groep',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('t')
-                        ->andWhere('t.active = TRUE');
-                },
+                'choices' => $options['groups'],
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
@@ -114,6 +111,7 @@ class ActivityEditType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Activity::class,
+            'groups' => [],
         ]);
     }
 }

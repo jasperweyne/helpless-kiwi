@@ -25,6 +25,7 @@ class ActivityNewType extends ActivityEditType
     {
         $resolver->setDefaults([
             'data_class' => Activity::class,
+            'groups' => [],
         ]);
     }
 }
