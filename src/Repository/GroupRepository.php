@@ -47,10 +47,9 @@ class GroupRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        for ($i = 0; $i < count($subgroups); ++$i) {
-            $tempgroup = $subgroups[$i];
-            $allsubgroups = array_merge($allsubgroups, [...$this->findSubGroupsFor($tempgroup)]);
-            array_push($allsubgroups, $subgroups[$i]);
+        foreach ($subgroups as $group) {
+            $allsubgroups = array_merge($allsubgroups, [...$this->findSubGroupsFor($group)]);
+            array_push($allsubgroups, $group);
         }
 
         return $allsubgroups;
