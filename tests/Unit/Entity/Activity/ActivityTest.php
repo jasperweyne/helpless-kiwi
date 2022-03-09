@@ -3,6 +3,8 @@
 namespace Tests\Unit\Entity\Activity;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use App\Entity\Location\Location;
@@ -18,6 +20,7 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
  * Class ActivityTest.
  *
  * @covers \App\Entity\Activity\Activity
+ * @group entities
  */
 class ActivityTest extends KernelTestCase
 {
@@ -119,14 +122,27 @@ class ActivityTest extends KernelTestCase
 
     public function testAddOption(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new PriceOption();
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('options');
+        $property->setAccessible(true);
+        $this->activity->addOption($expected);
+        $this->assertSame($expected, $property->getValue($this->activity)[0]);
     }
 
     public function testRemoveOption(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new ArrayCollection();
+        $priceOption = new PriceOption();
+        $expected->add($priceOption);
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('options');
+        $property->setAccessible(true);
+        $property->setValue($this->activity, $expected);
+        $this->assertSame($priceOption, $property->getValue($this->activity)[0]);
+
+        $this->activity->removeOption($priceOption);
+        $this->assertNotSame($priceOption, $property->getValue($this->activity));
     }
 
     public function testGetRegistrations(): void
@@ -141,14 +157,27 @@ class ActivityTest extends KernelTestCase
 
     public function testAddRegistration(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new Registration();
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('registrations');
+        $property->setAccessible(true);
+        $this->activity->addRegistration($expected);
+        $this->assertSame($expected, $property->getValue($this->activity)[0]);
     }
 
     public function testRemoveRegistration(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new ArrayCollection();
+        $registration = new Registration();
+        $expected->add($registration);
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('registrations');
+        $property->setAccessible(true);
+        $property->setValue($this->activity, $expected);
+        $this->assertSame($registration, $property->getValue($this->activity)[0]);
+
+        $this->activity->removeRegistration($registration);
+        $this->assertNotSame($registration, $property->getValue($this->activity));
     }
 
     public function testGetAuthor(): void
@@ -333,8 +362,19 @@ class ActivityTest extends KernelTestCase
 
     public function testHasCapacity(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = true;
+        $capacity = 42;
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('capacity');
+        $property->setAccessible(true);
+        $property->setValue($this->activity, $expected);
+        $this->assertSame($expected, $this->activity->hasCapacity());
+    }
+
+    public function testHasCapacityWhileEmpty(): void
+    {
+        $expected = false;
+        $this->assertSame($expected, $this->activity->hasCapacity());
     }
 
     public function testGetCapacity(): void
