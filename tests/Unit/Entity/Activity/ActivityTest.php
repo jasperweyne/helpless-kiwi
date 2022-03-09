@@ -367,7 +367,7 @@ class ActivityTest extends KernelTestCase
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('capacity');
         $property->setAccessible(true);
-        $property->setValue($this->activity, $expected);
+        $property->setValue($this->activity, $capacity);
         $this->assertSame($expected, $this->activity->hasCapacity());
     }
 
