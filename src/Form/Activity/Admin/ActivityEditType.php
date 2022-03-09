@@ -21,15 +21,15 @@ class ActivityEditType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Naam *',
+                'label' => 'Naam',
                 'attr' => ['placeholder' => 'Leuke activiteit naam'],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Beschrijving *',
+                'label' => 'Beschrijving',
                 'attr' => ['placeholder' => 'Beschrijf hier de activiteit'],
             ])
             ->add('location', LocationType::class, [
-                'label' => 'Locatie *',
+                'label' => 'Locatie',
                 'help' => '  ',
             ])
             ->add('author', EntityType::class, [
@@ -70,18 +70,18 @@ class ActivityEditType extends AbstractType
             ->add('deadline', DateTimeType::class, [
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
-                'label' => 'Deadline aanmelden *',
+                'label' => 'Deadline aanmelden',
                 'help' => 'Dit is de datum/tijd waarna je niet meer kan aanmelden.',
                 'required' => true,
             ])
             ->add('start', DateTimeType::class, [
-                'label' => 'Activiteit begint om *',
+                'label' => 'Activiteit begint om',
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
                 'required' => true,
             ])
             ->add('end', DateTimeType::class, [
-                'label' => 'Activiteit eindigt om *',
+                'label' => 'Activiteit eindigt om',
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
                 'help' => '  ',
@@ -93,7 +93,6 @@ class ActivityEditType extends AbstractType
                 'help' => 'Het maximaal aantal aanmeldingen, hierna word je op de reserve lijst aangemeld.',
             ])
             ->add('color', ChoiceType::class, [
-                'label' => 'Color *',
                 'attr' => ['data-select' => 'true'],
                 'choices' => [
                     '' => null,

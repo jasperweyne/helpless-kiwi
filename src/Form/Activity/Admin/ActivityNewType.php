@@ -15,7 +15,7 @@ class ActivityNewType extends ActivityEditType
 
         $builder
             ->add('imageFile', VichImageType::class, [
-                'label' => 'Image file *',
+                'label' => 'Image file',
                 'required' => true,
                 'allow_delete' => false,
             ])
