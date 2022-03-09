@@ -128,12 +128,8 @@ class RegistrationTest extends KernelTestCase
 
     public function testIsReserve(): void
     {
-        $expected = null;
-        $property = (new ReflectionClass(Registration::class))
-            ->getProperty('reserve_position');
-        $property->setAccessible(true);
-        $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getReservePosition());
+        $expected = false;
+        $this->assertSame($expected, $this->registration->isReserve());
     }
 
     public function testGetReservePosition(): void
