@@ -27,13 +27,12 @@ class PresentType extends AbstractType
             $builder
                 ->add('present', ChoiceType::class, [
                     'choices' => [
-                        ' Onbekend' => null,
-                        ' Aanwezig' => true,
-                        ' Afwezig' => false,
+                        'Onbekend' => null,
+                        'Aanwezig' => true,
+                        'Afwezig' => false,
                     ],
                     'label' => $registration->getPerson(),
                     'required' => true,
-                    'multiple' => false,
                     'expanded' => true,
                 ]);
         });
