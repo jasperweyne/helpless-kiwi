@@ -5,8 +5,10 @@ namespace Tests\Unit\Entity\Activity;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
+use App\Entity\Order;
 use DateTime;
 use App\Entity\Security\LocalAccount;
+use App\Repository\RegistrationRepository;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -126,7 +128,18 @@ class RegistrationTest extends KernelTestCase
         $this->assertSame($expected, $property->getValue($this->registration));
     }
 
-    public function testIsReserve(): void
+    public function testIsReserveTrue(): void
+    {
+        $expected = true;
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('reserve_position');
+        $property->setAccessible(true);
+        $reserveOrder = Order::create(RegistrationRepository::MINORDER());
+        $this->registration->setReservePosition($reserveOrder);
+        $this->assertSame($expected, $this->registration->isReserve());
+    }
+
+    public function testIsReserveFalse(): void
     {
         $expected = false;
         $this->assertSame($expected, $this->registration->isReserve());
@@ -144,11 +157,12 @@ class RegistrationTest extends KernelTestCase
 
     public function testSetReservePosition(): void
     {
-        $expected = null;
+        $expected = 'aaaaaaaaaaaaaaaa';
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('reserve_position');
         $property->setAccessible(true);
-        $this->registration->setReservePosition($expected);
+        $counter = Order::create(RegistrationRepository::MINORDER());
+        $this->registration->setReservePosition($counter);
         $this->assertSame($expected, $property->getValue($this->registration));
     }
 
