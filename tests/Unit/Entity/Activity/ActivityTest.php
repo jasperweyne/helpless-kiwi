@@ -139,8 +139,6 @@ class ActivityTest extends KernelTestCase
             ->getProperty('options');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($priceOption, $property->getValue($this->activity)[0]);
-
         $this->activity->removeOption($priceOption);
         $this->assertNotSame($priceOption, $property->getValue($this->activity));
     }
@@ -174,8 +172,6 @@ class ActivityTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($registration, $property->getValue($this->activity)[0]);
-
         $this->activity->removeRegistration($registration);
         $this->assertNotSame($registration, $property->getValue($this->activity));
     }

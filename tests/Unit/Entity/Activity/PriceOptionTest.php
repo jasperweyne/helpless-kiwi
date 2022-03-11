@@ -189,7 +189,7 @@ class PriceOptionTest extends KernelTestCase
         $priceOption = new PriceOption();
         $priceOption->setName('free');
         $priceOption->setPrice(0);
-        $this->assertSame($expected, $priceOption->__toString());
+        $this->assertSame($expected, strval($priceOption));
     }
 
     public function testGetRegistrations(): void
@@ -221,8 +221,6 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($registration, $property->getValue($this->priceOption)[0]);
-
         $this->priceOption->removeRegistration($registration);
         $this->assertNotSame($registration, $property->getValue($this->priceOption));
     }
