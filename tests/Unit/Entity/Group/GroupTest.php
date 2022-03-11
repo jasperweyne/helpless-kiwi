@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entity\Group;
 
 use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -11,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * Class GroupTest.
  *
  * @covers \App\Entity\Group\Group
+ * @group entities
  */
 class GroupTest extends KernelTestCase
 {
@@ -192,14 +194,27 @@ class GroupTest extends KernelTestCase
 
     public function testAddRelation(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new Relation();
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('relations');
+        $property->setAccessible(true);
+        $this->group->addRelation($expected);
+        $this->assertSame($expected, $property->getValue($this->group)[0]);
     }
 
     public function testRemoveRelation(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new ArrayCollection();
+        $relation = new Relation();
+        $expected->add($relation);
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('relations');
+        $property->setAccessible(true);
+        $property->setValue($this->group, $expected);
+        $this->assertSame($relation, $property->getValue($this->group)[0]);
+
+        $this->group->removeRelation($relation);
+        $this->assertNotSame($relation, $property->getValue($this->group));
     }
 
     public function testGetChildren(): void
@@ -209,25 +224,51 @@ class GroupTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getChildren());
+        $this->assertSame($expected, $property->getValue($this->group));
     }
 
     public function testAddChild(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new Group();
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('children');
+        $property->setAccessible(true);
+        $this->group->addChild($expected);
+        $this->assertSame($expected, $this->group->getChildren()[0]);
     }
 
     public function testRemoveChild(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new ArrayCollection();
+        $group = new Group();
+        $expected->add($group);
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('children');
+        $property->setAccessible(true);
+        $property->setValue($this->group, $expected);
+        $this->assertSame($group, $property->getValue($this->group)[0]);
+
+        $this->group->removeChild($group);
+        $this->assertNotSame($group, $property->getValue($this->group));
+    }
+    
+    public function testIsActiveDefaultFalse(): void
+    {
+        $expected = false;
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('active');
+        $property->setAccessible(true);
+        $this->assertSame($expected, $property->getValue($this->group));
     }
 
     public function testIsActive(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = true;
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('active');
+        $property->setAccessible(true);
+        $property->setValue($this->group, $expected);
+        $this->assertSame($expected, $property->getValue($this->group));
     }
 
     public function testSetActive(): void

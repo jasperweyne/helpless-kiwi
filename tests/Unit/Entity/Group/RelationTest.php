@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * Class RelationTest.
  *
  * @covers \App\Entity\Group\Relation
+ * @group entities
  */
 class RelationTest extends KernelTestCase
 {
@@ -146,14 +147,27 @@ class RelationTest extends KernelTestCase
 
     public function testAddChild(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new Relation();
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('children');
+        $property->setAccessible(true);
+        $this->relation->addChild($expected);
+        $this->assertSame($expected, $property->getValue($this->relation)[0]);
     }
 
     public function testRemoveChild(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new ArrayCollection();
+        $relation = new Relation();
+        $expected->add($relation);
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('children');
+        $property->setAccessible(true);
+        $property->setValue($this->relation, $expected);
+        $this->assertSame($relation, $property->getValue($this->relation)[0]);
+
+        $this->relation->removeChild($relation);
+        $this->assertNotSame($relation, $property->getValue($this->relation));
     }
 
     public function testGetRoot(): void
