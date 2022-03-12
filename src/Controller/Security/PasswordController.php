@@ -96,6 +96,8 @@ class PasswordController extends AbstractController
             if (!$localAccount) {
                 $localAccount = new LocalAccount();
                 $localAccount
+                    ->setGivenName('')
+                    ->setFamilyName('')
                     ->setEmail($mail)
                 ;
 
