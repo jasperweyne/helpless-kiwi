@@ -148,7 +148,6 @@ class GroupController extends AbstractController
 
     /**
      * Deletes a ApiKey entity.
-     * X to doubt, deletes a group
      *
      * @Route("/{id}/delete", name="delete")
      */
