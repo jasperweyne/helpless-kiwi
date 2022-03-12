@@ -33,8 +33,14 @@ jobs:
       env:
         APP_ENV: test
   
+    - name: Run linter
+      run: composer lint
+
     - name: Run unit/functional tests
       run: composer test
+      
+    - name: Run static code analyser
+      run: composer analyse
 
     - name: fix code coverage paths
       working-directory: ./var/reports
