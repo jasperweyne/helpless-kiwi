@@ -50,7 +50,24 @@ function xcopy($source, $dest, $permissions = 0755)
     return true;
 }
 
-$root = dirname(__DIR__).'/';
-if (is_dir($root.'.git/')) {
-    xcopy(__DIR__, $root.'.git/hooks/');
+$gitroot = dirname(__DIR__).'/.git';
+if (is_file($gitroot)) {
+    $file = fopen($gitroot, 'rt');
+
+    // find gitdir config key
+    $gitdir = 'gitdir: ';
+    while (!feof($file)) {
+        $line = fgets($file);
+        if (substr($line, 0, strlen($gitdir)) == $gitdir) {
+            $gitroot = trim(substr($line, strlen($gitdir)));
+            break;
+        }
+    }
+    fclose($file);
+}
+
+if (is_dir($gitroot)) {
+    $hooksDir = $gitroot.'/hooks';
+    if (!is_dir($hooksDir)) mkdir($hooksDir);
+    xcopy(__DIR__, $hooksDir);
 }
