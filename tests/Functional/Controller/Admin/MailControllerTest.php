@@ -2,20 +2,26 @@
 
 namespace Tests\Functional\Controller\Admin;
 
-use App\Controller\Admin\MailController;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Entity\Mail\Mail;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Mail\MailFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class MailControllerTest.
  *
  * @covers \App\Controller\Admin\MailController
  */
-class MailControllerTest extends WebTestCase
+class MailControllerTest extends AuthWebTestCase
 {
+
     /**
-     * @var MailController
+     * @var EntityManagerInterface
      */
-    protected $mailController;
+    protected $em;
+
+    private $controllerEndpoint = "/admin/mail";
 
     /**
      * {@inheritdoc}
@@ -24,8 +30,13 @@ class MailControllerTest extends WebTestCase
     {
         parent::setUp();
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->mailController = new MailController();
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            MailFixture::class,
+        ]);
+
+        $this->login();
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -35,18 +46,28 @@ class MailControllerTest extends WebTestCase
     {
         parent::tearDown();
 
-        unset($this->mailController);
+        unset($this->em);
     }
 
     public function testIndexAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->client->request('GET', $this->controllerEndpoint . "/");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('span', 'Mails');
     }
 
     public function testShowAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $mail = $this->em->getRepository(Mail::class)->findAll()[0];
+        $title = $mail->getTitle();
+        $id = $mail->getId();
+
+        // Act
+        $this->client->request('GET', "/admin/mail/{$id}");
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('span', $title);
     }
 }

@@ -46,10 +46,10 @@ class MailService
                 continue;
             }
 
-            if ('' == trim($person->getName() ?? $person->getShortname() ?? '')) {
+            if ('' == trim($person->getName() ?? $person->getUsername() ?? '')) {
                 $addresses[] = $person->getEmail();
             } else {
-                $addresses[$person->getEmail()] = $person->getName() ?? $person->getShortname();
+                $addresses[$person->getEmail()] = $person->getName() ?? $person->getUsername();
             }
         }
 
