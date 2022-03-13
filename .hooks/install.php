@@ -70,5 +70,4 @@ if (is_dir($gitroot)) {
     $hooksDir = $gitroot.'/hooks';
     if (!is_dir($hooksDir)) mkdir($hooksDir);
     xcopy(__DIR__, $hooksDir);
-
 }
