@@ -33,6 +33,7 @@ class PresentType extends AbstractType
                     ],
                     'label' => $registration->getPerson(),
                     'required' => true,
+                    'expanded' => true,
                 ]);
         });
     }
