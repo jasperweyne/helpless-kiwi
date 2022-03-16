@@ -74,12 +74,19 @@ class ActivityController extends AbstractController
     public function newAction(Request $request)
     {
         $activity = new Activity();
+        $em = $this->getDoctrine()->getManager();
+        $usergroups = [];
 
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityNewType', $activity);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $usergroups = $em->getRepository(Group::class)->findAll();
+        } else {
+            $usergroups = $em->getRepository(Group::class)->findSubGroupsForPerson($this->getUser());
+        }
+
+        $form = $this->createForm('App\Form\Activity\Admin\ActivityNewType', $activity, ['groups' => $usergroups]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($activity);
             $em->persist($activity->getLocation());
             $em->flush();
@@ -133,8 +140,16 @@ class ActivityController extends AbstractController
     public function editAction(Request $request, Activity $activity)
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+        $em = $this->getDoctrine()->getManager();
+        $usergroups = [];
 
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $usergroups = $em->getRepository(Group::class)->findAll();
+        } else {
+            $usergroups = $em->getRepository(Group::class)->findSubGroupsForPerson($this->getUser());
+        }
+
+        $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity, ['groups' => $usergroups]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

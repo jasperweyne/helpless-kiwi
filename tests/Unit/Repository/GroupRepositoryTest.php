@@ -51,4 +51,16 @@ class GroupRepositoryTest extends KernelTestCase
         /* @todo This test is incomplete. */
         $this->markTestIncomplete();
     }
+
+    public function testFindSubGroupsFor(): void
+    {
+        /* @todo This test is incomplete. */
+        $this->markTestIncomplete();
+    }
+
+    public function testFindSubGroupsForUser(): void
+    {
+        /* @todo This test is incomplete. */
+        $this->markTestIncomplete();
+    }
 }
