@@ -64,7 +64,7 @@ class GroupRepository extends ServiceEntityRepository
         $groups = $this->findAllFor($person);
         $allgroups = array_merge($groups, $allgroups);
         foreach ($groups as $group) {
-            $allgroups = array_merge($this->findSubGroupsFor($group), $allgroups);
+            $allgroups = array_merge($allgroups, $this->findSubGroupsFor($group));
         }
 
         return $allgroups;

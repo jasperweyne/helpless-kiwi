@@ -14,9 +14,21 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ActivityEditType extends AbstractType
 {
+    private $isadmin = false;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $user = $tokenStorage->getToken()->getUser();
+
+        if (null != $user) {
+            $this->isadmin = in_array('ROLE_ADMIN', $user->getRoles());
+        }
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -31,8 +43,9 @@ class ActivityEditType extends AbstractType
             ->add('location', LocationType::class, [
                 'label' => 'Locatie',
                 'help' => '  ',
-            ])
-            ->add('author', EntityType::class, [
+            ]);
+        if ($this->isadmin) {
+            $builder->add('author', EntityType::class, [
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
@@ -42,21 +55,33 @@ class ActivityEditType extends AbstractType
                     return $ref->getName();
                 },
                 'help' => 'De groep die de activiteit organiseert.',
-            ])
-            ->add('target', EntityType::class, [
-                'label' => 'Activiteit voor',
+            ]);
+        } elseif (1 != count($options['groups'])) {
+            $builder->add('author', EntityType::class, [
+                'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
-                'required' => false,
-                'placeholder' => 'Iedereen',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('t')
-                        ->andWhere('t.register = TRUE');
-                },
+                'required' => true,
+                'choices' => $options['groups'],
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
-                'help' => 'De activiteit kan exclusief voor een bepaalde groep worden georganiseerd.',
-            ])
+                'help' => 'De groep die de activiteit organiseert.',
+            ]);
+        }
+        $builder->add('target', EntityType::class, [
+            'label' => 'Activiteit voor',
+            'class' => 'App\Entity\Group\Group',
+            'required' => false,
+            'placeholder' => 'Iedereen',
+            'query_builder' => function (EntityRepository $er) {
+                return $er->createQueryBuilder('t')
+                    ->andWhere('t.register = TRUE');
+            },
+            'choice_label' => function ($ref) {
+                return $ref->getName();
+            },
+            'help' => 'De activiteit kan exclusief voor een bepaalde groep worden georganiseerd.',
+        ])
             ->add('visibleAfter', DateTimeType::class, [
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',
