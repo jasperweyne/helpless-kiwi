@@ -49,6 +49,7 @@
         "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-doctrine": "^1.2",
         "phpstan/phpstan-phpunit": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.1",
         "phpstan/phpstan-symfony": "^1.1",
         "symfony/css-selector": "4.4.*",
         "symfony/debug-pack": "*",
