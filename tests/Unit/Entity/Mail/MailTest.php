@@ -128,8 +128,13 @@ class MailTest extends KernelTestCase
 
     public function testAddRecipient(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new Recipient();
+        $property = (new ReflectionClass(Mail::class))
+            ->getProperty('recipients');
+        $property->setAccessible(true);
+        $property->setValue($this->mail, new ArrayCollection());
+        $this->mail->addRecipient($expected);
+        $this->assertSame($expected, $property->getValue($this->mail)[0]);
     }
 
     public function testRemoveRecipient(): void
@@ -141,7 +146,6 @@ class MailTest extends KernelTestCase
             ->getProperty('recipients');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this->assertSame($recipient, $property->getValue($this->mail)[0]);
 
         $this->mail->removeRecipient($recipient);
         $this->assertNotSame($recipient, $property->getValue($this->mail));
