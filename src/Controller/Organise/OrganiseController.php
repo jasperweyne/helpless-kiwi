@@ -3,9 +3,9 @@
 namespace App\Controller\Organise;
 
 use App\Entity\Activity\Activity;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Group\Group;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.

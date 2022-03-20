@@ -2,14 +2,14 @@
 
 namespace App\Form\Activity;
 
-use Doctrine\ORM\EntityRepository;
 use App\Entity\Activity\PriceOption;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class PriceOptionType extends AbstractType
 {
@@ -17,7 +17,7 @@ class PriceOptionType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'empty_data' => 'Standaard'
+                'empty_data' => 'Standaard',
             ])
             ->add('price', MoneyType::class, [
                 'divisor' => 100,
@@ -26,7 +26,7 @@ class PriceOptionType extends AbstractType
                 'label' => 'Activiteit voor',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
-                'placeholder' => "Iedereen",
+                'placeholder' => 'Iedereen',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
                         ->andWhere('t.register = TRUE');

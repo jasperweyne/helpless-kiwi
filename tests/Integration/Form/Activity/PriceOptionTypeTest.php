@@ -2,8 +2,12 @@
 
 namespace Tests\Integration\Form\Activity;
 
+use App\Entity\Activity\PriceOption;
 use App\Form\Activity\PriceOptionType;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class PriceOptionTypeTest.
@@ -25,7 +29,6 @@ class PriceOptionTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /* @todo Correctly instantiate tested object to use it. */
         $this->priceOptionType = new PriceOptionType();
     }
 
@@ -39,15 +42,31 @@ class PriceOptionTypeTest extends KernelTestCase
         unset($this->priceOptionType);
     }
 
-    public function testBuildForm(): void
+    public function testBindValidData(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $type = new PriceOption();
+        $formdata = [
+            'name' => 'testname',
+            'price' => 300,
+            'target' => null,
+        ];
+
+        /** @var FormFactoryInterface $formfactory */
+        $formfactory = self::$container->get('form.factory');
+        $form = $formfactory->create(PriceOptionType::class, $type);
+
+        $form->submit($formdata);
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
     }
 
     public function testConfigureOptions(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        /** @var OptionsResolver&MockObject $resolver */
+        $resolver = $this->getMockBuilder(OptionsResolver::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resolver->expects(self::exactly(1))->method('setDefaults');
+        $this->priceOptionType->configureOptions($resolver);
     }
 }

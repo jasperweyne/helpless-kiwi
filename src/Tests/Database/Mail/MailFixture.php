@@ -14,8 +14,8 @@ class MailFixture extends Fixture
         $mail = new Mail();
         $mail->setTitle('Kiwi - mail title');
         $content = json_encode([
-            'html' => "<h1>Content</h1>",
-            'plain' => "Content",
+            'html' => '<h1>Content</h1>',
+            'plain' => 'Content',
         ]);
         $mail->setContent($content);
         $mail->setSender('SenderPerson');

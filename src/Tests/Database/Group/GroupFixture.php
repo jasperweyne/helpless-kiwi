@@ -3,9 +3,9 @@
 namespace App\Tests\Database\Group;
 
 use App\Entity\Group\Group;
+use App\Tests\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use App\Tests\TestData;
 
 class GroupFixture extends Fixture
 {

@@ -4,10 +4,10 @@ namespace App\Tests\Database\Activity;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
+use App\Tests\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use App\Tests\TestData;
 
 class PriceOptionFixture extends Fixture implements DependentFixtureInterface
 {

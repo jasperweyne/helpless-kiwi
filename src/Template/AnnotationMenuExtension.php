@@ -3,8 +3,8 @@
 namespace App\Template;
 
 use App\Template\Annotation\MenuItem;
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationException;
+use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -46,7 +46,6 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      * @param $directory
      *   The directory of the menu items
      * @param $rootDir
-     * @param Reader $annotationReader
      */
     public function __construct($namespace, $directory, $rootDir, Reader $annotationReader)
     {
