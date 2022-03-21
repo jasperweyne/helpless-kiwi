@@ -1,0 +1,56 @@
+name: Database tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master  # triggers on pushes that contain changes in master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+      
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+        extensions: xdebug
+      
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --optimize-autoloader
+      env:
+        APP_ENV: prod
+  
+    - name: Generate sample environment settings for build
+      run: |
+        cat > .env.local.php << EOL
+        <?php
+        return array (
+            'APP_DEBUG' => '0',
+            'APP_ENV' => 'prod',
+            'APP_SECRET' => '6badc0fca270ab84a00a67226f9e2554',
+            'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
+            'DATABASE_URL' => 'mysql://:@127.0.0.1:3306/test',
+            'MAILER_URL' => 'null://localhost',
+            'DEFAULT_FROM' => 'foo@bar.com',
+        );
+        EOL
+      
+    - name: Run migrations up
+      run: php bin/console doctrine:migrations:migrate
+
+    - name: Check whether they match the entity definition
+      run: ! php bin/console doctrine:schema:diff
+
+    - name: Load testing data
+      run: ! php bin/console doctrine:fixtures:load
+
+    - name: Run migrations down
+      run: php bin/console doctrine:migrations:migrate first
+
