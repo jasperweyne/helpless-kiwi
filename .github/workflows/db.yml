@@ -46,10 +46,11 @@ jobs:
       run: php bin/console doctrine:migrations:migrate
 
     - name: Check whether they match the entity definition
-      run: ! php bin/console doctrine:schema:diff
+      run: |
+        ! php bin/console doctrine:schema:diff
 
     - name: Load testing data
-      run: ! php bin/console doctrine:fixtures:load
+      run: php bin/console doctrine:fixtures:load
 
     - name: Run migrations down
       run: php bin/console doctrine:migrations:migrate first
