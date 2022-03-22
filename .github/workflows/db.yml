@@ -46,12 +46,15 @@ jobs:
             'APP_ENV' => 'prod',
             'APP_SECRET' => '6badc0fca270ab84a00a67226f9e2554',
             'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
-            'DATABASE_URL' => 'mysql://root:${DBPASS}@127.0.0.1:3306/test',
+            'DATABASE_URL' => 'mysql://root:${DBPASS}@127.0.0.1:3306/kiwi',
             'MAILER_URL' => 'null://localhost',
             'DEFAULT_FROM' => 'foo@bar.com',
         );
         EOL
       
+    - name: Create database
+      run: php bin/console doctrine:database:create -n
+
     - name: Run migrations up
       run: php bin/console doctrine:migrations:migrate
 
