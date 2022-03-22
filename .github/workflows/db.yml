@@ -27,6 +27,8 @@ jobs:
 
     - name: Set up MySQL
       uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql root password: ${{ secrets.DBPASS }}
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --optimize-autoloader
@@ -34,6 +36,8 @@ jobs:
         APP_ENV: prod
   
     - name: Generate sample environment settings for build
+      env:
+        DBPASS: ${{ secrets.DBPASS }}
       run: |
         cat > .env.local.php << EOL
         <?php
@@ -42,7 +46,7 @@ jobs:
             'APP_ENV' => 'prod',
             'APP_SECRET' => '6badc0fca270ab84a00a67226f9e2554',
             'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
-            'DATABASE_URL' => 'mysql://:@127.0.0.1:3306/test',
+            'DATABASE_URL' => 'mysql://root:${DBPASS}@127.0.0.1:3306/test',
             'MAILER_URL' => 'null://localhost',
             'DEFAULT_FROM' => 'foo@bar.com',
         );
