@@ -22,6 +22,12 @@ jobs:
         php-version: '7.4'
         extensions: xdebug
       
+    - name: Shutdown Ubuntu MySQL (SUDO)
+      run: sudo service mysql stop
+
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --optimize-autoloader
       env:
