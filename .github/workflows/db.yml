@@ -43,7 +43,7 @@ jobs:
         <?php
         return array (
             'APP_DEBUG' => '0',
-            'APP_ENV' => 'prod',
+            'APP_ENV' => 'dev',
             'APP_SECRET' => '6badc0fca270ab84a00a67226f9e2554',
             'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
             'DATABASE_URL' => 'mysql://root:${DBPASS}@127.0.0.1:3306/kiwi',
