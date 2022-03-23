@@ -12,7 +12,6 @@ tasks:
       docker-compose pull
   - command: |
       docker-compose up
-      php bin/console server:run
 
 vscode:
   extensions:

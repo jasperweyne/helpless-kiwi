@@ -1,6 +1,6 @@
 ARG PHP_VERSION=7.4.25
 
-FROM php:${PHP_VERSION}-fpm-alpine
+FROM php:${PHP_VERSION}-fpm-buster
 
 ARG WORKDIR=/app
 
