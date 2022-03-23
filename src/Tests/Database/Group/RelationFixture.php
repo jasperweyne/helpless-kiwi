@@ -11,16 +11,21 @@ use Doctrine\Persistence\ObjectManager;
 
 class RelationFixture extends Fixture implements DependentFixtureInterface
 {
-    public const RELATION_REFERENCE = 'link_admin';
+    public const RELATION_REFERENCE = 'local_admin';
 
     public function load(ObjectManager $manager)
     {
-        $group = $this->getReference(GroupFixture::GROUP_REFERENCE);
+        $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0');
+        $child = $this->getReference(GroupFixture::GROUP_REFERENCE.'1');
         $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
 
         $relations = self::generate($group, $person)->return();
+        $parentrelations = self::generate($child, $group)->return();
         foreach ($relations as $relation) {
             $manager->persist($relation);
+        }
+        foreach ($parentrelations as $parentrelation) {
+            $manager->persist($parentrelation);
         }
 
         $manager->flush();
@@ -39,6 +44,14 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
         return TestData::from(new Relation())
             ->with('group', $group)
             ->with('person', $person)
+        ;
+    }
+
+    public static function generatesubgroup($group, $parent): TestData
+    {
+        return TestData::from(new Relation())
+            ->with('group', $group)
+            ->with('parent', $parent)
         ;
     }
 }

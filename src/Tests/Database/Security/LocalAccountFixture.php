@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class LocalAccountFixture extends Fixture
 {
-    public const LOCAL_ACCOUNT_REFERENCE = 'admin';
+    public const LOCAL_ACCOUNT_REFERENCE = 'local_admin';
     public const USERNAME = 'admin@test.nl';
 
     private $encoder;

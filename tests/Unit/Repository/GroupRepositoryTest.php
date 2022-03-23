@@ -2,8 +2,16 @@
 
 namespace Tests\Unit\Repository;
 
+use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
 use App\Repository\GroupRepository;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Group\RelationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -13,6 +21,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class GroupRepositoryTest extends KernelTestCase
 {
+    use FixturesTrait;
+
     /**
      * @var GroupRepository
      */
@@ -33,6 +43,25 @@ class GroupRepositoryTest extends KernelTestCase
 
         $this->registry = self::$container->get(ManagerRegistry::class);
         $this->groupRepository = new GroupRepository($this->registry);
+
+        // Get all database tables
+        $em = self::$container->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
+
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
+
+        $this->loadFixtures([
+            GroupFixture::class,
+            LocalAccountFixture::class,
+            RelationFixture::class,
+        ]);
+
+        $this->em = static::$kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
     }
 
     /**
@@ -48,19 +77,32 @@ class GroupRepositoryTest extends KernelTestCase
 
     public function testFindAllFor(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $groups = $this->em->getRepository(Group::class)->findAllFor($registration);
+
+        $this->assertTrue(count($groups) > 0);
     }
 
     public function testFindSubGroupsFor(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $group = $this->em->getRepository(Group::class)->findAllFor($registration)[0];
+
+        $allgroups = $this->em
+            ->getRepository(Group::class)
+            ->findSubGroupsFor($group);
+
+        $this->assertTrue(count($allgroups) > 0);
     }
 
-    public function testFindSubGroupsForUser(): void
+    public function testFindSubGroupsForPerson(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+
+        $allgroups = $this->em
+            ->getRepository(Group::class)
+            ->findSubGroupsForPerson($registration);
+
+        $this->assertTrue(count($allgroups) > 1);
     }
 }
