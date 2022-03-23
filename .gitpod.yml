@@ -1,5 +1,5 @@
 image:
-  file: .gitpod.Dockerfile
+  file: Dockerfile
 
 # List the ports you want to expose and what to do when they are served. See https://www.gitpod.io/docs/config-ports/
 ports:
@@ -8,13 +8,16 @@ ports:
 
 # List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - init: composer install && yarn install && yarn run build && printf "SECURE_SCHEME=http\nDATABASE_URL=mysql://root:@localhost:3306/kiwi" > .env.local && php bin/console doctrine:database:create && php bin/console doctrine:schema:create
-    command: php bin/console server:run
+  - init: |
+      docker-compose pull
+  - command: |
+      docker-compose up
+      php bin/console server:run
 
 vscode:
   extensions:
-    - sonarsource.sonarlint-vscode@1.19.0:0efl2ERJ3aA2ElF84T/Qjg==
-    - thenouillet.symfony-vscode@1.0.2:OIK1fwaa9M5k3WymFhShAA==
-    - ecmel.vscode-html-css@1.8.0:KMfC3CfzwPKNTZusWoRuYA==
-    - mblode.twig-language-2@0.9.1:RU6BsxXlTQVjCzHru+HmBw==
-    - tabnine.tabnine-vscode@3.1.11:TrOGC+uTC6k193ZaAykXBg==
+    - sonarsource.sonarlint-vscode
+    - thenouillet.symfony-vscode
+    - ecmel.vscode-html-css
+    - mblode.twig-language-2
+    - ms-azuretools.vscode-docker
