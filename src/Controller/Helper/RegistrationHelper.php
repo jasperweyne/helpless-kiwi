@@ -7,6 +7,7 @@ use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use App\Mail\MailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,7 +30,7 @@ class RegistrationHelper extends AbstractController
      */
     protected function createRegistrationNewForm(
         Activity $activity
-    ) {
+    ): FormInterface {
         $registration = new Registration();
         $registration->setActivity($activity);
 
@@ -48,7 +49,7 @@ class RegistrationHelper extends AbstractController
      */
     protected function createRegistrationEditForm(
         Registration $registration
-    ) {
+    ): FormInterface {
         return $this->createForm('App\Form\Activity\RegistrationEditType', $registration, [
             'allowed_options' => $registration->getActivity()->getOptions(),
         ]);
@@ -83,7 +84,7 @@ class RegistrationHelper extends AbstractController
      */
     protected function storeRegistration(
         Registration $registration
-    ) {
+    ): void {
         $em = $this->getDoctrine()->getManager();
         $em->persist($registration);
         $this->sendConfermationMail($registration, $em, 'Aanmeldbericht', 'email/newregistration_by', 'aangemeld!');
@@ -96,7 +97,7 @@ class RegistrationHelper extends AbstractController
      */
     protected function createRegistrationDeleteForm(
         $actionUrl
-    ) {
+    ): FormInterface {
         return $this->createFormBuilder()
             ->setAction($actionUrl)
             ->setMethod('DELETE')
@@ -108,7 +109,7 @@ class RegistrationHelper extends AbstractController
      *  Persist update of the Registration to the database.
      */
     protected function updateRegistration(
-    ) {
+    ): void {
         $em = $this->getDoctrine()->getManager();
         $em->flush();
         $this->addFlash('success', 'Registratie aangepast!');
@@ -119,7 +120,7 @@ class RegistrationHelper extends AbstractController
      */
     protected function removeRegistration(
         Registration $registration
-    ) {
+    ): void {
         $now = new \DateTime('now');
         $em = $this->getDoctrine()->getManager();
         $registration->setDeleteDate($now);
@@ -134,7 +135,7 @@ class RegistrationHelper extends AbstractController
      */
     protected function createReserveNewForm(
         Activity $activity
-    ) {
+    ): FormInterface {
         $em = $this->getDoctrine()->getManager();
         $position = $em->getRepository(Registration::class)->findAppendPosition($activity);
 
@@ -157,7 +158,7 @@ class RegistrationHelper extends AbstractController
      */
     protected function storeNewReserve(
         Registration $registration
-    ) {
+    ): void {
         $em = $this->getDoctrine()->getManager();
         $em->persist($registration);
         $em->flush();
@@ -168,7 +169,7 @@ class RegistrationHelper extends AbstractController
 
     protected function promoteReserve(
         Registration $registration
-    ) {
+    ): string {
         $em = $this->getDoctrine()->getManager();
 
         $x1 = $em->getRepository(Registration::class)->findBefore($registration->getActivity(), $registration->getReservePosition());
@@ -186,7 +187,7 @@ class RegistrationHelper extends AbstractController
 
     protected function demoteReserve(
         Registration $registration
-    ) {
+    ): string {
         $em = $this->getDoctrine()->getManager();
 
         $x1 = $em->getRepository(Registration::class)->findAfter($registration->getActivity(), $registration->getReservePosition());
@@ -208,7 +209,7 @@ class RegistrationHelper extends AbstractController
         $title,
         $template,
         $message
-    ) {
+    ): void {
         $em->flush();
         $person = $registration->getPerson();
         $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' '.$message);
@@ -224,7 +225,7 @@ class RegistrationHelper extends AbstractController
         $this->mailer->message($person, $title, $body);
     }
 
-    private function handleRedirect($id, $type)
+    private function handleRedirect($id, $type): Response
     {
         return $this->redirectToRoute($type, [
             'id' => $id,

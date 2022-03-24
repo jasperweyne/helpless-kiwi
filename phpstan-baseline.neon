@@ -66,23 +66,13 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createRegisterForm\\(\\) has no return type specified\\.$#"
-			count: 1
+			message: "#^Cannot access offset 'registration_single' on mixed\\.$#"
+			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createUnregisterForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:singleRegistrationForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:singleUnregistrationForm\\(\\) has no return type specified\\.$#"
-			count: 1
+			message: "#^Cannot access offset 'single_option' on mixed\\.$#"
+			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
 		-
@@ -121,16 +111,6 @@ parameters:
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:resetAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:setAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
 			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, App\\\\Entity\\\\Location\\\\Location\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivityController.php
@@ -149,11 +129,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$array_arg of function current expects array\\|object, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
-
-		-
-			message: "#^Cannot access offset 'board' on mixed\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
 
 		-
 			message: "#^Cannot call method getCanonical\\(\\) on App\\\\Entity\\\\Security\\\\LocalAccount\\|null\\.$#"
@@ -186,26 +161,6 @@ parameters:
 			path: src/Controller/Admin/GroupController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) has parameter \\$defaultBoard with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
 			message: "#^Only booleans are allowed in a negated boolean, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
@@ -217,6 +172,11 @@ parameters:
 
 		-
 			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
+			count: 1
+			path: src/Controller/Admin/GroupController.php
+
+		-
+			message: "#^Parameter \\#1 \\$defaultBoard of method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
 
@@ -236,13 +196,8 @@ parameters:
 			path: src/Controller/Admin/RegistrationController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
+			message: "#^Parameter \\#1 \\$id of method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) expects string, string\\|null given\\.$#"
+			count: 3
 			path: src/Controller/Admin/RegistrationController.php
 
 		-
@@ -271,7 +226,7 @@ parameters:
 			path: src/Controller/Admin/SecurityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:createRoleForm\\(\\) has no return type specified\\.$#"
+			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/SecurityController.php
 
@@ -316,12 +271,7 @@ parameters:
 			path: src/Controller/Helper/RegistrationHelper.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:demoteReserve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:demoteReserve\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: src/Controller/Helper/RegistrationHelper.php
 
@@ -336,17 +286,7 @@ parameters:
 			path: src/Controller/Helper/RegistrationHelper.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:promoteReserve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:removeRegistration\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:promoteReserve\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: src/Controller/Helper/RegistrationHelper.php
 
@@ -367,21 +307,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$title with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeNewReserve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeRegistration\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:updateRegistration\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Helper/RegistrationHelper.php
 
@@ -431,16 +356,6 @@ parameters:
 			path: src/Controller/Organise/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:resetAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:setAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
 			message: "#^Parameter \\#1 \\$group of method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:blockUnauthorisedUsers\\(\\) expects App\\\\Entity\\\\Group\\\\Group, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
 			count: 7
 			path: src/Controller/Organise/ActivityController.php
@@ -462,16 +377,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:blockUnauthorisedUsers\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Organise/RegistrationController.php
 

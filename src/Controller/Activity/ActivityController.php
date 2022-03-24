@@ -13,6 +13,7 @@ use Swift_Attachment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -249,7 +250,7 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    public function singleUnregistrationForm(Registration $registration)
+    public function singleUnregistrationForm(Registration $registration): FormInterface
     {
         $form = $this->createUnregisterForm($registration->getActivity());
         $form->get('registration_single')->setData($registration->getId());
@@ -257,7 +258,7 @@ class ActivityController extends AbstractController
         return $form;
     }
 
-    public function singleRegistrationForm(PriceOption $option, bool $reserve)
+    public function singleRegistrationForm(PriceOption $option, bool $reserve): FormInterface
     {
         $form = $this->createRegisterForm($option->getActivity(), $reserve);
         $form->get('single_option')->setData($option->getId());
@@ -265,7 +266,7 @@ class ActivityController extends AbstractController
         return $form;
     }
 
-    private function createUnregisterForm(Activity $activity)
+    private function createUnregisterForm(Activity $activity): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('activity_unregister', ['id' => $activity->getId()]))
@@ -278,7 +279,7 @@ class ActivityController extends AbstractController
         ;
     }
 
-    private function createRegisterForm(Activity $activity, bool $reserve = false)
+    private function createRegisterForm(Activity $activity, bool $reserve = false): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('activity_register', ['id' => $activity->getId()]))

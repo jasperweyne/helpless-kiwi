@@ -9,6 +9,7 @@ use App\Log\EventService;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,7 +52,7 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $data = (array) $form->getData();
 
             $this->generateStructure($data['board']);
 
@@ -70,7 +71,7 @@ class GroupController extends AbstractController
      *
      * @Route("/new/{id?}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, ?Group $parent)
+    public function newAction(Request $request, ?Group $parent): Response
     {
         $group = new Group();
 
@@ -103,7 +104,7 @@ class GroupController extends AbstractController
      * @MenuItem(title="Groepen", menu="admin")
      * @Route("/{id?}", name="show", methods={"GET"})
      */
-    public function showAction(Request $request, ?Group $group)
+    public function showAction(Request $request, ?Group $group): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -278,7 +279,7 @@ class GroupController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(Group $group)
+    private function createDeleteForm(Group $group): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_group_delete', ['id' => $group->getId()]))
@@ -292,7 +293,7 @@ class GroupController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createRelationDeleteForm(Relation $group)
+    private function createRelationDeleteForm(Relation $group): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_group_relation_delete', ['id' => $group->getId()]))
@@ -301,7 +302,7 @@ class GroupController extends AbstractController
         ;
     }
 
-    private function generateStructure($defaultBoard)
+    private function generateStructure(string $defaultBoard): void
     {
         $em = $this->getDoctrine()->getManager();
 

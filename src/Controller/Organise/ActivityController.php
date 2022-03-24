@@ -8,6 +8,7 @@ use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -270,7 +271,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/setamountpresence", name="amount_present", methods={"GET", "POST"})
      */
-    public function setAmountPresent(Request $request, Activity $activity)
+    public function setAmountPresent(Request $request, Activity $activity): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -295,7 +296,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/resetamountpresence", name="reset_amount_present")
      */
-    public function resetAmountPresent(Request $request, Activity $activity)
+    public function resetAmountPresent(Request $request, Activity $activity): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -321,7 +322,7 @@ class ActivityController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(Activity $activity)
+    private function createDeleteForm(Activity $activity): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('organise_activity_delete', ['id' => $activity->getId()]))

@@ -128,7 +128,7 @@ class RegistrationController extends RegistrationHelper
         return $this->handleRedirect($returnData);
     }
 
-    private function handleRedirect($id)
+    private function handleRedirect(string $id): Response
     {
         return $this->redirectToRoute('admin_activity_show', [
             'id' => $id,

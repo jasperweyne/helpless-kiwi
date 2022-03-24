@@ -21,7 +21,7 @@ class RegistrationController extends RegistrationHelper
     /**
      * Make sure edits can only be made to acitivity's you have created.
      */
-    protected function blockUnauthorisedUsers(Group $group)
+    protected function blockUnauthorisedUsers(Group $group): void
     {
         $e = $this->createAccessDeniedException('Not authorised for the correct group.');
 
@@ -154,7 +154,7 @@ class RegistrationController extends RegistrationHelper
         return $this->handleRedirect($returnData);
     }
 
-    private function handleRedirect($id)
+    private function handleRedirect($id): Response
     {
         return $this->redirectToRoute('organise_activity_show', [
             'id' => $id,

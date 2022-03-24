@@ -11,6 +11,7 @@ use App\Security\PasswordResetService;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -165,7 +166,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $data = (array) $form->getData();
 
             $roles = [];
             if ($data['admin']) {
@@ -193,7 +194,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(LocalAccount $account)
+    private function createDeleteForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_delete', ['id' => $account->getId()]))
@@ -202,7 +203,7 @@ class SecurityController extends AbstractController
         ;
     }
 
-    private function createRoleForm(LocalAccount $account)
+    private function createRoleForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_security_roles', ['id' => $account->getId()]))

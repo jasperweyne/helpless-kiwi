@@ -12,7 +12,6 @@ use App\Tests\Database\Activity\RegistrationFixture;
 use App\Tests\Database\Group\GroupFixture;
 use App\Tests\Database\Group\RelationFixture;
 use App\Tests\Database\Security\LocalAccountFixture;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class RegistrationControllerTest.
@@ -25,7 +24,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class RegistrationControllerTest extends AuthWebTestCase
 {
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var \Doctrine\Persistence\ObjectManager
      */
     protected $em;
 
@@ -45,7 +44,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         ]);
 
         $this->login();
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->em = self::$container->get('doctrine')->getManager();
     }
 
     /**
