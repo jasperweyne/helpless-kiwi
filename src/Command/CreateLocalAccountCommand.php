@@ -14,7 +14,14 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class CreateLocalAccountCommand extends Command
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
+
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $passwordEncoder;
 
     // the name of the command (the part after "bin/console")

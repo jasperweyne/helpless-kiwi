@@ -22,6 +22,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SecurityController extends AbstractController
 {
+    /**
+     * @var EventService
+     */
     private $events;
 
     public function __construct(EventService $events)

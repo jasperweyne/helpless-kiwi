@@ -15,8 +15,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class Query
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
+    /**
+     * @var TokenStorageInterface
+     */
     private $tokenStorage;
 
     public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)

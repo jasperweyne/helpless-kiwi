@@ -5,17 +5,20 @@ namespace App\Controller\Helper;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
+use App\Mail\MailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationHelper extends AbstractController
 {
+    /**
+     * @var MailService
+     */
     private $mailer;
 
-    public function __construct(
-        \App\Mail\MailService $mailer
-    ) {
+    public function __construct(MailService $mailer)
+    {
         $this->mailer = $mailer;
     }
 

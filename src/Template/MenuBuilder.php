@@ -4,8 +4,14 @@ namespace App\Template;
 
 class MenuBuilder
 {
+    /**
+     * @var MenuExtensionInterface[]
+     */
     private $extensions;
 
+    /**
+     * @var array
+     */
     private $menuitems;
 
     public function __construct($extensions)

@@ -6,13 +6,23 @@ use App\Entity\Log\Event as EventEntity;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class EventService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
+    /**
+     * @var string|\Stringable|UserInterface|null
+     */
     private $person;
 
+    /**
+     * @var ReflectionService
+     */
     private $refl;
 
     public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ReflectionService $refl)

@@ -20,6 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class GroupController extends AbstractController
 {
+    /**
+     * @var EventService
+     */
     private $events;
 
     public function __construct(EventService $events)

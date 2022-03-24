@@ -9,8 +9,15 @@ use Symfony\Component\Security\Core\Encoder\SelfSaltingEncoderInterface;
 
 class PasswordResetService
 {
-    private $registry;
-    private $managerName;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var EncoderFactoryInterface
+     */
+    private $encoderFactory;
 
     public function __construct(EntityManagerInterface $em, EncoderFactoryInterface $encoderFactory)
     {

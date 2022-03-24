@@ -7,6 +7,9 @@ use Doctrine\Persistence\Mapping\RuntimeReflectionService;
 
 class ReflectionService extends RuntimeReflectionService
 {
+    /**
+     * @var Instantiator
+     */
     private $instantiator;
 
     public function __construct()

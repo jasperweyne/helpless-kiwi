@@ -20,8 +20,14 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
  */
 class PasswordController extends AbstractController
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $passwordEncoder;
 
+    /**
+     * @var PasswordResetService
+     */
     private $passwordReset;
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder, PasswordResetService $passwordReset)

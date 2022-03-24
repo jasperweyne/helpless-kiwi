@@ -10,6 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class HasLocalAccountCommand extends Command
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
     // the name of the command (the part after "bin/console")

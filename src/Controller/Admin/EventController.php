@@ -18,6 +18,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class EventController extends AbstractController
 {
+    /**
+     * @var EventService
+     */
     private $events;
 
     public function __construct(EventService $events)

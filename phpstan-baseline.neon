@@ -86,18 +86,18 @@ parameters:
 			path: src/Command/CreateLocalAccountCommand.php
 
 		-
+			message: "#^Parameter \\#1 \\$name of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Command/CreateLocalAccountCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$plainPassword of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\:\\:encodePassword\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Command/CreateLocalAccountCommand.php
+
+		-
 			message: "#^Parameter \\#2 \\$value of method Symfony\\\\Component\\\\Console\\\\Input\\\\InputInterface\\:\\:setArgument\\(\\) expects array\\<string\\>\\|string\\|null, mixed given\\.$#"
 			count: 2
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Property App\\\\Command\\\\CreateLocalAccountCommand\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Property App\\\\Command\\\\CreateLocalAccountCommand\\:\\:\\$passwordEncoder has no type specified\\.$#"
-			count: 1
 			path: src/Command/CreateLocalAccountCommand.php
 
 		-
@@ -107,11 +107,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Command\\\\HasLocalAccountCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Command/HasLocalAccountCommand.php
-
-		-
-			message: "#^Property App\\\\Command\\\\HasLocalAccountCommand\\:\\:\\$em has no type specified\\.$#"
 			count: 1
 			path: src/Command/HasLocalAccountCommand.php
 
@@ -191,11 +186,6 @@ parameters:
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:\\$events has no type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:createQueryBuilder\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
@@ -207,11 +197,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$array_arg of function current expects array\\|object, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Admin/EventController.php
-
-		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\EventController\\:\\:\\$events has no type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
 
@@ -286,11 +271,6 @@ parameters:
 			path: src/Controller/Admin/GroupController.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\GroupController\\:\\:\\$events has no type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
 			message: "#^Cannot access offset 'html' on mixed\\.$#"
 			count: 1
 			path: src/Controller/Admin/MailController.php
@@ -342,11 +322,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:createRoleForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:\\$events has no type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/SecurityController.php
 
@@ -486,11 +461,6 @@ parameters:
 			path: src/Controller/Helper/RegistrationHelper.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:\\$mailer has no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
 			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
 			count: 1
 			path: src/Controller/Organise/ActivityController.php
@@ -616,6 +586,11 @@ parameters:
 			path: src/Controller/Security/PasswordController.php
 
 		-
+			message: "#^Parameter \\#1 \\$auth of method App\\\\Security\\\\PasswordResetService\\:\\:generatePasswordRequestToken\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
+			count: 1
+			path: src/Controller/Security/PasswordController.php
+
+		-
 			message: "#^Parameter \\#1 \\$email of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setEmail\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Security/PasswordController.php
@@ -626,13 +601,8 @@ parameters:
 			path: src/Controller/Security/PasswordController.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Security\\\\PasswordController\\:\\:\\$passwordEncoder has no type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
-			message: "#^Property App\\\\Controller\\\\Security\\\\PasswordController\\:\\:\\$passwordReset has no type specified\\.$#"
-			count: 1
+			message: "#^Parameter \\#2 \\$token of method App\\\\Security\\\\PasswordResetService\\:\\:isPasswordRequestTokenValid\\(\\) expects string, mixed given\\.$#"
+			count: 2
 			path: src/Controller/Security/PasswordController.php
 
 		-
@@ -1161,11 +1131,6 @@ parameters:
 			path: src/Entity/Order.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Order\\:\\:\\$data has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
 			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
 			count: 1
 			path: src/Entity/Security/LocalAccount.php
@@ -1431,11 +1396,6 @@ parameters:
 			path: src/EventListener/DoctrineTablePrefixListener.php
 
 		-
-			message: "#^Property App\\\\EventListener\\\\DoctrineTablePrefixListener\\:\\:\\$prefix has no type specified\\.$#"
-			count: 1
-			path: src/EventListener/DoctrineTablePrefixListener.php
-
-		-
 			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:activities\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/GraphQL/Query.php
@@ -1451,7 +1411,7 @@ parameters:
 			path: src/GraphQL/Query.php
 
 		-
-			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns object\\.$#"
+			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
 			count: 1
 			path: src/GraphQL/Query.php
 
@@ -1462,16 +1422,6 @@ parameters:
 
 		-
 			message: "#^Only booleans are allowed in &&, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given on the right side\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Property App\\\\GraphQL\\\\Query\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Property App\\\\GraphQL\\\\Query\\:\\:\\$tokenStorage has no type specified\\.$#"
 			count: 1
 			path: src/GraphQL/Query.php
 
@@ -1681,16 +1631,6 @@ parameters:
 			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:\\$eventService has no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:\\$reflService has no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
 			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:\\$reflService is never read, only written\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityEventListener.php
@@ -1806,6 +1746,11 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
+			message: "#^Cannot call method getValue\\(\\) on ReflectionProperty\\|null\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
 			message: "#^Method App\\\\Log\\\\EventService\\:\\:findBy\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Log/EventService.php
@@ -1881,7 +1826,17 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
+			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\) expects class\\-string\\<object\\>, string\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
 			message: "#^Parameter \\#1 \\$classname of function class_exists expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
+			message: "#^Parameter \\#1 \\$person of method App\\\\Entity\\\\Log\\\\Event\\:\\:setPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount\\|null, string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -1891,17 +1846,12 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Property App\\\\Log\\\\EventService\\:\\:\\$em has no type specified\\.$#"
+			message: "#^Parameter \\#2 \\$fieldValues of method App\\\\Reflection\\\\ReflectionService\\:\\:instantiate\\(\\) expects array, mixed given\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Property App\\\\Log\\\\EventService\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Property App\\\\Log\\\\EventService\\:\\:\\$refl has no type specified\\.$#"
+			message: "#^Unable to resolve the template type T in call to method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\)$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -1927,26 +1877,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$content of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setContent\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Mail/MailService.php
-
-		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/Mail/MailService.php
-
-		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$mailer has no type specified\\.$#"
-			count: 1
-			path: src/Mail/MailService.php
-
-		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$params has no type specified\\.$#"
-			count: 1
-			path: src/Mail/MailService.php
-
-		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$tokenStorage has no type specified\\.$#"
 			count: 1
 			path: src/Mail/MailService.php
 
@@ -1991,7 +1921,7 @@ parameters:
 			path: src/Reflection/ReflectionService.php
 
 		-
-			message: "#^Property App\\\\Reflection\\\\ReflectionService\\:\\:\\$instantiator has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Instantiator\\\\Instantiator\\:\\:instantiate\\(\\) expects class\\-string\\<T of object\\>, string given\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
 
@@ -2161,17 +2091,12 @@ parameters:
 			path: src/Security/LocalAuthenticator.php
 
 		-
+			message: "#^Parameter \\#2 \\$raw of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\:\\:isPasswordValid\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/Security/LocalAuthenticator.php
+
+		-
 			message: "#^Parameter \\#2 \\$value of class Symfony\\\\Component\\\\Security\\\\Csrf\\\\CsrfToken constructor expects string\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$csrfTokenManager has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$em has no type specified\\.$#"
 			count: 1
 			path: src/Security/LocalAuthenticator.php
 
@@ -2179,41 +2104,6 @@ parameters:
 			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$em is never read, only written\\.$#"
 			count: 1
 			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$passwordEncoder has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$urlGenerator has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalUserProvider\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalUserProvider.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Security\\\\PasswordResetService\\:\\:\\$em\\.$#"
-			count: 5
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Security\\\\PasswordResetService\\:\\:\\$encoderFactory\\.$#"
-			count: 4
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\SelfSaltingEncoderInterface\\:\\:encodePassword\\(\\)\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\SelfSaltingEncoderInterface\\:\\:isPasswordValid\\(\\)\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
 
 		-
 			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestSalt\\(\\) invoked with 1 parameter, 0 required\\.$#"
@@ -2236,23 +2126,8 @@ parameters:
 			path: src/Security/PasswordResetService.php
 
 		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$managerName has no type specified\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$managerName is unused\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$registry has no type specified\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$registry is unused\\.$#"
-			count: 1
+			message: "#^Parameter \\#1 \\$encoded of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\PasswordEncoderInterface\\:\\:isPasswordValid\\(\\) expects string, string\\|null given\\.$#"
+			count: 2
 			path: src/Security/PasswordResetService.php
 
 		-
@@ -2357,12 +2232,7 @@ parameters:
 			path: src/Template/MenuBuilder.php
 
 		-
-			message: "#^Property App\\\\Template\\\\MenuBuilder\\:\\:\\$extensions has no type specified\\.$#"
-			count: 1
-			path: src/Template/MenuBuilder.php
-
-		-
-			message: "#^Property App\\\\Template\\\\MenuBuilder\\:\\:\\$menuitems has no type specified\\.$#"
+			message: "#^Property App\\\\Template\\\\MenuBuilder\\:\\:\\$menuitems type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Template/MenuBuilder.php
 
@@ -2463,11 +2333,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Tests\\\\Database\\\\Security\\\\LocalAccountFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Security/LocalAccountFixture.php
-
-		-
-			message: "#^Property App\\\\Tests\\\\Database\\\\Security\\\\LocalAccountFixture\\:\\:\\$encoder has no type specified\\.$#"
 			count: 1
 			path: src/Tests/Database/Security/LocalAccountFixture.php
 

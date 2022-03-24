@@ -7,6 +7,9 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class DoctrineTablePrefixListener
 {
+    /**
+     * @var string
+     */
     protected $prefix = '';
 
     public function __construct($prefix = '')

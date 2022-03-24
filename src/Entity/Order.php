@@ -4,6 +4,9 @@ namespace App\Entity;
 
 class Order
 {
+    /**
+     * @var int[]
+     */
     private $data;
 
     protected function __construct(array $data)

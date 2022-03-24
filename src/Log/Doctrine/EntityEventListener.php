@@ -10,8 +10,14 @@ use Doctrine\ORM\PersistentCollection;
 
 class EntityEventListener
 {
+    /**
+     * @var EventService
+     */
     private $eventService;
 
+    /**
+     * @var ReflectionService
+     */
     private $reflService;
 
     public function __construct(EventService $eventService, ReflectionService $reflService)
