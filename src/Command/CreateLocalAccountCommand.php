@@ -35,7 +35,7 @@ class CreateLocalAccountCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             // the short description shown while running "php bin/console list"
@@ -54,7 +54,7 @@ class CreateLocalAccountCommand extends Command
             ->addOption('admin', null, InputOption::VALUE_NONE, 'Make the user an admin');
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $output->writeln([
             'Local Account Creator',
@@ -90,7 +90,7 @@ class CreateLocalAccountCommand extends Command
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
         $name = $input->getArgument('name');
@@ -109,5 +109,7 @@ class CreateLocalAccountCommand extends Command
         $this->em->flush();
 
         $output->writeln($account->getCanonical().' login registered!');
+
+        return 0;
     }
 }
