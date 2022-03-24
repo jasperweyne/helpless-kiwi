@@ -11,6 +11,7 @@ use App\Log\EventService;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -33,7 +34,7 @@ class ActivityController extends AbstractController
      * @MenuItem(title="Activiteiten", menu="admin", activeCriteria="admin_activity_")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -49,7 +50,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/new", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request): Response
     {
         $activity = new Activity();
 
@@ -76,7 +77,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}", name="show", methods={"GET"})
      */
-    public function showAction(Activity $activity)
+    public function showAction(Activity $activity): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -106,7 +107,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Activity $activity)
+    public function editAction(Request $request, Activity $activity): Response
     {
         $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity);
         $form->handleRequest($request);
@@ -128,7 +129,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/image", name="image", methods={"GET", "POST"})
      */
-    public function imageAction(Request $request, Activity $activity)
+    public function imageAction(Request $request, Activity $activity): Response
     {
         $form = $this->createForm('App\Form\Activity\ActivityImageType', $activity);
         $form->handleRequest($request);
@@ -150,7 +151,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/delete", name="delete")
      */
-    public function deleteAction(Request $request, Activity $activity)
+    public function deleteAction(Request $request, Activity $activity): Response
     {
         $form = $this->createDeleteForm($activity);
         $form->handleRequest($request);
@@ -174,7 +175,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/price/new/{id}", name="price_new", methods={"GET", "POST"})
      */
-    public function priceNewAction(Request $request, Activity $activity)
+    public function priceNewAction(Request $request, Activity $activity): Response
     {
         $price = new PriceOption();
         $price->setActivity($activity);
@@ -206,7 +207,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/price/{id}", name="price_edit", methods={"GET", "POST"})
      */
-    public function priceEditAction(Request $request, PriceOption $price)
+    public function priceEditAction(Request $request, PriceOption $price): Response
     {
         $activity = $price->getActivity();
         $originalPrice = $price->getPrice();
@@ -243,7 +244,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/present", name="present")
      */
-    public function presentEditAction(Request $request, Activity $activity)
+    public function presentEditAction(Request $request, Activity $activity): Response
     {
         $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);

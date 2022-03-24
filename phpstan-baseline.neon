@@ -121,11 +121,6 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:callIcal\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createRegisterForm\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Activity/ActivityController.php
@@ -136,32 +131,12 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:registerAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:singleRegistrationForm\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Activity/ActivityController.php
 
 		-
 			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:singleUnregistrationForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:unregisterAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Activity/ActivityController.php
 
@@ -201,57 +176,12 @@ parameters:
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:imageAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:presentEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:priceEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:priceNewAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:resetAmountPresent\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivityController.php
 
 		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:setAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivityController.php
 
@@ -266,17 +196,7 @@ parameters:
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\AdminController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/AdminController.php
-
-		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:createQueryBuilder\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/Admin/EventController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\EventController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
 
@@ -331,21 +251,6 @@ parameters:
 			path: src/Controller/Admin/GroupController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
@@ -357,21 +262,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:relationAddAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:relationDeleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:relationNewAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
 
@@ -406,16 +296,6 @@ parameters:
 			path: src/Controller/Admin/MailController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\MailController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/MailController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\MailController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/MailController.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Admin/MailController.php
@@ -426,42 +306,12 @@ parameters:
 			path: src/Controller/Admin/RegistrationController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/RegistrationController.php
 
 		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:reserveMoveDownAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:reserveMoveUpAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:reserveNewAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/RegistrationController.php
 
@@ -492,36 +342,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:createRoleForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:rolesAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/SecurityController.php
 
@@ -592,11 +412,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:promoteReserve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:registrationEdit\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Helper/RegistrationHelper.php
 
@@ -696,52 +511,12 @@ parameters:
 			path: src/Controller/Organise/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:imageAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:presentEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:priceEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:priceNewAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:resetAmountPresent\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Organise/ActivityController.php
 
 		-
 			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:setAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Organise/ActivityController.php
 
@@ -761,11 +536,6 @@ parameters:
 			path: src/Controller/Organise/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\OrganiseController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/OrganiseController.php
-
-		-
 			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
 			count: 3
 			path: src/Controller/Organise/RegistrationController.php
@@ -781,42 +551,12 @@ parameters:
 			path: src/Controller/Organise/RegistrationController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Organise/RegistrationController.php
 
 		-
 			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:reserveMoveDownAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:reserveMoveUpAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:reserveNewAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Organise/RegistrationController.php
 
@@ -846,16 +586,6 @@ parameters:
 			path: src/Controller/Organise/RegistrationController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\LoginController\\:\\:login_check\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/LoginController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\LoginController\\:\\:logout\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/LoginController.php
-
-		-
 			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\Exception\\\\AuthenticationException\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Security/LoginController.php
@@ -877,21 +607,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Security\\\\PasswordController\\:\\:handleValidToken\\(\\) has parameter \\$form with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\PasswordController\\:\\:registerAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\PasswordController\\:\\:requestAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\PasswordController\\:\\:resetAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Security/PasswordController.php
 

@@ -9,6 +9,7 @@ use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -39,7 +40,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/new/{id}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, Group $group)
+    public function newAction(Request $request, Group $group): Response
     {
         $this->blockUnauthorisedUsers($group);
 
@@ -71,7 +72,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}", name="show", methods={"GET"})
      */
-    public function showAction(Activity $activity)
+    public function showAction(Activity $activity): Response
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -98,7 +99,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Activity $activity)
+    public function editAction(Request $request, Activity $activity): Response
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -122,7 +123,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/image", name="image", methods={"GET", "POST"})
      */
-    public function imageAction(Request $request, Activity $activity)
+    public function imageAction(Request $request, Activity $activity): Response
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -146,7 +147,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/delete", name="delete")
      */
-    public function deleteAction(Request $request, Activity $activity)
+    public function deleteAction(Request $request, Activity $activity): Response
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -172,7 +173,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/price/new/{id}", name="price_new", methods={"GET", "POST"})
      */
-    public function priceNewAction(Request $request, Activity $activity)
+    public function priceNewAction(Request $request, Activity $activity): Response
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 
@@ -206,7 +207,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/price/{id}", name="price_edit", methods={"GET", "POST"})
      */
-    public function priceEditAction(Request $request, PriceOption $price)
+    public function priceEditAction(Request $request, PriceOption $price): Response
     {
         $this->blockUnauthorisedUsers($price->getActivity()->getAuthor());
 
@@ -245,7 +246,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/presence", name="presence")
      */
-    public function presentEditAction(Request $request, Activity $activity)
+    public function presentEditAction(Request $request, Activity $activity): Response
     {
         $this->blockUnauthorisedUsers($activity->getAuthor());
 

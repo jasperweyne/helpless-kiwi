@@ -5,6 +5,7 @@ namespace App\Controller\Organise;
 use App\Entity\Activity\Activity;
 use App\Entity\Group\Group;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -19,7 +20,7 @@ class OrganiseController extends AbstractController
      *
      * @Route("/{id}", name="index", methods={"GET"})
      */
-    public function indexAction(Group $group)
+    public function indexAction(Group $group): Response
     {
         $em = $this->getDoctrine()->getManager();
 

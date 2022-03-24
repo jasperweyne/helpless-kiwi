@@ -7,6 +7,7 @@ use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationHelper extends AbstractController
 {
@@ -55,7 +56,7 @@ class RegistrationHelper extends AbstractController
         Registration $registration,
         string $page,
         string $redirect
-    ) {
+    ): Response {
         $form = $this->createRegistrationEditForm($registration);
         $form->handleRequest($request);
 

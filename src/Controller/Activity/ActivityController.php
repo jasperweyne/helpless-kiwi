@@ -31,7 +31,7 @@ class ActivityController extends AbstractController
      * @MenuItem(title="Activiteiten")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -56,7 +56,7 @@ class ActivityController extends AbstractController
         Request $request,
         Activity $activity,
         MailService $mailer
-    ) {
+    ): Response {
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createUnregisterForm($activity);
@@ -101,7 +101,7 @@ class ActivityController extends AbstractController
      */
     public function callIcal(
         ICalProvider $iCalProvider
-    ) {
+    ): Response {
         $em = $this->getDoctrine()->getManager();
         $publicActivities = $em->getRepository(Activity::class)->findVisibleUpcomingByGroup([]); // Only return activities without target audience
 
@@ -120,7 +120,7 @@ class ActivityController extends AbstractController
         Activity $activity,
         MailService $mailer,
         ICalProvider $iCalProvider
-    ) {
+    ): Response {
         //4 deep nested?
         //TO-DO refactor this
         $em = $this->getDoctrine()->getManager();
@@ -206,7 +206,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/activity/{id}", name="show", methods={"GET"})
      */
-    public function showAction(Activity $activity)
+    public function showAction(Activity $activity): Response
     {
         $em = $this->getDoctrine()->getManager();
         $regs = $em->getRepository(Registration::class)->findBy([

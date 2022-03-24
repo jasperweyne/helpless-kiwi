@@ -8,6 +8,7 @@ use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -34,7 +35,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/reset/{id}", name="reset", methods={"GET", "POST"})
      */
-    public function resetAction(LocalAccount $auth, Request $request)
+    public function resetAction(LocalAccount $auth, Request $request): Response
     {
         if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
             $this->handleInvalidToken($auth);
@@ -57,7 +58,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/register/{id}", name="register", methods={"GET", "POST"})
      */
-    public function registerAction(LocalAccount $auth, Request $request)
+    public function registerAction(LocalAccount $auth, Request $request): Response
     {
         if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
             $this->handleInvalidToken($auth);
@@ -81,7 +82,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/request", name="request", methods={"GET", "POST"})
      */
-    public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer)
+    public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer): Response
     {
         $em = $this->getDoctrine()->getManager();
 
