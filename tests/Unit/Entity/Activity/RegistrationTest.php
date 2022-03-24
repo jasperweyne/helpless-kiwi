@@ -53,7 +53,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getId());
+        self::assertSame($expected, $this->registration->getId());
     }
 
     public function testSetId(): void
@@ -63,7 +63,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $this->registration->setId($expected);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetOption(): void
@@ -73,7 +73,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('option');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getOption());
+        self::assertSame($expected, $this->registration->getOption());
     }
 
     public function testSetOption(): void
@@ -83,7 +83,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('option');
         $property->setAccessible(true);
         $this->registration->setOption($expected);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetPerson(): void
@@ -94,7 +94,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getPerson());
+        self::assertSame($expected, $this->registration->getPerson());
     }
 
     public function testSetPerson(): void
@@ -105,7 +105,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $this->registration->setPerson($expected);
-        $this->assertSame($expected, $this->registration->getPerson());
+        self::assertSame($expected, $this->registration->getPerson());
     }
 
     public function testGetActivity(): void
@@ -115,7 +115,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('activity');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getActivity());
+        self::assertSame($expected, $this->registration->getActivity());
     }
 
     public function testSetActivity(): void
@@ -125,7 +125,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('activity');
         $property->setAccessible(true);
         $this->registration->setActivity($expected);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testIsReserveTrue(): void
@@ -136,13 +136,13 @@ class RegistrationTest extends KernelTestCase
         $property->setAccessible(true);
         $reserveOrder = Order::create(RegistrationRepository::MINORDER());
         $this->registration->setReservePosition($reserveOrder);
-        $this->assertSame($expected, $this->registration->isReserve());
+        self::assertSame($expected, $this->registration->isReserve());
     }
 
     public function testIsReserveFalse(): void
     {
         $expected = false;
-        $this->assertSame($expected, $this->registration->isReserve());
+        self::assertSame($expected, $this->registration->isReserve());
     }
 
     public function testGetReservePosition(): void
@@ -152,7 +152,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('reserve_position');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getReservePosition());
+        self::assertSame($expected, $this->registration->getReservePosition());
     }
 
     public function testSetReservePosition(): void
@@ -163,7 +163,7 @@ class RegistrationTest extends KernelTestCase
         $property->setAccessible(true);
         $counter = Order::create(RegistrationRepository::MINORDER());
         $this->registration->setReservePosition($counter);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetNewDate(): void
@@ -173,7 +173,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('newdate');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getNewDate());
+        self::assertSame($expected, $this->registration->getNewDate());
     }
 
     public function testSetNewDate(): void
@@ -183,7 +183,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('newdate');
         $property->setAccessible(true);
         $this->registration->setNewDate($expected);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetDeleteDate(): void
@@ -193,7 +193,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('deletedate');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getDeleteDate());
+        self::assertSame($expected, $this->registration->getDeleteDate());
     }
 
     public function testSetDeleteDate(): void
@@ -203,7 +203,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('deletedate');
         $property->setAccessible(true);
         $this->registration->setDeleteDate($expected);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetPresent(): void
@@ -213,7 +213,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('present');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getPresent());
+        self::assertSame($expected, $this->registration->getPresent());
     }
 
     public function testSetPresent(): void
@@ -223,7 +223,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('present');
         $property->setAccessible(true);
         $this->registration->setPresent($expected);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 
     public function testGetComment()
@@ -233,7 +233,7 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('comment');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
-        $this->assertSame($expected, $this->registration->getComment());
+        self::assertSame($expected, $this->registration->getComment());
     }
 
     public function testSetComment()
@@ -243,6 +243,6 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('comment');
         $property->setAccessible(true);
         $this->registration->setComment($expected);
-        $this->assertSame($expected, $property->getValue($this->registration));
+        self::assertSame($expected, $property->getValue($this->registration));
     }
 }

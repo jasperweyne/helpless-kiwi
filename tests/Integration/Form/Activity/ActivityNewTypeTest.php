@@ -42,6 +42,6 @@ class ActivityNewTypeTest extends KernelTestCase
     public function testBuildForm(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

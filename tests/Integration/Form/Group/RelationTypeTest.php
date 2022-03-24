@@ -36,12 +36,12 @@ class RelationTypeTest extends KernelTestCase
     public function testBuildForm(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testConfigureOptions(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

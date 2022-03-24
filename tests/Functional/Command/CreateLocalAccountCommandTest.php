@@ -46,7 +46,7 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
     // 
     // As soon as we've done this I'll split this up in 3/4 test cases.
     // But for now it will at least show us where the error resides.
-    public function testInteract()
+    public function testInteract(): void
     {        
         $email = 'user@kiwi.au';
         $commandName = 'app:create-account';
@@ -63,12 +63,12 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         $account = $this->em->getRepository(LocalAccount::class)->findBy(['email' => $email]);
 
         // Assert
-        $this->assertContains('login registered!', $output);
-        $this->assertEquals(count($account), 1);
-        $this->assertEquals(0, $statusCode);
+        self::assertContains('login registered!', $output);
+        self::assertEquals(count($account), 1);
+        self::assertEquals(0, $statusCode);
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         // Arrange
         $application = new Application($this->client->getKernel());
@@ -88,7 +88,7 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         $account = $this->em->getRepository(LocalAccount::class)->findBy(['email' => $email]);
 
         // Assert
-        $this->assertContains('login registered!', $output);
-        $this->assertEquals(count($account), 1);
+        self::assertContains('login registered!', $output);
+        self::assertEquals(count($account), 1);
     }
 }

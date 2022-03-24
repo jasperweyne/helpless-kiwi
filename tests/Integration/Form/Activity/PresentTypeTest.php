@@ -50,8 +50,8 @@ class PresentTypeTest extends KernelTestCase
         $form = $formfactory->create(PresentType::class, $type);
 
         $form->submit($formData);
-        $this->assertTrue($form->isSynchronized());
-        $this->assertTrue($form->isSubmitted());
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
     }
 
     public function testBuildForm(): void

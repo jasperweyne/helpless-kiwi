@@ -50,7 +50,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getId());
+        self::assertSame($expected, $this->priceOption->getId());
     }
 
     public function testSetId(): void
@@ -60,7 +60,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $this->priceOption->setId($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption));
+        self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
     public function testGetName(): void
@@ -70,7 +70,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getName());
+        self::assertSame($expected, $this->priceOption->getName());
     }
 
     public function testSetName(): void
@@ -80,7 +80,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('name');
         $property->setAccessible(true);
         $this->priceOption->setName($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption));
+        self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
     public function testGetTarget(): void
@@ -90,7 +90,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('target');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getTarget());
+        self::assertSame($expected, $this->priceOption->getTarget());
     }
 
     public function testSetTarget(): void
@@ -100,7 +100,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('target');
         $property->setAccessible(true);
         $this->priceOption->setTarget($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption));
+        self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
     public function testGetPrice(): void
@@ -110,7 +110,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('price');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getPrice());
+        self::assertSame($expected, $this->priceOption->getPrice());
     }
 
     public function testSetPrice(): void
@@ -120,7 +120,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('price');
         $property->setAccessible(true);
         $this->priceOption->setPrice($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption));
+        self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
     public function testGetDetails(): void
@@ -130,7 +130,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('details');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getDetails());
+        self::assertSame($expected, $this->priceOption->getDetails());
     }
 
     public function testSetDetails(): void
@@ -140,7 +140,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('details');
         $property->setAccessible(true);
         $this->priceOption->setDetails($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption));
+        self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
     public function testGetConfirmationMsg(): void
@@ -150,7 +150,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('confirmationMsg');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getConfirmationMsg());
+        self::assertSame($expected, $this->priceOption->getConfirmationMsg());
     }
 
     public function testSetConfirmationMsg(): void
@@ -160,7 +160,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('confirmationMsg');
         $property->setAccessible(true);
         $this->priceOption->setConfirmationMsg($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption));
+        self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
     public function testGetActivity(): void
@@ -170,7 +170,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('activity');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getActivity());
+        self::assertSame($expected, $this->priceOption->getActivity());
     }
 
     public function testSetActivity(): void
@@ -180,7 +180,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('activity');
         $property->setAccessible(true);
         $this->priceOption->setActivity($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption));
+        self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
     public function test__toString(): void
@@ -189,7 +189,7 @@ class PriceOptionTest extends KernelTestCase
         $priceOption = new PriceOption();
         $priceOption->setName('free');
         $priceOption->setPrice(0);
-        $this->assertSame($expected, strval($priceOption));
+        self::assertSame($expected, strval($priceOption));
     }
 
     public function testGetRegistrations(): void
@@ -199,7 +199,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
-        $this->assertSame($expected, $this->priceOption->getRegistrations());
+        self::assertSame($expected, $this->priceOption->getRegistrations());
     }
 
     public function testAddRegistration(): void
@@ -209,7 +209,7 @@ class PriceOptionTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $this->priceOption->addRegistration($expected);
-        $this->assertSame($expected, $property->getValue($this->priceOption)[0]);
+        self::assertSame($expected, $property->getValue($this->priceOption)[0]);
     }
 
     public function testRemoveRegistration(): void
@@ -222,6 +222,6 @@ class PriceOptionTest extends KernelTestCase
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
         $this->priceOption->removeRegistration($registration);
-        $this->assertNotSame($registration, $property->getValue($this->priceOption));
+        self::assertNotSame($registration, $property->getValue($this->priceOption));
     }
 }

@@ -62,8 +62,8 @@ class ActivityEditTypeTest extends KernelTestCase
         $form = $formfactory->create(ActivityEditType::class, $type);
 
         $form->submit($formdata);
-        $this->assertTrue($form->isSynchronized());
-        $this->assertTrue($form->isSubmitted());
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
     }
 
     public function testConfigureOptions(): void

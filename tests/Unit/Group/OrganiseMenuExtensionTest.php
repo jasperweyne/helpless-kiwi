@@ -62,6 +62,6 @@ class OrganiseMenuExtensionTest extends KernelTestCase
             ->getProperty('menuItems');
         $property->setAccessible(true);
         $property->setValue($this->organiseMenuExtension, $expected);
-        $this->assertSame($expected, $this->organiseMenuExtension->getMenuItems());
+        self::assertSame($expected, $this->organiseMenuExtension->getMenuItems());
     }
 }

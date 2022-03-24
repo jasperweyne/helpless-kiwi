@@ -54,6 +54,6 @@ class GroupMenuExtensionTest extends KernelTestCase
             ->getProperty('menuItems');
         $property->setAccessible(true);
         $property->setValue($this->groupMenuExtension, $expected);
-        $this->assertSame($expected, $this->groupMenuExtension->getMenuItems());
+        self::assertSame($expected, $this->groupMenuExtension->getMenuItems());
     }
 }

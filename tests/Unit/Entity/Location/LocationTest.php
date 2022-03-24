@@ -47,7 +47,7 @@ class LocationTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->location, $expected);
-        $this->assertSame($expected, $this->location->getId());
+        self::assertSame($expected, $this->location->getId());
     }
 
     public function testGetAddress(): void
@@ -57,7 +57,7 @@ class LocationTest extends KernelTestCase
             ->getProperty('address');
         $property->setAccessible(true);
         $property->setValue($this->location, $expected);
-        $this->assertSame($expected, $this->location->getAddress());
+        self::assertSame($expected, $this->location->getAddress());
     }
 
     public function testSetAddress(): void
@@ -67,6 +67,6 @@ class LocationTest extends KernelTestCase
             ->getProperty('address');
         $property->setAccessible(true);
         $this->location->setAddress($expected);
-        $this->assertSame($expected, $property->getValue($this->location));
+        self::assertSame($expected, $property->getValue($this->location));
     }
 }

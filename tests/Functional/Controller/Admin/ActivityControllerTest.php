@@ -69,7 +69,7 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testNewAction(): void
@@ -102,44 +102,44 @@ class ActivityControllerTest extends AuthWebTestCase
         $form['activity_new[color]'] = 1;
 
         $crawler = $this->client->submit($form);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Activiteit '.$activity_name);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Activiteit '.$activity_name);
     }
 
     public function testShowAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testEditAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testImageAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testDeleteAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testPriceNewAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testPriceEditAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testPresentEditAction(): void
@@ -155,19 +155,19 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->submit($form);
 
         //Assert
-        $this->assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testSetAmountPresent(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testResetAmountPresent(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

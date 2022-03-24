@@ -49,6 +49,6 @@ class GroupRepositoryTest extends KernelTestCase
     public function testFindAllFor(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }
