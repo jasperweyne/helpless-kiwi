@@ -1856,22 +1856,12 @@ parameters:
 			path: src/Reflection/ReflectionService.php
 
 		-
-			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:instantiate\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Reflection/ReflectionService.php
-
-		-
 			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:instantiate\\(\\) has parameter \\$fieldValues with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
 
 		-
 			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
-			count: 1
-			path: src/Reflection/ReflectionService.php
-
-		-
-			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Instantiator\\\\Instantiator\\:\\:instantiate\\(\\) expects class\\-string\\<T of object\\>, string given\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
 

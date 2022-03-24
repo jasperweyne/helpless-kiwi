@@ -17,8 +17,15 @@ class ReflectionService extends RuntimeReflectionService
         $this->instantiator = new Instantiator();
     }
 
-    public function instantiate(string $classname, array $fieldValues = [])
+    /**
+     * @template T of object
+     * @phpstan-param class-string<T> $classname
+     *
+     * @phpstan-return T
+     */
+    public function instantiate(string $classname, array $fieldValues = []): object
     {
+        /** @var T $object */
         $object = $this->instantiator->instantiate($classname);
         $reflFields = $this->getAllProperties($classname);
 
