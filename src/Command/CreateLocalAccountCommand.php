@@ -14,25 +14,26 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class CreateLocalAccountCommand extends Command
 {
+    /** @var EntityManagerInterface */
     private $em;
-    private $passwordEncoder;
+    /** @var UserPasswordEncoderInterface */
+    private $userPasswordEncoder;
 
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:create-account';
 
-    public function __construct(EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(EntityManagerInterface $em, UserPasswordEncoderInterface $userPasswordEncoder)
     {
         $this->em = $em;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->userPasswordEncoder = $userPasswordEncoder;
 
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            // the short description shown while running "php bin/console list"
-            ->setDescription('Creates a local account.')
+            // the short description shown while running "php bin/console list" ->setDescription('Creates a local account.')
 
             // the full command description shown when running the command with
             // the "--help" option
@@ -47,7 +48,7 @@ class CreateLocalAccountCommand extends Command
             ->addOption('admin', null, InputOption::VALUE_NONE, 'Make the user an admin');
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $output->writeln([
             'Local Account Creator',
@@ -94,13 +95,13 @@ class CreateLocalAccountCommand extends Command
             // Persons
             ->setName($name)
             ->setEmail($email)
-            ->setPassword($this->passwordEncoder->encodePassword($account, $pass))
+            ->setPassword($this->userPasswordEncoder->encodePassword($account, $pass))
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : [])
         ;
 
         $this->em->persist($account);
         $this->em->flush();
 
-        $output->writeln($account->getCanonical().' login registered!');
+        return $output->writeln($account->getCanonical().' login registered!');
     }
 }

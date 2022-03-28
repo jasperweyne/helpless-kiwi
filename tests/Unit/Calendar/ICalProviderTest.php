@@ -5,6 +5,7 @@ namespace Tests\Unit\Calendar;
 use App\Calendar\ICalProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -15,32 +16,25 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class ICalProviderTest extends KernelTestCase
 {
-    /**
-     * @var ICalProvider
-     */
+    /** @var ICalProvider */
     protected $iCalProvider;
 
-    /**
-     * @var activity
-     */
+    /** @var activity */
     protected $firstActivity;
+    /** @var activity */
     protected $secondActivity;
+    /** @var activity */
     protected $invalidActivity;
 
-    /**
-     * @var datetime
-     */
+    /** @var DateTime */
     protected $now;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $summary;
+    /** @var string */
     protected $description;
 
-    /**
-     * @var location
-     */
+    /** @var location */
     protected $location;
 
     /**
@@ -108,11 +102,11 @@ class ICalProviderTest extends KernelTestCase
         $recieved = $this->iCalProvider->icalSingle(
             $this->firstActivity
         )->export();
-        $this->assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
-        $this->assertStringContainsString('DTSTART:'.$this->firstActivity->getStart()->format('Ymd\THis'), $recieved);
-        $this->assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
-        $this->assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
-        $this->assertStringContainsString('DESCRIPTION:kiwi test description', $recieved);
+        $this::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
+        $this::assertStringContainsString('DTSTART:'.$this->firstActivity->getStart()->format('Ymd\THis'), $recieved);
+        $this::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
+        $this::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
+        $this::assertStringContainsString('DESCRIPTION:kiwi test description', $recieved);
     }
 
     /**
@@ -120,7 +114,7 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalsingleSuccesWithErrorHandling(): void
     {
-        $this->expectExceptionMessage('Error: Failed to create the event');
+        $this::expectExceptionMessage('Error: Failed to create the event');
         $this->iCalProvider->icalSingle(
             $this->invalidActivity
         )->export();
@@ -134,11 +128,11 @@ class ICalProviderTest extends KernelTestCase
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
         ])->export();
-        $this->assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
-        $this->assertStringContainsString('DTSTART:'.$this->firstActivity->getStart()->format('Ymd\THis'), $recieved);
-        $this->assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
-        $this->assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
-        $this->assertStringContainsString('DESCRIPTION:'.$this->description, $recieved);
+        $this::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
+        $this::assertStringContainsString('DTSTART:'.$this->firstActivity->getStart()->format('Ymd\THis'), $recieved);
+        $this::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
+        $this::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
+        $this::assertStringContainsString('DESCRIPTION:'.$this->description, $recieved);
     }
 
     /**
@@ -150,8 +144,8 @@ class ICalProviderTest extends KernelTestCase
             $this->firstActivity,
             $this->secondActivity,
         ])->export();
-        $this->assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
-        $this->assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
+        $this::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
+        $this::assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
     }
 
     /**
@@ -163,7 +157,7 @@ class ICalProviderTest extends KernelTestCase
             $this->invalidActivity,
             $this->secondActivity,
         ])->export();
-        $this->assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
+        $this::assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
     }
 
     /**
@@ -176,7 +170,7 @@ class ICalProviderTest extends KernelTestCase
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
         ])->export();
-        $this->assertStringContainsString('PRODID:-//Helpless Kiwi//kiwi v1.0//NL', $recieved);
+        $this::assertStringContainsString('PRODID:-//Helpless Kiwi//kiwi v1.0//NL', $recieved);
         $_ENV['ORG_NAME'] = $_orgName;
     }
 }
