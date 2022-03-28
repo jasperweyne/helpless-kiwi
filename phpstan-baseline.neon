@@ -1351,46 +1351,6 @@ parameters:
 			path: src/Entity/Log/Event.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Mail\\\\Mail\\:\\:getRecipients\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$content has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$recipients has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$sender has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$sentAt has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$title has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
 			message: "#^Property App\\\\Entity\\\\Mail\\\\Recipient\\:\\:\\$id has no type specified\\.$#"
 			count: 1
 			path: src/Entity/Mail/Recipient.php
@@ -3823,31 +3783,6 @@ parameters:
 
 		-
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 19
-			path: tests/Unit/Entity/Group/GroupTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 5
-			path: tests/Unit/Entity/Group/GroupTest.php
-
-		-
-			message: "#^You should use assertTrue\\(\\) instead of assertSame\\(\\) when expecting \"true\"$#"
-			count: 9
-			path: tests/Unit/Entity/Group/GroupTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 10
-			path: tests/Unit/Entity/Group/RelationTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 5
-			path: tests/Unit/Entity/Group/RelationTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
 			count: 3
 			path: tests/Unit/Entity/Location/LocationTest.php
 
@@ -3855,16 +3790,6 @@ parameters:
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
 			count: 13
 			path: tests/Unit/Entity/Log/EventTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 12
-			path: tests/Unit/Entity/Mail/MailTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Mail/MailTest.php
 
 		-
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
