@@ -4,29 +4,8 @@ parameters:
 			message: "#^Cannot call method getAddress\\(\\) on App\\\\Entity\\\\Location\\\\Location\\|null\\.$#"
 			count: 1
 			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:createCalendar\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:createEvent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:icalFeed\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
 		-
 			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:icalFeed\\(\\) has parameter \\$activities with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:icalSingle\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Calendar/ICalProvider.php
 
