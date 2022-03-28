@@ -21,7 +21,6 @@ class RelationTest extends KernelTestCase
      * @var Relation
      */
     protected $relation;
-    protected $relation2;
 
     /**
      * {@inheritdoc}
@@ -51,7 +50,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getId());
+        $this::assertSame($expected, $this->relation->getId());
     }
 
     public function testGetDescription(): void
@@ -61,7 +60,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getDescription());
+        $this::assertSame($expected, $this->relation->getDescription());
     }
 
     public function testSetDescription(): void
@@ -71,7 +70,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $this->relation->setDescription($expected);
-        $this->assertSame($expected, $property->getValue($this->relation));
+        $this::assertSame($expected, $property->getValue($this->relation));
     }
 
     public function testGetGroup(): void
@@ -81,7 +80,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('group');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getGroup());
+        $this::assertSame($expected, $this->relation->getGroup());
     }
 
     public function testSetGroup(): void
@@ -91,7 +90,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('group');
         $property->setAccessible(true);
         $this->relation->setGroup($expected);
-        $this->assertSame($expected, $property->getValue($this->relation));
+        $this::assertSame($expected, $property->getValue($this->relation));
     }
 
     public function testGetPerson(): void
@@ -102,7 +101,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getPerson());
+        $this::assertSame($expected, $this->relation->getPerson());
     }
 
     public function testSetPerson(): void
@@ -113,7 +112,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $this->relation->setPerson($expected);
-        $this->assertSame($expected, $this->relation->getPerson());
+        $this::assertSame($expected, $this->relation->getPerson());
     }
 
     public function testGetParent(): void
@@ -123,7 +122,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('parent');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getParent());
+        $this::assertSame($expected, $this->relation->getParent());
     }
 
     public function testSetParent(): void
@@ -133,7 +132,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('parent');
         $property->setAccessible(true);
         $this->relation->setParent($expected);
-        $this->assertSame($expected, $property->getValue($this->relation));
+        $this::assertSame($expected, $property->getValue($this->relation));
     }
 
     public function testGetChildren(): void
@@ -143,7 +142,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getChildren());
+        $this::assertSame($expected, $this->relation->getChildren());
     }
 
     public function testAddChild(): void
@@ -153,7 +152,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $this->relation->addChild($expected);
-        $this->assertSame($expected, $property->getValue($this->relation)[0]);
+        $this::assertSame($expected, $property->getValue($this->relation)[0]);
     }
 
     public function testRemoveChild(): void
@@ -165,17 +164,17 @@ class RelationTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($relation, $property->getValue($this->relation)[0]);
+        $this::assertSame($relation, $property->getValue($this->relation)[0]);
 
         $this->relation->removeChild($relation);
-        $this->assertNotSame($relation, $property->getValue($this->relation));
+        $this::assertNotSame($relation, $property->getValue($this->relation));
     }
 
     //TODO figure out how to create recurvice testing objects
     public function testGetRoot(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this::markTestIncomplete();
     }
 
     //TODO this feels.... funky, and not in the good way.
@@ -186,18 +185,18 @@ class RelationTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getRoot()->getId());
+        $this::assertSame($expected, $this->relation->getRoot()->getId());
     }
 
     public function testGetChildrenRecursive(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this::markTestIncomplete();
     }
 
     public function testGetAllRelations(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this::markTestIncomplete();
     }
 }

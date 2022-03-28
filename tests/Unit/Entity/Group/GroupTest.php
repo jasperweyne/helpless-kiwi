@@ -49,7 +49,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getId());
+        $this::assertSame($expected, $this->group->getId());
     }
 
     public function testSetId(): void
@@ -59,7 +59,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $this->group->setId($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertSame($expected, $property->getValue($this->group));
     }
 
     public function testGetName(): void
@@ -69,7 +69,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getName());
+        $this::assertSame($expected, $this->group->getName());
     }
 
     public function testSetName(): void
@@ -79,7 +79,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('name');
         $property->setAccessible(true);
         $this->group->setName($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertSame($expected, $property->getValue($this->group));
     }
 
     public function testGetDescription(): void
@@ -89,7 +89,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getDescription());
+        $this::assertSame($expected, $this->group->getDescription());
     }
 
     public function testSetDescription(): void
@@ -99,7 +99,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $this->group->setDescription($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertSame($expected, $property->getValue($this->group));
     }
 
     public function testGetParent(): void
@@ -109,7 +109,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('parent');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getParent());
+        $this::assertSame($expected, $this->group->getParent());
     }
 
     public function testSetParent(): void
@@ -119,7 +119,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('parent');
         $property->setAccessible(true);
         $this->group->setParent($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertSame($expected, $property->getValue($this->group));
     }
 
     public function testGetReadonly(): void
@@ -129,7 +129,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('readonly');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getReadonly());
+        $this::assertTrue($this->group->getReadonly());
     }
 
     public function testSetReadonly(): void
@@ -139,7 +139,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('readonly');
         $property->setAccessible(true);
         $this->group->setReadonly($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertTrue($property->getValue($this->group));
     }
 
     public function testGetRelationable(): void
@@ -149,7 +149,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('relationable');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getRelationable());
+        $this::assertTrue($this->group->getRelationable());
     }
 
     public function testSetRelationable(): void
@@ -159,7 +159,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('relationable');
         $property->setAccessible(true);
         $this->group->setRelationable($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertTrue($property->getValue($this->group));
     }
 
     public function testGetSubgroupable(): void
@@ -169,7 +169,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('subgroupable');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getSubgroupable());
+        $this::assertTrue($this->group->getSubgroupable());
     }
 
     public function testSetSubgroupable(): void
@@ -179,7 +179,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('subgroupable');
         $property->setAccessible(true);
         $this->group->setSubgroupable($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertTrue($property->getValue($this->group));
     }
 
     public function testGetRelations(): void
@@ -189,7 +189,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('relations');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getRelations());
+        $this::assertSame($expected, $this->group->getRelations());
     }
 
     public function testAddRelation(): void
@@ -199,7 +199,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('relations');
         $property->setAccessible(true);
         $this->group->addRelation($expected);
-        $this->assertSame($expected, $property->getValue($this->group)[0]);
+        $this::assertSame($expected, $property->getValue($this->group)[0]);
     }
 
     public function testRemoveRelation(): void
@@ -211,10 +211,10 @@ class GroupTest extends KernelTestCase
             ->getProperty('relations');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($relation, $property->getValue($this->group)[0]);
+        $this::assertSame($relation, $property->getValue($this->group)[0]);
 
         $this->group->removeRelation($relation);
-        $this->assertNotSame($relation, $property->getValue($this->group));
+        $this::assertNotSame($relation, $property->getValue($this->group));
     }
 
     public function testGetChildren(): void
@@ -224,7 +224,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertSame($expected, $property->getValue($this->group));
     }
 
     public function testAddChild(): void
@@ -234,7 +234,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $this->group->addChild($expected);
-        $this->assertSame($expected, $this->group->getChildren()[0]);
+        $this::assertSame($expected, $this->group->getChildren()[0]);
     }
 
     public function testRemoveChild(): void
@@ -246,19 +246,19 @@ class GroupTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($group, $property->getValue($this->group)[0]);
+        $this::assertSame($group, $property->getValue($this->group)[0]);
 
         $this->group->removeChild($group);
-        $this->assertNotSame($group, $property->getValue($this->group));
+        $this::assertNotSame($group, $property->getValue($this->group));
     }
-    
+
     public function testIsActiveDefaultFalse(): void
     {
         $expected = false;
         $property = (new ReflectionClass(Group::class))
             ->getProperty('active');
         $property->setAccessible(true);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertTrue($property->getValue($this->group));
     }
 
     public function testIsActive(): void
@@ -268,7 +268,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('active');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertTrue($property->getValue($this->group));
     }
 
     public function testSetActive(): void
@@ -278,7 +278,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('active');
         $property->setAccessible(true);
         $this->group->setActive($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertTrue($property->getValue($this->group));
     }
 
     public function testGetRegister(): void
@@ -288,7 +288,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('register');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        $this->assertSame($expected, $this->group->getRegister());
+        $this::assertTrue($this->group->getRegister());
     }
 
     public function testSetRegister(): void
@@ -298,6 +298,6 @@ class GroupTest extends KernelTestCase
             ->getProperty('register');
         $property->setAccessible(true);
         $this->group->setRegister($expected);
-        $this->assertSame($expected, $property->getValue($this->group));
+        $this::assertTrue($property->getValue($this->group));
     }
 }
