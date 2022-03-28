@@ -254,11 +254,10 @@ class GroupTest extends KernelTestCase
 
     public function testIsActiveDefaultFalse(): void
     {
-        $expected = false;
         $property = (new ReflectionClass(Group::class))
             ->getProperty('active');
         $property->setAccessible(true);
-        $this::assertTrue($property->getValue($this->group));
+        $this::assertFalse($property->getValue($this->group));
     }
 
     public function testIsActive(): void
