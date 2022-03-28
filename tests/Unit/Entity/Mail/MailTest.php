@@ -118,7 +118,7 @@ class MailTest extends KernelTestCase
 
     public function testGetRecipients(): void
     {
-        $expected = new ArrayCollection();
+        $expected = $this->createMock(Recipient::class);
         $property = (new ReflectionClass(Mail::class))
             ->getProperty('recipients');
         $property->setAccessible(true);
@@ -128,13 +128,19 @@ class MailTest extends KernelTestCase
 
     public function testAddRecipient(): void
     {
-        $expected = new Recipient();
+        $expected = $this->createMock(Recipient::class);
         $property = (new ReflectionClass(Mail::class))
             ->getProperty('recipients');
         $property->setAccessible(true);
         $property->setValue($this->mail, new ArrayCollection());
         $this->mail->addRecipient($expected);
-        $this::assertSame($expected, $property->getValue($this->mail)[0]);
+        // todo: I dunno why, this is how it comes back. recipients is an array
+        // getValue returns a mixed, so an arraycollection.
+        //
+        // PHPstan disallows reading a mixed as an array.
+        // If you have ideas, please do so <3
+        $expectedAsCorrectArray = new ArrayCollection([$expected]);
+        $this::assertSame($expectedAsCorrectArray, $property->getValue($this->mail));
     }
 
     public function testRemoveRecipient(): void
@@ -173,7 +179,7 @@ class MailTest extends KernelTestCase
 
     public function testGetSentAt(): void
     {
-        $expected = new DateTime();
+        $expected = $this->createMock(DateTime::class);
         $property = (new ReflectionClass(Mail::class))
             ->getProperty('sentAt');
         $property->setAccessible(true);
