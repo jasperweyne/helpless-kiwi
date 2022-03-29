@@ -761,11 +761,6 @@ parameters:
 			path: src/Controller/Organise/ActivityController.php
 
 		-
-			message: "#^Parameter \\#1 \\$p of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:exists\\(\\) expects Closure\\(mixed, mixed\\)\\: bool, Closure\\(mixed, App\\\\Entity\\\\Group\\\\Relation\\)\\: bool given\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Organise\\\\OrganiseController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Organise/OrganiseController.php
@@ -828,11 +823,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$group of method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:blockUnauthorisedUsers\\(\\) expects App\\\\Entity\\\\Group\\\\Group, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
 			count: 5
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$p of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:exists\\(\\) expects Closure\\(mixed, mixed\\)\\: bool, Closure\\(mixed, App\\\\Entity\\\\Group\\\\Relation\\)\\: bool given\\.$#"
-			count: 1
 			path: src/Controller/Organise/RegistrationController.php
 
 		-
@@ -1066,52 +1056,12 @@ parameters:
 			path: src/Entity/Activity/PriceOption.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:getRegistrations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
 			message: "#^Method App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:setDetails\\(\\) has parameter \\$details with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Activity/PriceOption.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$activity has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$confirmationMsg has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
 			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$details has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$name has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$price has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$registrations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$target has no type specified\\.$#"
 			count: 1
 			path: src/Entity/Activity/PriceOption.php
 
@@ -1196,57 +1146,7 @@ parameters:
 			path: src/Entity/Activity/Registration.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Group\\:\\:getChildren\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Group\\:\\:getRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$active has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
 			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$children has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$name has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$parent has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$readonly has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$register has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$relationable has no type specified\\.$#"
 			count: 1
 			path: src/Entity/Group/Group.php
 
@@ -1254,101 +1154,6 @@ parameters:
 			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$relations has no type specified\\.$#"
 			count: 1
 			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$subgroupable has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getAllRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getChildren\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getChildrenRecursive\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$children has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$group has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$parent has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Location\\\\Location\\:\\:\\$address has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Location/Location.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Location\\\\Location\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Location/Location.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$discr has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$meta has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$objectId has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$objectType has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$time has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
 
 		-
 			message: "#^Method App\\\\Entity\\\\Mail\\\\Mail\\:\\:getRecipients\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
@@ -1406,47 +1211,12 @@ parameters:
 			path: src/Entity/Mail/Recipient.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:__construct\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:avg\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:calc\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
 			message: "#^Method App\\\\Entity\\\\Order\\:\\:calc\\(\\) has parameter \\$fn with no type specified\\.$#"
 			count: 1
 			path: src/Entity/Order.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:create\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:fromOrder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:fromOrder\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:toOrder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Order\\:\\:\\$data has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$data of class App\\\\Entity\\\\Order constructor expects array\\<int\\>, array\\<int\\<0, max\\>, float\\|int\\<\\-25, 25\\>\\> given\\.$#"
 			count: 1
 			path: src/Entity/Order.php
 
