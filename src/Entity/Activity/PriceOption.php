@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PriceOption
 {
     /**
+     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
@@ -24,6 +25,7 @@ class PriceOption
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=100, name="title")
      * @Assert\NotBlank
      * @GQL\Field(type="String!")
@@ -32,6 +34,7 @@ class PriceOption
     private $name;
 
     /**
+     * @var Activity | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="options")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      * @GQL\Field(type="Activity!")
@@ -40,6 +43,7 @@ class PriceOption
     private $activity;
 
     /**
+     * @var Group | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
      * @GQL\Field(type="Group")
@@ -48,6 +52,7 @@ class PriceOption
     private $target;
 
     /**
+     * @var int
      * @ORM\Column(type="integer")
      * @GQL\Field(type="Int")
      * @GQL\Description("The price of this option, stored in euro-cents.")
@@ -55,16 +60,20 @@ class PriceOption
     private $price;
 
     /**
+     * TODO what is it's data type?
+     *
      * @ORM\Column(type="json")
      */
     private $details;
 
     /**
+     * @var string
      * @ORM\Column(type="string")
      */
     private $confirmationMsg;
 
     /**
+     * @var Collection<int, Registration>
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="option")
      * @GQL\Field(type="[Registration]")
      * @GQL\Description("The list of registrations for this price option.")
@@ -192,7 +201,7 @@ class PriceOption
     }
 
     /**
-     * @return Collection|Registration[]
+     * @return Collection<int, Registration>
      */
     public function getRegistrations(): Collection
     {
