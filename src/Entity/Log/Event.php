@@ -3,6 +3,8 @@
 namespace App\Entity\Log;
 
 use App\Entity\Security\LocalAccount;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Event
 {
     /**
+     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
@@ -26,32 +29,38 @@ class Event
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=100)
      */
     private $discr;
 
     /**
+     * @var DateTimeInterface
      * @ORM\Column(type="datetime")
      */
     private $time;
 
     /**
+     * @var string | null
      * @ORM\Column(type="string", nullable=true)
      */
     private $objectId;
 
     /**
+     * @var string | null
      * @ORM\Column(type="string", nullable=true)
      */
     private $objectType;
 
     /**
+     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      */
     private $person;
 
     /**
+     * @var string
      * @ORM\Column(type="text")
      */
     private $meta;
@@ -73,12 +82,12 @@ class Event
         return $this;
     }
 
-    public function getTime(): ?\DateTimeInterface
+    public function getTime(): ?DateTimeInterface
     {
         return $this->time;
     }
 
-    public function setTime(\DateTimeInterface $time): self
+    public function setTime(DateTimeInterface $time): self
     {
         $this->time = $time;
 
