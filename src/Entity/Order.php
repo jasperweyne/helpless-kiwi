@@ -4,8 +4,10 @@ namespace App\Entity;
 
 class Order
 {
+    /** @var int[] */
     private $data;
 
+    /** @param int[] $data */
     protected function __construct(array $data)
     {
         $this->data = $data;
@@ -16,19 +18,19 @@ class Order
         return self::fromOrder($this->data);
     }
 
-    public static function avg(Order $low, Order $high)
+    public static function avg(Order $low, Order $high): Order
     {
         return self::calc($low, $high, function ($x, $y) {
             return ($x + $y) / 2;
         });
     }
 
-    public static function create(string $s)
+    public static function create(string $s): Order
     {
         return new Order(self::toOrder($s));
     }
 
-    public static function calc(Order $a, Order $b, $fn)
+    public static function calc(Order $a, Order $b, $fn): Order
     {
         // Pad arrays to have equal length
         $length = max(count($a->data), count($b->data));
@@ -64,7 +66,8 @@ class Order
         return new Order($res);
     }
 
-    protected static function toOrder(string $data)
+    /** @return array<int, int> */
+    protected static function toOrder(string $data): array
     {
         $strToIdx = function ($x) {
             return ord($x) - ord('a');
@@ -73,7 +76,8 @@ class Order
         return array_map($strToIdx, str_split($data));
     }
 
-    protected static function fromOrder(array $data)
+    /** @param int[] $data */
+    protected static function fromOrder(array $data): string
     {
         $idxToStr = function ($x) {
             return chr($x + ord('a'));
