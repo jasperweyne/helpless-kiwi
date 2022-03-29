@@ -3,7 +3,6 @@
 namespace App\Entity\Log;
 
 use App\Entity\Security\LocalAccount;
-use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
