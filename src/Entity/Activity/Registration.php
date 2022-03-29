@@ -4,6 +4,7 @@ namespace App\Entity\Activity;
 
 use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Registration
 {
     /**
+     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
@@ -23,6 +25,7 @@ class Registration
     private $id;
 
     /**
+     * @var PriceOption
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
      * @ORM\JoinColumn(nullable=false)
      * @GQL\Field(type="PriceOption!")
@@ -32,6 +35,7 @@ class Registration
     private $option;
 
     /**
+     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity=LocalAccount::class, inversedBy="registrations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @GQL\Field(type="LocalAccount")
@@ -41,6 +45,7 @@ class Registration
     private $person;
 
     /**
+     * @var Activity | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      * @GQL\Field(type="Activity!")
@@ -49,6 +54,7 @@ class Registration
     private $activity;
 
     /**
+     * @var string | null
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")
@@ -56,7 +62,7 @@ class Registration
     private $reserve_position;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="newdate", type="datetime", nullable=false)
      * @GQL\Field(name="created", type="DateTimeScalar!", resolve="@=value.getNewDate()")
@@ -65,7 +71,7 @@ class Registration
     private $newdate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="deletedate", type="datetime", nullable=true)
      * @GQL\Field(name="deleted", type="DateTimeScalar", resolve="@=value.getDeleteDate()")
@@ -74,6 +80,7 @@ class Registration
     private $deletedate;
 
     /**
+     * @var bool | null
      * @ORM\Column(name="present", type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the user was present during the activity.")
@@ -81,6 +88,7 @@ class Registration
     private $present;
 
     /**
+     * @var string | null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $comment;
@@ -105,12 +113,12 @@ class Registration
         return $this;
     }
 
-    public function getOption(): ?PriceOption
+    public function getOption(): PriceOption
     {
         return $this->option;
     }
 
-    public function setOption(?PriceOption $option): self
+    public function setOption(PriceOption $option): self
     {
         $this->option = $option;
 
@@ -148,12 +156,20 @@ class Registration
 
     public function getReservePosition(): ?Order
     {
-        return $this->reserve_position ? Order::create($this->reserve_position) : null;
+        if (!\is_null($this->reserve_position)) {
+            return Order::create($this->reserve_position);
+        } else {
+            return null;
+        }
     }
 
     public function setReservePosition(?Order $reserve_position): self
     {
-        $this->reserve_position = ($reserve_position ? strval($reserve_position) : null);
+        if (!\is_null($reserve_position)) {
+            $this->reserve_position = strval($reserve_position);
+        } else {
+            $this->reserve_position = null;
+        }
 
         return $this;
     }
@@ -168,7 +184,7 @@ class Registration
         return $this->newdate;
     }
 
-    public function setNewDate(\DateTime $date): self
+    public function setNewDate(DateTime $date): self
     {
         $this->newdate = $date;
 
@@ -185,19 +201,20 @@ class Registration
         return $this->deletedate;
     }
 
-    public function setDeleteDate(\DateTime $date): self
+    public function setDeleteDate(DateTime $date): self
     {
         $this->deletedate = $date;
 
         return $this;
     }
 
+    /** @return bool | null */
     public function getPresent()
     {
         return $this->present;
     }
 
-    public function setPresent($present)
+    public function setPresent(bool $present): void
     {
         $this->present = $present;
     }
@@ -207,7 +224,7 @@ class Registration
         return $this->comment;
     }
 
-    public function setComment(?string $comment)
+    public function setComment(?string $comment): void
     {
         $this->comment = $comment;
     }
