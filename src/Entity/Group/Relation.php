@@ -16,6 +16,7 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 class Relation
 {
     /**
+     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
@@ -23,6 +24,7 @@ class Relation
     private $id;
 
     /**
+     * @var string | null
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("A textual description of membership status of a user in a group.")
@@ -30,6 +32,7 @@ class Relation
     private $description;
 
     /**
+     * @var Group | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
      * @ORM\JoinColumn(nullable=false)
      * @GQL\Field(type="Group!")
@@ -38,6 +41,7 @@ class Relation
     private $group;
 
     /**
+     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount", inversedBy="relations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @GQL\Field(type="LocalAccount")
@@ -47,6 +51,7 @@ class Relation
     private $person;
 
     /**
+     * @var Relation | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Relation", inversedBy="children")
      * @GQL\Field(type="Relation")
      * @GQL\Description("The parent relation object, in case of multiple overlapping relations.")
@@ -54,6 +59,7 @@ class Relation
     private $parent;
 
     /**
+     * @var Collection<int, Relation>
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="parent")
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("The children relation objects, in case of multiple overlapping relations.")
@@ -124,7 +130,7 @@ class Relation
     }
 
     /**
-     * @return Collection|self[]
+     * @return Collection<int, Relation>|self[]
      */
     public function getChildren(): Collection
     {
@@ -154,15 +160,20 @@ class Relation
         return $this;
     }
 
+    //TODO, changed the logic a little to appeas phpstan needs a test
     public function getRoot(): self
     {
-        if ($this->parent) {
-            return $this->parent->getRoot();
+        if (!is_null($this->getParent())) {
+            return $this->getParent()->getRoot();
         }
 
         return $this;
     }
 
+    //TODO is this the correct returnType, feels ugly but it seems to work.
+    //Can't find any code that disproves this
+
+    /** @return Collection<int|string, mixed> */
     public function getChildrenRecursive(): Collection
     {
         $childTaxes = $this->children->map(function ($a) {
@@ -177,6 +188,9 @@ class Relation
         return new ArrayCollection($taxonomies);
     }
 
+    //TODO  same as with getChildrenRecursive
+
+    /** @return Collection<int|string, mixed> */
     public function getAllRelations(): Collection
     {
         $tree = $this->getRoot()->getChildrenRecursive();
