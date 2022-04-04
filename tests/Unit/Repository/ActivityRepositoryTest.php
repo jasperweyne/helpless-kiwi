@@ -73,6 +73,17 @@ class ActivityRepositoryTest extends KernelTestCase
         unset($this->registry);
     }
 
+    public function testFindAuthor(): void
+    {
+        $groups = $this->em->getRepository(Group::class)->findAll();
+
+        $activities = $this->em
+            ->getRepository(Activity::class)
+            ->findAuthor($groups);
+
+        $this->assertTrue(count($activities) > 0);
+    }
+
     public function testFindUpcoming(): void
     {
         /* @todo This test is incomplete. */
