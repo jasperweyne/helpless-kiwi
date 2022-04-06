@@ -3622,11 +3622,6 @@ parameters:
 			path: tests/Integration/Form/Security/PasswordRequestTypeTest.php
 
 		-
-			message: "#^Cannot call method format\\(\\) on DateTime\\|null\\.$#"
-			count: 2
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
 			message: "#^Cannot access offset 0 on mixed\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Activity/ActivityTest.php

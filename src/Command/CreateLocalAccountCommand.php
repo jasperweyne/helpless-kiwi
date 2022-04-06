@@ -57,12 +57,12 @@ class CreateLocalAccountCommand extends Command
         ]);
         $helper = $this->getHelper('question');
 
-        if (!$input->getArgument('name')) {
+        if (!is_null($input->getArgument('name'))) {
             $question = new Question('Public name: ');
             $input->setArgument('name', $helper->ask($input, $output, $question));
         }
 
-        if (!$input->getArgument('pass')) {
+        if (!is_null($input->getArgument('pass'))) {
             while (true) {
                 $question = new Question('Please enter a password: ');
                 $question->setHidden(true);
@@ -102,6 +102,8 @@ class CreateLocalAccountCommand extends Command
         $this->em->persist($account);
         $this->em->flush();
 
-        return $output->writeln($account->getCanonical().' login registered!');
+        $output->writeln($account->getCanonical().' login registered!');
+
+        return 0;
     }
 }

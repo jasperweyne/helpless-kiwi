@@ -60,7 +60,6 @@ class ICalProvider
         return $calendar;
     }
 
-    //TODO fix this method, phpstan really shows how sloppy is it
     private function createEvent(
         Activity $activity,
         \Welp\IcalBundle\Factory\Factory $icalFactory

@@ -19,7 +19,7 @@ class ICalProviderTest extends KernelTestCase
     /** @var ICalProvider */
     protected $iCalProvider;
 
-    /** @var activity */
+    /** @var Activity */
     protected $firstActivity;
     /** @var activity */
     protected $secondActivity;
@@ -103,7 +103,11 @@ class ICalProviderTest extends KernelTestCase
             $this->firstActivity
         )->export();
         $this::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
-        $this::assertStringContainsString('DTSTART:'.$this->firstActivity->getStart()->format('Ymd\THis'), $recieved);
+        $start = $this->firstActivity->getStart();
+        if (!is_null($start)) {
+            $start = $start->format('Ymd\THis');
+        }
+        $this::assertStringContainsString('DTSTART:'.$start, $recieved);
         $this::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
         $this::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
         $this::assertStringContainsString('DESCRIPTION:kiwi test description', $recieved);
@@ -114,7 +118,7 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalsingleSuccesWithErrorHandling(): void
     {
-        $this::expectExceptionMessage('Error: Failed to create the event');
+        $this->expectExceptionMessage('Error: Failed to create the event');
         $this->iCalProvider->icalSingle(
             $this->invalidActivity
         )->export();
@@ -129,7 +133,11 @@ class ICalProviderTest extends KernelTestCase
             $this->firstActivity,
         ])->export();
         $this::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
-        $this::assertStringContainsString('DTSTART:'.$this->firstActivity->getStart()->format('Ymd\THis'), $recieved);
+        $start = $this->firstActivity->getStart();
+        if (!is_null($start)) {
+            $start = $start->format('Ymd\THis');
+        }
+        $this::assertStringContainsString('DTSTART:'.$start, $recieved);
         $this::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
         $this::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
         $this::assertStringContainsString('DESCRIPTION:'.$this->description, $recieved);
