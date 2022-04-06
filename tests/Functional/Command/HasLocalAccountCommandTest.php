@@ -50,7 +50,7 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
 
         // Assert
         $output = $commandTester->getDisplay();
-        $this::assertEquals('0', trim($output));
+        self::assertEquals('0', trim($output));
     }
 
     public function testExecuteWithFixtures(): void
@@ -66,6 +66,6 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
 
         // Assert
         $output = $commandTester->getDisplay();
-        $this::assertEquals('1', trim($output));
+        self::assertEquals('1', trim($output));
     }
 }

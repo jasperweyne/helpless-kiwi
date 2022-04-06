@@ -61,9 +61,9 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         $account = $this->em->getRepository(LocalAccount::class)->findBy(['email' => $email]);
 
         // Assert
-        $this::assertContains('login registered!', $output);
-        $this::assertEquals(count($account), 1);
-        $this::assertEquals(0, $statusCode);
+        self::assertContains('login registered!', $output);
+        self::assertEquals(count($account), 1);
+        self::assertEquals(0, $statusCode);
     }
 
     public function testExecute(): void
@@ -86,7 +86,7 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         $account = $this->em->getRepository(LocalAccount::class)->findBy(['email' => $email]);
 
         // Assert
-        $this::assertContains('login registered!', $output);
-        $this::assertEquals(count($account), 1);
+        self::assertContains('login registered!', $output);
+        self::assertEquals(count($account), 1);
     }
 }

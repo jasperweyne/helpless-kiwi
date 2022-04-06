@@ -57,12 +57,12 @@ class CreateLocalAccountCommand extends Command
         ]);
         $helper = $this->getHelper('question');
 
-        if (!is_null($input->getArgument('name'))) {
+        if (is_null($input->getArgument('name'))) {
             $question = new Question('Public name: ');
             $input->setArgument('name', $helper->ask($input, $output, $question));
         }
 
-        if (!is_null($input->getArgument('pass'))) {
+        if (is_null($input->getArgument('pass'))) {
             while (true) {
                 $question = new Question('Please enter a password: ');
                 $question->setHidden(true);
