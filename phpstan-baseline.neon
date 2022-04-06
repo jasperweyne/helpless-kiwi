@@ -51,11 +51,6 @@ parameters:
 			path: src/Command/CreateLocalAccountCommand.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 2
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
 			message: "#^Only booleans are allowed in a ternary operator condition, array\\<string\\>\\|bool\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Command/CreateLocalAccountCommand.php
