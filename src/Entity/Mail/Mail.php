@@ -28,7 +28,7 @@ class Mail
     private $person;
 
     /**
-     * @var Collection<int,Recipient>
+     * @var Collection<int,Recipient> | Recipient[]
      * @ORM\OneToMany(targetEntity="App\Entity\Mail\Recipient", mappedBy="mail")
      */
     private $recipients;
