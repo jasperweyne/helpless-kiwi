@@ -2,26 +2,27 @@
 
 namespace Tests\Functional\Controller\Admin;
 
-use App\Controller\Admin\GroupController;
-use App\Log\EventService;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Group\RelationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class GroupControllerTest.
  *
  * @covers \App\Controller\Admin\GroupController
  */
-class GroupControllerTest extends WebTestCase
+class GroupControllerTest extends AuthWebTestCase
 {
     /**
-     * @var GroupController
+     * @var EntityManagerInterface
      */
-    protected $groupController;
+    protected $em;
 
-    /**
-     * @var EventService
-     */
-    protected $events;
+    private $controllerEndpoint = '/admin/group';
 
     /**
      * {@inheritdoc}
@@ -29,10 +30,15 @@ class GroupControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
 
-        $this->events = self::$container->get(EventService::class);
-        $this->groupController = new GroupController($this->events);
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            RelationFixture::class,
+            GroupFixture::class,
+        ]);
+
+        $this->login();
+        $this->em = self::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -42,55 +48,139 @@ class GroupControllerTest extends WebTestCase
     {
         parent::tearDown();
 
-        unset($this->groupController);
-        unset($this->events);
+        unset($this->em);
     }
 
     public function testGenerateAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/generate');
+        $form = $crawler->selectButton('Genereren')->form();
+        $form['form[board]'] = 'bestuur 30: Wispeltuur';
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSelectorTextContains('.container', 'Standaard groepen gegenereerd, begin met invullen!');
     }
 
     public function testNewAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $newName = 'Bestuur Wispeltuur';
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/new');
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $form['group[name]'] = $newName;
+        $crawler = $this->client->submit($form);
+        $allGroups = $this->em->getRepository(Group::class)->findAll();
+        $newGroupId = explode('group/', $crawler->getUri())[1];
+        $newGroup = $this->em->getRepository(Group::class)->find($newGroupId);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertContains($newGroup, $allGroups);
     }
 
     public function testShowAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->client->request('GET', $this->controllerEndpoint.'/');
+        $this->assertSelectorTextContains('span', 'Groepen');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testEditAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $group = $this->em->getRepository(Group::class)->findAll()[0];
+        $id = $group->getId();
+        $newName = 'Bestuur Wispeltuur';
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/edit");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['group[name]'] = $newName;
+        $crawler = $this->client->submit($form);
+        $newGroup = $this->em->getRepository(Group::class)->findAll()[0];
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals($newName, $newGroup->getName());
     }
 
     public function testDeleteAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $group = $this->em->getRepository(Group::class)->findAll()[0];
+        $id = $group->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/delete");
+        $form = $crawler->selectButton('Ja, verwijder')->form();
+        $crawler = $this->client->submit($form);
+
+        $allGroups = $this->em->getRepository(Group::class)->findAll();
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertNotContains($group, $allGroups);
     }
 
     public function testRelationNewAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $group = $this->em->getRepository(Group::class)->findAll()[0];
+        $id = $group->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/new/{$id}");
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $crawler = $this->client->submit($form);
+        $allGroups = $this->em->getRepository(Group::class)->findAll();
+        $newGroupId = explode('group/', $crawler->getUri())[1];
+        $newGroup = $this->em->getRepository(Group::class)->find($newGroupId);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertContains($newGroup, $allGroups);
     }
 
     public function testRelationAddAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $relation = $this->em->getRepository(Relation::class)->findAll()[0];
+        $id = $relation->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/add/{$id}");
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $form['relation_add[_token]'] = 'Penningmeester';
+        $crawler = $this->client->submit($form);
+        $allRelations = $this->em->getRepository(Relation::class)->findAll();
+        $newGroupId = explode('add/', $crawler->getUri())[1];
+        $newRelation = $this->em->getRepository(Relation::class)->find($newGroupId);
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertContains($newRelation, $allRelations);
     }
 
     public function testRelationDeleteAction(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $relation = $this->em->getRepository(Relation::class)->findAll()[0];
+        $id = $relation->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/delete/{$id}");
+        $form = $crawler->selectButton('Ja, verwijder')->form();
+        $crawler = $this->client->submit($form);
+
+        $allRelations = $this->em->getRepository(Relation::class)->findAll();
+
+        // Assert
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertNotContains($relation, $allRelations);
     }
 }

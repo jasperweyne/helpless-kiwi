@@ -40,6 +40,34 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         unset($this->em);
     }
 
+    // This feels not nice. But as of now the password menu loops till the
+    // heatdeath of the universe. We might need to rewrite it, but this
+    // addressed the untested code.
+    //
+    // As soon as we've done this I'll split this up in 3/4 test cases.
+    // But for now it will at least show us where the error resides.
+    public function testInteract()
+    {
+        $email = 'user@kiwi.au';
+        $commandName = 'app:create-account';
+        $application = new Application($this->client->getKernel());
+        $foundCommand = $application->find($commandName);
+        $tester = new CommandTester($foundCommand);
+        $tester->setInputs(['Aussie', '', 'password', 'password', '', 'password', 'passw0rd', 'password', 'password']);
+        $statusCode = $tester->execute([
+            'command' => $commandName,
+            'email' => $email,
+        ]);
+
+        $output = $tester->getDisplay();
+        $account = $this->em->getRepository(LocalAccount::class)->findBy(['email' => $email]);
+
+        // Assert
+        $this->assertContains('login registered!', $output);
+        $this->assertEquals(count($account), 1);
+        $this->assertEquals(0, $statusCode);
+    }
+
     public function testExecute()
     {
         // Arrange

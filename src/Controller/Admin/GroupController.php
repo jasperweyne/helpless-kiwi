@@ -28,6 +28,7 @@ class GroupController extends AbstractController
 
     /**
      * Generate default groups.
+     * It does require the user to create at least one board.
      *
      * @Route("/generate", name="generate_default", methods={"GET", "POST"})
      */

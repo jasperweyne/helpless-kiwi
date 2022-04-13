@@ -4,6 +4,7 @@ namespace Tests\Unit\Entity\Activity;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
@@ -182,10 +183,13 @@ class PriceOptionTest extends KernelTestCase
         $this->assertSame($expected, $property->getValue($this->priceOption));
     }
 
-    public function test__toString(): void
+    public function testToString(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = 'free €0.00';
+        $priceOption = new PriceOption();
+        $priceOption->setName('free');
+        $priceOption->setPrice(0);
+        $this->assertSame($expected, strval($priceOption));
     }
 
     public function testGetRegistrations(): void
@@ -200,13 +204,24 @@ class PriceOptionTest extends KernelTestCase
 
     public function testAddRegistration(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new Registration();
+        $property = (new ReflectionClass(PriceOption::class))
+            ->getProperty('registrations');
+        $property->setAccessible(true);
+        $this->priceOption->addRegistration($expected);
+        $this->assertSame($expected, $property->getValue($this->priceOption)[0]);
     }
 
     public function testRemoveRegistration(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new ArrayCollection();
+        $registration = new Registration();
+        $expected->add($registration);
+        $property = (new ReflectionClass(PriceOption::class))
+            ->getProperty('registrations');
+        $property->setAccessible(true);
+        $property->setValue($this->priceOption, $expected);
+        $this->priceOption->removeRegistration($registration);
+        $this->assertNotSame($registration, $property->getValue($this->priceOption));
     }
 }

@@ -26,6 +26,8 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     private $em;
 
+    private $controller = '/admin/group/';
+
     /**
      * {@inheritdoc}
      */

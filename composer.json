@@ -45,6 +45,12 @@
         "friendsofphp/php-cs-fixer": "^2.14",
         "liip/test-fixtures-bundle": "^1.0.0",
         "overblog/graphiql-bundle": "^0.2.1",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.4",
+        "phpstan/phpstan-doctrine": "^1.2",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.1",
+        "phpstan/phpstan-symfony": "^1.1",
         "symfony/css-selector": "4.4.*",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.0",
@@ -56,7 +62,12 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "ocramius/package-versions": true,
+            "symfony/flex": true,
+            "phpstan/extension-installer": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -92,8 +103,24 @@
         "test": [
             "php bin/phpunit --testdox"
         ],
+        "lint": [
+            "php-cs-fixer fix src --verbose --dry-run --show-progress=none"
+        ],
         "fix": [
             "php-cs-fixer fix src"
+        ],
+        "analyse": [
+            "./vendor/bin/phpstan analyse --memory-limit 2G"
+        ],
+        "db-rebuild": [
+            "php bin/console doctrine:database:drop --force --if-exists",
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:migrations:migrate -n"
+        ],
+        "db-rebuild-dev": [
+            "@db-rebuild",
+            "php bin/console app:create-account user@kiwi.nl user user",
+            "php bin/console app:create-account --admin admin@kiwi.nl admin admin"
         ]
     },
     "conflict": {

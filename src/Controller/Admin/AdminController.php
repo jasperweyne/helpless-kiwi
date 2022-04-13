@@ -3,8 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Template\Annotation\MenuItem;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Activity controller.
