@@ -21,9 +21,9 @@ class ICalProviderTest extends KernelTestCase
 
     /** @var Activity */
     protected $firstActivity;
-    /** @var activity */
+    /** @var Activity */
     protected $secondActivity;
-    /** @var activity */
+    /** @var Activity */
     protected $invalidActivity;
 
     /** @var DateTime */
