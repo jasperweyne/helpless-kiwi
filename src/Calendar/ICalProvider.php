@@ -5,6 +5,8 @@ namespace App\Calendar;
 use App\Entity\Activity\Activity;
 use Error;
 use Jsvrcek\ICS\Exception\CalendarEventException;
+use Jsvrcek\ICS\Model\CalendarEvent;
+use Welp\IcalBundle\Component\Calendar;
 
 class ICalProvider
 {
@@ -13,7 +15,7 @@ class ICalProvider
      */
     public function icalFeed(
         array $activities
-    ) {
+    ): Calendar {
         $icalFactory = new \Welp\IcalBundle\Factory\Factory();
         $calendar = $this->createCalendar($icalFactory);
 
@@ -33,7 +35,7 @@ class ICalProvider
      */
     public function icalSingle(
         Activity $activity
-    ) {
+    ): Calendar {
         $icalFactory = new \Welp\IcalBundle\Factory\Factory();
         $calendar = $this->createCalendar($icalFactory);
 
@@ -48,7 +50,7 @@ class ICalProvider
 
     private function createCalendar(
         \Welp\IcalBundle\Factory\Factory $icalFactory
-    ) {
+    ): Calendar {
         $calendar = $icalFactory->createCalendar();
         $calendar
             ->setProdId('-//Helpless Kiwi//'.($_ENV['ORG_NAME'] ?? 'kiwi').' v1.0//NL')
@@ -61,7 +63,7 @@ class ICalProvider
     private function createEvent(
         Activity $activity,
         \Welp\IcalBundle\Factory\Factory $icalFactory
-    ) {
+    ): CalendarEvent {
         $location = $icalFactory->createLocation();
         $location
             ->setName($activity->getLocation()->getAddress())
