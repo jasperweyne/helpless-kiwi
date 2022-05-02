@@ -22,7 +22,7 @@ class LocalAccountFixture extends Fixture
         $this->encoder = $encoder;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $localAccount = new LocalAccount();
         $localAccount->setName('admin');

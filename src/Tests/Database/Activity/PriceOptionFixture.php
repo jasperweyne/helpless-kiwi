@@ -13,7 +13,7 @@ class PriceOptionFixture extends Fixture implements DependentFixtureInterface
 {
     public const PRICE_OPTION_REFERENCE = 'price-';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $activities = $manager->getRepository(Activity::class)->findAll();
         $priceCount = 0;
@@ -35,6 +35,11 @@ class PriceOptionFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
+    /**
+     * @param Activity[] $activities
+     *
+     * @return TestData<PriceOption>
+     */
     public static function generate(array $activities): TestData
     {
         return TestData::from(new PriceOption())
