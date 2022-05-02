@@ -486,6 +486,16 @@ parameters:
 			path: src/Entity/Group/Group.php
 
 		-
+			message: "#^Method App\\\\Entity\\\\Log\\\\Event\\:\\:getDiscr\\(\\) should return class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null but returns string\\.$#"
+			count: 1
+			path: src/Entity/Log/Event.php
+
+		-
+			message: "#^Method App\\\\Entity\\\\Log\\\\Event\\:\\:getObjectType\\(\\) should return class\\-string\\<object\\>\\|null but returns string\\|null\\.$#"
+			count: 1
+			path: src/Entity/Log/Event.php
+
+		-
 			message: "#^Parameter \\#1 \\$data of class App\\\\Entity\\\\Order constructor expects array\\<int\\>, array\\<int\\<0, max\\>, float\\|int\\<\\-25, 25\\>\\> given\\.$#"
 			count: 1
 			path: src/Entity/Order.php
@@ -626,67 +636,7 @@ parameters:
 			path: src/Kernel.php
 
 		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getEntity\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getEntityType\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getPerson\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getTime\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getTitle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntity\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntity\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntityType\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntityType\\(\\) has parameter \\$type with no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$entity has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$entityCb has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$entityType has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$person has no type specified\\.$#"
+			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getPerson\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount but returns App\\\\Entity\\\\Security\\\\LocalAccount\\|null\\.$#"
 			count: 1
 			path: src/Log/AbstractEvent.php
 
@@ -696,58 +646,23 @@ parameters:
 			path: src/Log/AbstractEvent.php
 
 		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$time has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
 			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$time is never written, only read\\.$#"
 			count: 1
 			path: src/Log/AbstractEvent.php
 
 		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:extractFields\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:extractFields\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:extractFields\\(\\) has parameter \\$metadata with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:onFlush\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has parameter \\$field with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has parameter \\$metadata with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has parameter \\$value with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
 			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\ORM\\\\EntityManager\\:\\:getClassMetadata\\(\\) expects string, class\\-string\\|false given\\.$#"
-			count: 4
+			count: 2
+			path: src/Log/Doctrine/EntityEventListener.php
+
+		-
+			message: "#^Parameter \\#1 \\$entity of method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) expects object, mixed given\\.$#"
+			count: 1
+			path: src/Log/Doctrine/EntityEventListener.php
+
+		-
+			message: "#^Parameter \\#1 \\$entity of method App\\\\Log\\\\EventService\\:\\:getIdentifier\\(\\) expects object, mixed given\\.$#"
+			count: 1
 			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
@@ -756,29 +671,9 @@ parameters:
 			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:__construct\\(\\) has parameter \\$entity with no type specified\\.$#"
+			message: "#^Unable to resolve the template type T in call to method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\)$#"
 			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:__construct\\(\\) has parameter \\$fields with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:getFields\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:getTitle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:\\$fields has no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
+			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
 			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:\\$type has no type specified\\.$#"
@@ -791,77 +686,7 @@ parameters:
 			path: src/Log/Doctrine/EntityNewEvent.php
 
 		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:__construct\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:__construct\\(\\) has parameter \\$newValues with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:__construct\\(\\) has parameter \\$oldObject with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getNew\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getNewChanged\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getOld\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getOldChanged\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getTitle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:\\$new has no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:\\$old has no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
 			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Cannot access offset 'entityCb' on mixed\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Cannot access offset 'entityType' on mixed\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Cannot access offset 'person' on mixed\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Cannot access offset 'time' on mixed\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -871,57 +696,7 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findBy\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findBy\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findBy\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findOneBy\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findOneBy\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findOneBy\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getIdentifier\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getIdentifier\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:hydrate\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) should return class\\-string\\<T of object\\> but returns string\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -931,27 +706,27 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:populate\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:populateAll\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
 			message: "#^Method App\\\\Log\\\\EventService\\:\\:populateAll\\(\\) has parameter \\$entities with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\) expects class\\-string\\<object\\>, string\\|null given\\.$#"
+			message: "#^PHPDoc tag @param for parameter \\$entities with type object is incompatible with native type array\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Parameter \\#1 \\$classname of function class_exists expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\) expects class\\-string\\<object\\>, class\\-string\\<object\\>\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
+			message: "#^Parameter \\#1 \\$classname of function class_exists expects string, class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
+			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, App\\\\Entity\\\\Log\\\\Event\\|null given\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -962,16 +737,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$variable_representation of function unserialize expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Parameter \\#2 \\$fieldValues of method App\\\\Reflection\\\\ReflectionService\\:\\:instantiate\\(\\) expects array, mixed given\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Unable to resolve the template type T in call to method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\)$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -1001,16 +766,6 @@ parameters:
 			path: src/Mail/MailService.php
 
 		-
-			message: "#^Method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Reflection/ClassNameService.php
-
-		-
-			message: "#^Method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) has parameter \\$fqcn with no type specified\\.$#"
-			count: 1
-			path: src/Reflection/ClassNameService.php
-
-		-
 			message: "#^Only booleans are allowed in an if condition, int\\|false given\\.$#"
 			count: 1
 			path: src/Reflection/ClassNameService.php
@@ -1022,11 +777,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:getAllProperties\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Reflection/ReflectionService.php
-
-		-
-			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:instantiate\\(\\) has parameter \\$fieldValues with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
 
@@ -1812,6 +1562,21 @@ parameters:
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
 
 		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with '42' and class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Unit/Entity/Log/EventTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$discr of method App\\\\Entity\\\\Log\\\\Event\\:\\:setDiscr\\(\\) expects class\\-string\\<App\\\\Log\\\\AbstractEvent\\>, string given\\.$#"
+			count: 1
+			path: tests/Unit/Entity/Log/EventTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$objectType of method App\\\\Entity\\\\Log\\\\Event\\:\\:setObjectType\\(\\) expects class\\-string\\<object\\>\\|null, string given\\.$#"
+			count: 1
+			path: tests/Unit/Entity/Log/EventTest.php
+
+		-
 			message: "#^Cannot call method add\\(\\) on mixed\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
@@ -1842,9 +1607,24 @@ parameters:
 			path: tests/Unit/GraphQL/Types/DatetimeScalarTest.php
 
 		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with stdClass and ''\\|class\\-string will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Unit/Log/AbstractEventTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$type of method App\\\\Log\\\\AbstractEvent\\:\\:setEntityType\\(\\) expects ''\\|class\\-string, null given\\.$#"
+			count: 1
+			path: tests/Unit/Log/AbstractEventTest.php
+
+		-
 			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 1
 			path: tests/Unit/Log/AbstractEventTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$fields of class App\\\\Log\\\\Doctrine\\\\EntityNewEvent constructor expects array\\<string, mixed\\>, stdClass given\\.$#"
+			count: 1
+			path: tests/Unit/Log/Doctrine/EntityNewEventTest.php
 
 		-
 			message: "#^PHPDoc tag @var above assignment does not specify variable name\\.$#"

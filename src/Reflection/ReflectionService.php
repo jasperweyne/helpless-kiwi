@@ -19,8 +19,10 @@ class ReflectionService extends RuntimeReflectionService
 
     /**
      * @template T of object
-     * @phpstan-param class-string<T> $classname
      *
+     * @param array<string, mixed> $fieldValues
+     *
+     * @phpstan-param class-string<T> $classname
      * @phpstan-return T
      */
     public function instantiate(string $classname, array $fieldValues = []): object

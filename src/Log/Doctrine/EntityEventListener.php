@@ -3,9 +3,11 @@
 namespace App\Log\Doctrine;
 
 use App\Entity\Log\Event;
+use App\Log\AbstractEvent;
 use App\Log\EventService;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 
 class EntityEventListener
@@ -26,7 +28,7 @@ class EntityEventListener
         $this->reflService = $reflService;
     }
 
-    public function onFlush(OnFlushEventArgs $eventArgs)
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
         $em = $eventArgs->getEntityManager();
         $uow = $em->getUnitOfWork();
@@ -82,8 +84,12 @@ class EntityEventListener
         }
     }
 
-    public function extractFields($entity, $metadata)
+    /**
+     * @return array<string, array{entity: string, identifier: mixed}|mixed|null>
+     */
+    public function extractFields(AbstractEvent $entity, ClassMetadata $metadata)
     {
+        /** @var \ReflectionProperty[] */
         $properties = $metadata->getReflectionProperties();
 
         $fields = [];
@@ -96,6 +102,13 @@ class EntityEventListener
         return $fields;
     }
 
+    /**
+     * @param mixed         $value
+     * @param string        $field
+     * @param ClassMetadata $metadata
+     *
+     * @return array{entity: string, identifier: mixed}|mixed|null
+     */
     private function sanitize($value, $field, $metadata)
     {
         if (null === $value) {

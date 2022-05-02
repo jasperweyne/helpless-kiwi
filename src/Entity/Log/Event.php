@@ -3,6 +3,7 @@
 namespace App\Entity\Log;
 
 use App\Entity\Security\LocalAccount;
+use App\Log\AbstractEvent;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -76,11 +77,17 @@ class Event
         return $this->id;
     }
 
+    /**
+     * @return ?class-string<AbstractEvent>
+     */
     public function getDiscr(): ?string
     {
         return $this->discr;
     }
 
+    /**
+     * @param class-string<AbstractEvent> $discr
+     */
     public function setDiscr(string $discr): self
     {
         $this->discr = $discr;
@@ -136,11 +143,17 @@ class Event
         return $this;
     }
 
+    /**
+     * @return ?class-string<object>
+     */
     public function getObjectType(): ?string
     {
         return $this->objectType;
     }
 
+    /**
+     * @param class-string<object> $objectType
+     */
     public function setObjectType(?string $objectType): self
     {
         $this->objectType = $objectType;
