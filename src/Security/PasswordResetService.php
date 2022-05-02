@@ -25,7 +25,7 @@ class PasswordResetService
         $this->encoderFactory = $encoderFactory;
     }
 
-    public function isPasswordRequestTokenValid(LocalAccount $auth, string $token)
+    public function isPasswordRequestTokenValid(LocalAccount $auth, string $token): bool
     {
         $encoder = $this->encoderFactory->getEncoder($auth);
 
@@ -42,7 +42,7 @@ class PasswordResetService
         return $valid && $nonExpired;
     }
 
-    public function generatePasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true)
+    public function generatePasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true): string
     {
         $encoder = $this->encoderFactory->getEncoder($auth);
         $token = base64_encode(random_bytes(18));
@@ -67,7 +67,7 @@ class PasswordResetService
         return $token;
     }
 
-    public function resetPasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true)
+    public function resetPasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true): void
     {
         $encoder = $this->encoderFactory->getEncoder($auth);
         if (!$encoder instanceof SelfSaltingEncoderInterface) {

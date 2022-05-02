@@ -12,12 +12,12 @@ class DoctrineTablePrefixListener
      */
     protected $prefix = '';
 
-    public function __construct($prefix = '')
+    public function __construct(string $prefix = '')
     {
-        $this->prefix = (string) $prefix;
+        $this->prefix = $prefix;
     }
 
-    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         $classMetadata = $eventArgs->getClassMetadata();
 

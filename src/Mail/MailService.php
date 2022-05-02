@@ -106,6 +106,9 @@ class MailService
         $this->mailer->send($message);
     }
 
+    /**
+     * @return UserInterface|\Stringable|null
+     */
     private function getUser()
     {
         if (null === $token = $this->tokenStorage->getToken()) {
