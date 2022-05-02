@@ -3,6 +3,8 @@
 namespace App\Entity\Log;
 
 use App\Entity\Security\LocalAccount;
+use App\Log\AbstractEvent;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,37 +24,51 @@ class Event
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     *
+     * @var string
      */
     private $discr;
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @var DateTimeInterface
      */
     private $time;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @var ?string
      */
     private $objectId;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @var ?string
      */
     private $objectType;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
     /**
      * @ORM\Column(type="text")
+     *
+     * @var string
      */
     private $meta;
 
@@ -61,11 +77,17 @@ class Event
         return $this->id;
     }
 
+    /**
+     * @return ?class-string<AbstractEvent>
+     */
     public function getDiscr(): ?string
     {
         return $this->discr;
     }
 
+    /**
+     * @param class-string<AbstractEvent> $discr
+     */
     public function setDiscr(string $discr): self
     {
         $this->discr = $discr;
@@ -73,12 +95,12 @@ class Event
         return $this;
     }
 
-    public function getTime(): ?\DateTimeInterface
+    public function getTime(): ?DateTimeInterface
     {
         return $this->time;
     }
 
-    public function setTime(\DateTimeInterface $time): self
+    public function setTime(DateTimeInterface $time): self
     {
         $this->time = $time;
 
@@ -121,11 +143,17 @@ class Event
         return $this;
     }
 
+    /**
+     * @return ?class-string<object>
+     */
     public function getObjectType(): ?string
     {
         return $this->objectType;
     }
 
+    /**
+     * @param class-string<object> $objectType
+     */
     public function setObjectType(?string $objectType): self
     {
         $this->objectType = $objectType;

@@ -6,6 +6,7 @@ use App\Entity\Group\Group;
 use App\Template\MenuExtensionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class OrganiseMenuExtension implements MenuExtensionInterface
 {
@@ -20,7 +21,7 @@ class OrganiseMenuExtension implements MenuExtensionInterface
     private $tokenStorage;
 
     /**
-     * @var array
+     * @var array{title: string, path: array{0: ?string, 1: array{id: ?string}}}[]
      */
     private $menuItems;
 
@@ -35,8 +36,10 @@ class OrganiseMenuExtension implements MenuExtensionInterface
 
     /**
      * Returns all the menu items.
+     *
+     * @return array{title: string, path: array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]
      */
-    public function getMenuItems(string $menu = '')
+    public function getMenuItems(string $menu = ''): array
     {
         if ('' !== $menu) {
             return [];
@@ -52,7 +55,7 @@ class OrganiseMenuExtension implements MenuExtensionInterface
     /**
      * Discovers menu items.
      */
-    private function discoverMenuItems()
+    private function discoverMenuItems(): void
     {
         $this->menuItems = [];
 
@@ -72,6 +75,9 @@ class OrganiseMenuExtension implements MenuExtensionInterface
         }
     }
 
+    /**
+     * @return UserInterface|\Stringable|null
+     */
     private function getUser()
     {
         if (null === $token = $this->tokenStorage->getToken()) {

@@ -13,6 +13,9 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterface
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
     public function __construct(EntityManagerInterface $em)

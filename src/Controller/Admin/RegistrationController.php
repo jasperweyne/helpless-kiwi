@@ -6,6 +6,7 @@ use App\Controller\Helper\RegistrationHelper;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -23,7 +24,7 @@ class RegistrationController extends RegistrationHelper
     public function newAction(
         Request $request,
         Activity $activity
-    ) {
+    ): Response {
         $form = $this->createRegistrationNewForm($activity);
         $form->handleRequest($request);
 
@@ -47,7 +48,7 @@ class RegistrationController extends RegistrationHelper
     public function editAction(
         Request $request,
         Registration $registration
-    ) {
+    ): Response {
         return $this->registrationEdit($request, $registration, 'admin/activity/registration/edit.html.twig', 'admin_activity_show');
     }
 
@@ -59,7 +60,7 @@ class RegistrationController extends RegistrationHelper
     public function deleteAction(
         Request $request,
         Registration $registration
-    ) {
+    ): Response {
         $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
         $form = $this->createRegistrationDeleteForm($url);
         $form->handleRequest($request);
@@ -84,7 +85,7 @@ class RegistrationController extends RegistrationHelper
     public function reserveNewAction(
         Request $request,
         Activity $activity
-    ) {
+    ): Response {
         $form = $this->createReserveNewForm($activity);
         $form->handleRequest($request);
 
@@ -108,7 +109,7 @@ class RegistrationController extends RegistrationHelper
      */
     public function reserveMoveUpAction(
         Registration $registration
-    ) {
+    ): Response {
         $returnData = $this->promoteReserve($registration);
 
         return $this->handleRedirect($returnData);
@@ -121,13 +122,13 @@ class RegistrationController extends RegistrationHelper
      */
     public function reserveMoveDownAction(
         Registration $registration
-    ) {
+    ): Response {
         $returnData = $this->demoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }
 
-    private function handleRedirect($id)
+    private function handleRedirect(string $id): Response
     {
         return $this->redirectToRoute('admin_activity_show', [
             'id' => $id,

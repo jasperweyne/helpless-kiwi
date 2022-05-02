@@ -9,7 +9,9 @@ use App\Log\EventService;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -19,6 +21,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class GroupController extends AbstractController
 {
+    /**
+     * @var EventService
+     */
     private $events;
 
     public function __construct(EventService $events)
@@ -32,7 +37,7 @@ class GroupController extends AbstractController
      *
      * @Route("/generate", name="generate_default", methods={"GET", "POST"})
      */
-    public function generateAction(Request $request)
+    public function generateAction(Request $request): Response
     {
         $form = $this->createFormBuilder()
             ->add('board', TextType::class, [
@@ -47,7 +52,7 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $data = (array) $form->getData();
 
             $this->generateStructure($data['board']);
 
@@ -66,7 +71,7 @@ class GroupController extends AbstractController
      *
      * @Route("/new/{id?}", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, ?Group $parent)
+    public function newAction(Request $request, ?Group $parent): Response
     {
         $group = new Group();
 
@@ -99,7 +104,7 @@ class GroupController extends AbstractController
      * @MenuItem(title="Groepen", menu="admin")
      * @Route("/{id?}", name="show", methods={"GET"})
      */
-    public function showAction(Request $request, ?Group $group)
+    public function showAction(Request $request, ?Group $group): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -129,7 +134,7 @@ class GroupController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Group $group)
+    public function editAction(Request $request, Group $group): Response
     {
         $form = $this->createForm('App\Form\Group\GroupType', $group);
         $form->handleRequest($request);
@@ -151,7 +156,7 @@ class GroupController extends AbstractController
      *
      * @Route("/{id}/delete", name="delete")
      */
-    public function deleteAction(Request $request, Group $group)
+    public function deleteAction(Request $request, Group $group): Response
     {
         $form = $this->createDeleteForm($group);
         $form->handleRequest($request);
@@ -175,7 +180,7 @@ class GroupController extends AbstractController
      *
      * @Route("/relation/new/{id}", name="relation_new", methods={"GET", "POST"})
      */
-    public function relationNewAction(Request $request, Group $group)
+    public function relationNewAction(Request $request, Group $group): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -207,7 +212,7 @@ class GroupController extends AbstractController
      *
      * @Route("/relation/add/{id}", name="relation_add", methods={"GET", "POST"})
      */
-    public function relationAddAction(Request $request, Relation $parent)
+    public function relationAddAction(Request $request, Relation $parent): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -250,7 +255,7 @@ class GroupController extends AbstractController
      *
      * @Route("/relation/delete/{id}", name="relation_delete")
      */
-    public function relationDeleteAction(Request $request, Relation $relation)
+    public function relationDeleteAction(Request $request, Relation $relation): Response
     {
         $form = $this->createRelationDeleteForm($relation);
         $form->handleRequest($request);
@@ -274,7 +279,7 @@ class GroupController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(Group $group)
+    private function createDeleteForm(Group $group): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_group_delete', ['id' => $group->getId()]))
@@ -288,7 +293,7 @@ class GroupController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createRelationDeleteForm(Relation $group)
+    private function createRelationDeleteForm(Relation $group): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_group_relation_delete', ['id' => $group->getId()]))
@@ -297,7 +302,7 @@ class GroupController extends AbstractController
         ;
     }
 
-    private function generateStructure($defaultBoard)
+    private function generateStructure(string $defaultBoard): void
     {
         $em = $this->getDoctrine()->getManager();
 

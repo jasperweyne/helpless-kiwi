@@ -10,12 +10,24 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class MailService
 {
+    /**
+     * @var \Swift_Mailer
+     */
     private $mailer;
 
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
+    /**
+     * @var TokenStorageInterface
+     */
     private $tokenStorage;
 
+    /**
+     * @var ParameterBagInterface
+     */
     private $params;
 
     public function __construct(\Swift_Mailer $mailer, EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ParameterBagInterface $params)
@@ -94,6 +106,9 @@ class MailService
         $this->mailer->send($message);
     }
 
+    /**
+     * @return UserInterface|\Stringable|null
+     */
     private function getUser()
     {
         if (null === $token = $this->tokenStorage->getToken()) {

@@ -14,9 +14,14 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class CreateLocalAccountCommand extends Command
 {
-    /** @var EntityManagerInterface */
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
-    /** @var UserPasswordEncoderInterface */
+
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $userPasswordEncoder;
 
     // the name of the command (the part after "bin/console")
@@ -84,7 +89,7 @@ class CreateLocalAccountCommand extends Command
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
         $name = $input->getArgument('name');

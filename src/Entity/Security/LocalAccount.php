@@ -4,6 +4,7 @@ namespace App\Entity\Security;
 
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Relation;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,6 +23,8 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -30,6 +33,8 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @GQL\Field(type="String")
      * @GQL\Description("The e-mail address of the user.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     *
+     * @var string
      */
     private $email;
 
@@ -38,6 +43,8 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @GQL\Field(type="String")
      * @GQL\Description("The given name of the user (the first name in western cultures).")
      * @GQL\Access("isAuthenticated()")
+     *
+     * @var string
      */
     private $givenName;
 
@@ -46,41 +53,49 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @GQL\Field(type="String")
      * @GQL\Description("The family name of the user (the last name in western cultures).")
      * @GQL\Access("isAuthenticated()")
+     *
+     * @var string
      */
     private $familyName;
 
     /**
-     * @var string The hashed password
+     * The hashed password.
      *
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @var ?string
      */
     private $password;
 
     /**
-     * @var string The OpenID Connect subject claim value
+     * The OpenID Connect subject claim value.
      *
      * @ORM\Column(type="string", length=255, nullable=true, unique=true)
+     *
+     * @var ?string
      */
     private $oidc;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @var string[]
      */
     private $roles;
 
     /**
      * Encrypted string whose value is sent to the user email address in order to (re-)set the password.
      *
-     * @var string
-     *
      * @ORM\Column(name="password_request_token", type="string", nullable=true)
+     *
+     * @var ?string
      */
     protected $passwordRequestToken;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="password_requested_at", type="datetime", nullable=true)
+     *
+     * @var ?DateTime
      */
     protected $passwordRequestedAt;
 
@@ -89,6 +104,8 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @GQL\Field(type="[Registration]")
      * @GQL\Description("All activity registrations for the user.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     *
+     * @var Collection<int, Registration>
      */
     private $registrations;
 
@@ -97,13 +114,13 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("All group membership relations for the user.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     *
+     * @var Collection<int, Relation>
      */
     private $relations;
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -120,36 +137,11 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    /**
-     * getEmail
-     * Insert description here.
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
     public function getEmail(): ?string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 
-    /**
-     * setAuthId
-     * Insert description here.
-     *
-     * @param string
-     * @param $auth_id
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -162,7 +154,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      * Note that this value isn't loaded by doctrine, but is provided
      * by the parent Person instance.
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->getEmail();
     }
@@ -179,12 +171,7 @@ class LocalAccount implements UserInterface, EquatableInterface
         return '' != $name ? $name : null;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     */
-    public function setName($name): self
+    public function setName(string $name): self
     {
         $this->setFamilyName('');
         $this->setGivenName($name);
@@ -192,21 +179,11 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
     public function getGivenName(): ?string
     {
         return $this->givenName;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     */
     public function setGivenName(string $givenName): self
     {
         $this->givenName = $givenName;
@@ -214,21 +191,11 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
     public function getFamilyName(): ?string
     {
         return $this->familyName;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     */
     public function setFamilyName(string $familyName): self
     {
         $this->familyName = $familyName;
@@ -236,9 +203,6 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -249,18 +213,7 @@ class LocalAccount implements UserInterface, EquatableInterface
     }
 
     /**
-     * setRoles
-     * Insert description here.
-     *
-     * @param array
-     * @param $roles
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
+     * @param string[] $roles
      */
     public function setRoles(array $roles): self
     {
@@ -276,31 +229,14 @@ class LocalAccount implements UserInterface, EquatableInterface
      */
     public function isAdmin(): bool
     {
-        return in_array('ROLE_ADMIN', $this->getRoles());
+        return in_array('ROLE_ADMIN', $this->getRoles(), true);
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getPassword(): string
     {
         return (string) $this->password;
     }
 
-    /**
-     * setPassword
-     * Insert description here.
-     *
-     * @param string
-     * @param $password
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
     public function setPassword(string $password): self
     {
         $this->password = $password;
@@ -308,18 +244,14 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
+
+        return null;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -327,8 +259,6 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     /**
      * Get OpenID Connect subject claim.
-     *
-     * @return string
      */
     public function getOidc(): ?string
     {
@@ -337,8 +267,6 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     /**
      * Set the OpenID Connect subject claim.
-     *
-     * @param string $sub
      */
     public function setOidc(?string $sub): self
     {
@@ -347,42 +275,14 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    /**
-     * setConfirmationToken
-     * Insert description here.
-     *
-     * @param $passwordRequestToken
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
-    public function setPasswordRequestToken($passwordRequestToken)
+    public function setPasswordRequestToken(?string $passwordRequestToken): self
     {
         $this->passwordRequestToken = $passwordRequestToken;
 
         return $this;
     }
 
-    /**
-     * setPasswordRequestedAt
-     * Insert description here.
-     *
-     * @param \
-     * @param DateTime
-     * @param $date
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
-    public function setPasswordRequestedAt(\DateTime $date = null)
+    public function setPasswordRequestedAt(DateTime $date = null): self
     {
         $this->passwordRequestedAt = $date;
 
@@ -392,48 +292,20 @@ class LocalAccount implements UserInterface, EquatableInterface
     /**
      * Gets the timestamp that the user requested a password reset.
      *
-     * @return \DateTime|null
+     * @return Datetime | null
      */
     public function getPasswordRequestedAt()
     {
         return $this->passwordRequestedAt;
     }
 
-    /**
-     * isPasswordRequestNonExpired
-     * Insert description here.
-     *
-     * @param $ttl
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
-    public function isPasswordRequestNonExpired($ttl)
+    public function isPasswordRequestNonExpired(int $ttl): bool
     {
         return null === $this->getPasswordRequestedAt() || (
-               $this->getPasswordRequestedAt() instanceof \DateTime &&
                $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time());
     }
 
-    /**
-     * isEqualTo
-     * Insert description here.
-     *
-     * @param UserInterface
-     * @param $user
-     *
-     * @return
-     *
-     * @static
-     *
-     * @see
-     * @since
-     */
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
         return $this->getUsername() === $user->getUsername();
     }
@@ -450,14 +322,14 @@ class LocalAccount implements UserInterface, EquatableInterface
         return null;
     }
 
-    public function setPasswordRequestSalt(): LocalAccount
+    public function setPasswordRequestSalt(?string $salt = null): LocalAccount
     {
         // not needed
 
         return $this;
     }
 
-    public function getCanonical(): ?string
+    public function getCanonical(): string
     {
         $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
 
@@ -471,15 +343,15 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
+        $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
     }
 
     /**
-     * @return Collection|Registration[]
+     * @return Collection<int, Registration> | null
      */
-    public function getRegistrations(): Collection
+    public function getRegistrations()
     {
         return $this->registrations;
     }
@@ -507,9 +379,9 @@ class LocalAccount implements UserInterface, EquatableInterface
     }
 
     /**
-     * @return Collection|Relation[]
+     * @return Collection<int, Relation> | null
      */
-    public function getRelations(): Collection
+    public function getRelations()
     {
         return $this->relations;
     }

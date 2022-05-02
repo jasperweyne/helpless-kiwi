@@ -14,18 +14,24 @@ class Recipient
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Mail\Mail", inversedBy="recipients")
      * @ORM\JoinColumn(name="mail", referencedColumnName="id")
+     *
+     * @var ?Mail
      */
     private $mail;
 

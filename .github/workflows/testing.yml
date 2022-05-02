@@ -38,6 +38,9 @@ jobs:
 
     - name: Run unit/functional tests
       run: composer test
+
+    - name: Warmup dev cache
+      run: php bin/console cache:warmup --env=dev
       
     - name: Run static code analyser
       run: composer analyse

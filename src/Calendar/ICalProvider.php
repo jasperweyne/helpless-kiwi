@@ -12,6 +12,8 @@ class ICalProvider
 {
     /**
      * create an ical feed the passed activity array.
+     *
+     * @param Activity[] $activities
      */
     public function icalFeed(
         array $activities

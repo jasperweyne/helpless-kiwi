@@ -11,7 +11,9 @@ use App\Security\PasswordResetService;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,6 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SecurityController extends AbstractController
 {
+    /**
+     * @var EventService
+     */
     private $events;
 
     public function __construct(EventService $events)
@@ -34,7 +39,7 @@ class SecurityController extends AbstractController
      * @MenuItem(title="Accounts", menu="admin", activeCriteria="admin_security_")
      * @Route("/", name="index", methods={"GET", "POST"})
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -50,7 +55,7 @@ class SecurityController extends AbstractController
      *
      * @Route("/new", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request, PasswordResetService $passwordReset, MailService $mailer)
+    public function newAction(Request $request, PasswordResetService $passwordReset, MailService $mailer): Response
     {
         $account = new LocalAccount();
 
@@ -88,7 +93,7 @@ class SecurityController extends AbstractController
      *
      * @Route("/{id}", name="show", methods={"GET"})
      */
-    public function showAction(LocalAccount $account)
+    public function showAction(LocalAccount $account): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -107,7 +112,7 @@ class SecurityController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, LocalAccount $account)
+    public function editAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createForm('App\Form\Security\LocalAccountType', $account);
         $form->handleRequest($request);
@@ -129,7 +134,7 @@ class SecurityController extends AbstractController
      *
      * @Route("/{id}/delete", name="delete")
      */
-    public function deleteAction(Request $request, LocalAccount $account)
+    public function deleteAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createDeleteForm($account);
         $form->handleRequest($request);
@@ -153,7 +158,7 @@ class SecurityController extends AbstractController
      *
      * @Route("/{id}/roles", name="roles", methods={"GET", "POST"})
      */
-    public function rolesAction(Request $request, LocalAccount $account)
+    public function rolesAction(Request $request, LocalAccount $account): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -161,7 +166,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $data = (array) $form->getData();
 
             $roles = [];
             if ($data['admin']) {
@@ -189,7 +194,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(LocalAccount $account)
+    private function createDeleteForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_delete', ['id' => $account->getId()]))
@@ -198,7 +203,7 @@ class SecurityController extends AbstractController
         ;
     }
 
-    private function createRoleForm(LocalAccount $account)
+    private function createRoleForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_security_roles', ['id' => $account->getId()]))

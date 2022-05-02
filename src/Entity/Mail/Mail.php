@@ -13,47 +13,54 @@ use Doctrine\ORM\Mapping as ORM;
 class Mail
 {
     /**
-     * @var string
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
     /**
-     * @var Collection<int,Recipient> | Recipient[]
      * @ORM\OneToMany(targetEntity="App\Entity\Mail\Recipient", mappedBy="mail")
+     *
+     * @var Collection<int,Recipient>
      */
     private $recipients;
 
     /**
-     * @var string
      * @ORM\Column(type="string")
+     *
+     * @var string
      */
     private $title;
 
     /**
-     * @var string | null
      * @ORM\Column(type="text")
+     *
+     * @var string
      */
     private $content;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=255)
+     *
+     * @var string
      */
     private $sender;
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime")
+     *
+     * @var DateTime
      */
     private $sentAt;
 

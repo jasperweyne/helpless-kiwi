@@ -51,7 +51,7 @@ class MailTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this::assertSame($expected, $this->mail->getId());
+        self::assertSame($expected, $this->mail->getId());
     }
 
     public function testGetTitle(): void
@@ -61,7 +61,7 @@ class MailTest extends KernelTestCase
             ->getProperty('title');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this::assertSame($expected, $this->mail->getTitle());
+        self::assertSame($expected, $this->mail->getTitle());
     }
 
     public function testSetTitle(): void
@@ -71,7 +71,7 @@ class MailTest extends KernelTestCase
             ->getProperty('title');
         $property->setAccessible(true);
         $this->mail->setTitle($expected);
-        $this::assertSame($expected, $property->getValue($this->mail));
+        self::assertSame($expected, $property->getValue($this->mail));
     }
 
     public function testGetContent(): void
@@ -81,7 +81,7 @@ class MailTest extends KernelTestCase
             ->getProperty('content');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this::assertSame($expected, $this->mail->getContent());
+        self::assertSame($expected, $this->mail->getContent());
     }
 
     public function testSetContent(): void
@@ -91,7 +91,7 @@ class MailTest extends KernelTestCase
             ->getProperty('content');
         $property->setAccessible(true);
         $this->mail->setContent($expected);
-        $this::assertSame($expected, $property->getValue($this->mail));
+        self::assertSame($expected, $property->getValue($this->mail));
     }
 
     public function testGetPerson(): void
@@ -102,7 +102,7 @@ class MailTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this::assertSame($expected, $this->mail->getPerson());
+        self::assertSame($expected, $this->mail->getPerson());
     }
 
     public function testSetPerson(): void
@@ -113,7 +113,7 @@ class MailTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $this->mail->setPerson($expected);
-        $this::assertSame($expected, $this->mail->getPerson());
+        self::assertSame($expected, $this->mail->getPerson());
     }
 
     public function testGetRecipients(): void
@@ -123,12 +123,13 @@ class MailTest extends KernelTestCase
             ->getProperty('recipients');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this::assertSame($expected, $this->mail->getRecipients());
+        self::assertSame($expected, $this->mail->getRecipients());
     }
 
     public function testAddRecipient(): void
     {
-        $this::markTestIncomplete();
+        /* @todo This test is incomplete. */
+        self::markTestIncomplete();
     }
 
     public function testRemoveRecipient(): void
@@ -142,7 +143,7 @@ class MailTest extends KernelTestCase
         $property->setValue($this->mail, $expected);
 
         $this->mail->removeRecipient($recipient);
-        $this::assertNotSame($recipient, $property->getValue($this->mail));
+        self::assertNotSame($recipient, $property->getValue($this->mail));
     }
 
     public function testGetSender(): void
@@ -152,7 +153,7 @@ class MailTest extends KernelTestCase
             ->getProperty('sender');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this::assertSame($expected, $this->mail->getSender());
+        self::assertSame($expected, $this->mail->getSender());
     }
 
     public function testSetSender(): void
@@ -162,7 +163,7 @@ class MailTest extends KernelTestCase
             ->getProperty('sender');
         $property->setAccessible(true);
         $this->mail->setSender($expected);
-        $this::assertSame($expected, $property->getValue($this->mail));
+        self::assertSame($expected, $property->getValue($this->mail));
     }
 
     public function testGetSentAt(): void
@@ -172,7 +173,7 @@ class MailTest extends KernelTestCase
             ->getProperty('sentAt');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
-        $this::assertSame($expected, $this->mail->getSentAt());
+        self::assertSame($expected, $this->mail->getSentAt());
     }
 
     public function testSetSentAt(): void
@@ -182,6 +183,6 @@ class MailTest extends KernelTestCase
             ->getProperty('sentAt');
         $property->setAccessible(true);
         $this->mail->setSentAt($expected);
-        $this::assertSame($expected, $property->getValue($this->mail));
+        self::assertSame($expected, $property->getValue($this->mail));
     }
 }

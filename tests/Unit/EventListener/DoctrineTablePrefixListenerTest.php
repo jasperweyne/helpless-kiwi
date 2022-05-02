@@ -48,6 +48,6 @@ class DoctrineTablePrefixListenerTest extends KernelTestCase
     public function testLoadClassMetadata(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

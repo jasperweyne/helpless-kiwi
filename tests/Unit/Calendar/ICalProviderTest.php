@@ -34,7 +34,7 @@ class ICalProviderTest extends KernelTestCase
     /** @var string */
     protected $description;
 
-    /** @var location */
+    /** @var Location */
     protected $location;
 
     /**

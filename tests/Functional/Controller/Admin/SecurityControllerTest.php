@@ -54,7 +54,7 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testGetMenuItems(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testIndexAction(): void
@@ -63,41 +63,41 @@ class SecurityControllerTest extends AuthWebTestCase
         $this->client->request('GET', '/admin/security/');
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNewAction(): void
     {
         // Act
         $crawler = $this->client->request('GET', '/admin/security/new');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Toevoegen')->form();
         $form['local_account[name]'] = 'John';
         $form['local_account[email]'] = 'john@doe.eyes';
         $crawler = $this->client->submit($form);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         // TODO: figure our if this is actually the way to test this....
-        $this->assertEquals(1, $crawler->filter('.top > h3:nth-child(1)')->count());
+        self::assertEquals(1, $crawler->filter('.top > h3:nth-child(1)')->count());
     }
 
     public function testShowAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testEditAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testDeleteAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testRolesAction(): void
@@ -108,12 +108,12 @@ class SecurityControllerTest extends AuthWebTestCase
 
         // Act
         $crawler = $this->client->request('GET', "/admin/security/{$id}/roles");
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Opslaan')->form();
         $form['form[admin]']->setValue(false);
         $this->client->submit($form);
-        $this->assertSelectorTextContains('.container', 'Rollen bewerkt');
+        self::assertSelectorTextContains('.container', 'Rollen bewerkt');
         $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        $this->assertEquals(['ROLE_USER'], $localUser->getRoles());
+        self::assertEquals(['ROLE_USER'], $localUser->getRoles());
     }
 }

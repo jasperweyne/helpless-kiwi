@@ -49,7 +49,7 @@ class EventTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $this->event->getId());
+        self::assertSame($expected, $this->event->getId());
     }
 
     public function testGetDiscr(): void
@@ -59,7 +59,7 @@ class EventTest extends KernelTestCase
             ->getProperty('discr');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $this->event->getDiscr());
+        self::assertSame($expected, $this->event->getDiscr());
     }
 
     public function testSetDiscr(): void
@@ -69,7 +69,7 @@ class EventTest extends KernelTestCase
             ->getProperty('discr');
         $property->setAccessible(true);
         $this->event->setDiscr($expected);
-        $this->assertSame($expected, $property->getValue($this->event));
+        self::assertSame($expected, $property->getValue($this->event));
     }
 
     public function testGetTime(): void
@@ -79,7 +79,7 @@ class EventTest extends KernelTestCase
             ->getProperty('time');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $this->event->getTime());
+        self::assertSame($expected, $this->event->getTime());
     }
 
     public function testSetTime(): void
@@ -89,7 +89,7 @@ class EventTest extends KernelTestCase
             ->getProperty('time');
         $property->setAccessible(true);
         $this->event->setTime($expected);
-        $this->assertSame($expected, $property->getValue($this->event));
+        self::assertSame($expected, $property->getValue($this->event));
     }
 
     public function testGetMeta(): void
@@ -99,7 +99,7 @@ class EventTest extends KernelTestCase
             ->getProperty('meta');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $this->event->getMeta());
+        self::assertSame($expected, $this->event->getMeta());
     }
 
     public function testSetMeta(): void
@@ -109,7 +109,7 @@ class EventTest extends KernelTestCase
             ->getProperty('meta');
         $property->setAccessible(true);
         $this->event->setMeta($expected);
-        $this->assertSame($expected, $property->getValue($this->event));
+        self::assertSame($expected, $property->getValue($this->event));
     }
 
     public function testGetPerson(): void
@@ -120,7 +120,7 @@ class EventTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $this->event->getPerson());
+        self::assertSame($expected, $this->event->getPerson());
     }
 
     public function testSetPerson(): void
@@ -131,7 +131,7 @@ class EventTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $this->event->setPerson($expected);
-        $this->assertSame($expected, $this->event->getPerson());
+        self::assertSame($expected, $this->event->getPerson());
     }
 
     public function testGetObjectId(): void
@@ -141,7 +141,7 @@ class EventTest extends KernelTestCase
             ->getProperty('objectId');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $this->event->getObjectId());
+        self::assertSame($expected, $this->event->getObjectId());
     }
 
     public function testSetObjectId(): void
@@ -151,7 +151,7 @@ class EventTest extends KernelTestCase
             ->getProperty('objectId');
         $property->setAccessible(true);
         $this->event->setObjectId($expected);
-        $this->assertSame($expected, $property->getValue($this->event));
+        self::assertSame($expected, $property->getValue($this->event));
     }
 
     public function testGetObjectType(): void
@@ -161,7 +161,7 @@ class EventTest extends KernelTestCase
             ->getProperty('objectType');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
-        $this->assertSame($expected, $this->event->getObjectType());
+        self::assertSame($expected, $this->event->getObjectType());
     }
 
     public function testSetObjectType(): void
@@ -171,6 +171,6 @@ class EventTest extends KernelTestCase
             ->getProperty('objectType');
         $property->setAccessible(true);
         $this->event->setObjectType($expected);
-        $this->assertSame($expected, $property->getValue($this->event));
+        self::assertSame($expected, $property->getValue($this->event));
     }
 }

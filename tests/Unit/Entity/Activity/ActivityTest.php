@@ -57,7 +57,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getId());
+        self::assertSame($expected, $this->activity->getId());
     }
 
     public function testSetId(): void
@@ -67,7 +67,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $this->activity->setId($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetName(): void
@@ -77,7 +77,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getName());
+        self::assertSame($expected, $this->activity->getName());
     }
 
     public function testSetName(): void
@@ -87,7 +87,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('name');
         $property->setAccessible(true);
         $this->activity->setName($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetDescription(): void
@@ -97,7 +97,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getDescription());
+        self::assertSame($expected, $this->activity->getDescription());
     }
 
     public function testSetDescription(): void
@@ -107,7 +107,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $this->activity->setDescription($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetOptions(): void
@@ -117,7 +117,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('options');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getOptions());
+        self::assertSame($expected, $this->activity->getOptions());
     }
 
     public function testAddOption(): void
@@ -127,7 +127,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('options');
         $property->setAccessible(true);
         $this->activity->addOption($expected);
-        $this->assertSame($expected, $property->getValue($this->activity)[0]);
+        self::assertSame($expected, $property->getValue($this->activity)[0]);
     }
 
     public function testRemoveOption(): void
@@ -140,7 +140,7 @@ class ActivityTest extends KernelTestCase
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
         $this->activity->removeOption($priceOption);
-        $this->assertNotSame($priceOption, $property->getValue($this->activity));
+        self::assertNotSame($priceOption, $property->getValue($this->activity));
     }
 
     public function testGetRegistrations(): void
@@ -150,7 +150,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getRegistrations());
+        self::assertSame($expected, $this->activity->getRegistrations());
     }
 
     public function testAddRegistration(): void
@@ -160,7 +160,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $this->activity->addRegistration($expected);
-        $this->assertSame($expected, $property->getValue($this->activity)[0]);
+        self::assertSame($expected, $property->getValue($this->activity)[0]);
     }
 
     public function testRemoveRegistration(): void
@@ -173,7 +173,7 @@ class ActivityTest extends KernelTestCase
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
         $this->activity->removeRegistration($registration);
-        $this->assertNotSame($registration, $property->getValue($this->activity));
+        self::assertNotSame($registration, $property->getValue($this->activity));
     }
 
     public function testGetAuthor(): void
@@ -183,7 +183,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('author');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getAuthor());
+        self::assertSame($expected, $this->activity->getAuthor());
     }
 
     public function testSetAuthor(): void
@@ -193,7 +193,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('author');
         $property->setAccessible(true);
         $this->activity->setAuthor($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetTarget(): void
@@ -203,7 +203,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('target');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getTarget());
+        self::assertSame($expected, $this->activity->getTarget());
     }
 
     public function testSetTarget(): void
@@ -213,7 +213,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('target');
         $property->setAccessible(true);
         $this->activity->setTarget($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetColor(): void
@@ -223,7 +223,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('color');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getColor());
+        self::assertSame($expected, $this->activity->getColor());
     }
 
     public function testSetColor(): void
@@ -233,7 +233,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('color');
         $property->setAccessible(true);
         $this->activity->setColor($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetStart(): void
@@ -243,7 +243,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('start');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getStart());
+        self::assertSame($expected, $this->activity->getStart());
     }
 
     public function testSetStart(): void
@@ -253,7 +253,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('start');
         $property->setAccessible(true);
         $this->activity->setStart($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetEnd(): void
@@ -263,7 +263,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('end');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getEnd());
+        self::assertSame($expected, $this->activity->getEnd());
     }
 
     public function testSetEnd(): void
@@ -273,7 +273,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('end');
         $property->setAccessible(true);
         $this->activity->setEnd($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetDeadline(): void
@@ -283,7 +283,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('deadline');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getDeadline());
+        self::assertSame($expected, $this->activity->getDeadline());
     }
 
     public function testSetDeadline(): void
@@ -293,7 +293,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('deadline');
         $property->setAccessible(true);
         $this->activity->setDeadline($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetLocation(): void
@@ -303,7 +303,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('location');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getLocation());
+        self::assertSame($expected, $this->activity->getLocation());
     }
 
     public function testSetLocation(): void
@@ -313,7 +313,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('location');
         $property->setAccessible(true);
         $this->activity->setLocation($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testSetImageFile(): void
@@ -323,7 +323,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('imageFile');
         $property->setAccessible(true);
         $this->activity->setImageFile($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetImageFile(): void
@@ -333,7 +333,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('imageFile');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getImageFile());
+        self::assertSame($expected, $this->activity->getImageFile());
     }
 
     public function testSetImage(): void
@@ -343,7 +343,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('image');
         $property->setAccessible(true);
         $this->activity->setImage($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetImage(): void
@@ -353,7 +353,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('image');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getImage());
+        self::assertSame($expected, $this->activity->getImage());
     }
 
     public function testHasCapacity(): void
@@ -364,13 +364,13 @@ class ActivityTest extends KernelTestCase
             ->getProperty('capacity');
         $property->setAccessible(true);
         $property->setValue($this->activity, $capacity);
-        $this->assertSame($expected, $this->activity->hasCapacity());
+        self::assertSame($expected, $this->activity->hasCapacity());
     }
 
     public function testHasCapacityWhileEmpty(): void
     {
         $expected = false;
-        $this->assertSame($expected, $this->activity->hasCapacity());
+        self::assertSame($expected, $this->activity->hasCapacity());
     }
 
     public function testGetCapacity(): void
@@ -380,7 +380,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('capacity');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getCapacity());
+        self::assertSame($expected, $this->activity->getCapacity());
     }
 
     public function testSetCapacity(): void
@@ -390,7 +390,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('capacity');
         $property->setAccessible(true);
         $this->activity->setCapacity($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetPresent(): void
@@ -400,7 +400,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('present');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getPresent());
+        self::assertSame($expected, $this->activity->getPresent());
     }
 
     public function testSetPresent(): void
@@ -410,7 +410,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('present');
         $property->setAccessible(true);
         $this->activity->setPresent($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testGetVisibleAfter(): void
@@ -420,7 +420,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('visibleAfter');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
-        $this->assertSame($expected, $this->activity->getVisibleAfter());
+        self::assertSame($expected, $this->activity->getVisibleAfter());
     }
 
     public function testSetVisibleAfter(): void
@@ -430,7 +430,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('visibleAfter');
         $property->setAccessible(true);
         $this->activity->setVisibleAfter($expected);
-        $this->assertSame($expected, $property->getValue($this->activity));
+        self::assertSame($expected, $property->getValue($this->activity));
     }
 
     public function testIsVisible(): void
@@ -449,7 +449,7 @@ class ActivityTest extends KernelTestCase
             ->getProperty('visibleAfter');
         $visibleAfter->setAccessible(true);
         $visibleAfter->setValue($this->activity, new \DateTime('yesterday'));
-        $this->assertTrue($this->activity->isVisible([$expected]));
+        self::assertTrue($this->activity->isVisible([$expected]));
     }
 
     public function testIsVisibleBy(): void
@@ -471,6 +471,6 @@ class ActivityTest extends KernelTestCase
             ->getProperty('visibleAfter');
         $visibleAfter->setAccessible(true);
         $visibleAfter->setValue($this->activity, new \DateTime('yesterday'));
-        $this->assertTrue($this->activity->isVisibleBy($value));
+        self::assertTrue($this->activity->isVisibleBy($value));
     }
 }

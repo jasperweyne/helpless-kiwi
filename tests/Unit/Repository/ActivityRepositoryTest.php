@@ -76,13 +76,13 @@ class ActivityRepositoryTest extends KernelTestCase
     public function testFindUpcoming(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testFindUpcomingByGroup(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testVisibleUpcomingByGroup(): void
@@ -93,6 +93,6 @@ class ActivityRepositoryTest extends KernelTestCase
             ->getRepository(Activity::class)
             ->findVisibleUpcomingByGroup($groups);
 
-        $this->assertTrue(count($activities) > 0);
+        self::assertTrue(count($activities) > 0);
     }
 }

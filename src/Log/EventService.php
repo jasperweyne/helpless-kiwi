@@ -6,13 +6,23 @@ use App\Entity\Log\Event as EventEntity;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class EventService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
+    /**
+     * @var string|\Stringable|UserInterface|null
+     */
     private $person;
 
+    /**
+     * @var ReflectionService
+     */
     private $refl;
 
     public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ReflectionService $refl)
@@ -37,7 +47,7 @@ class EventService
         $this->em->flush();
     }
 
-    public function hydrate(?AbstractEvent $event)
+    public function hydrate(?AbstractEvent $event): ?EventEntity
     {
         if (null === $event) {
             return null;
@@ -78,7 +88,7 @@ class EventService
         return $entity;
     }
 
-    public function populate(?EventEntity $entity)
+    public function populate(?EventEntity $entity): ?AbstractEvent
     {
         if (null === $entity) {
             return null;
@@ -92,6 +102,7 @@ class EventService
             return $em->find($objectType, $objectId);
         };
 
+        /** @var array<string, mixed> */
         $fields = unserialize($entity->getMeta());
         $fields['time'] = $entity->getTime();
         $fields['person'] = $entity->getPerson();
@@ -103,35 +114,59 @@ class EventService
         return $this->refl->instantiate($class, $fields);
     }
 
+    /**
+     * @param object $entities
+     *
+     * @return (?AbstractEvent)[]
+     */
     public function populateAll(array $entities)
     {
         return array_map([$this, 'populate'], $entities);
     }
 
-    public function findBy($entity = null, string $type = '', array $options = [])
+    /**
+     * @template T of object
+     *
+     * @param ?T                    $entity
+     * @param ?class-string<T>      $type
+     * @param array<string, string> $options
+     *
+     * @return (?AbstractEvent)[]
+     */
+    public function findBy(object $entity = null, string $type = null, array $options = [])
     {
         if (null !== $entity) {
             $options['objectId'] = $this->getIdentifier($entity);
             $options['objectType'] = get_class($entity);
         }
 
-        if ('' !== $type) {
+        if (null !== $type) {
             $options['discr'] = $type;
         }
 
+        /** @var EventEntity[] */
         $found = $this->em->getRepository(EventEntity::class)->findBy($options);
 
         return $this->populateAll($found);
     }
 
-    public function findOneBy($entity = null, string $type = '', array $options = [])
+    /**
+     * @template T of object
+     *
+     * @param ?T                    $entity
+     * @param ?class-string<T>      $type
+     * @param array<string, string> $options
+     *
+     * @return ?AbstractEvent
+     */
+    public function findOneBy(object $entity = null, ?string $type = null, array $options = [])
     {
         if (null !== $entity) {
             $options['objectId'] = $this->getIdentifier($entity);
             $options['objectType'] = get_class($entity);
         }
 
-        if ('' !== $type) {
+        if (null !== $type) {
             $options['discr'] = $type;
         }
 
@@ -140,7 +175,10 @@ class EventService
         return $this->populate($found);
     }
 
-    public function getIdentifier($entity)
+    /**
+     * @return mixed
+     */
+    public function getIdentifier(object $entity)
     {
         $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
@@ -149,7 +187,12 @@ class EventService
         return $refl->getValue($entity);
     }
 
-    public function getClassName($entity)
+    /**
+     * @template T of object
+     * @phpstan-param T $entity
+     * @phpstan-return class-string<T>
+     */
+    public function getClassName(object $entity): string
     {
         return $this->em->getClassMetadata(get_class($entity))->name;
     }

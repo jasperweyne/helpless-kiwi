@@ -210,7 +210,7 @@ class GroupTest extends KernelTestCase
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
-        self::assertSame($expected, $property->getValue($this->group));
+        self::assertSame($expected, $this->group->getChildren());
     }
 
     public function testAddChild(): void

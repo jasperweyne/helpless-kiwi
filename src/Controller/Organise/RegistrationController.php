@@ -8,6 +8,7 @@ use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -20,7 +21,7 @@ class RegistrationController extends RegistrationHelper
     /**
      * Make sure edits can only be made to acitivity's you have created.
      */
-    protected function blockUnauthorisedUsers(Group $group)
+    protected function blockUnauthorisedUsers(Group $group): void
     {
         $e = $this->createAccessDeniedException('Not authorised for the correct group.');
 
@@ -44,7 +45,7 @@ class RegistrationController extends RegistrationHelper
     public function newAction(
         Request $request,
         Activity $activity
-    ) {
+    ): Response {
         $this->blockUnauthorisedUsers($activity->getAuthor());
         $form = $this->createRegistrationNewForm($activity);
         $form->handleRequest($request);
@@ -69,7 +70,7 @@ class RegistrationController extends RegistrationHelper
     public function editAction(
         Request $request1,
         Registration $registration1
-    ) {
+    ): Response {
         return $this->registrationEdit($request1, $registration1, 'organise/activity/registration/edit.html.twig', 'organise_activity_show');
     }
 
@@ -81,7 +82,7 @@ class RegistrationController extends RegistrationHelper
     public function deleteAction(
         Request $request,
         Registration $registration
-    ) {
+    ): Response {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
         $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
         $form = $this->createRegistrationDeleteForm($url);
@@ -107,7 +108,7 @@ class RegistrationController extends RegistrationHelper
     public function reserveNewAction(
         Request $request,
         Activity $activity
-    ) {
+    ): Response {
         $this->blockUnauthorisedUsers($activity->getAuthor());
         $form = $this->createReserveNewForm($activity);
         $form->handleRequest($request);
@@ -132,7 +133,7 @@ class RegistrationController extends RegistrationHelper
      */
     public function reserveMoveUpAction(
         Registration $registration
-    ) {
+    ): Response {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
         $returnData = $this->promoteReserve($registration);
 
@@ -146,14 +147,14 @@ class RegistrationController extends RegistrationHelper
      */
     public function reserveMoveDownAction(
         Registration $registration
-    ) {
+    ): Response {
         $this->blockUnauthorisedUsers($registration->getActivity()->getAuthor());
         $returnData = $this->demoteReserve($registration);
 
         return $this->handleRedirect($returnData);
     }
 
-    private function handleRedirect($id)
+    private function handleRedirect($id): Response
     {
         return $this->redirectToRoute('organise_activity_show', [
             'id' => $id,

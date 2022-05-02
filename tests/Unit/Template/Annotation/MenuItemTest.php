@@ -46,7 +46,7 @@ class MenuItemTest extends KernelTestCase
         $property = (new ReflectionClass(MenuItem::class))
             ->getProperty('title');
         $property->setValue($this->menuItem, $expected);
-        $this->assertSame($expected, $this->menuItem->getTitle());
+        self::assertSame($expected, $this->menuItem->getTitle());
     }
 
     public function testGetMenu(): void
@@ -55,7 +55,7 @@ class MenuItemTest extends KernelTestCase
         $property = (new ReflectionClass(MenuItem::class))
             ->getProperty('menu');
         $property->setValue($this->menuItem, $expected);
-        $this->assertSame($expected, $this->menuItem->getMenu());
+        self::assertSame($expected, $this->menuItem->getMenu());
     }
 
     public function testGetRole(): void
@@ -64,7 +64,7 @@ class MenuItemTest extends KernelTestCase
         $property = (new ReflectionClass(MenuItem::class))
             ->getProperty('role');
         $property->setValue($this->menuItem, $expected);
-        $this->assertSame($expected, $this->menuItem->getRole());
+        self::assertSame($expected, $this->menuItem->getRole());
     }
 
     public function testGetClass(): void
@@ -73,7 +73,7 @@ class MenuItemTest extends KernelTestCase
         $property = (new ReflectionClass(MenuItem::class))
             ->getProperty('class');
         $property->setValue($this->menuItem, $expected);
-        $this->assertSame($expected, $this->menuItem->getClass());
+        self::assertSame($expected, $this->menuItem->getClass());
     }
 
     public function testGetActiveCriteria(): void
@@ -82,7 +82,7 @@ class MenuItemTest extends KernelTestCase
         $property = (new ReflectionClass(MenuItem::class))
             ->getProperty('activeCriteria');
         $property->setValue($this->menuItem, $expected);
-        $this->assertSame($expected, $this->menuItem->getActiveCriteria());
+        self::assertSame($expected, $this->menuItem->getActiveCriteria());
     }
 
     public function testGetOrder(): void
@@ -91,7 +91,7 @@ class MenuItemTest extends KernelTestCase
         $property = (new ReflectionClass(MenuItem::class))
             ->getProperty('order');
         $property->setValue($this->menuItem, $expected);
-        $this->assertSame($expected, $this->menuItem->getOrder());
+        self::assertSame($expected, $this->menuItem->getOrder());
     }
 
     public function testGetPath(): void
@@ -101,7 +101,7 @@ class MenuItemTest extends KernelTestCase
             ->getProperty('path');
         $property->setAccessible(true);
         $property->setValue($this->menuItem, $expected);
-        $this->assertSame($expected, $this->menuItem->getPath());
+        self::assertSame($expected, $this->menuItem->getPath());
     }
 
     public function testSetPath(): void
@@ -111,6 +111,6 @@ class MenuItemTest extends KernelTestCase
             ->getProperty('path');
         $property->setAccessible(true);
         $this->menuItem->setPath($expected);
-        $this->assertSame($expected, $property->getValue($this->menuItem));
+        self::assertSame($expected, $property->getValue($this->menuItem));
     }
 }

@@ -53,12 +53,12 @@ class MenuBuilderTest extends KernelTestCase
             ->getProperty('extensions');
         $property->setAccessible(true);
         $property->setValue($this->menuBuilder, $expected);
-        $this->assertSame($expected, $this->menuBuilder->getExtensions());
+        self::assertSame($expected, $this->menuBuilder->getExtensions());
     }
 
     public function testGetItems(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

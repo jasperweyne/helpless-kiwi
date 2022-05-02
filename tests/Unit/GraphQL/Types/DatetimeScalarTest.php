@@ -18,7 +18,7 @@ class DatetimeScalarTest extends KernelTestCase
         $expected = '2019-10-12T07:20:50+00:00';
         $value = new \DateTime($expected);
         $result = DatetimeScalar::serialize($value);
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     public function testParseValue()
@@ -26,7 +26,7 @@ class DatetimeScalarTest extends KernelTestCase
         $value = '2019-10-12T07:20:50.52+00:00';
         $expected = new \DateTime($value);
         $result = DatetimeScalar::parseValue($value);
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     public function testParseLiteral()
@@ -36,6 +36,6 @@ class DatetimeScalarTest extends KernelTestCase
         $node->value = $value;
         $expected = new \DateTime($value);
         $result = DatetimeScalar::parseLiteral($node);
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 }

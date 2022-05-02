@@ -60,8 +60,8 @@ class GroupControllerTest extends AuthWebTestCase
         $crawler = $this->client->submit($form);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Standaard groepen gegenereerd, begin met invullen!');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Standaard groepen gegenereerd, begin met invullen!');
     }
 
     public function testNewAction(): void
@@ -79,15 +79,15 @@ class GroupControllerTest extends AuthWebTestCase
         $newGroup = $this->em->getRepository(Group::class)->find($newGroupId);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertContains($newGroup, $allGroups);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertContains($newGroup, $allGroups);
     }
 
     public function testShowAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint . "/");
-        $this->assertSelectorTextContains('span', 'Groepen');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('span', 'Groepen');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testEditAction(): void
@@ -105,8 +105,8 @@ class GroupControllerTest extends AuthWebTestCase
         $newGroup = $this->em->getRepository(Group::class)->findAll()[0];
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals($newName, $newGroup->getName());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals($newName, $newGroup->getName());
     }
 
     public function testDeleteAction(): void
@@ -123,8 +123,8 @@ class GroupControllerTest extends AuthWebTestCase
         $allGroups = $this->em->getRepository(Group::class)->findAll();
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertNotContains($group, $allGroups);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertNotContains($group, $allGroups);
     }
 
     public function testRelationNewAction(): void
@@ -142,8 +142,8 @@ class GroupControllerTest extends AuthWebTestCase
         $newGroup = $this->em->getRepository(Group::class)->find($newGroupId);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertContains($newGroup, $allGroups);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertContains($newGroup, $allGroups);
     }
 
     public function testRelationAddAction(): void
@@ -162,8 +162,8 @@ class GroupControllerTest extends AuthWebTestCase
         $newRelation = $this->em->getRepository(Relation::class)->find($newGroupId);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertContains($newRelation, $allRelations);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertContains($newRelation, $allRelations);
     }
     
 
@@ -181,7 +181,7 @@ class GroupControllerTest extends AuthWebTestCase
         $allRelations = $this->em->getRepository(Relation::class)->findAll();
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertNotContains($relation, $allRelations);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertNotContains($relation, $allRelations);
     }
 }

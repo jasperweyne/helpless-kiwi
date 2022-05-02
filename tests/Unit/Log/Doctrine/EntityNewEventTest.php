@@ -60,12 +60,12 @@ class EntityNewEventTest extends KernelTestCase
             ->getProperty('fields');
         $property->setAccessible(true);
         $property->setValue($this->entityNewEvent, $expected);
-        $this->assertSame($expected, $this->entityNewEvent->getFields());
+        self::assertSame($expected, $this->entityNewEvent->getFields());
     }
 
     public function testGetTitle(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

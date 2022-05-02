@@ -20,6 +20,8 @@ class PriceOption
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -28,6 +30,8 @@ class PriceOption
      * @Assert\NotBlank
      * @GQL\Field(type="String!")
      * @GQL\Description("The name of the registration option.")
+     *
+     * @var string
      */
     private $name;
 
@@ -36,6 +40,8 @@ class PriceOption
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      * @GQL\Field(type="Activity!")
      * @GQL\Description("The activity associated with this registration option.")
+     *
+     * @var ?Activity
      */
     private $activity;
 
@@ -44,6 +50,8 @@ class PriceOption
      * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
      * @GQL\Field(type="Group")
      * @GQL\Description("The target group of users that can register for this registration option.")
+     *
+     * @var ?Group
      */
     private $target;
 
@@ -51,16 +59,22 @@ class PriceOption
      * @ORM\Column(type="integer")
      * @GQL\Field(type="Int")
      * @GQL\Description("The price of this option, stored in euro-cents.")
+     *
+     * @var int
      */
     private $price;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @var array<string, string>
      */
     private $details;
 
     /**
      * @ORM\Column(type="string")
+     *
+     * @var string
      */
     private $confirmationMsg;
 
@@ -68,6 +82,8 @@ class PriceOption
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="option")
      * @GQL\Field(type="[Registration]")
      * @GQL\Description("The list of registrations for this price option.")
+     *
+     * @var Collection<int, Registration>
      */
     private $registrations;
 
@@ -78,8 +94,6 @@ class PriceOption
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -98,8 +112,6 @@ class PriceOption
 
     /**
      * Get name.
-     *
-     * @return string
      */
     public function getName(): ?string
     {
@@ -118,8 +130,6 @@ class PriceOption
 
     /**
      * Get target.
-     *
-     * @return Group
      */
     public function getTarget(): ?Group
     {
@@ -128,8 +138,6 @@ class PriceOption
 
     /**
      * Set target.
-     *
-     * @param Group $target
      */
     public function setTarget(?Group $target): self
     {
@@ -150,11 +158,17 @@ class PriceOption
         return $this;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getDetails(): ?array
     {
         return $this->details;
     }
 
+    /**
+     * @param array<string, string> $details
+     */
     public function setDetails(array $details): self
     {
         $this->details = $details;
@@ -192,7 +206,7 @@ class PriceOption
     }
 
     /**
-     * @return Collection|Registration[]
+     * @return Collection<int, Registration>
      */
     public function getRegistrations(): Collection
     {
