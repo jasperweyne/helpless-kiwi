@@ -322,7 +322,7 @@ class LocalAccount implements UserInterface, EquatableInterface
         return null;
     }
 
-    public function setPasswordRequestSalt(?string $salt): LocalAccount
+    public function setPasswordRequestSalt(?string $salt = null): LocalAccount
     {
         // not needed
 

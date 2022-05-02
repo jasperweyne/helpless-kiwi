@@ -175,7 +175,10 @@ class EventService
         return $this->populate($found);
     }
 
-    public function getIdentifier(object $entity): mixed
+    /**
+     * @return mixed
+     */
+    public function getIdentifier(object $entity)
     {
         $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();

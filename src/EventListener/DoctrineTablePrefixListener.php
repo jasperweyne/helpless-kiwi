@@ -8,11 +8,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class DoctrineTablePrefixListener
 {
     /**
-     * @var string
+     * @var ?string
      */
     protected $prefix = '';
 
-    public function __construct(string $prefix = '')
+    public function __construct(?string $prefix = '')
     {
         $this->prefix = $prefix;
     }

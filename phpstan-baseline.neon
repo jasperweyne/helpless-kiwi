@@ -581,11 +581,6 @@ parameters:
 			path: src/Kernel.php
 
 		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getPerson\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount but returns App\\\\Entity\\\\Security\\\\LocalAccount\\|null\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
 			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$person is never written, only read\\.$#"
 			count: 1
 			path: src/Log/AbstractEvent.php
@@ -621,6 +616,11 @@ parameters:
 			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
+			message: "#^Parameter \\#1 \\$fqcn of static method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Log/Doctrine/EntityNewEvent.php
+
+		-
 			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:\\$type has no type specified\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityNewEvent.php
@@ -629,6 +629,11 @@ parameters:
 			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:\\$type is unused\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityNewEvent.php
+
+		-
+			message: "#^Parameter \\#1 \\$fqcn of static method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Log/Doctrine/EntityUpdateEvent.php
 
 		-
 			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
@@ -1302,11 +1307,6 @@ parameters:
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestSalt\\(\\) invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
 			message: "#^Result of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:eraseCredentials\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
@@ -1315,11 +1315,6 @@ parameters:
 			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$prefix of class App\\\\EventListener\\\\DoctrineTablePrefixListener constructor expects string, null given\\.$#"
-			count: 1
-			path: tests/Unit/EventListener/DoctrineTablePrefixListenerTest.php
 
 		-
 			message: "#^Method Tests\\\\Unit\\\\GraphQL\\\\Types\\\\DatetimeScalarTest\\:\\:testParseLiteral\\(\\) has no return type specified\\.$#"
@@ -1337,12 +1332,7 @@ parameters:
 			path: tests/Unit/GraphQL/Types/DatetimeScalarTest.php
 
 		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with stdClass and ''\\|class\\-string will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Unit/Log/AbstractEventTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$type of method App\\\\Log\\\\AbstractEvent\\:\\:setEntityType\\(\\) expects ''\\|class\\-string, null given\\.$#"
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with stdClass and ''\\|class\\-string\\|null will always evaluate to false\\.$#"
 			count: 1
 			path: tests/Unit/Log/AbstractEventTest.php
 
@@ -1350,11 +1340,6 @@ parameters:
 			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 1
 			path: tests/Unit/Log/AbstractEventTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$fields of class App\\\\Log\\\\Doctrine\\\\EntityNewEvent constructor expects array\\<string, mixed\\>, stdClass given\\.$#"
-			count: 1
-			path: tests/Unit/Log/Doctrine/EntityNewEventTest.php
 
 		-
 			message: "#^PHPDoc tag @var above assignment does not specify variable name\\.$#"

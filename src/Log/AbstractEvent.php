@@ -27,7 +27,7 @@ class AbstractEvent
     private $entityCb;
 
     /**
-     * @var class-string|''
+     * @var class-string|''|null
      */
     private $entityType = '';
 
@@ -40,7 +40,7 @@ class AbstractEvent
         return $this->time;
     }
 
-    public function getPerson(): LocalAccount
+    public function getPerson(): ?LocalAccount
     {
         if (null === $this->time) {
             throw new \RuntimeException('Can only be called after the event has been retrieved from the database');
@@ -69,7 +69,7 @@ class AbstractEvent
     }
 
     /**
-     * @return class-string|''
+     * @return class-string|''|null
      */
     public function getEntityType()
     {
@@ -77,9 +77,9 @@ class AbstractEvent
     }
 
     /**
-     * @param class-string|'' $type
+     * @param class-string|''|null $type
      */
-    public function setEntityType(string $type): self
+    public function setEntityType(?string $type): self
     {
         $this->entityType = $type;
 

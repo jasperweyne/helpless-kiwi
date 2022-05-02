@@ -3,7 +3,6 @@
 namespace App\Log\Doctrine;
 
 use App\Entity\Log\Event;
-use App\Log\AbstractEvent;
 use App\Log\EventService;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -87,7 +86,7 @@ class EntityEventListener
     /**
      * @return array<string, array{entity: string, identifier: mixed}|mixed|null>
      */
-    public function extractFields(AbstractEvent $entity, ClassMetadata $metadata)
+    public function extractFields(object $entity, ClassMetadata $metadata)
     {
         /** @var \ReflectionProperty[] */
         $properties = $metadata->getReflectionProperties();
