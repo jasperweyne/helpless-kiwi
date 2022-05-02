@@ -47,60 +47,42 @@ class MenuItem
      */
     private $path;
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return string
-     */
-    public function getMenu()
+    public function getMenu(): ?string
     {
         return $this->menu;
     }
 
-    /**
-     * @return string
-     */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }
 
-    /**
-     * @return string
-     */
-    public function getClass()
+    public function getClass(): ?string
     {
         return $this->class;
     }
 
-    /**
-     * @return string
-     */
-    public function getActiveCriteria()
+    public function getActiveCriteria(): ?string
     {
         return $this->activeCriteria;
     }
 
-    /**
-     * @return int
-     */
-    public function getOrder()
+    public function getOrder(): ?int
     {
         return $this->order;
     }
 
-    public function getPath()
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setPath($path)
+    public function setPath(?string $path): self
     {
         $this->path = $path;
 

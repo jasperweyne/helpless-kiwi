@@ -34,20 +34,19 @@ class AnnotationMenuExtension implements MenuExtensionInterface
     private $rootDir;
 
     /**
-     * @var array
+     * @var array<string, MenuItem[]>
      */
     private $menuItems = [];
 
     /**
      * MenuDiscovery constructor.
      *
-     * @param $namespace
-     *   The namespace of the menu items
-     * @param $directory
-     *   The directory of the menu items
-     * @param $rootDir
+     * @param string $namespace
+     *                          The namespace of the menu items
+     * @param string $directory
+     *                          The directory of the menu items
      */
-    public function __construct($namespace, $directory, $rootDir, Reader $annotationReader)
+    public function __construct(string $namespace, string $directory, string $rootDir, Reader $annotationReader)
     {
         $this->namespace = $namespace;
         $this->annotationReader = $annotationReader;
@@ -57,8 +56,10 @@ class AnnotationMenuExtension implements MenuExtensionInterface
 
     /**
      * Returns all the menu items.
+     *
+     * @return array{title: string, path: string, role?: string, class?: string, activeCriteria?: string, order?: int}[]
      */
-    public function getMenuItems(string $menu = '')
+    public function getMenuItems(string $menu = ''): array
     {
         if (!$this->menuItems) {
             $this->discoverMenuItems();
@@ -72,7 +73,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
         foreach ($this->menuItems[$menu] as $item) {
             $arr = [
                 'title' => $item->getTitle(),
-                'path' => $item->getPath(),
+                'path' => (string) $item->getPath(),
             ];
             if (null !== $item->getRole()) {
                 $arr['role'] = $item->getRole();
@@ -95,7 +96,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
     /**
      * Discovers menu items.
      */
-    private function discoverMenuItems()
+    private function discoverMenuItems(): void
     {
         $path = $this->rootDir.'/../src/'.$this->directory;
         $finder = new Finder();
@@ -126,7 +127,6 @@ class AnnotationMenuExtension implements MenuExtensionInterface
                         $annotation->setPath($routePrefix.$route->getName());
                     }
 
-                    /* @var MenuItem $annotation */
                     if (!array_key_exists($annotation->menu, $this->menuItems)) {
                         $this->menuItems[$annotation->menu] = [];
                     }

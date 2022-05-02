@@ -21,7 +21,7 @@ class OrganiseMenuExtension implements MenuExtensionInterface
     private $tokenStorage;
 
     /**
-     * @var array{title: ?string, path: array{0: ?string, 1: array{id: ?string}}}[]
+     * @var array{title: string, path: array{0: ?string, 1: array{id: ?string}}}[]
      */
     private $menuItems;
 
@@ -37,7 +37,7 @@ class OrganiseMenuExtension implements MenuExtensionInterface
     /**
      * Returns all the menu items.
      *
-     * @return array{title: ?string, path: array{0: ?string, 1: array{id: ?string}}}[]
+     * @return array{title: string, path: array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]
      */
     public function getMenuItems(string $menu = ''): array
     {
