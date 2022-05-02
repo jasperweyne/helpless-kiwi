@@ -11,24 +11,27 @@ use Doctrine\ORM\Mapping as ORM;
 class Recipient
 {
     /**
-     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
     /**
-     * @var Mail | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Mail\Mail", inversedBy="recipients")
      * @ORM\JoinColumn(name="mail", referencedColumnName="id")
+     *
+     * @var ?Mail
      */
     private $mail;
 

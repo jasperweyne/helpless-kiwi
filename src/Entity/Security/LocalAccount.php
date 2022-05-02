@@ -20,101 +20,109 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class LocalAccount implements UserInterface, EquatableInterface
 {
     /**
-     * @var string
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=180, unique=true)
      * @GQL\Field(type="String")
      * @GQL\Description("The e-mail address of the user.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     *
+     * @var string
      */
     private $email;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=180)
      * @GQL\Field(type="String")
      * @GQL\Description("The given name of the user (the first name in western cultures).")
      * @GQL\Access("isAuthenticated()")
+     *
+     * @var string
      */
     private $givenName;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=180)
      * @GQL\Field(type="String")
      * @GQL\Description("The family name of the user (the last name in western cultures).")
      * @GQL\Access("isAuthenticated()")
+     *
+     * @var string
      */
     private $familyName;
 
     /**
      * The hashed password.
      *
-     * @var string | null
-     *
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @var ?string
      */
     private $password;
 
     /**
      * The OpenID Connect subject claim value.
      *
-     * @var string | null
-     *
      * @ORM\Column(type="string", length=255, nullable=true, unique=true)
+     *
+     * @var ?string
      */
     private $oidc;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @var string[]
      */
     private $roles;
 
     /**
      * Encrypted string whose value is sent to the user email address in order to (re-)set the password.
      *
-     * @var string | null
-     *
      * @ORM\Column(name="password_request_token", type="string", nullable=true)
+     *
+     * @var ?string
      */
     protected $passwordRequestToken;
 
     /**
-     * @var DateTime | null
-     *
      * @ORM\Column(name="password_requested_at", type="datetime", nullable=true)
+     *
+     * @var ?DateTime
      */
     protected $passwordRequestedAt;
 
     /**
-     * @var Collection<int, Registration>
      * @ORM\OneToMany(targetEntity=Registration::class, mappedBy="person")
      * @GQL\Field(type="[Registration]")
      * @GQL\Description("All activity registrations for the user.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     *
+     * @var Collection<int, Registration>
      */
     private $registrations;
 
     /**
-     * @var Collection<int, Relation>
      * @ORM\OneToMany(targetEntity=Relation::class, mappedBy="person")
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("All group membership relations for the user.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     *
+     * @var Collection<int, Relation>
      */
     private $relations;
 
     /**
      * Get id.
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -129,7 +137,7 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -146,7 +154,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      * Note that this value isn't loaded by doctrine, but is provided
      * by the parent Person instance.
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->getEmail();
     }
@@ -204,6 +212,9 @@ class LocalAccount implements UserInterface, EquatableInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param string[] $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -233,12 +244,14 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
+
+        return null;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -262,7 +275,7 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this;
     }
 
-    public function setPasswordRequestToken(string $passwordRequestToken): self
+    public function setPasswordRequestToken(?string $passwordRequestToken): self
     {
         $this->passwordRequestToken = $passwordRequestToken;
 
@@ -286,13 +299,13 @@ class LocalAccount implements UserInterface, EquatableInterface
         return $this->passwordRequestedAt;
     }
 
-    public function isPasswordRequestNonExpired($ttl)
+    public function isPasswordRequestNonExpired(int $ttl): bool
     {
         return null === $this->getPasswordRequestedAt() || (
                $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time());
     }
 
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
         return $this->getUsername() === $user->getUsername();
     }
@@ -330,7 +343,7 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
+        $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
     }

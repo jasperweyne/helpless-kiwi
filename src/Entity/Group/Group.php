@@ -17,36 +17,40 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Group
 {
     /**
-     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var string | null
      * @ORM\Column(type="string", length=100, name="title")
      * @GQL\Field(type="String!")
      * @GQL\Description("The name of the group.")
      * @Assert\NotBlank
+     *
+     * @var string
      */
     private $name;
 
     /**
-     * @var string | null
      * @ORM\Column(type="text", nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("A textual description of the the group.")
+     *
+     * @var ?string
      */
     private $description;
 
     /**
-     * @var Group | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
      * @GQL\Field(type="Group")
      * @GQL\Description("The parent group of this (sub)group. Note that the members don't need to be a subset of the parent group.")
+     *
+     * @var ?Group
      */
     private $parent;
 
@@ -54,30 +58,35 @@ class Group
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Group", mappedBy="parent")
      * @GQL\Field(type="[Group]")
      * @GQL\Description("The child (sub)groups of this group. Note that their members don't need to be a subset of this group.")
+     *
+     * @var Collection<int, Group>
      */
     protected $children;
 
     /**
-     * @var bool
      * @ORM\Column(type="boolean")
      * @GQL\Field(type="Boolean!")
      * @GQL\Description("Whether the group can be modified.")
+     *
+     * @var bool
      */
     private $readonly;
 
     /**
-     * @var bool | null
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can contain member users.")
+     *
+     * @var ?bool
      */
     private $relationable;
 
     /**
-     * @var bool | null
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can contain children (sub)groups.")
+     *
+     * @var ?bool
      */
     private $subgroupable;
 
@@ -85,22 +94,26 @@ class Group
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="group", orphanRemoval=true)
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("The member users of this group.")
+     *
+     * @var Collection<int, Relation>
      */
     private $relations;
 
     /**
-     * @var bool
      * @ORM\Column(type="boolean")
      * @GQL\Field(type="Boolean!")
      * @GQL\Description("Whether the group is currently active, eg. whether it can organise activities.")
+     *
+     * @var bool
      */
     private $active;
 
     /**
-     * @var bool | null
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can be currently used as a target group for activities.")
+     *
+     * @var ?bool
      */
     private $register;
 
@@ -114,8 +127,6 @@ class Group
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -134,8 +145,6 @@ class Group
 
     /**
      * Get name.
-     *
-     * @return string
      */
     public function getName(): ?string
     {
@@ -154,8 +163,6 @@ class Group
 
     /**
      * Get description.
-     *
-     * @return string
      */
     public function getDescription(): ?string
     {
@@ -225,7 +232,7 @@ class Group
     }
 
     /**
-     * @return Collection<int, Relation>|Relation[]
+     * @return Collection<int, Relation>
      */
     public function getRelations(): Collection
     {
@@ -256,7 +263,7 @@ class Group
     }
 
     /**
-     * @return Collection<int, Group>|Group[]
+     * @return Collection<int, Group>
      */
     public function getChildren(): Collection
     {

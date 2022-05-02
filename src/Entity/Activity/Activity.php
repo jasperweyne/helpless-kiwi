@@ -28,6 +28,8 @@ class Activity
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -36,6 +38,8 @@ class Activity
      * @Assert\NotBlank
      * @GQL\Field(type="String!")
      * @GQL\Description("The name of the activity.")
+     *
+     * @var string
      */
     private $name;
 
@@ -44,6 +48,8 @@ class Activity
      * @Assert\NotBlank
      * @GQL\Field(type="String!")
      * @GQL\Description("A textual description of the activity.")
+     *
+     * @var string
      */
     private $description;
 
@@ -51,6 +57,8 @@ class Activity
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\PriceOption", mappedBy="activity")
      * @GQL\Field(type="[PriceOption]")
      * @GQL\Description("The available registration options for the activity.")
+     *
+     * @var Collection<int, PriceOption>
      */
     private $options;
 
@@ -58,6 +66,8 @@ class Activity
      * @GQL\Field(type="[Registration]")
      * @GQL\Description("All registrations stored for this activity, regardless of option.")
      * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="activity")
+     *
+     * @var Collection<int, Registration>
      */
     private $registrations;
 
@@ -67,6 +77,8 @@ class Activity
      * @GQL\Field(type="Location!")
      * @GQL\Description("The (physical) location of the activity.")
      * @Assert\NotBlank
+     *
+     * @var ?Location
      */
     private $location;
 
@@ -75,6 +87,8 @@ class Activity
      * @ORM\JoinColumn(name="primairy_author", referencedColumnName="id", nullable=true)
      * @GQL\Field(type="Group")
      * @GQL\Description("The group that authored this activity.")
+     *
+     * @var ?Group
      */
     private $author;
 
@@ -83,6 +97,8 @@ class Activity
      * @GQL\Description("The group of all users that can see and register to this activity.")
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
      * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
+     *
+     * @var ?Group
      */
     private $target;
 
@@ -91,6 +107,8 @@ class Activity
      * @GQL\Field(type="String!")
      * @GQL\Description("The color associated with this activity, stored for presentation purposes.")
      * @Assert\NotBlank
+     *
+     * @var string
      */
     private $color;
 
@@ -99,6 +117,8 @@ class Activity
      * @GQL\Field(type="DateTimeScalar!")
      * @GQL\Description("The date and time the activity starts.")
      * @Assert\NotBlank
+     *
+     * @var \DateTime
      */
     private $start;
 
@@ -108,6 +128,8 @@ class Activity
      * @GQL\Description("The date and time the activity ends.")
      * @Assert\NotBlank
      * @Assert\Expression("value >= this.getStart()", message="Een activiteit kan niet eindigen voor de start.")
+     *
+     * @var \DateTime
      */
     private $end;
 
@@ -117,6 +139,8 @@ class Activity
      * @GQL\Description("The final date and time users may (de)register for this activity.")
      * @Assert\NotBlank
      * @Assert\Expression("value <= this.getStart()", message="Aanmelddeadline kan niet na de start van de activiteit vallen.")
+     *
+     * @var \DateTime
      */
     private $deadline;
 
@@ -145,6 +169,8 @@ class Activity
      * @ORM\Column(type="integer", nullable=true)
      * @GQL\Field(type="Int")
      * @GQL\Description("The maximum number of users that can be registered for this activity.")
+     *
+     * @var ?int
      */
     private $capacity;
 
@@ -152,6 +178,8 @@ class Activity
      * @ORM\Column(type="integer", nullable=true)
      * @GQL\Field(type="Int")
      * @GQL\Description("A stored number of users that were present at this activity.")
+     *
+     * @var ?int
      */
     private $present;
 
@@ -159,13 +187,13 @@ class Activity
      * @ORM\Column(type="datetime", nullable=true, options={"default" : "1970-01-01"})
      * @GQL\Field(type="DateTimeScalar")
      * @GQL\Description("The time after which the activity will be publicized.")
+     *
+     * @var ?\DateTime
      */
     private $visibleAfter;
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -184,8 +212,6 @@ class Activity
 
     /**
      * Get name.
-     *
-     * @return string
      */
     public function getName(): ?string
     {
@@ -204,8 +230,6 @@ class Activity
 
     /**
      * Get description.
-     *
-     * @return string
      */
     public function getDescription(): ?string
     {
@@ -225,7 +249,7 @@ class Activity
     /**
      * Get price options.
      *
-     * @return Collection|PriceOption[]
+     * @return Collection<int, PriceOption>
      */
     public function getOptions(): Collection
     {
@@ -256,7 +280,7 @@ class Activity
     }
 
     /**
-     * @return Collection|Registration[]
+     * @return Collection<int, Registration>
      */
     public function getRegistrations(): Collection
     {
@@ -288,8 +312,6 @@ class Activity
 
     /**
      * Get author.
-     *
-     * @return Group
      */
     public function getAuthor(): ?Group
     {
@@ -298,8 +320,6 @@ class Activity
 
     /**
      * Set author.
-     *
-     * @param Group $author
      */
     public function setAuthor(?Group $author): self
     {
@@ -310,8 +330,6 @@ class Activity
 
     /**
      * Get target.
-     *
-     * @return Group
      */
     public function getTarget(): ?Group
     {
@@ -415,7 +433,7 @@ class Activity
         return $this->location;
     }
 
-    public function setLocation(?Location $location): self
+    public function setLocation(Location $location): self
     {
         $this->location = $location;
 
@@ -425,7 +443,7 @@ class Activity
     /**
      * @param File|UploadedFile $imageFile
      */
-    public function setImageFile(?File $imageFile = null)
+    public function setImageFile(File $imageFile = null): self
     {
         $this->imageFile = $imageFile;
 
@@ -434,6 +452,8 @@ class Activity
             // otherwise the event listeners won't be called and the file is lost
             $this->imageUpdatedAt = new \DateTimeImmutable();
         }
+
+        return $this;
     }
 
     public function getImageFile(): ?File
@@ -441,9 +461,11 @@ class Activity
         return $this->imageFile;
     }
 
-    public function setImage(EmbeddedFile $image)
+    public function setImage(EmbeddedFile $image): self
     {
         $this->image = $image;
+
+        return $this;
     }
 
     public function getImage(): ?EmbeddedFile
@@ -481,9 +503,11 @@ class Activity
         return $this->present;
     }
 
-    public function setPresent(?int $present)
+    public function setPresent(?int $present): self
     {
         $this->present = $present;
+
+        return $this;
     }
 
     /**
@@ -508,6 +532,8 @@ class Activity
 
     /**
      * Is the activity currently visible, given a number of applicable groups.
+     *
+     * @param Group[] $groups
      */
     public function isVisible(array $groups = []): bool
     {

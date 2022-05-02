@@ -32,7 +32,7 @@ class Order
         return new Order(self::toOrder($s));
     }
 
-    public static function calc(Order $a, Order $b, $fn): Order
+    public static function calc(Order $a, Order $b, callable $fn): Order
     {
         // Pad arrays to have equal length
         $length = max(count($a->data), count($b->data));

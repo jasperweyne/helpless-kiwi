@@ -20,47 +20,54 @@ use Doctrine\ORM\Mapping as ORM;
 class Event
 {
     /**
-     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=100)
+     *
+     * @var string
      */
     private $discr;
 
     /**
-     * @var DateTimeInterface
      * @ORM\Column(type="datetime")
+     *
+     * @var DateTimeInterface
      */
     private $time;
 
     /**
-     * @var string | null
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @var ?string
      */
     private $objectId;
 
     /**
-     * @var string | null
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @var ?string
      */
     private $objectType;
 
     /**
-     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
     /**
-     * @var string
      * @ORM\Column(type="text")
+     *
+     * @var string
      */
     private $meta;
 

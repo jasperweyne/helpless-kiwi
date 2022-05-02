@@ -17,86 +17,91 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Registration
 {
     /**
-     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var PriceOption
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
      * @ORM\JoinColumn(nullable=false)
      * @GQL\Field(type="PriceOption!")
      * @GQL\Description("The specific registration option of the activity this registration points to.")
      * @Assert\NotBlank
+     *
+     * @var PriceOption
      */
     private $option;
 
     /**
-     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity=LocalAccount::class, inversedBy="registrations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @GQL\Field(type="LocalAccount")
      * @GQL\Description("The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
     /**
-     * @var Activity | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      * @GQL\Field(type="Activity!")
      * @GQL\Description("The activity for which the user registered.")
+     *
+     * @var ?Activity
      */
     private $activity;
 
     /**
-     * @var string | null
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")
+     *
+     * @var ?string
      */
     private $reserve_position;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="newdate", type="datetime", nullable=false)
      * @GQL\Field(name="created", type="DateTimeScalar!", resolve="@=value.getNewDate()")
      * @GQL\Description("The date and time the user registered for the activity.")
+     *
+     * @var DateTime
      */
     private $newdate;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="deletedate", type="datetime", nullable=true)
      * @GQL\Field(name="deleted", type="DateTimeScalar", resolve="@=value.getDeleteDate()")
      * @GQL\Description("The date and time the user deleted their registration for the activity.")
+     *
+     * @var ?DateTime
      */
     private $deletedate;
 
     /**
-     * @var bool | null
      * @ORM\Column(name="present", type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the user was present during the activity.")
+     *
+     * @var ?bool
      */
     private $present;
 
     /**
-     * @var string | null
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @var ?string
      */
     private $comment;
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -113,7 +118,7 @@ class Registration
         return $this;
     }
 
-    public function getOption(): PriceOption
+    public function getOption(): ?PriceOption
     {
         return $this->option;
     }
@@ -193,10 +198,8 @@ class Registration
 
     /**
      * Get date and time of deregistration.
-     *
-     * @return DateTime
      */
-    public function getDeleteDate()
+    public function getDeleteDate(): ?DateTime
     {
         return $this->deletedate;
     }
@@ -208,13 +211,12 @@ class Registration
         return $this;
     }
 
-    /** @return bool | null */
-    public function getPresent()
+    public function getPresent(): ?bool
     {
         return $this->present;
     }
 
-    public function setPresent(bool $present): void
+    public function setPresent(?bool $present): void
     {
         $this->present = $present;
     }

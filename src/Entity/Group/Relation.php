@@ -16,53 +16,59 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 class Relation
 {
     /**
-     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var string | null
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("A textual description of membership status of a user in a group.")
+     *
+     * @var ?string
      */
     private $description;
 
     /**
-     * @var Group | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
      * @ORM\JoinColumn(nullable=false)
      * @GQL\Field(type="Group!")
      * @GQL\Description("The group the user is a member of.")
+     *
+     * @var Group
      */
     private $group;
 
     /**
-     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount", inversedBy="relations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @GQL\Field(type="LocalAccount")
      * @GQL\Description("The user who is a member of a group.")
      * @GQL\Access("hasRole('ROLE_ADMIN')")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
     /**
-     * @var Relation | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Relation", inversedBy="children")
      * @GQL\Field(type="Relation")
      * @GQL\Description("The parent relation object, in case of multiple overlapping relations.")
+     *
+     * @var ?Relation
      */
     private $parent;
 
     /**
-     * @var Collection<int, Relation>
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="parent")
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("The children relation objects, in case of multiple overlapping relations.")
+     *
+     * @var Collection<int, Relation>s
      */
     private $children;
 
@@ -73,8 +79,6 @@ class Relation
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -98,7 +102,7 @@ class Relation
         return $this->group;
     }
 
-    public function setGroup(?Group $group): self
+    public function setGroup(Group $group): self
     {
         $this->group = $group;
 
@@ -170,27 +174,24 @@ class Relation
         return $this;
     }
 
-    //TODO is this the correct returnType, feels ugly but it seems to work.
-    //Can't find any code that disproves this
-
-    /** @return Collection<int|string, mixed> */
+    /** @return Collection<int, Relation> */
     public function getChildrenRecursive(): Collection
     {
-        $childTaxes = $this->children->map(function ($a) {
+        /** @var Relation[][] */
+        $childTaxes = $this->children->map(function (Relation $a) {
             $children = $a->getChildrenRecursive()->toArray();
             $children[] = $a;
 
             return $children;
         })->toArray();
 
-        $taxonomies = array_merge([], ...$childTaxes);
+        /** @var Collection<int, Relation> */
+        $taxonomies = new ArrayCollection(array_merge([], ...$childTaxes));
 
-        return new ArrayCollection($taxonomies);
+        return $taxonomies;
     }
 
-    //TODO  same as with getChildrenRecursive
-
-    /** @return Collection<int|string, mixed> */
+    /** @return Collection<int, Relation> */
     public function getAllRelations(): Collection
     {
         $tree = $this->getRoot()->getChildrenRecursive();

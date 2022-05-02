@@ -13,18 +13,20 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 class Location
 {
     /**
-     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
     /**
-     * @var string | null
      * @ORM\Column(type="string")
      * @GQL\Field(type="String")
      * @GQL\Description("The address of the location.")
+     *
+     * @var string
      */
     private $address;
 
