@@ -15,9 +15,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class HasLocalAccountCommandTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $em;
 
     /**
@@ -40,7 +38,7 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
         unset($this->em);
     }
 
-    public function testExecuteEmpty()
+    public function testExecuteEmpty(): void
     {
         // Arrange
         $application = new Application($this->client->getKernel());
@@ -55,7 +53,7 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
         self::assertEquals('0', trim($output));
     }
 
-    public function testExecuteWithFixtures()
+    public function testExecuteWithFixtures(): void
     {
         // Arrange
         $this->loadFixtures([LocalAccountFixture::class]);

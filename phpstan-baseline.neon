@@ -41,11 +41,6 @@ parameters:
 			path: src/Calendar/ICalProvider.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, string\\|null given\\.$#"
-			count: 2
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
 			message: "#^Parameter \\#1 \\$name of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setName\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Command/CreateLocalAccountCommand.php
@@ -891,42 +886,7 @@ parameters:
 			path: src/Entity/Log/Event.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Mail\\\\Mail\\:\\:getRecipients\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$content has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$recipients has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$sender has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$sentAt has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$title has no type specified\\.$#"
+			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$content type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
 			count: 1
 			path: src/Entity/Mail/Mail.php
 
@@ -2282,16 +2242,6 @@ parameters:
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method Tests\\\\Functional\\\\Command\\\\HasLocalAccountCommandTest\\:\\:testExecuteEmpty\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Functional/Command/HasLocalAccountCommandTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Command\\\\HasLocalAccountCommandTest\\:\\:testExecuteWithFixtures\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Functional/Command/HasLocalAccountCommandTest.php
-
-		-
 			message: "#^Access to an undefined property Tests\\\\Functional\\\\Controller\\\\Activity\\\\ActivityControllerTest\\:\\:\\$em\\.$#"
 			count: 9
 			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
@@ -2517,36 +2467,6 @@ parameters:
 			path: tests/Integration/Form/Group/RelationTypeTest.php
 
 		-
-			message: "#^Cannot call method format\\(\\) on DateTime\\|null\\.$#"
-			count: 2
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$invalidActivity has no type specified\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$now \\(Tests\\\\Unit\\\\Calendar\\\\datetime\\) does not accept DateTime\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$now has unknown class Tests\\\\Unit\\\\Calendar\\\\datetime as its type\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$secondActivity has no type specified\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
 			message: "#^Cannot access offset 0 on mixed\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Activity/ActivityTest.php
@@ -2600,11 +2520,6 @@ parameters:
 			message: "#^You should use assertTrue\\(\\) instead of assertSame\\(\\) when expecting \"true\"$#"
 			count: 1
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
-			message: "#^You should use assertTrue\\(\\) instead of assertSame\\(\\) when expecting \"true\"$#"
-			count: 9
-			path: tests/Unit/Entity/Group/GroupTest.php
 
 		-
 			message: "#^Cannot call method add\\(\\) on mixed\\.$#"

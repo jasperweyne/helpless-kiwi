@@ -15,9 +15,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class CreateLocalAccountCommandTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $em;
 
     /**
@@ -41,13 +39,13 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
     }
 
     // This feels not nice. But as of now the password menu loops till the
-    // heatdeath of the universe. We might need to rewrite it, but this 
+    // heatdeath of the universe. We might need to rewrite it, but this
     // addressed the untested code.
-    // 
+    //
     // As soon as we've done this I'll split this up in 3/4 test cases.
     // But for now it will at least show us where the error resides.
     public function testInteract(): void
-    {        
+    {
         $email = 'user@kiwi.au';
         $commandName = 'app:create-account';
         $application = new Application($this->client->getKernel());

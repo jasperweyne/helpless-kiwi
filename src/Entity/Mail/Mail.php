@@ -3,6 +3,7 @@
 namespace App\Entity\Mail;
 
 use App\Entity\Security\LocalAccount;
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Mail
 {
     /**
+     * @var string
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
@@ -19,32 +21,38 @@ class Mail
     private $id;
 
     /**
+     * @var LocalAccount | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      */
     private $person;
 
     /**
+     * @var Collection<int,Recipient> | Recipient[]
      * @ORM\OneToMany(targetEntity="App\Entity\Mail\Recipient", mappedBy="mail")
      */
     private $recipients;
 
     /**
+     * @var string
      * @ORM\Column(type="string")
      */
     private $title;
 
     /**
+     * @var string | null
      * @ORM\Column(type="text")
      */
     private $content;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
     private $sender;
 
     /**
+     * @var DateTime
      * @ORM\Column(type="datetime")
      */
     private $sentAt;
@@ -91,9 +99,9 @@ class Mail
     }
 
     /**
-     * Get price options.
+     * Get recipients options.
      *
-     * @return Collection|Recipient[]
+     * @return Collection<int,Recipient>
      */
     public function getRecipients(): Collection
     {
@@ -135,12 +143,12 @@ class Mail
         return $this;
     }
 
-    public function getSentAt(): ?\DateTimeInterface
+    public function getSentAt(): ?DateTime
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTimeInterface $sentAt): self
+    public function setSentAt(DateTime $sentAt): self
     {
         $this->sentAt = $sentAt;
 

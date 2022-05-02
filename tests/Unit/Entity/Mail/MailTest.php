@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entity\Mail;
 
 use App\Entity\Mail\Mail;
+use App\Entity\Mail\Recipient;
 use App\Entity\Security\LocalAccount;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -133,8 +134,16 @@ class MailTest extends KernelTestCase
 
     public function testRemoveRecipient(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        $expected = new ArrayCollection();
+        $recipient = new Recipient();
+        $expected->add($recipient);
+        $property = (new ReflectionClass(Mail::class))
+            ->getProperty('recipients');
+        $property->setAccessible(true);
+        $property->setValue($this->mail, $expected);
+
+        $this->mail->removeRecipient($recipient);
+        self::assertNotSame($recipient, $property->getValue($this->mail));
     }
 
     public function testGetSender(): void
@@ -159,7 +168,7 @@ class MailTest extends KernelTestCase
 
     public function testGetSentAt(): void
     {
-        $expected = new DateTime();
+        $expected = $this->createMock(DateTime::class);
         $property = (new ReflectionClass(Mail::class))
             ->getProperty('sentAt');
         $property->setAccessible(true);

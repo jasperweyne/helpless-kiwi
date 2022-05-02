@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * Class RelationTest.
  *
  * @covers \App\Entity\Group\Relation
+ * @group entities
  */
 class RelationTest extends KernelTestCase
 {
@@ -152,14 +153,34 @@ class RelationTest extends KernelTestCase
 
     public function testRemoveChild(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        $expected = new ArrayCollection();
+        $relation = new Relation();
+        $expected->add($relation);
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('children');
+        $property->setAccessible(true);
+        $property->setValue($this->relation, $expected);
+
+        $this->relation->removeChild($relation);
+        self::assertNotSame($relation, $property->getValue($this->relation));
     }
 
+    //TODO figure out how to create recurvice testing objects
     public function testGetRoot(): void
     {
         /* @todo This test is incomplete. */
         self::markTestIncomplete();
+    }
+
+    //TODO this feels.... funky, and not in the good way.
+    public function testGetRootChildless(): void
+    {
+        $expected = '42';
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('id');
+        $property->setAccessible(true);
+        $property->setValue($this->relation, $expected);
+        self::assertSame($expected, $this->relation->getRoot()->getId());
     }
 
     public function testGetChildrenRecursive(): void
