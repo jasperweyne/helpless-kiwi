@@ -4,10 +4,13 @@ namespace App\Repository;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
+use App\Entity\Group\Group;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @extends ServiceEntityRepository<PriceOption>
+ *
  * @method PriceOption|null find($id, $lockMode = null, $lockVersion = null)
  * @method PriceOption|null findOneBy(array $criteria, array $orderBy = null)
  * @method PriceOption[]    findAll()
@@ -21,6 +24,8 @@ class OptionRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param Group[] $groups
+     *
      * @return PriceOption[] Returns an array of PriceOption objects
      */
     public function findUpcomingByGroup(Activity $activity, $groups)
