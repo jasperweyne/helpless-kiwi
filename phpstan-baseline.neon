@@ -361,11 +361,6 @@ parameters:
 			path: src/Controller/Organise/ActivityController.php
 
 		-
-			message: "#^Parameter \\#1 \\$p of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:exists\\(\\) expects Closure\\(mixed, mixed\\)\\: bool, Closure\\(mixed, App\\\\Entity\\\\Group\\\\Relation\\)\\: bool given\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
 			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
 			count: 3
 			path: src/Controller/Organise/RegistrationController.php
@@ -383,11 +378,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$group of method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:blockUnauthorisedUsers\\(\\) expects App\\\\Entity\\\\Group\\\\Group, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
 			count: 5
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$p of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:exists\\(\\) expects Closure\\(mixed, mixed\\)\\: bool, Closure\\(mixed, App\\\\Entity\\\\Group\\\\Relation\\)\\: bool given\\.$#"
-			count: 1
 			path: src/Controller/Organise/RegistrationController.php
 
 		-
@@ -461,6 +451,11 @@ parameters:
 			path: src/Entity/Activity/Activity.php
 
 		-
+			message: "#^Cannot call method map\\(\\) on Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null\\.$#"
+			count: 1
+			path: src/Entity/Activity/Activity.php
+
+		-
 			message: "#^Method App\\\\Entity\\\\Activity\\\\Activity\\:\\:getOptions\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
@@ -497,11 +492,6 @@ parameters:
 
 		-
 			message: "#^Only booleans are allowed in an if condition, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Parameter \\#1 \\$func of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:map\\(\\) expects Closure\\(mixed\\)\\: App\\\\Entity\\\\Group\\\\Group\\|null, Closure\\(App\\\\Entity\\\\Group\\\\Relation\\)\\: App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
 
@@ -596,22 +586,12 @@ parameters:
 			path: src/Entity/Activity/PriceOption.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:getRegistrations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
 			message: "#^Method App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:setDetails\\(\\) has parameter \\$details with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Activity/PriceOption.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$activity has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$confirmationMsg has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$option of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setOption\\(\\) expects App\\\\Entity\\\\Activity\\\\PriceOption, null given\\.$#"
 			count: 1
 			path: src/Entity/Activity/PriceOption.php
 
@@ -621,129 +601,9 @@ parameters:
 			path: src/Entity/Activity/PriceOption.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$name has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$price has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$registrations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$target has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getDeleteDate\\(\\) has invalid return type App\\\\Entity\\\\Activity\\\\DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getDeleteDate\\(\\) should return App\\\\Entity\\\\Activity\\\\DateTime but returns DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getNewDate\\(\\) has invalid return type App\\\\Entity\\\\Activity\\\\DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getNewDate\\(\\) should return App\\\\Entity\\\\Activity\\\\DateTime but returns DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setComment\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPresent\\(\\) has parameter \\$present with no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, App\\\\Entity\\\\Order\\|null given\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$activity has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$comment has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
 			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$deletedate type mapping mismatch\\: database can contain DateTime\\|null but property expects DateTime\\.$#"
 			count: 1
 			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$option has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$present has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$reserve_position has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Group\\:\\:getChildren\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Group\\:\\:getRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$active has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
 
 		-
 			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$children has no type specified\\.$#"
@@ -751,37 +611,7 @@ parameters:
 			path: src/Entity/Group/Group.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$name has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$parent has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$readonly has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$register has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$relationable has no type specified\\.$#"
+			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$name type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
 			count: 1
 			path: src/Entity/Group/Group.php
 
@@ -791,99 +621,14 @@ parameters:
 			path: src/Entity/Group/Group.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$subgroupable has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getAllRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
+			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$group type mapping mismatch\\: property can contain App\\\\Entity\\\\Group\\\\Group\\|null but database expects App\\\\Entity\\\\Group\\\\Group\\.$#"
 			count: 1
 			path: src/Entity/Group/Relation.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getChildren\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getChildrenRecursive\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$children has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$group has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$parent has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Location\\\\Location\\:\\:\\$address has no type specified\\.$#"
+			message: "#^Property App\\\\Entity\\\\Location\\\\Location\\:\\:\\$address type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
 			count: 1
 			path: src/Entity/Location/Location.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Location\\\\Location\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Location/Location.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$discr has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$meta has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$objectId has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$objectType has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$time has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
 
 		-
 			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$content type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
@@ -891,79 +636,14 @@ parameters:
 			path: src/Entity/Mail/Mail.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Recipient\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Recipient.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Recipient\\:\\:\\$mail has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Recipient.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Recipient\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Recipient.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:__construct\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:avg\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:calc\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
 			message: "#^Method App\\\\Entity\\\\Order\\:\\:calc\\(\\) has parameter \\$fn with no type specified\\.$#"
 			count: 1
 			path: src/Entity/Order.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:create\\(\\) has no return type specified\\.$#"
+			message: "#^Parameter \\#1 \\$data of class App\\\\Entity\\\\Order constructor expects array\\<int\\>, array\\<int\\<0, max\\>, float\\|int\\<\\-25, 25\\>\\> given\\.$#"
 			count: 1
 			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:fromOrder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:fromOrder\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:toOrder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Casting to string something that's already string\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Instanceof between DateTime and DateTime will always evaluate to true\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:__toString\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
 
 		-
 			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:eraseCredentials\\(\\) has no return type specified\\.$#"
@@ -971,22 +651,7 @@ parameters:
 			path: src/Entity/Security/LocalAccount.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getRegistrations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
 			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getSalt\\(\\) should return string\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getUsername\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: src/Entity/Security/LocalAccount.php
 
@@ -1001,192 +666,7 @@ parameters:
 			path: src/Entity/Security/LocalAccount.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestToken\\(\\) has parameter \\$passwordRequestToken with no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestedAt\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
 			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setRoles\\(\\) has parameter \\$roles with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$auth_id\\)\\: Unexpected token \"\\$auth_id\", expected type at offset 95$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$date\\)\\: Unexpected token \"\\$date\", expected type at offset 126$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$password\\)\\: Unexpected token \"\\$password\", expected type at offset 97$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$passwordRequestToken\\)\\: Unexpected token \"\\$passwordRequestToken\", expected type at offset 85$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$roles\\)\\: Unexpected token \"\\$roles\", expected type at offset 93$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$ttl\\)\\: Unexpected token \"\\$ttl\", expected type at offset 92$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$user\\)\\: Unexpected token \"\\$user\", expected type at offset 102$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(DateTime\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 111$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(UserInterface\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 87$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\\\\\)\\: Unexpected token \"\\\\\\\\\", expected type at offset 87$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(array\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 78$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 80$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 82$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$name$#"
-			count: 2
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 118$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 121$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 125$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 128$#"
-			count: 2
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 129$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 153$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 73$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$email has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$familyName has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$givenName has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$oidc \\(string\\) does not accept string\\|null\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$oidc type mapping mismatch\\: database can contain string\\|null but property expects string\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$password type mapping mismatch\\: database can contain string\\|null but property expects string\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$passwordRequestToken type mapping mismatch\\: database can contain string\\|null but property expects string\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$passwordRequestedAt \\(DateTime\\) does not accept DateTime\\|null\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$passwordRequestedAt type mapping mismatch\\: database can contain DateTime\\|null but property expects DateTime\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$registrations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$relations has no type specified\\.$#"
 			count: 1
 			path: src/Entity/Security/LocalAccount.php
 
@@ -1936,6 +1416,11 @@ parameters:
 			path: src/Security/PasswordResetService.php
 
 		-
+			message: "#^Parameter \\#1 \\$passwordRequestToken of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestToken\\(\\) expects string, null given\\.$#"
+			count: 1
+			path: src/Security/PasswordResetService.php
+
+		-
 			message: "#^Method App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:getPath\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Template/Annotation/MenuItem.php
@@ -2247,7 +1732,7 @@ parameters:
 			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
 
 		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with App\\\\Entity\\\\Activity\\\\DateTime will always evaluate to true\\.$#"
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with DateTime will always evaluate to true\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
 
@@ -2292,7 +1777,7 @@ parameters:
 			path: tests/Functional/Controller/Admin/MailControllerTest.php
 
 		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with App\\\\Entity\\\\Activity\\\\DateTime will always evaluate to true\\.$#"
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with DateTime will always evaluate to true\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
 
@@ -2332,7 +1817,7 @@ parameters:
 			path: tests/Functional/Controller/Admin/SecurityControllerTest.php
 
 		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with App\\\\Entity\\\\Activity\\\\DateTime will always evaluate to true\\.$#"
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with DateTime will always evaluate to true\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
 
@@ -2507,6 +1992,11 @@ parameters:
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
 
 		-
+			message: "#^Parameter \\#1 \\$present of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPresent\\(\\) expects bool, null given\\.$#"
+			count: 1
+			path: tests/Unit/Entity/Activity/RegistrationTest.php
+
+		-
 			message: "#^You should use assertFalse\\(\\) instead of assertSame\\(\\) when expecting \"false\"$#"
 			count: 1
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
@@ -2524,6 +2014,11 @@ parameters:
 		-
 			message: "#^Cannot call method add\\(\\) on mixed\\.$#"
 			count: 2
+			path: tests/Unit/Entity/Security/LocalAccountTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$passwordRequestToken of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestToken\\(\\) expects string, null given\\.$#"
+			count: 1
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
 
 		-

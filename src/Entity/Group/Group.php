@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Group
 {
     /**
+     * @var string | null
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
@@ -24,6 +25,7 @@ class Group
     private $id;
 
     /**
+     * @var string | null
      * @ORM\Column(type="string", length=100, name="title")
      * @GQL\Field(type="String!")
      * @GQL\Description("The name of the group.")
@@ -32,6 +34,7 @@ class Group
     private $name;
 
     /**
+     * @var string | null
      * @ORM\Column(type="text", nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("A textual description of the the group.")
@@ -39,6 +42,7 @@ class Group
     private $description;
 
     /**
+     * @var Group | null
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="children")
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
      * @GQL\Field(type="Group")
@@ -54,6 +58,7 @@ class Group
     protected $children;
 
     /**
+     * @var bool
      * @ORM\Column(type="boolean")
      * @GQL\Field(type="Boolean!")
      * @GQL\Description("Whether the group can be modified.")
@@ -61,6 +66,7 @@ class Group
     private $readonly;
 
     /**
+     * @var bool | null
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can contain member users.")
@@ -68,6 +74,7 @@ class Group
     private $relationable;
 
     /**
+     * @var bool | null
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can contain children (sub)groups.")
@@ -82,6 +89,7 @@ class Group
     private $relations;
 
     /**
+     * @var bool
      * @ORM\Column(type="boolean")
      * @GQL\Field(type="Boolean!")
      * @GQL\Description("Whether the group is currently active, eg. whether it can organise activities.")
@@ -89,6 +97,7 @@ class Group
     private $active;
 
     /**
+     * @var bool | null
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can be currently used as a target group for activities.")
@@ -216,7 +225,7 @@ class Group
     }
 
     /**
-     * @return Collection|Relation[]
+     * @return Collection<int, Relation>|Relation[]
      */
     public function getRelations(): Collection
     {
@@ -247,7 +256,7 @@ class Group
     }
 
     /**
-     * @return Collection|Group[]
+     * @return Collection<int, Group>|Group[]
      */
     public function getChildren(): Collection
     {
