@@ -66,7 +66,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->client->request('GET', "/admin/activity/register/new/{$id}");
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -86,9 +86,9 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Assert
         $activity = $this->em->getRepository(Activity::class)->find($id);
         $newCount = $activity->getRegistrations()->count();
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'aangemeld');
-        $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'aangemeld');
+        self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
     public function testEditActionPost(): void
@@ -108,8 +108,8 @@ class RegistrationControllerTest extends AuthWebTestCase
         $currentcomment = $this->em->getRepository(Registration::class)->find($id);
         $newcomment = $currentcomment->getComment();
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals($comment, $newcomment);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals($comment, $newcomment);
     }
 
     public function testDeleteActionGet(): void
@@ -122,7 +122,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->client->request('GET', "/admin/activity/register/delete/{$id}");
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -133,7 +133,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Arrange
         $registration = $this->em->getRepository(Registration::class)->findAll()[0];
         $id = $registration->getId();
-        $this->assertEquals(null, $registration->getDeleteDate());
+        self::assertEquals(null, $registration->getDeleteDate());
 
         // Act
         $this->client->request('GET', "/admin/activity/register/delete/{$id}");
@@ -141,9 +141,9 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         // Assert
         $registration = $this->em->getRepository(Registration::class)->find($id);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'afgemeld');
-        $this->assertNotNull($registration->getDeleteDate());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'afgemeld');
+        self::assertNotNull($registration->getDeleteDate());
     }
 
     public function testReserveNewActionGet(): void
@@ -156,7 +156,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $this->client->request('GET', "/admin/activity/register/reserve/new/{$id}");
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -176,9 +176,9 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Assert
         $activity = $this->em->getRepository(Activity::class)->find($id);
         $newCount = $activity->getRegistrations()->count();
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
-        $this->assertSelectorTextContains('.container', 'aangemeld op de reservelijst');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
+        self::assertSelectorTextContains('.container', 'aangemeld op de reservelijst');
     }
 
     public function testReserveMoveUpAction(): void
@@ -194,8 +194,8 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Assert
         $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
         $updatedFirstReserveId = $updatedReserves[0]->getId();
-        $this->assertEquals($updatedFirstReserveId, $secondReserveId);
-        $this->assertSelectorTextContains('.container', 'naar boven verplaatst!');
+        self::assertEquals($updatedFirstReserveId, $secondReserveId);
+        self::assertSelectorTextContains('.container', 'naar boven verplaatst!');
     }
 
     public function testReserveMoveDownAction(): void
@@ -211,7 +211,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Assert
         $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
         $updatedRegistrationId = $updatedReserves[1]->getId();
-        $this->assertEquals($updatedRegistrationId, $firstReserveId);
-        $this->assertSelectorTextContains('.container', 'naar beneden verplaatst!');
+        self::assertEquals($updatedRegistrationId, $firstReserveId);
+        self::assertSelectorTextContains('.container', 'naar beneden verplaatst!');
     }
 }

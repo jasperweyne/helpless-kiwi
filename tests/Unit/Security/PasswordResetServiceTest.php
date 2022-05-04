@@ -57,18 +57,18 @@ class PasswordResetServiceTest extends KernelTestCase
     public function testIsPasswordRequestTokenValid(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGeneratePasswordRequestToken(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testResetPasswordRequestToken(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

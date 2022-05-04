@@ -16,9 +16,11 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
 {
     public const ACTIVITY_REFERENCE = 'activity-';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
+        /** @var Location */
         $locations = $this->getReference(LocationFixture::LOCATION_REFERENCE);
+        /** @var Group */
         $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0');
         $activityCount = 0;
 
@@ -40,6 +42,11 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
+    /**
+     * @param Location[] $locations
+     *
+     * @return TestData<Activity>
+     */
     public static function generate(array $locations, Group $group): TestData
     {
         $colors = [

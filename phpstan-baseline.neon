@@ -6,31 +6,6 @@ parameters:
 			path: src/Calendar/ICalProvider.php
 
 		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:createCalendar\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:createEvent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:icalFeed\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:icalFeed\\(\\) has parameter \\$activities with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Method App\\\\Calendar\\\\ICalProvider\\:\\:icalSingle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
 			message: "#^Only booleans are allowed in a ternary operator condition, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
 			count: 1
 			path: src/Calendar/ICalProvider.php
@@ -66,59 +41,19 @@ parameters:
 			path: src/Calendar/ICalProvider.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#"
-			count: 3
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Method App\\\\Command\\\\CreateLocalAccountCommand\\:\\:configure\\(\\) has no return type specified\\.$#"
+			message: "#^Parameter \\#1 \\$name of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setName\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Command/CreateLocalAccountCommand.php
 
 		-
-			message: "#^Method App\\\\Command\\\\CreateLocalAccountCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
+			message: "#^Parameter \\#2 \\$plainPassword of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\:\\:encodePassword\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Command/CreateLocalAccountCommand.php
 
 		-
-			message: "#^Method App\\\\Command\\\\CreateLocalAccountCommand\\:\\:interact\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<string\\>\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#2 \\$value of method Symfony\\\\Component\\\\Console\\\\Input\\\\InputInterface\\:\\:setArgument\\(\\) expects array\\<string\\>\\|string\\|null, mixed given\\.$#"
 			count: 2
 			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, array\\<string\\>\\|bool\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Property App\\\\Command\\\\CreateLocalAccountCommand\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Property App\\\\Command\\\\CreateLocalAccountCommand\\:\\:\\$passwordEncoder has no type specified\\.$#"
-			count: 1
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
-			message: "#^Method App\\\\Command\\\\HasLocalAccountCommand\\:\\:configure\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Command/HasLocalAccountCommand.php
-
-		-
-			message: "#^Method App\\\\Command\\\\HasLocalAccountCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Command/HasLocalAccountCommand.php
-
-		-
-			message: "#^Property App\\\\Command\\\\HasLocalAccountCommand\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/Command/HasLocalAccountCommand.php
 
 		-
 			message: "#^Call to method App\\\\Calendar\\\\ICalProvider\\:\\:icalFeed\\(\\) with incorrect case\\: IcalFeed$#"
@@ -126,48 +61,13 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:callIcal\\(\\) has no return type specified\\.$#"
-			count: 1
+			message: "#^Cannot access offset 'registration_single' on mixed\\.$#"
+			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createRegisterForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createUnregisterForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:registerAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:singleRegistrationForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:singleUnregistrationForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:unregisterAction\\(\\) has no return type specified\\.$#"
-			count: 1
+			message: "#^Cannot access offset 'single_option' on mixed\\.$#"
+			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
 		-
@@ -196,6 +96,11 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
+			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
+			count: 1
+			path: src/Controller/Admin/ActivityController.php
+
+		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivityController.php
@@ -206,82 +111,22 @@ parameters:
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:imageAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:presentEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:priceEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:priceNewAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:resetAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:setAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
 			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, App\\\\Entity\\\\Location\\\\Location\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\ActivityController\\:\\:\\$events has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, object\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\AdminController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/AdminController.php
+			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findSubGroupsForPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, object\\|null given\\.$#"
+			count: 2
+			path: src/Controller/Admin/ActivityController.php
 
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:createQueryBuilder\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/Admin/EventController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\EventController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
 
@@ -296,16 +141,6 @@ parameters:
 			path: src/Controller/Admin/EventController.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\EventController\\:\\:\\$events has no type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/EventController.php
-
-		-
-			message: "#^Cannot access offset 'board' on mixed\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
 			message: "#^Cannot call method getCanonical\\(\\) on App\\\\Entity\\\\Security\\\\LocalAccount\\|null\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
@@ -313,11 +148,6 @@ parameters:
 		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Group\\\\Group\\|null\\.$#"
 			count: 3
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on mixed\\.$#"
-			count: 1
 			path: src/Controller/Admin/GroupController.php
 
 		-
@@ -332,56 +162,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:createRelationDeleteForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) has parameter \\$defaultBoard with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:relationAddAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:relationDeleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:relationNewAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:showAction\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
 
@@ -401,7 +181,7 @@ parameters:
 			path: src/Controller/Admin/GroupController.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\GroupController\\:\\:\\$events has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$defaultBoard of method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
 
@@ -411,19 +191,14 @@ parameters:
 			path: src/Controller/Admin/MailController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\MailController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/MailController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\MailController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/MailController.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Admin/MailController.php
+
+		-
+			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
+			count: 4
+			path: src/Controller/Admin/RegistrationController.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
@@ -431,43 +206,8 @@ parameters:
 			path: src/Controller/Admin/RegistrationController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:reserveMoveDownAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:reserveMoveUpAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:reserveNewAction\\(\\) has no return type specified\\.$#"
-			count: 1
+			message: "#^Parameter \\#1 \\$id of method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) expects string, string\\|null given\\.$#"
+			count: 3
 			path: src/Controller/Admin/RegistrationController.php
 
 		-
@@ -496,42 +236,7 @@ parameters:
 			path: src/Controller/Admin/SecurityController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:createRoleForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:rolesAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Property App\\\\Controller\\\\Admin\\\\SecurityController\\:\\:\\$events has no type specified\\.$#"
+			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/SecurityController.php
 
@@ -576,12 +281,7 @@ parameters:
 			path: src/Controller/Helper/RegistrationHelper.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:demoteReserve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:demoteReserve\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: src/Controller/Helper/RegistrationHelper.php
 
@@ -596,22 +296,7 @@ parameters:
 			path: src/Controller/Helper/RegistrationHelper.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:promoteReserve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:registrationEdit\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:removeRegistration\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:promoteReserve\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: src/Controller/Helper/RegistrationHelper.php
 
@@ -632,21 +317,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$title with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeNewReserve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeRegistration\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:updateRegistration\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Helper/RegistrationHelper.php
 
@@ -676,191 +346,6 @@ parameters:
 			path: src/Controller/Helper/RegistrationHelper.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:\\$mailer has no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:blockUnauthorisedUsers\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:createDeleteForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:imageAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:presentEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:priceEditAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:priceNewAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:resetAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:setAmountPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:showAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$group of method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:blockUnauthorisedUsers\\(\\) expects App\\\\Entity\\\\Group\\\\Group, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 7
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, App\\\\Entity\\\\Location\\\\Location\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$p of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:exists\\(\\) expects Closure\\(mixed, mixed\\)\\: bool, Closure\\(mixed, App\\\\Entity\\\\Group\\\\Relation\\)\\: bool given\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\OrganiseController\\:\\:indexAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/OrganiseController.php
-
-		-
-			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 3
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:blockUnauthorisedUsers\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:deleteAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:editAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:handleRedirect\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:newAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:reserveMoveDownAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:reserveMoveUpAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:reserveNewAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$group of method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:blockUnauthorisedUsers\\(\\) expects App\\\\Entity\\\\Group\\\\Group, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 5
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$p of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:exists\\(\\) expects Closure\\(mixed, mixed\\)\\: bool, Closure\\(mixed, App\\\\Entity\\\\Group\\\\Relation\\)\\: bool given\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeNewReserve\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeRegistration\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$route of method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Controller\\\\AbstractController\\:\\:generateUrl\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\LoginController\\:\\:login_check\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/LoginController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\LoginController\\:\\:logout\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/LoginController.php
-
-		-
 			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\Exception\\\\AuthenticationException\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Security/LoginController.php
@@ -886,22 +371,12 @@ parameters:
 			path: src/Controller/Security/PasswordController.php
 
 		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\PasswordController\\:\\:registerAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\PasswordController\\:\\:requestAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Security\\\\PasswordController\\:\\:resetAction\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
 			message: "#^Only booleans are allowed in a negated boolean, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given\\.$#"
+			count: 1
+			path: src/Controller/Security/PasswordController.php
+
+		-
+			message: "#^Parameter \\#1 \\$auth of method App\\\\Security\\\\PasswordResetService\\:\\:generatePasswordRequestToken\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
 			count: 1
 			path: src/Controller/Security/PasswordController.php
 
@@ -916,13 +391,8 @@ parameters:
 			path: src/Controller/Security/PasswordController.php
 
 		-
-			message: "#^Property App\\\\Controller\\\\Security\\\\PasswordController\\:\\:\\$passwordEncoder has no type specified\\.$#"
-			count: 1
-			path: src/Controller/Security/PasswordController.php
-
-		-
-			message: "#^Property App\\\\Controller\\\\Security\\\\PasswordController\\:\\:\\$passwordReset has no type specified\\.$#"
-			count: 1
+			message: "#^Parameter \\#2 \\$token of method App\\\\Security\\\\PasswordResetService\\:\\:isPasswordRequestTokenValid\\(\\) expects string, mixed given\\.$#"
+			count: 2
 			path: src/Controller/Security/PasswordController.php
 
 		-
@@ -931,32 +401,7 @@ parameters:
 			path: src/Entity/Activity/Activity.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Activity\\:\\:getOptions\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Activity\\:\\:getRegistrations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Activity\\:\\:isVisible\\(\\) has parameter \\$groups with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Activity\\:\\:setImage\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Activity\\:\\:setImageFile\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Activity\\:\\:setPresent\\(\\) has no return type specified\\.$#"
+			message: "#^Cannot call method map\\(\\) on Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
 
@@ -971,42 +416,7 @@ parameters:
 			path: src/Entity/Activity/Activity.php
 
 		-
-			message: "#^Parameter \\#1 \\$func of method Doctrine\\\\Common\\\\Collections\\\\Collection\\<mixed,mixed\\>\\:\\:map\\(\\) expects Closure\\(mixed\\)\\: App\\\\Entity\\\\Group\\\\Group\\|null, Closure\\(App\\\\Entity\\\\Group\\\\Relation\\)\\: App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$author has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$capacity has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$color has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$deadline has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$end has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$id has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$groups of method App\\\\Entity\\\\Activity\\\\Activity\\:\\:isVisible\\(\\) expects array\\<App\\\\Entity\\\\Group\\\\Group\\>, array\\<int, App\\\\Entity\\\\Group\\\\Group\\|null\\> given\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
 
@@ -1021,612 +431,37 @@ parameters:
 			path: src/Entity/Activity/Activity.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$location has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$name has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$options has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$present has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$registrations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$start has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$target has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$visibleAfter has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:getDetails\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: "#^Parameter \\#1 \\$option of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setOption\\(\\) expects App\\\\Entity\\\\Activity\\\\PriceOption, null given\\.$#"
 			count: 1
 			path: src/Entity/Activity/PriceOption.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:getRegistrations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:setDetails\\(\\) has parameter \\$details with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$activity has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$confirmationMsg has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$details has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$name has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$price has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$registrations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\PriceOption\\:\\:\\$target has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getDeleteDate\\(\\) has invalid return type App\\\\Entity\\\\Activity\\\\DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getDeleteDate\\(\\) should return App\\\\Entity\\\\Activity\\\\DateTime but returns DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getNewDate\\(\\) has invalid return type App\\\\Entity\\\\Activity\\\\DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getNewDate\\(\\) should return App\\\\Entity\\\\Activity\\\\DateTime but returns DateTime\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:getPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setComment\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPresent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPresent\\(\\) has parameter \\$present with no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, App\\\\Entity\\\\Order\\|null given\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$activity has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$comment has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$option has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$present has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$reserve_position has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Activity/Registration.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Group\\:\\:getChildren\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
+			message: "#^Parameter \\#1 \\$group of method App\\\\Entity\\\\Group\\\\Relation\\:\\:setGroup\\(\\) expects App\\\\Entity\\\\Group\\\\Group, null given\\.$#"
 			count: 1
 			path: src/Entity/Group/Group.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Group\\:\\:getRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$active has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$children has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$name has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$parent has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$readonly has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$register has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$relationable has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$relations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Group\\:\\:\\$subgroupable has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getAllRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getChildren\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Group\\\\Relation\\:\\:getChildrenRecursive\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$children has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$group has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$parent has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Group\\\\Relation\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Group/Relation.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Location\\\\Location\\:\\:\\$address has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Location/Location.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Location\\\\Location\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Location/Location.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$discr has no type specified\\.$#"
+			message: "#^Method App\\\\Entity\\\\Log\\\\Event\\:\\:getDiscr\\(\\) should return class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null but returns string\\.$#"
 			count: 1
 			path: src/Entity/Log/Event.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$id has no type specified\\.$#"
+			message: "#^Method App\\\\Entity\\\\Log\\\\Event\\:\\:getObjectType\\(\\) should return class\\-string\\<object\\>\\|null but returns string\\|null\\.$#"
 			count: 1
 			path: src/Entity/Log/Event.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$meta has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$objectId has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$objectType has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$time has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Log/Event.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Mail\\\\Mail\\:\\:getRecipients\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$content has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$recipients has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$sender has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$sentAt has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Mail\\:\\:\\$title has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Mail.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Recipient\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Recipient.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Recipient\\:\\:\\$mail has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Recipient.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Mail\\\\Recipient\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Mail/Recipient.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:__construct\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: "#^Parameter \\#1 \\$data of class App\\\\Entity\\\\Order constructor expects array\\<int\\>, array\\<int\\<0, max\\>, float\\|int\\<\\-25, 25\\>\\> given\\.$#"
 			count: 1
 			path: src/Entity/Order.php
 
 		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:avg\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:calc\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:calc\\(\\) has parameter \\$fn with no type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:create\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:fromOrder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:fromOrder\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Order\\:\\:toOrder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Order\\:\\:\\$data has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Order.php
-
-		-
-			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Casting to string something that's already string\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Instanceof between DateTime and DateTime will always evaluate to true\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:__toString\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:eraseCredentials\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getRegistrations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getRelations\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getSalt\\(\\) should return string\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getUsername\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:isPasswordRequestNonExpired\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:isPasswordRequestNonExpired\\(\\) has parameter \\$ttl with no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestToken\\(\\) has parameter \\$passwordRequestToken with no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestedAt\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setRoles\\(\\) has parameter \\$roles with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$auth_id\\)\\: Unexpected token \"\\$auth_id\", expected type at offset 95$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$date\\)\\: Unexpected token \"\\$date\", expected type at offset 126$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$password\\)\\: Unexpected token \"\\$password\", expected type at offset 97$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$passwordRequestToken\\)\\: Unexpected token \"\\$passwordRequestToken\", expected type at offset 85$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$roles\\)\\: Unexpected token \"\\$roles\", expected type at offset 93$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$ttl\\)\\: Unexpected token \"\\$ttl\", expected type at offset 92$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$user\\)\\: Unexpected token \"\\$user\", expected type at offset 102$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(DateTime\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 111$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(UserInterface\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 87$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\\\\\)\\: Unexpected token \"\\\\\\\\\", expected type at offset 87$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(array\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 78$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 80$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 82$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$name$#"
+			message: "#^Argument of an invalid type Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null supplied for foreach, only iterables are supported\\.$#"
 			count: 2
 			path: src/Entity/Security/LocalAccount.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 118$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 121$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 125$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 128$#"
-			count: 2
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 129$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 153$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\*\", expected type at offset 73$#"
+			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getActiveGroups\\(\\) has invalid return type App\\\\Entity\\\\Security\\\\Group\\.$#"
 			count: 1
 			path: src/Entity/Security/LocalAccount.php
 
@@ -1636,47 +471,7 @@ parameters:
 			path: src/Entity/Security/LocalAccount.php
 
 		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$email has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$familyName has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$givenName has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$id has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$oidc \\(string\\) does not accept string\\|null\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$passwordRequestedAt \\(DateTime\\) does not accept DateTime\\|null\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$registrations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$relations has no type specified\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$roles has no type specified\\.$#"
+			message: "#^Return type \\(string\\|null\\) of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getUsername\\(\\) should be covariant with return type \\(string\\) of method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:getUsername\\(\\)$#"
 			count: 1
 			path: src/Entity/Security/LocalAccount.php
 
@@ -1686,237 +481,32 @@ parameters:
 			path: src/Entity/Security/LocalAccount.php
 
 		-
-			message: "#^Method App\\\\EventListener\\\\DoctrineTablePrefixListener\\:\\:__construct\\(\\) has parameter \\$prefix with no type specified\\.$#"
-			count: 1
-			path: src/EventListener/DoctrineTablePrefixListener.php
-
-		-
-			message: "#^Method App\\\\EventListener\\\\DoctrineTablePrefixListener\\:\\:loadClassMetadata\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/EventListener/DoctrineTablePrefixListener.php
-
-		-
-			message: "#^Property App\\\\EventListener\\\\DoctrineTablePrefixListener\\:\\:\\$prefix has no type specified\\.$#"
-			count: 1
-			path: src/EventListener/DoctrineTablePrefixListener.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityCountPresent\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityCountPresent.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityCountPresent\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityCountPresent.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityEditPresent\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityEditPresent.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityEditPresent\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityEditPresent.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityEditType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityEditType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityImageType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityImageType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityImageType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityImageType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivityNewType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivityNewType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivitySetPresentAmount\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivitySetPresentAmount.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\ActivitySetPresentAmount\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/ActivitySetPresentAmount.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\Admin\\\\ActivityEditType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
+			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
 			count: 1
 			path: src/Form/Activity/Admin/ActivityEditType.php
 
 		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\Admin\\\\ActivityEditType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
+			message: "#^Cannot call method getRoles\\(\\) on string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
 			count: 1
 			path: src/Form/Activity/Admin/ActivityEditType.php
 
 		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\Admin\\\\ActivityNewType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
+			message: "#^Cannot call method getUser\\(\\) on Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\TokenInterface\\|null\\.$#"
 			count: 1
-			path: src/Form/Activity/Admin/ActivityNewType.php
+			path: src/Form/Activity/Admin/ActivityEditType.php
 
 		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\Admin\\\\ActivityNewType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
+			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, mixed given\\.$#"
 			count: 1
-			path: src/Form/Activity/Admin/ActivityNewType.php
+			path: src/Form/Activity/Admin/ActivityEditType.php
 
 		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\PresentType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/PresentType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\PresentType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/PresentType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\PriceOptionType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/PriceOptionType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\PriceOptionType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/PriceOptionType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\RegistrationEditType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/RegistrationEditType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\RegistrationEditType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/RegistrationEditType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\RegistrationType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/RegistrationType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Activity\\\\RegistrationType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Activity/RegistrationType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Group\\\\GroupType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Group/GroupType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Group\\\\GroupType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Group/GroupType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Group\\\\RelationAddType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Group/RelationAddType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Group\\\\RelationAddType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Group/RelationAddType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Group\\\\RelationType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Group/RelationType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Group\\\\RelationType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Group/RelationType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Location\\\\LocationType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Location/LocationType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Location\\\\LocationType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Location/LocationType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Security\\\\LocalAccountType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Security/LocalAccountType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Security\\\\LocalAccountType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Security/LocalAccountType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Security\\\\NewPasswordType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Security/NewPasswordType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Security\\\\NewPasswordType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Security/NewPasswordType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Security\\\\PasswordRequestType\\:\\:buildForm\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Security/PasswordRequestType.php
-
-		-
-			message: "#^Method App\\\\Form\\\\Security\\\\PasswordRequestType\\:\\:configureOptions\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form/Security/PasswordRequestType.php
-
-		-
-			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:activities\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:current\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:groups\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns object\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:users\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
 			count: 1
 			path: src/GraphQL/Query.php
 
 		-
 			message: "#^Only booleans are allowed in &&, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given on the right side\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Property App\\\\GraphQL\\\\Query\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/GraphQL/Query.php
-
-		-
-			message: "#^Property App\\\\GraphQL\\\\Query\\:\\:\\$tokenStorage has no type specified\\.$#"
 			count: 1
 			path: src/GraphQL/Query.php
 
@@ -1936,59 +526,29 @@ parameters:
 			path: src/GraphQL/Types/DatetimeScalar.php
 
 		-
-			message: "#^Method App\\\\Group\\\\GroupMenuExtension\\:\\:discoverMenuItems\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Group\\\\GroupMenuExtension\\:\\:getMenuItems\\(\\) should return array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}, role\\?\\: string, class\\?\\: string, activeCriteria\\?\\: string, order\\?\\: int\\}\\> but returns array\\{array\\{title\\: 'Activiteiten', sub\\: array\\<string, array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\>\\}\\}\\.$#"
 			count: 1
 			path: src/Group/GroupMenuExtension.php
 
 		-
-			message: "#^Method App\\\\Group\\\\GroupMenuExtension\\:\\:getMenuItems\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: "#^Method App\\\\Group\\\\GroupMenuExtension\\:\\:getUser\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Group/GroupMenuExtension.php
 
 		-
-			message: "#^Property App\\\\Group\\\\GroupMenuExtension\\:\\:\\$menuItems is never read, only written\\.$#"
+			message: "#^Only booleans are allowed in a negated boolean, array\\<string, array\\<array\\<string, array\\<int, array\\<string, string\\|null\\>\\|string\\|null\\>\\|string\\>\\>\\> given\\.$#"
 			count: 1
 			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Property App\\\\Group\\\\GroupMenuExtension\\:\\:\\$menuItems type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Group\\\\OrganiseMenuExtension\\:\\:discoverMenuItems\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Group\\\\OrganiseMenuExtension\\:\\:getMenuItems\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Group\\\\OrganiseMenuExtension\\:\\:getUser\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array given\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
 
 		-
 			message: "#^Only booleans are allowed in a negated boolean, bool\\|null given\\.$#"
 			count: 1
-			path: src/Group/OrganiseMenuExtension.php
+			path: src/Group/GroupMenuExtension.php
 
 		-
-			message: "#^Property App\\\\Group\\\\OrganiseMenuExtension\\:\\:\\$menuItems type has no value type specified in iterable type array\\.$#"
+			message: "#^Property App\\\\Group\\\\GroupMenuExtension\\:\\:\\$menuItems \\(array\\<string, array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\>\\) does not accept non\\-empty\\-array\\<int\\|string, array\\<array\\{'admin_activity_group', array\\{id\\: string\\|null\\}\\}\\|array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\|string\\|null\\>\\>\\.$#"
 			count: 1
-			path: src/Group/OrganiseMenuExtension.php
+			path: src/Group/GroupMenuExtension.php
 
 		-
 			message: "#^Generator expects value type Symfony\\\\Component\\\\HttpKernel\\\\Bundle\\\\BundleInterface, object given\\.$#"
@@ -2001,77 +561,7 @@ parameters:
 			path: src/Kernel.php
 
 		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getEntity\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getEntityType\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getPerson\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getTime\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:getTitle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntity\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntity\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntityType\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\AbstractEvent\\:\\:setEntityType\\(\\) has parameter \\$type with no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$entity has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$entityCb has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$entityType has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
 			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$person is never written, only read\\.$#"
-			count: 1
-			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$time has no type specified\\.$#"
 			count: 1
 			path: src/Log/AbstractEvent.php
 
@@ -2081,57 +571,17 @@ parameters:
 			path: src/Log/AbstractEvent.php
 
 		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:extractFields\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:extractFields\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:extractFields\\(\\) has parameter \\$metadata with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:onFlush\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has parameter \\$field with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has parameter \\$metadata with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:sanitize\\(\\) has parameter \\$value with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
 			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\ORM\\\\EntityManager\\:\\:getClassMetadata\\(\\) expects string, class\\-string\\|false given\\.$#"
-			count: 4
+			count: 2
 			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:\\$eventService has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$entity of method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) expects object, mixed given\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityEventListener\\:\\:\\$reflService has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$entity of method App\\\\Log\\\\EventService\\:\\:getIdentifier\\(\\) expects object, mixed given\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityEventListener.php
 
@@ -2141,27 +591,12 @@ parameters:
 			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:__construct\\(\\) has parameter \\$entity with no type specified\\.$#"
+			message: "#^Unable to resolve the template type T in call to method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\)$#"
 			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
+			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:__construct\\(\\) has parameter \\$fields with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:getFields\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:getTitle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityNewEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityNewEvent\\:\\:\\$fields has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$fqcn of static method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityNewEvent.php
 
@@ -2176,52 +611,7 @@ parameters:
 			path: src/Log/Doctrine/EntityNewEvent.php
 
 		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:__construct\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:__construct\\(\\) has parameter \\$newValues with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:__construct\\(\\) has parameter \\$oldObject with no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getNew\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getNewChanged\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getOld\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getOldChanged\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Method App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:getTitle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:\\$new has no type specified\\.$#"
-			count: 1
-			path: src/Log/Doctrine/EntityUpdateEvent.php
-
-		-
-			message: "#^Property App\\\\Log\\\\Doctrine\\\\EntityUpdateEvent\\:\\:\\$old has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$fqcn of static method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityUpdateEvent.php
 
@@ -2231,77 +621,12 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Cannot access offset 'entityCb' on mixed\\.$#"
+			message: "#^Cannot call method getValue\\(\\) on ReflectionProperty\\|null\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Cannot access offset 'entityType' on mixed\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Cannot access offset 'person' on mixed\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Cannot access offset 'time' on mixed\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findBy\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findBy\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findBy\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findOneBy\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findOneBy\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:findOneBy\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getIdentifier\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getIdentifier\\(\\) has parameter \\$entity with no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:hydrate\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) should return class\\-string\\<T of object\\> but returns string\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -2311,22 +636,32 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:populate\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:populateAll\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
 			message: "#^Method App\\\\Log\\\\EventService\\:\\:populateAll\\(\\) has parameter \\$entities with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Parameter \\#1 \\$classname of function class_exists expects string, string\\|null given\\.$#"
+			message: "#^PHPDoc tag @param for parameter \\$entities with type object is incompatible with native type array\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
+			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\) expects class\\-string\\<object\\>, class\\-string\\<object\\>\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
+			message: "#^Parameter \\#1 \\$classname of function class_exists expects string, class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
+			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, App\\\\Entity\\\\Log\\\\Event\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
+			message: "#^Parameter \\#1 \\$person of method App\\\\Entity\\\\Log\\\\Event\\:\\:setPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount\\|null, string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -2336,22 +671,12 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Property App\\\\Log\\\\EventService\\:\\:\\$em has no type specified\\.$#"
+			message: "#^Method App\\\\Mail\\\\MailService\\:\\:getUser\\(\\) has invalid return type App\\\\Mail\\\\UserInterface\\.$#"
 			count: 1
-			path: src/Log/EventService.php
+			path: src/Mail/MailService.php
 
 		-
-			message: "#^Property App\\\\Log\\\\EventService\\:\\:\\$person has no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Property App\\\\Log\\\\EventService\\:\\:\\$refl has no type specified\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Mail\\\\MailService\\:\\:getUser\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Mail\\\\MailService\\:\\:getUser\\(\\) should return App\\\\Mail\\\\UserInterface\\|Stringable\\|null but returns Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
 			count: 1
 			path: src/Mail/MailService.php
 
@@ -2376,34 +701,9 @@ parameters:
 			path: src/Mail/MailService.php
 
 		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$em has no type specified\\.$#"
+			message: "#^Parameter \\#1 \\$person of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount\\|null, App\\\\Mail\\\\UserInterface\\|Stringable\\|null given\\.$#"
 			count: 1
 			path: src/Mail/MailService.php
-
-		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$mailer has no type specified\\.$#"
-			count: 1
-			path: src/Mail/MailService.php
-
-		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$params has no type specified\\.$#"
-			count: 1
-			path: src/Mail/MailService.php
-
-		-
-			message: "#^Property App\\\\Mail\\\\MailService\\:\\:\\$tokenStorage has no type specified\\.$#"
-			count: 1
-			path: src/Mail/MailService.php
-
-		-
-			message: "#^Method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Reflection/ClassNameService.php
-
-		-
-			message: "#^Method App\\\\Reflection\\\\ClassNameService\\:\\:fqcnToName\\(\\) has parameter \\$fqcn with no type specified\\.$#"
-			count: 1
-			path: src/Reflection/ClassNameService.php
 
 		-
 			message: "#^Only booleans are allowed in an if condition, int\\|false given\\.$#"
@@ -2421,99 +721,24 @@ parameters:
 			path: src/Reflection/ReflectionService.php
 
 		-
-			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:instantiate\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Reflection/ReflectionService.php
-
-		-
-			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:instantiate\\(\\) has parameter \\$fieldValues with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Reflection/ReflectionService.php
-
-		-
 			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
 
 		-
-			message: "#^Property App\\\\Reflection\\\\ReflectionService\\:\\:\\$instantiator has no type specified\\.$#"
-			count: 1
-			path: src/Reflection/ReflectionService.php
-
-		-
-			message: "#^Class App\\\\Repository\\\\ActivityRepository extends generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
+			message: "#^Method App\\\\Repository\\\\ActivityRepository\\:\\:findAuthor\\(\\) has parameter \\$groups with no type specified\\.$#"
 			count: 1
 			path: src/Repository/ActivityRepository.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\ActivityRepository\\:\\:findUpcoming\\(\\) should return array\\<App\\\\Entity\\\\Activity\\\\Activity\\> but returns mixed\\.$#"
-			count: 1
-			path: src/Repository/ActivityRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\ActivityRepository\\:\\:findUpcomingByGroup\\(\\) has parameter \\$groups with no type specified\\.$#"
-			count: 1
-			path: src/Repository/ActivityRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\ActivityRepository\\:\\:findUpcomingByGroup\\(\\) should return array\\<App\\\\Entity\\\\Activity\\\\Activity\\> but returns mixed\\.$#"
-			count: 1
-			path: src/Repository/ActivityRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\ActivityRepository\\:\\:findVisibleUpcomingByGroup\\(\\) has parameter \\$groups with no type specified\\.$#"
-			count: 1
-			path: src/Repository/ActivityRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\ActivityRepository\\:\\:findVisibleUpcomingByGroup\\(\\) should return array\\<App\\\\Entity\\\\Activity\\\\Activity\\> but returns mixed\\.$#"
-			count: 1
-			path: src/Repository/ActivityRepository.php
-
-		-
-			message: "#^Class App\\\\Repository\\\\GroupRepository extends generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
+			message: "#^Foreach overwrites \\$group with its value variable\\.$#"
 			count: 1
 			path: src/Repository/GroupRepository.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) should return array\\<App\\\\Entity\\\\Group\\\\Group\\> but returns mixed\\.$#"
+			message: "#^Method App\\\\Repository\\\\GroupRepository\\:\\:findSubGroupsFor\\(\\) has parameter \\$skipgroups with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/GroupRepository.php
-
-		-
-			message: "#^Class App\\\\Repository\\\\OptionRepository extends generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
-			count: 1
-			path: src/Repository/OptionRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\OptionRepository\\:\\:findUpcomingByGroup\\(\\) has parameter \\$groups with no type specified\\.$#"
-			count: 1
-			path: src/Repository/OptionRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\OptionRepository\\:\\:findUpcomingByGroup\\(\\) should return array\\<App\\\\Entity\\\\Activity\\\\PriceOption\\> but returns mixed\\.$#"
-			count: 1
-			path: src/Repository/OptionRepository.php
-
-		-
-			message: "#^Cannot call method getReservePosition\\(\\) on mixed\\.$#"
-			count: 4
-			path: src/Repository/RegistrationRepository.php
-
-		-
-			message: "#^Class App\\\\Repository\\\\RegistrationRepository extends generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
-			count: 1
-			path: src/Repository/RegistrationRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:MAXORDER\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Repository/RegistrationRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:MINORDER\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Repository/RegistrationRepository.php
 
 		-
 			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:countPresent\\(\\) should return int but returns mixed\\.$#"
@@ -2521,44 +746,44 @@ parameters:
 			path: src/Repository/RegistrationRepository.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findAfter\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findAfter\\(\\) should return App\\\\Entity\\\\Order but returns App\\\\Entity\\\\Order\\|null\\.$#"
 			count: 1
 			path: src/Repository/RegistrationRepository.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findAppendPosition\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findBefore\\(\\) should return App\\\\Entity\\\\Order but returns App\\\\Entity\\\\Order\\|null\\.$#"
 			count: 1
 			path: src/Repository/RegistrationRepository.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findBefore\\(\\) has no return type specified\\.$#"
-			count: 1
+			message: "#^Parameter \\#1 \\$s of static method App\\\\Entity\\\\Order\\:\\:create\\(\\) expects string, App\\\\Entity\\\\Order\\|null given\\.$#"
+			count: 2
 			path: src/Repository/RegistrationRepository.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findDeregistrations\\(\\) should return array\\<App\\\\Entity\\\\Activity\\\\Registration\\> but returns mixed\\.$#"
-			count: 1
-			path: src/Repository/RegistrationRepository.php
+			message: "#^Argument of an invalid type Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: src/Security/GroupVoter.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findPrependPosition\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Repository/RegistrationRepository.php
+			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
+			count: 2
+			path: src/Security/GroupVoter.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findReserve\\(\\) should return array\\<App\\\\Entity\\\\Activity\\\\Registration\\> but returns mixed\\.$#"
+			message: "#^Only booleans are allowed in &&, bool\\|null given on the left side\\.$#"
 			count: 1
-			path: src/Repository/RegistrationRepository.php
+			path: src/Security/GroupVoter.php
 
 		-
-			message: "#^Property App\\\\Repository\\\\RegistrationRepository\\:\\:\\$max has no type specified\\.$#"
+			message: "#^Only booleans are allowed in &&, mixed given on the left side\\.$#"
 			count: 1
-			path: src/Repository/RegistrationRepository.php
+			path: src/Security/GroupVoter.php
 
 		-
-			message: "#^Property App\\\\Repository\\\\RegistrationRepository\\:\\:\\$min has no type specified\\.$#"
+			message: "#^Only booleans are allowed in a negated boolean, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
 			count: 1
-			path: src/Repository/RegistrationRepository.php
+			path: src/Security/GroupVoter.php
 
 		-
 			message: "#^Cannot access offset 'csrf_token' on mixed\\.$#"
@@ -2606,17 +831,12 @@ parameters:
 			path: src/Security/LocalAuthenticator.php
 
 		-
+			message: "#^Parameter \\#2 \\$raw of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\:\\:isPasswordValid\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/Security/LocalAuthenticator.php
+
+		-
 			message: "#^Parameter \\#2 \\$value of class Symfony\\\\Component\\\\Security\\\\Csrf\\\\CsrfToken constructor expects string\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$csrfTokenManager has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$em has no type specified\\.$#"
 			count: 1
 			path: src/Security/LocalAuthenticator.php
 
@@ -2626,119 +846,14 @@ parameters:
 			path: src/Security/LocalAuthenticator.php
 
 		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$passwordEncoder has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$urlGenerator has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalUserProvider\\:\\:\\$em has no type specified\\.$#"
-			count: 1
-			path: src/Security/LocalUserProvider.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Security\\\\PasswordResetService\\:\\:\\$em\\.$#"
-			count: 5
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Security\\\\PasswordResetService\\:\\:\\$encoderFactory\\.$#"
-			count: 4
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\SelfSaltingEncoderInterface\\:\\:encodePassword\\(\\)\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\SelfSaltingEncoderInterface\\:\\:isPasswordValid\\(\\)\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:setPasswordRequestSalt\\(\\) invoked with 1 parameter, 0 required\\.$#"
+			message: "#^Parameter \\#1 \\$encoded of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\PasswordEncoderInterface\\:\\:isPasswordValid\\(\\) expects string, string\\|null given\\.$#"
 			count: 2
 			path: src/Security/PasswordResetService.php
 
 		-
-			message: "#^Method App\\\\Security\\\\PasswordResetService\\:\\:generatePasswordRequestToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Method App\\\\Security\\\\PasswordResetService\\:\\:isPasswordRequestTokenValid\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Method App\\\\Security\\\\PasswordResetService\\:\\:resetPasswordRequestToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$managerName has no type specified\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$managerName is unused\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$registry has no type specified\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Property App\\\\Security\\\\PasswordResetService\\:\\:\\$registry is unused\\.$#"
-			count: 1
-			path: src/Security/PasswordResetService.php
-
-		-
-			message: "#^Method App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:getPath\\(\\) has no return type specified\\.$#"
+			message: "#^Property App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:\\$path \\(string\\) does not accept string\\|null\\.$#"
 			count: 1
 			path: src/Template/Annotation/MenuItem.php
-
-		-
-			message: "#^Method App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:setPath\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Template/Annotation/MenuItem.php
-
-		-
-			message: "#^Method App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:setPath\\(\\) has parameter \\$path with no type specified\\.$#"
-			count: 1
-			path: src/Template/Annotation/MenuItem.php
-
-		-
-			message: "#^Method App\\\\Template\\\\AnnotationMenuExtension\\:\\:__construct\\(\\) has parameter \\$directory with no type specified\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Template\\\\AnnotationMenuExtension\\:\\:__construct\\(\\) has parameter \\$namespace with no type specified\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Template\\\\AnnotationMenuExtension\\:\\:__construct\\(\\) has parameter \\$rootDir with no type specified\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Template\\\\AnnotationMenuExtension\\:\\:discoverMenuItems\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Template\\\\AnnotationMenuExtension\\:\\:getMenuItems\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
 
 		-
 			message: "#^Only booleans are allowed in a negated boolean, Symfony\\\\Component\\\\Routing\\\\Annotation\\\\Route\\|null given\\.$#"
@@ -2746,7 +861,7 @@ parameters:
 			path: src/Template/AnnotationMenuExtension.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, array given\\.$#"
+			message: "#^Only booleans are allowed in a negated boolean, array\\<string, array\\<App\\\\Template\\\\Annotation\\\\MenuItem\\>\\> given\\.$#"
 			count: 1
 			path: src/Template/AnnotationMenuExtension.php
 
@@ -2761,99 +876,28 @@ parameters:
 			path: src/Template/AnnotationMenuExtension.php
 
 		-
-			message: """
-				#^PHPDoc tag @param has invalid value \\(\\$directory
-				  The directory of the menu items\\)\\: Unexpected token "\\$directory", expected type at offset 125$#
-			"""
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: """
-				#^PHPDoc tag @param has invalid value \\(\\$namespace
-				  The namespace of the menu items\\)\\: Unexpected token "\\$namespace", expected type at offset 59$#
-			"""
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$rootDir\\)\\: Unexpected token \"\\$rootDir\", expected type at offset 191$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
 			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Template/AnnotationMenuExtension.php
 
 		-
-			message: "#^Property App\\\\Template\\\\AnnotationMenuExtension\\:\\:\\$menuItems type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Template\\\\MenuBuilder\\:\\:__construct\\(\\) has parameter \\$extensions with no type specified\\.$#"
+			message: "#^Method App\\\\Template\\\\MenuBuilder\\:\\:getItems\\(\\) should return array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|string, role\\?\\: string, class\\?\\: string, activeCriteria\\?\\: string, order\\?\\: int\\}\\> but returns array\\<array\\<string, array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|int\\|string\\>\\>\\.$#"
 			count: 1
 			path: src/Template/MenuBuilder.php
 
 		-
-			message: "#^Method App\\\\Template\\\\MenuBuilder\\:\\:getItems\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: "#^Property App\\\\Template\\\\MenuBuilder\\:\\:\\$menuitems \\(array\\<string, array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|string, role\\?\\: string, class\\?\\: string, activeCriteria\\?\\: string, order\\?\\: int\\}\\>\\>\\) does not accept non\\-empty\\-array\\<string, array\\<array\\<string, array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|int\\|string\\>\\>\\>\\.$#"
 			count: 1
 			path: src/Template/MenuBuilder.php
 
 		-
-			message: "#^Property App\\\\Template\\\\MenuBuilder\\:\\:\\$extensions has no type specified\\.$#"
+			message: "#^Unary operation \"\\-\" on array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|int\\|string results in an error\\.$#"
 			count: 1
 			path: src/Template/MenuBuilder.php
-
-		-
-			message: "#^Property App\\\\Template\\\\MenuBuilder\\:\\:\\$menuitems has no type specified\\.$#"
-			count: 1
-			path: src/Template/MenuBuilder.php
-
-		-
-			message: "#^Method App\\\\Template\\\\MenuExtensionInterface\\:\\:getMenuItems\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Template/MenuExtensionInterface.php
 
 		-
 			message: "#^Cannot call method get\\(\\) on Symfony\\\\Component\\\\DependencyInjection\\\\ContainerInterface\\|null\\.$#"
 			count: 3
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method getMetadataFactory\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method invalidate\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method save\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method set\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method setToken\\(\\) on object\\|null\\.$#"
-			count: 1
 			path: src/Tests/AuthWebTestCase.php
 
 		-
@@ -2862,84 +906,9 @@ parameters:
 			path: src/Tests/AuthWebTestCase.php
 
 		-
-			message: "#^Parameter \\#1 \\$em of class Doctrine\\\\ORM\\\\Tools\\\\SchemaTool constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\ActivityFixture\\:\\:generate\\(\\) has parameter \\$locations with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/ActivityFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\ActivityFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/ActivityFixture.php
-
-		-
-			message: "#^Parameter \\#2 \\$group of static method App\\\\Tests\\\\Database\\\\Activity\\\\ActivityFixture\\:\\:generate\\(\\) expects App\\\\Entity\\\\Group\\\\Group, object given\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/ActivityFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\PriceOptionFixture\\:\\:generate\\(\\) has parameter \\$activities with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/PriceOptionFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\PriceOptionFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/PriceOptionFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\RegistrationFixture\\:\\:generate\\(\\) has parameter \\$activity with no type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/RegistrationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\RegistrationFixture\\:\\:generate\\(\\) has parameter \\$person with no type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/RegistrationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\RegistrationFixture\\:\\:generate\\(\\) has parameter \\$priceOption with no type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/RegistrationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Activity\\\\RegistrationFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Activity/RegistrationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Group\\\\GroupFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Group/GroupFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Group\\\\RelationFixture\\:\\:generate\\(\\) has parameter \\$group with no type specified\\.$#"
+			message: "#^Parameter \\#2 \\$person of static method App\\\\Tests\\\\Database\\\\Group\\\\RelationFixture\\:\\:generate\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, App\\\\Entity\\\\Group\\\\Group given\\.$#"
 			count: 1
 			path: src/Tests/Database/Group/RelationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Group\\\\RelationFixture\\:\\:generate\\(\\) has parameter \\$person with no type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Group/RelationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Group\\\\RelationFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Group/RelationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Location\\\\LocationFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Location/LocationFixture.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Mail\\\\MailFixture\\:\\:load\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Mail/MailFixture.php
 
 		-
 			message: "#^Parameter \\#1 \\$content of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setContent\\(\\) expects string, string\\|false given\\.$#"
@@ -2947,14 +916,9 @@ parameters:
 			path: src/Tests/Database/Mail/MailFixture.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\Database\\\\Security\\\\LocalAccountFixture\\:\\:load\\(\\) has no return type specified\\.$#"
+			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
 			count: 1
-			path: src/Tests/Database/Security/LocalAccountFixture.php
-
-		-
-			message: "#^Property App\\\\Tests\\\\Database\\\\Security\\\\LocalAccountFixture\\:\\:\\$encoder has no type specified\\.$#"
-			count: 1
-			path: src/Tests/Database/Security/LocalAccountFixture.php
+			path: src/Tests/TestData.php
 
 		-
 			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
@@ -2962,62 +926,42 @@ parameters:
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:__construct\\(\\) has parameter \\$initial with no type specified\\.$#"
+			message: "#^Call to function is_array\\(\\) with \\*NEVER\\* will always evaluate to true\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:allConditionsSucceed\\(\\) has parameter \\$object with no type specified\\.$#"
+			message: "#^Call to function is_callable\\(\\) with callable\\(\\)\\: mixed will always evaluate to true\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:buildFromData\\(\\) has no return type specified\\.$#"
+			message: "#^Call to function is_object\\(\\) with X of object will always evaluate to true\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:buildFromData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: "#^Cannot clone array\\|T of object\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:buildPermutations\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: "#^Method App\\\\Tests\\\\TestData\\:\\:buildFromData\\(\\) should return T of object but returns array\\|T of object\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:cartesian\\(\\) has parameter \\$set with no type specified\\.$#"
+			message: "#^Method App\\\\Tests\\\\TestData\\:\\:buildPermutations\\(\\) should return array\\<array\\{properties\\: array, actions\\: array\\<callable\\(\\)\\: mixed\\>\\}\\> but returns array\\<array\\<string, mixed\\>\\>\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:cartesian\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: "#^Method App\\\\Tests\\\\TestData\\:\\:create\\(\\) should return App\\\\Tests\\\\TestData\\<X of object\\> but returns App\\\\Tests\\\\TestData\\<object\\>\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:doWith\\(\\) has parameter \\$options with no type specified\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:from\\(\\) has parameter \\$object with no type specified\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:return\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:returnInvalid\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:with\\(\\) has parameter \\$options with no type specified\\.$#"
+			message: "#^Only booleans are allowed in a negated boolean, array\\<TKey of \\(int\\|string\\), mixed\\> given\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
@@ -3027,79 +971,14 @@ parameters:
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^PHPDoc tag @throws with type App\\\\Tests\\\\UnexpectedValueException is not subtype of Throwable$#"
+			message: "#^Parameter \\#1 \\$initial of class App\\\\Tests\\\\TestData constructor expects T of object, array given\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
+			message: "#^Result of && is always false\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
-
-		-
-			message: "#^Property App\\\\Tests\\\\TestData\\:\\:\\$action_options has no type specified\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Property App\\\\Tests\\\\TestData\\:\\:\\$conditions has no type specified\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Property App\\\\Tests\\\\TestData\\:\\:\\$initial has no type specified\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Property App\\\\Tests\\\\TestData\\:\\:\\$property_options has no type specified\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertContains\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Command/CreateLocalAccountCommandTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 3
-			path: tests/Functional/Command/CreateLocalAccountCommandTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Command\\\\CreateLocalAccountCommandTest\\:\\:testExecute\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Functional/Command/CreateLocalAccountCommandTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Command\\\\CreateLocalAccountCommandTest\\:\\:testInteract\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Functional/Command/CreateLocalAccountCommandTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Command\\\\CreateLocalAccountCommandTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Command/CreateLocalAccountCommandTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Command/HasLocalAccountCommandTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Command\\\\HasLocalAccountCommandTest\\:\\:testExecuteEmpty\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Functional/Command/HasLocalAccountCommandTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Command\\\\HasLocalAccountCommandTest\\:\\:testExecuteWithFixtures\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Functional/Command/HasLocalAccountCommandTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Command\\\\HasLocalAccountCommandTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Command/HasLocalAccountCommandTest.php
 
 		-
 			message: "#^Access to an undefined property Tests\\\\Functional\\\\Controller\\\\Activity\\\\ActivityControllerTest\\:\\:\\$em\\.$#"
@@ -3107,37 +986,7 @@ parameters:
 			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
 
 		-
-			message: "#^Call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with App\\\\Entity\\\\Activity\\\\DateTime will always evaluate to true\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
-
-		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 4
-			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
 			count: 2
 			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
 
@@ -3147,37 +996,7 @@ parameters:
 			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 9
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$events of class App\\\\Controller\\\\Admin\\\\ActivityController constructor expects App\\\\Log\\\\EventService, object\\|null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
 			message: "#^Parameter \\#5 \\$test of class Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile constructor expects bool, null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\ActivityControllerTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\ActivityControllerTest\\:\\:\\$events \\(App\\\\Log\\\\EventService\\) does not accept object\\|null\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
 
@@ -3192,67 +1011,12 @@ parameters:
 			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/AdminControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/EventControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$events of class App\\\\Controller\\\\Admin\\\\EventController constructor expects App\\\\Log\\\\EventService, object\\|null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/EventControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\EventControllerTest\\:\\:\\$events \\(App\\\\Log\\\\EventService\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/EventControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertContains\\(\\)\\.$#"
-			count: 3
-			path: tests/Functional/Controller/Admin/GroupControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 9
-			path: tests/Functional/Controller/Admin/GroupControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotContains\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Admin/GroupControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Admin/GroupControllerTest.php
-
-		-
 			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\GroupControllerTest\\:\\:\\$controllerEndpoint has no type specified\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/GroupControllerTest.php
 
 		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\GroupControllerTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/GroupControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Admin/MailControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Admin/MailControllerTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$text of method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#2 \\$text of static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/MailControllerTest.php
 
@@ -3260,16 +1024,6 @@ parameters:
 			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\MailControllerTest\\:\\:\\$controllerEndpoint has no type specified\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/MailControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\MailControllerTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/MailControllerTest.php
-
-		-
-			message: "#^Call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with App\\\\Entity\\\\Activity\\\\DateTime will always evaluate to true\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
 
 		-
 			message: "#^Cannot call method getComment\\(\\) on App\\\\Entity\\\\Activity\\\\Registration\\|null\\.$#"
@@ -3287,32 +1041,12 @@ parameters:
 			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 13
-			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 5
-			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
-
-		-
 			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\RegistrationControllerTest\\:\\:\\$controller has no type specified\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
 
 		-
 			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\RegistrationControllerTest\\:\\:\\$controller is never read, only written\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\RegistrationControllerTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
 
@@ -3327,96 +1061,6 @@ parameters:
 			path: tests/Functional/Controller/Admin/SecurityControllerTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 6
-			path: tests/Functional/Controller/Admin/SecurityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 4
-			path: tests/Functional/Controller/Admin/SecurityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/SecurityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 10
-			path: tests/Functional/Controller/Organise/ActivityControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/OrganiseControllerTest.php
-
-		-
-			message: "#^Call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\) with App\\\\Entity\\\\Activity\\\\DateTime will always evaluate to true\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getComment\\(\\) on App\\\\Entity\\\\Activity\\\\Registration\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getDeleteDate\\(\\) on App\\\\Entity\\\\Activity\\\\Registration\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Group\\\\Group\\|null\\.$#"
-			count: 8
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on mixed\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getRegistrations\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 13
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotNull\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 5
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Organise\\\\RegistrationControllerTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 5
-			path: tests/Functional/Controller/Security/LoginControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertStringContainsString\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Security/LoginControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Security/LoginControllerTest.php
-
-		-
 			message: "#^Method Tests\\\\Functional\\\\Controller\\\\Security\\\\LoginControllerTest\\:\\:setupOidc\\(\\) has parameter \\$container with no type specified\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Security/LoginControllerTest.php
@@ -3427,7 +1071,7 @@ parameters:
 			path: tests/Functional/Controller/Security/LoginControllerTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$haystack of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertStringContainsString\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#2 \\$haystack of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertStringContainsString\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Security/LoginControllerTest.php
 
@@ -3440,71 +1084,6 @@ parameters:
 			message: "#^Access to an undefined property Tests\\\\Functional\\\\Controller\\\\Security\\\\PasswordControllerTest\\:\\:\\$userProvider\\.$#"
 			count: 5
 			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 10
-			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Test\\\\WebTestCase\\:\\:assertSelectorTextContains\\(\\)\\.$#"
-			count: 6
-			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$em of class App\\\\Security\\\\LocalUserProvider constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$passwordEncoder of class App\\\\Controller\\\\Security\\\\PasswordController constructor expects Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$passwordReset of class App\\\\Controller\\\\Security\\\\PasswordController constructor expects App\\\\Security\\\\PasswordResetService, object\\|null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Security\\\\PasswordControllerTest\\:\\:\\$passwordEncoder \\(Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Security\\\\PasswordControllerTest\\:\\:\\$passwordReset \\(App\\\\Security\\\\PasswordResetService\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Security/PasswordControllerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayNotHasKey\\(\\)\\.$#"
-			count: 10
-			path: tests/Functional/GraphQL/QueryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertCount\\(\\)\\.$#"
-			count: 5
-			path: tests/Functional/GraphQL/QueryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 10
-			path: tests/Functional/GraphQL/QueryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotEmpty\\(\\)\\.$#"
-			count: 3
-			path: tests/Functional/GraphQL/QueryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNull\\(\\)\\.$#"
-			count: 5
-			path: tests/Functional/GraphQL/QueryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 6
-			path: tests/Functional/GraphQL/QueryTest.php
 
 		-
 			message: "#^Method Tests\\\\Functional\\\\GraphQL\\\\QueryTest\\:\\:graphqlQuery\\(\\) has parameter \\$variables with no value type specified in iterable type array\\.$#"
@@ -3532,43 +1111,18 @@ parameters:
 			path: tests/Functional/GraphQL/QueryTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Activity/ActivityCountPresentTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Activity/ActivityEditPresentTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
+			message: "#^Class App\\\\Form\\\\Activity\\\\ActivityEditType constructor invoked with 0 parameters, 1 required\\.$#"
 			count: 1
 			path: tests/Integration/Form/Activity/ActivityEditTypeTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Activity/ActivityImageTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
+			message: "#^Class App\\\\Form\\\\Activity\\\\ActivityNewType constructor invoked with 0 parameters, 1 required\\.$#"
 			count: 1
 			path: tests/Integration/Form/Activity/ActivityNewTypeTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Activity/ActivitySetPresentAmountTest.php
-
-		-
-			message: "#^Cannot call method create\\(\\) on object\\|null\\.$#"
+			message: "#^Class App\\\\Form\\\\Activity\\\\Admin\\\\ActivityEditType constructor invoked with 0 parameters, 1 required\\.$#"
 			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 2
 			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
 
 		-
@@ -3582,13 +1136,8 @@ parameters:
 			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
 
 		-
-			message: "#^Cannot call method create\\(\\) on object\\|null\\.$#"
+			message: "#^Class App\\\\Form\\\\Activity\\\\Admin\\\\ActivityNewType constructor invoked with 0 parameters, 1 required\\.$#"
 			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 2
 			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
 
 		-
@@ -3607,16 +1156,6 @@ parameters:
 			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
 
 		-
-			message: "#^Cannot call method create\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/PresentTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Activity/PresentTypeTest.php
-
-		-
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
 			count: 2
 			path: tests/Integration/Form/Activity/PresentTypeTest.php
@@ -3632,16 +1171,6 @@ parameters:
 			path: tests/Integration/Form/Activity/RegistrationEditTypeTest.php
 
 		-
-			message: "#^Cannot call method create\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/RegistrationEditTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Activity/RegistrationEditTypeTest.php
-
-		-
 			message: "#^Method Tests\\\\Integration\\\\Form\\\\Activity\\\\RegistrationEditTypeTest\\:\\:testBindValidData\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/Integration/Form/Activity/RegistrationEditTypeTest.php
@@ -3652,107 +1181,12 @@ parameters:
 			path: tests/Integration/Form/Activity/RegistrationTypeTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Activity/RegistrationTypeTest.php
-
-		-
-			message: "#^Property Tests\\\\Integration\\\\Form\\\\Activity\\\\RegistrationTypeTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/RegistrationTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Group/GroupTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Group/RelationAddTypeTest.php
-
-		-
 			message: "#^Access to an undefined property Tests\\\\Integration\\\\Form\\\\Group\\\\RelationTypeTest\\:\\:\\$relationType\\.$#"
 			count: 1
 			path: tests/Integration/Form/Group/RelationTypeTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Group/RelationTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Location/LocationTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Security/LocalAccountTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Security/NewPasswordTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Form/Security/PasswordRequestTypeTest.php
-
-		-
-			message: "#^Cannot call method format\\(\\) on DateTime\\|null\\.$#"
-			count: 2
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertStringContainsString\\(\\)\\.$#"
-			count: 14
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$description has no type specified\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$invalidActivity has no type specified\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$now \\(Tests\\\\Unit\\\\Calendar\\\\datetime\\) does not accept DateTime\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$now has unknown class Tests\\\\Unit\\\\Calendar\\\\datetime as its type\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Calendar\\\\ICalProviderTest\\:\\:\\$secondActivity has no type specified\\.$#"
-			count: 1
-			path: tests/Unit/Calendar/ICalProviderTest.php
-
-		-
 			message: "#^Cannot access offset 0 on mixed\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Activity/ActivityTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotSame\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Activity/ActivityTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 36
-			path: tests/Unit/Entity/Activity/ActivityTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Activity/ActivityTest.php
 
@@ -3782,21 +1216,6 @@ parameters:
 			path: tests/Unit/Entity/Activity/PriceOptionTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotSame\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/PriceOptionTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 17
-			path: tests/Unit/Entity/Activity/PriceOptionTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 20
-			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
 			message: "#^Method Tests\\\\Unit\\\\Entity\\\\Activity\\\\RegistrationTest\\:\\:testGetComment\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
@@ -3822,59 +1241,19 @@ parameters:
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 19
-			path: tests/Unit/Entity/Group/GroupTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 5
-			path: tests/Unit/Entity/Group/GroupTest.php
-
-		-
-			message: "#^You should use assertTrue\\(\\) instead of assertSame\\(\\) when expecting \"true\"$#"
-			count: 9
-			path: tests/Unit/Entity/Group/GroupTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 10
-			path: tests/Unit/Entity/Group/RelationTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 5
-			path: tests/Unit/Entity/Group/RelationTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Entity/Location/LocationTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 13
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with '42' and class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null will always evaluate to false\\.$#"
+			count: 1
 			path: tests/Unit/Entity/Log/EventTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 12
-			path: tests/Unit/Entity/Mail/MailTest.php
+			message: "#^Parameter \\#1 \\$discr of method App\\\\Entity\\\\Log\\\\Event\\:\\:setDiscr\\(\\) expects class\\-string\\<App\\\\Log\\\\AbstractEvent\\>, string given\\.$#"
+			count: 1
+			path: tests/Unit/Entity/Log/EventTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Mail/MailTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 5
-			path: tests/Unit/Entity/Mail/RecipientTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 4
-			path: tests/Unit/Entity/OrderTest.php
+			message: "#^Parameter \\#1 \\$objectType of method App\\\\Entity\\\\Log\\\\Event\\:\\:setObjectType\\(\\) expects class\\-string\\<object\\>\\|null, string given\\.$#"
+			count: 1
+			path: tests/Unit/Entity/Log/EventTest.php
 
 		-
 			message: "#^Cannot call method add\\(\\) on mixed\\.$#"
@@ -3882,49 +1261,14 @@ parameters:
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertContains\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotContains\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNull\\(\\)\\.$#"
-			count: 4
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 31
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:once\\(\\)\\.$#"
-			count: 4
+			message: "#^Result of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:eraseCredentials\\(\\) \\(void\\) is used\\.$#"
+			count: 1
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
 
 		-
 			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/EventListener/DoctrineTablePrefixListenerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/GraphQL/Types/DatetimeScalarTest.php
 
 		-
 			message: "#^Method Tests\\\\Unit\\\\GraphQL\\\\Types\\\\DatetimeScalarTest\\:\\:testParseLiteral\\(\\) has no return type specified\\.$#"
@@ -3942,53 +1286,23 @@ parameters:
 			path: tests/Unit/GraphQL/Types/DatetimeScalarTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
+			message: "#^Call to method getMenuItems\\(\\) on an unknown class Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtension\\.$#"
 			count: 1
 			path: tests/Unit/Group/GroupMenuExtensionTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$em of class App\\\\Group\\\\GroupMenuExtension constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
+			message: "#^Property Tests\\\\Unit\\\\Group\\\\GroupMenuExtensionTest\\:\\:\\$groupMenuExtension \\(Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtension\\) does not accept App\\\\Group\\\\GroupMenuExtension\\.$#"
 			count: 1
 			path: tests/Unit/Group/GroupMenuExtensionTest.php
 
 		-
-			message: "#^Property Tests\\\\Unit\\\\Group\\\\GroupMenuExtensionTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
+			message: "#^Property Tests\\\\Unit\\\\Group\\\\GroupMenuExtensionTest\\:\\:\\$groupMenuExtension has unknown class Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtension as its type\\.$#"
 			count: 1
 			path: tests/Unit/Group/GroupMenuExtensionTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with stdClass and ''\\|class\\-string\\|null will always evaluate to false\\.$#"
 			count: 1
-			path: tests/Unit/Group/OrganiseMenuExtensionTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$em of class App\\\\Group\\\\OrganiseMenuExtension constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Group/OrganiseMenuExtensionTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$tokenStorage of class App\\\\Group\\\\OrganiseMenuExtension constructor expects Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\Storage\\\\TokenStorageInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Group/OrganiseMenuExtensionTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtensionTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Group/OrganiseMenuExtensionTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtensionTest\\:\\:\\$tokenStorage \\(Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\Storage\\\\TokenStorageInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Group/OrganiseMenuExtensionTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 5
-			path: tests/Unit/Log/AbstractEventTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
 			path: tests/Unit/Log/AbstractEventTest.php
 
 		-
@@ -3997,254 +1311,39 @@ parameters:
 			path: tests/Unit/Log/AbstractEventTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Log/Doctrine/EntityEventListenerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$eventService of class App\\\\Log\\\\Doctrine\\\\EntityEventListener constructor expects App\\\\Log\\\\EventService, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Log/Doctrine/EntityEventListenerTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$reflService of class App\\\\Log\\\\Doctrine\\\\EntityEventListener constructor expects App\\\\Reflection\\\\ReflectionService, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Log/Doctrine/EntityEventListenerTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Log\\\\Doctrine\\\\EntityEventListenerTest\\:\\:\\$eventService \\(App\\\\Log\\\\EventService\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Log/Doctrine/EntityEventListenerTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Log\\\\Doctrine\\\\EntityEventListenerTest\\:\\:\\$reflService \\(App\\\\Reflection\\\\ReflectionService\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Log/Doctrine/EntityEventListenerTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Log/Doctrine/EntityNewEventTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Log/Doctrine/EntityNewEventTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Log/Doctrine/EntityUpdateEventTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Log/Doctrine/EntityUpdateEventTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 8
-			path: tests/Unit/Log/EventServiceTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$em of class App\\\\Log\\\\EventService constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Log/EventServiceTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$tokenStorage of class App\\\\Log\\\\EventService constructor expects Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\Storage\\\\TokenStorageInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Log/EventServiceTest.php
-
-		-
-			message: "#^Parameter \\#3 \\$refl of class App\\\\Log\\\\EventService constructor expects App\\\\Reflection\\\\ReflectionService, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Log/EventServiceTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Log\\\\EventServiceTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Log/EventServiceTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Log\\\\EventServiceTest\\:\\:\\$refl \\(App\\\\Reflection\\\\ReflectionService\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Log/EventServiceTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Log\\\\EventServiceTest\\:\\:\\$tokenStorage \\(Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\Storage\\\\TokenStorageInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Log/EventServiceTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:atLeastOnce\\(\\)\\.$#"
-			count: 1
+			message: "#^PHPDoc tag @var above assignment does not specify variable name\\.$#"
+			count: 4
 			path: tests/Unit/Mail/MailServiceTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:never\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Mail/MailServiceTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:once\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Mail/MailServiceTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Reflection/ClassNameServiceTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Reflection/ReflectionServiceTest.php
 
 		-
 			message: "#^Access to an undefined property Tests\\\\Unit\\\\Repository\\\\ActivityRepositoryTest\\:\\:\\$em\\.$#"
-			count: 3
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Cannot call method getManager\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Cannot call method getMetadataFactory\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertTrue\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 2
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$em of class Doctrine\\\\ORM\\\\Tools\\\\SchemaTool constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$registry of class App\\\\Repository\\\\ActivityRepository constructor expects Doctrine\\\\Persistence\\\\ManagerRegistry, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Repository\\\\ActivityRepositoryTest\\:\\:\\$registry \\(Doctrine\\\\Persistence\\\\ManagerRegistry\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Repository/GroupRepositoryTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$registry of class App\\\\Repository\\\\GroupRepository constructor expects Doctrine\\\\Persistence\\\\ManagerRegistry, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Repository/GroupRepositoryTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Repository\\\\GroupRepositoryTest\\:\\:\\$registry \\(Doctrine\\\\Persistence\\\\ManagerRegistry\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Repository/GroupRepositoryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Repository/OptionRepositoryTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$registry of class App\\\\Repository\\\\OptionRepository constructor expects Doctrine\\\\Persistence\\\\ManagerRegistry, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Repository/OptionRepositoryTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Repository\\\\OptionRepositoryTest\\:\\:\\$registry \\(Doctrine\\\\Persistence\\\\ManagerRegistry\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Repository/OptionRepositoryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 9
-			path: tests/Unit/Repository/RegistrationRepositoryTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$registry of class App\\\\Repository\\\\RegistrationRepository constructor expects Doctrine\\\\Persistence\\\\ManagerRegistry, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Repository/RegistrationRepositoryTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Repository\\\\RegistrationRepositoryTest\\:\\:\\$registry \\(Doctrine\\\\Persistence\\\\ManagerRegistry\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Repository/RegistrationRepositoryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
 			count: 5
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
+			path: tests/Unit/Repository/ActivityRepositoryTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$em of class App\\\\Security\\\\LocalAuthenticator constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
+			message: "#^Access to an undefined property Tests\\\\Unit\\\\Repository\\\\GroupRepositoryTest\\:\\:\\$em\\.$#"
+			count: 8
+			path: tests/Unit/Repository/GroupRepositoryTest.php
+
+		-
+			message: "#^Method Tests\\\\Unit\\\\Security\\\\GroupVoterTest\\:\\:provideCases\\(\\) has no return type specified\\.$#"
 			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
+			path: tests/Unit/Security/GroupVoterTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$urlGenerator of class App\\\\Security\\\\LocalAuthenticator constructor expects Symfony\\\\Component\\\\Routing\\\\Generator\\\\UrlGeneratorInterface, object\\|null given\\.$#"
+			message: "#^Method Tests\\\\Unit\\\\Security\\\\GroupVoterTest\\:\\:testVote\\(\\) has no return type specified\\.$#"
 			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
+			path: tests/Unit/Security/GroupVoterTest.php
 
 		-
-			message: "#^Parameter \\#3 \\$csrfTokenManager of class App\\\\Security\\\\LocalAuthenticator constructor expects Symfony\\\\Component\\\\Security\\\\Csrf\\\\CsrfTokenManagerInterface, object\\|null given\\.$#"
+			message: "#^Method Tests\\\\Unit\\\\Security\\\\GroupVoterTest\\:\\:testVote\\(\\) has parameter \\$expectedVote with no type specified\\.$#"
 			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
+			path: tests/Unit/Security/GroupVoterTest.php
 
 		-
-			message: "#^Parameter \\#4 \\$passwordEncoder of class App\\\\Security\\\\LocalAuthenticator constructor expects Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface, object\\|null given\\.$#"
+			message: "#^Only booleans are allowed in an if condition, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given\\.$#"
 			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Security\\\\LocalAuthenticatorTest\\:\\:\\$csrfTokenManager \\(Symfony\\\\Component\\\\Security\\\\Csrf\\\\CsrfTokenManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Security\\\\LocalAuthenticatorTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Security\\\\LocalAuthenticatorTest\\:\\:\\$passwordEncoder \\(Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Security\\\\LocalAuthenticatorTest\\:\\:\\$urlGenerator \\(Symfony\\\\Component\\\\Routing\\\\Generator\\\\UrlGeneratorInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Security/LocalAuthenticatorTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Security/LocalUserProviderTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Security/LocalUserProviderTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:once\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Security/LocalUserProviderTest.php
+			path: tests/Unit/Security/GroupVoterTest.php
 
 		-
 			message: "#^PHPDoc tag @var contains generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
@@ -4252,47 +1351,12 @@ parameters:
 			path: tests/Unit/Security/LocalUserProviderTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
-			count: 3
-			path: tests/Unit/Security/PasswordResetServiceTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$em of class App\\\\Security\\\\PasswordResetService constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Security/PasswordResetServiceTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$encoderFactory of class App\\\\Security\\\\PasswordResetService constructor expects Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\EncoderFactoryInterface, object\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Security/PasswordResetServiceTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Security\\\\PasswordResetServiceTest\\:\\:\\$em \\(Doctrine\\\\ORM\\\\EntityManagerInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Security/PasswordResetServiceTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Security\\\\PasswordResetServiceTest\\:\\:\\$encoderFactory \\(Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\EncoderFactoryInterface\\) does not accept object\\|null\\.$#"
-			count: 1
-			path: tests/Unit/Security/PasswordResetServiceTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 8
-			path: tests/Unit/Template/Annotation/MenuItemTest.php
-
-		-
 			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 2
 			path: tests/Unit/Template/Annotation/MenuItemTest.php
 
 		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\)\\.$#"
-			count: 1
-			path: tests/Unit/Template/MenuBuilderTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:markTestIncomplete\\(\\)\\.$#"
+			message: "#^Parameter \\#1 \\$extensions of class App\\\\Template\\\\MenuBuilder constructor expects array\\<App\\\\Template\\\\MenuExtensionInterface\\>, null given\\.$#"
 			count: 1
 			path: tests/Unit/Template/MenuBuilderTest.php
 

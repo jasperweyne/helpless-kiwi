@@ -18,6 +18,8 @@ namespace App\Tests;
  *     Foo(bar => 2, qux => 3),
  *     Foo(bar => 2, qux => 4)
  * )
+ *
+ * @template T of object
  */
 class TestData
 {
@@ -25,7 +27,11 @@ class TestData
      * Create a new TestData builder from type name
      * If no argument was given, an array will be built.
      *
-     * @return TestData a testdata builder for the given type
+     * @template X of object
+     *
+     * @param ?class-string<X> $type
+     *
+     * @return TestData<X> a testdata builder for the given type
      */
     public static function create(string $type = null): TestData
     {
@@ -50,9 +56,13 @@ class TestData
     /**
      * Create a new TestData builder from an existing object.
      *
-     * @throws UnexpectedValueException if anything apart from an array or object was provided
+     * @throws \UnexpectedValueException if anything apart from an array or object was provided
      *
-     * @return TestData a testdata builder with the given object
+     * @template X of object
+     *
+     * @param X $object
+     *
+     * @return TestData<X> a testdata builder with the given object
      */
     public static function from($object): TestData
     {
@@ -66,7 +76,11 @@ class TestData
     /**
      * Builds a cartesian product for an array of arrays.
      *
-     * @return array Cartesian product of arrays
+     * @template TKey of array-key
+     *
+     * @param array<TKey, mixed> $set
+     *
+     * @return array<TKey, mixed>[] Cartesian product of arrays
      */
     protected static function cartesian($set): array
     {
@@ -89,14 +103,21 @@ class TestData
         return $result;
     }
 
+    /** @var array<string, mixed[]> */
     protected $property_options;
 
+    /** @var array<string, mixed[]> */
     protected $action_options;
 
+    /** @var callable[] */
     protected $conditions;
 
+    /** @var T|mixed[] */
     private $initial;
 
+    /**
+     * @param T $initial
+     */
     private function __construct($initial)
     {
         $this->property_options = [];
@@ -107,6 +128,10 @@ class TestData
 
     /**
      * Add value options for a given property (or array key) to the data builder.
+     *
+     * @param mixed $options
+     *
+     * @return TestData<T>
      */
     public function with(string $property, ...$options): TestData
     {
@@ -117,6 +142,8 @@ class TestData
 
     /**
      * Add optional action callables to the data builder, operating on the data.
+     *
+     * @return TestData<T>
      */
     public function do(string $key, ?callable ...$actions): TestData
     {
@@ -127,6 +154,10 @@ class TestData
 
     /**
      * Add an action callables to the data builder with multiple data options.
+     *
+     * @param mixed $options
+     *
+     * @return TestData<T>
      */
     public function doWith(string $key, callable $action, ...$options): TestData
     {
@@ -145,6 +176,8 @@ class TestData
     /**
      * Add a condition callback which tests whether a given data instance is valid
      * The callback should return a boolean value.
+     *
+     * @return TestData<T>
      */
     public function where(callable $condition): TestData
     {
@@ -155,6 +188,8 @@ class TestData
 
     /**
      * Return data instances that are valid and should result in success.
+     *
+     * @return T[]
      */
     public function return(): array
     {
@@ -173,6 +208,8 @@ class TestData
 
     /**
      * Return invalid data instances which may or may not fail.
+     *
+     * @return T[]
      */
     public function returnInvalid(): array
     {
@@ -191,6 +228,8 @@ class TestData
 
     /**
      * Build all combinations of properties and actions.
+     *
+     * @return array{properties: mixed[], actions: callable[]}[]
      */
     protected function buildPermutations(): array
     {
@@ -202,6 +241,8 @@ class TestData
 
     /**
      * Test whether all provided conditions return succesful for the given object.
+     *
+     * @param T $object
      */
     protected function allConditionsSucceed($object): bool
     {
@@ -216,6 +257,10 @@ class TestData
 
     /**
      * Build an array or object, based on the initial object from raw array data.
+     *
+     * @param array{properties: mixed[], actions: callable[]} $data
+     *
+     * @return T
      */
     protected function buildFromData(array $data)
     {

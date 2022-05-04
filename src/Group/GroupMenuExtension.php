@@ -20,7 +20,7 @@ class GroupMenuExtension implements MenuExtensionInterface
     private $tokenStorage;
 
     /**
-     * @var array
+     * @var array<string, array{title: string, path: array{0: ?string, 1: array{id: ?string}}}[]>
      */
     private $menuItems;
 
@@ -35,6 +35,8 @@ class GroupMenuExtension implements MenuExtensionInterface
 
     /**
      * Returns all the menu items.
+     *
+     * @return array{title: string, path: array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]
      */
     public function getMenuItems(string $menu = '')
     {
@@ -55,7 +57,7 @@ class GroupMenuExtension implements MenuExtensionInterface
     /**
      * Discovers menu items.
      */
-    private function discoverMenuItems()
+    private function discoverMenuItems(): void
     {
         $this->menuItems = [];
 

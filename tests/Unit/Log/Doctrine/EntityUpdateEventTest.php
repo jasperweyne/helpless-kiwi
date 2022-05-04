@@ -67,7 +67,7 @@ class EntityUpdateEventTest extends KernelTestCase
             ->getProperty('old');
         $property->setAccessible(true);
         $property->setValue($this->entityUpdateEvent, $expected);
-        $this->assertSame($expected, $this->entityUpdateEvent->getOld());
+        self::assertSame($expected, $this->entityUpdateEvent->getOld());
     }
 
     public function testGetNew(): void
@@ -77,24 +77,24 @@ class EntityUpdateEventTest extends KernelTestCase
             ->getProperty('new');
         $property->setAccessible(true);
         $property->setValue($this->entityUpdateEvent, $expected);
-        $this->assertSame($expected, $this->entityUpdateEvent->getNew());
+        self::assertSame($expected, $this->entityUpdateEvent->getNew());
     }
 
     public function testGetOldChanged(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetNewChanged(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetTitle(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

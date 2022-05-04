@@ -5,7 +5,9 @@ namespace Tests\Integration\Form\Activity\Admin;
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
 use App\Form\Activity\Admin\ActivityEditType;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ActivityEditTypeTest.
@@ -62,12 +64,13 @@ class ActivityEditTypeTest extends KernelTestCase
         $form = $formfactory->create(ActivityEditType::class, $type);
 
         $form->submit($formdata);
-        $this->assertTrue($form->isSynchronized());
-        $this->assertTrue($form->isSubmitted());
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
     }
 
     public function testConfigureOptions(): void
     {
+        /** @var MockObject&OptionsResolver */
         $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")
             ->disableOriginalConstructor()
             ->getMock();

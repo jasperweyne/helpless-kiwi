@@ -4,10 +4,19 @@ namespace App\Template;
 
 class MenuBuilder
 {
+    /**
+     * @var MenuExtensionInterface[]
+     */
     private $extensions;
 
+    /**
+     * @var array<string, array{title: string, path: string|array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]>
+     */
     private $menuitems;
 
+    /**
+     * @param MenuExtensionInterface[] $extensions
+     */
     public function __construct($extensions)
     {
         $this->extensions = $extensions;
@@ -27,7 +36,7 @@ class MenuBuilder
     /**
      * Returns a list of available menu items.
      *
-     * @return array
+     * @return array{title: string, path: string|array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]
      */
     public function getItems(string $menu = '')
     {

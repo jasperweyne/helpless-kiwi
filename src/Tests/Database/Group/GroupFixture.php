@@ -11,7 +11,7 @@ class GroupFixture extends Fixture
 {
     public const GROUP_REFERENCE = 'group-';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $groupCount = 0;
 
@@ -25,6 +25,9 @@ class GroupFixture extends Fixture
         $manager->flush();
     }
 
+    /**
+     * @return TestData<Group>
+     */
     public static function generate(): TestData
     {
         $parent = null;

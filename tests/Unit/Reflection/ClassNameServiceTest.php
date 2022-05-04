@@ -42,6 +42,6 @@ class ClassNameServiceTest extends KernelTestCase
     public function testFqcnToName(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

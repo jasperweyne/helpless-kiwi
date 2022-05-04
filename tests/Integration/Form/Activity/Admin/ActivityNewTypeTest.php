@@ -72,8 +72,8 @@ class ActivityNewTypeTest extends KernelTestCase
         $form = $formfactory->create(ActivityNewType::class, $type);
 
         $form->submit($formdata);
-        $this->assertTrue($form->isSynchronized());
-        $this->assertTrue($form->isSubmitted());
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
     }
 
     public function testConfigureOptions(): void

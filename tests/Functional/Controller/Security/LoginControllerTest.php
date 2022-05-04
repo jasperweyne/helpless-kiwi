@@ -27,7 +27,7 @@ class LoginControllerTest extends AuthWebTestCase
 
         // Assert
         $response = $this->client->getResponse();
-        $this->assertEquals(302, $response->getStatusCode());
+        self::assertEquals(302, $response->getStatusCode());
     }
 
     public function testLoginOidc(): void
@@ -42,8 +42,8 @@ class LoginControllerTest extends AuthWebTestCase
 
         // Assert
         $response = $this->client->getResponse();
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertStringContainsString($address, $response->headers->get('Location'));
+        self::assertEquals(302, $response->getStatusCode());
+        self::assertStringContainsString($address, $response->headers->get('Location'));
     }
 
     public function testLoginCheck(): void
@@ -56,7 +56,7 @@ class LoginControllerTest extends AuthWebTestCase
 
         // Assert
         // Testing actual OIDC flow is unfeasible, just check the redirect to home
-        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(302, $this->client->getResponse()->getStatusCode());
     }
 
     public function testLogin(): void
@@ -68,15 +68,15 @@ class LoginControllerTest extends AuthWebTestCase
         $form['password'] = 'login';
         $crawler = $this->client->submit($form);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Invalid credentials.');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Invalid credentials.');
     }
 
     public function testLogout(): void
     {
         $this->client->request('GET', '/logout');
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public static function setupOidc($container): void

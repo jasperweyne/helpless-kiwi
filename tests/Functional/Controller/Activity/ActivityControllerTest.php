@@ -78,8 +78,8 @@ class ActivityControllerTest extends AuthWebTestCase
         }
 
         // Assert
-        $this->assertTrue($exist);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertTrue($exist);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testUnregisterAction(): void
@@ -96,11 +96,11 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->submitForm('Afmelden');
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'gelukt');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'gelukt');
         /** @var Registration */
         $dereg = $this->em->getRepository(Registration::class)->find($reg->getId());
-        $this->assertNotNull($dereg->getDeleteDate());
+        self::assertNotNull($dereg->getDeleteDate());
     }
 
     public function testRegisterAction(): void
@@ -125,10 +125,10 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->submitForm('Aanmelden');
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'gelukt');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'gelukt');
         $reg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user, 'option' => $option]);
-        $this->assertNotNull($reg);
+        self::assertNotNull($reg);
     }
 
     public function testShowAction(): void
@@ -141,18 +141,18 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->request('GET', "/activity/{$id}");
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testSingleUnregistrationForm(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testSingleRegistrationForm(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

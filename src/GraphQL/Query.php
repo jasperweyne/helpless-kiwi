@@ -15,8 +15,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class Query
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
+    /**
+     * @var TokenStorageInterface
+     */
     private $tokenStorage;
 
     public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
@@ -28,8 +34,10 @@ class Query
     /**
      * @GQL\Field(type="[Activity]")
      * @GQL\Description("All currently visible activities.")
+     *
+     * @return Activity[]
      */
-    public function current(bool $loggedIn = false)
+    public function current(bool $loggedIn = false): array
     {
         $groups = [];
         if ($loggedIn && $user = $this->user()) {
@@ -43,8 +51,10 @@ class Query
      * @GQL\Field(type="[Activity]")
      * @GQL\Description("All activities stored in the database.")
      * @GQL\Access("isAuthenticated()")
+     *
+     * @return Activity[]
      */
-    public function activities()
+    public function activities(): array
     {
         return $this->em->getRepository(Activity::class)->findAll();
     }
@@ -53,8 +63,10 @@ class Query
      * @GQL\Field(type="[Group]")
      * @GQL\Description("All groups stored in the database.")
      * @GQL\Access("isAuthenticated()")
+     *
+     * @return Group[]
      */
-    public function groups()
+    public function groups(): array
     {
         return $this->em->getRepository(Group::class)->findAll();
     }
@@ -81,6 +93,8 @@ class Query
      * @GQL\Field(type="[LocalAccount]")
      * @GQL\Description("All users stored in the database.")
      * @GQL\Access("hasRole('ROLE_ADMIN')")
+     *
+     * @return LocalAccount[]
      */
     public function users()
     {

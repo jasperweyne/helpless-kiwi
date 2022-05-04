@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class ActivityEditType extends AbstractType
 {
+    /** @var bool */
     private $isadmin = false;
 
     public function __construct(TokenStorageInterface $tokenStorage)
@@ -29,7 +30,7 @@ class ActivityEditType extends AbstractType
         }
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
@@ -133,7 +134,7 @@ class ActivityEditType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Activity::class,

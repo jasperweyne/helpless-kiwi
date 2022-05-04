@@ -51,7 +51,7 @@ class MailServiceTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /* @var Swift_mailer&MockObject */
+        /* @var Swift_Mailer&MockObject */
         $this->mailer = $this->createMock(Swift_Mailer::class);
         /* @var EntityManagerInterface&MockObject */
         $this->em = $this->createMock(EntityManagerInterface::class);
@@ -79,8 +79,8 @@ class MailServiceTest extends KernelTestCase
 
     public function testMessageNull(): void
     {
-        $this->em->expects($this->never())->method('persist');
-        $this->mailer->expects($this->never())->method('send');
+        $this->em->expects(self::never())->method('persist');
+        $this->mailer->expects(self::never())->method('send');
         $this->mailService->message(null, '', '');
     }
 
@@ -92,9 +92,9 @@ class MailServiceTest extends KernelTestCase
             ->setName('John Doe')
         ;
 
-        $this->em->expects($this->atLeastOnce())->method('persist');
-        $this->em->expects($this->once())->method('flush');
-        $this->mailer->expects($this->once())->method('send');
+        $this->em->expects(self::atLeastOnce())->method('persist');
+        $this->em->expects(self::once())->method('flush');
+        $this->mailer->expects(self::once())->method('send');
         $this->mailService->message($recipient, '', '');
     }
 }

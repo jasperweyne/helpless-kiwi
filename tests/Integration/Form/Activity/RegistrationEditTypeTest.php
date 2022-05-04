@@ -62,7 +62,7 @@ class RegistrationEditTypeTest extends KernelTestCase
         $form = $formfactory->create(RegistrationEditType::class, $type);
 
         $form->submit($formData);
-        $this->assertTrue($form->isSynchronized());
-        $this->assertTrue($form->isSubmitted());
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
     }
 }

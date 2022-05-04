@@ -9,7 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class MailFixture extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $mail = new Mail();
         $mail->setTitle('Kiwi - mail title');

@@ -10,6 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class HasLocalAccountCommand extends Command
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
     // the name of the command (the part after "bin/console")
@@ -22,7 +25,7 @@ class HasLocalAccountCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             // the short description shown while running "php bin/console list"
@@ -34,9 +37,11 @@ class HasLocalAccountCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
         $output->writeln(count($accounts) > 0 ? '1' : '0');
+
+        return 0;
     }
 }

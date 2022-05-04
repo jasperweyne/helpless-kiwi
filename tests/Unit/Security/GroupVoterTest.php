@@ -119,7 +119,7 @@ class GroupVoterTest extends KernelTestCase
             );
         }
 
-        $this->assertSame(
+        self::assertSame(
             $expectedVote,
             $voter->vote($token, $group, [$attribute])
         );

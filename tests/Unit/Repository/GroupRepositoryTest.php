@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Repository;
 
+use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Repository\GroupRepository;
@@ -80,29 +81,29 @@ class GroupRepositoryTest extends KernelTestCase
         $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
         $groups = $this->em->getRepository(Group::class)->findAllFor($registration);
 
-        $this->assertTrue(count($groups) > 0);
+        self::assertTrue(count($groups) > 0);
     }
 
     public function testFindSubGroupsFor(): void
     {
-        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $registration = $this->em->getRepository(Registration::class)->findAll()[0];
         $group = $this->em->getRepository(Group::class)->findAllFor($registration)[0];
 
         $allgroups = $this->em
             ->getRepository(Group::class)
             ->findSubGroupsFor($group);
 
-        $this->assertTrue(count($allgroups) > 0);
+        self::assertTrue(count($allgroups) > 0);
     }
 
     public function testFindSubGroupsForPerson(): void
     {
-        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $registration = $this->em->getRepository(Registration::class)->findAll()[0];
 
         $allgroups = $this->em
             ->getRepository(Group::class)
             ->findSubGroupsForPerson($registration);
 
-        $this->assertTrue(count($allgroups) > 1);
+        self::assertTrue(count($allgroups) > 1);
     }
 }

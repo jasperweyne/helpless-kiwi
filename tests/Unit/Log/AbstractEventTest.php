@@ -48,13 +48,13 @@ class AbstractEventTest extends KernelTestCase
             ->getProperty('time');
         $property->setAccessible(true);
         $property->setValue($this->abstractEvent, $expected);
-        $this->assertSame($expected, $this->abstractEvent->getTime());
+        self::assertSame($expected, $this->abstractEvent->getTime());
     }
 
     public function testGetPerson(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetEntity(): void
@@ -64,7 +64,7 @@ class AbstractEventTest extends KernelTestCase
             ->getProperty('entity');
         $property->setAccessible(true);
         $property->setValue($this->abstractEvent, $expected);
-        $this->assertSame($expected, $this->abstractEvent->getEntity());
+        self::assertSame($expected, $this->abstractEvent->getEntity());
     }
 
     public function testSetEntity(): void
@@ -74,7 +74,7 @@ class AbstractEventTest extends KernelTestCase
             ->getProperty('entity');
         $property->setAccessible(true);
         $this->abstractEvent->setEntity($expected);
-        $this->assertSame($expected, $property->getValue($this->abstractEvent));
+        self::assertSame($expected, $property->getValue($this->abstractEvent));
     }
 
     public function testGetEntityType(): void
@@ -84,7 +84,7 @@ class AbstractEventTest extends KernelTestCase
             ->getProperty('entityType');
         $property->setAccessible(true);
         $property->setValue($this->abstractEvent, $expected);
-        $this->assertSame($expected, $this->abstractEvent->getEntityType());
+        self::assertSame($expected, $this->abstractEvent->getEntityType());
     }
 
     public function testSetEntityType(): void
@@ -94,12 +94,12 @@ class AbstractEventTest extends KernelTestCase
             ->getProperty('entityType');
         $property->setAccessible(true);
         $this->abstractEvent->setEntityType($expected);
-        $this->assertSame($expected, $property->getValue($this->abstractEvent));
+        self::assertSame($expected, $property->getValue($this->abstractEvent));
     }
 
     public function testGetTitle(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

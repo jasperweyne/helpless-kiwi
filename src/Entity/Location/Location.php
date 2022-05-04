@@ -16,6 +16,8 @@ class Location
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -23,6 +25,8 @@ class Location
      * @ORM\Column(type="string")
      * @GQL\Field(type="String")
      * @GQL\Description("The address of the location.")
+     *
+     * @var string
      */
     private $address;
 

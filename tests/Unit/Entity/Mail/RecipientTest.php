@@ -49,7 +49,7 @@ class RecipientTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->recipient, $expected);
-        $this->assertSame($expected, $this->recipient->getId());
+        self::assertSame($expected, $this->recipient->getId());
     }
 
     public function testGetPerson(): void
@@ -60,7 +60,7 @@ class RecipientTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->recipient, $expected);
-        $this->assertSame($expected, $this->recipient->getPerson());
+        self::assertSame($expected, $this->recipient->getPerson());
     }
 
     public function testSetPerson(): void
@@ -71,7 +71,7 @@ class RecipientTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $this->recipient->setPerson($expected);
-        $this->assertSame($expected, $this->recipient->getPerson());
+        self::assertSame($expected, $this->recipient->getPerson());
     }
 
     public function testGetMail(): void
@@ -81,7 +81,7 @@ class RecipientTest extends KernelTestCase
             ->getProperty('mail');
         $property->setAccessible(true);
         $property->setValue($this->recipient, $expected);
-        $this->assertSame($expected, $this->recipient->getMail());
+        self::assertSame($expected, $this->recipient->getMail());
     }
 
     public function testSetMail(): void
@@ -91,6 +91,6 @@ class RecipientTest extends KernelTestCase
             ->getProperty('mail');
         $property->setAccessible(true);
         $this->recipient->setMail($expected);
-        $this->assertSame($expected, $property->getValue($this->recipient));
+        self::assertSame($expected, $property->getValue($this->recipient));
     }
 }

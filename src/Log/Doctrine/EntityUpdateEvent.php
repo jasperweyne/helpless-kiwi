@@ -7,11 +7,21 @@ use App\Reflection\ClassNameService;
 
 class EntityUpdateEvent extends AbstractEvent
 {
+    /**
+     * @var array<string, mixed>
+     */
     private $old;
 
+    /**
+     * @var array<string, mixed>
+     */
     private $new;
 
-    public function __construct($entity, $oldObject, $newValues)
+    /**
+     * @param array<string, mixed> $oldObject
+     * @param array<string, mixed> $newValues
+     */
+    public function __construct(object $entity, array $oldObject, array $newValues)
     {
         $this->setEntity($entity);
 
@@ -19,12 +29,18 @@ class EntityUpdateEvent extends AbstractEvent
         $this->new = $newValues;
     }
 
-    public function getOld()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getOld(): array
     {
         return $this->old;
     }
 
-    public function getNew()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getNew(): array
     {
         $new = $this->old;
         foreach ($this->new as $field => $value) {
@@ -34,7 +50,10 @@ class EntityUpdateEvent extends AbstractEvent
         return $new;
     }
 
-    public function getOldChanged()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getOldChanged(): array
     {
         $old = [];
         foreach ($this->new as $field => $value) {
@@ -44,12 +63,15 @@ class EntityUpdateEvent extends AbstractEvent
         return $old;
     }
 
-    public function getNewChanged()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getNewChanged(): array
     {
         return $this->new;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return 'Updated '.ClassNameService::fqcnToName($this->getEntityType());
     }

@@ -11,7 +11,9 @@ use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,6 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ActivityController extends AbstractController
 {
+    /**
+     * @var EventService
+     */
     private $events;
 
     public function __construct(EventService $events)
@@ -34,7 +39,7 @@ class ActivityController extends AbstractController
      * @MenuItem(title="Activiteiten", menu="admin", activeCriteria="admin_activity_")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -55,7 +60,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/group/{id}", name="group", methods={"GET"})
      */
-    public function groupAction(Group $group)
+    public function groupAction(Group $group): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -71,7 +76,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/new", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request): Response
     {
         $activity = new Activity();
         $em = $this->getDoctrine()->getManager();
@@ -105,7 +110,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}", name="show", methods={"GET"})
      */
-    public function showAction(Activity $activity)
+    public function showAction(Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -137,7 +142,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Activity $activity)
+    public function editAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
         $em = $this->getDoctrine()->getManager();
@@ -169,7 +174,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/image", name="image", methods={"GET", "POST"})
      */
-    public function imageAction(Request $request, Activity $activity)
+    public function imageAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -193,7 +198,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/delete", name="delete")
      */
-    public function deleteAction(Request $request, Activity $activity)
+    public function deleteAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -219,7 +224,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/price/new/{id}", name="price_new", methods={"GET", "POST"})
      */
-    public function priceNewAction(Request $request, Activity $activity)
+    public function priceNewAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -253,7 +258,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/price/{id}", name="price_edit", methods={"GET", "POST"})
      */
-    public function priceEditAction(Request $request, PriceOption $price)
+    public function priceEditAction(Request $request, PriceOption $price): Response
     {
         $this->denyAccessUnlessGranted('in_group', $price->getActivity()->getAuthor());
 
@@ -292,7 +297,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/present", name="present")
      */
-    public function presentEditAction(Request $request, Activity $activity)
+    public function presentEditAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -317,7 +322,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/setamountpresent", name="amount_present", methods={"GET", "POST"})
      */
-    public function setAmountPresent(Request $request, Activity $activity)
+    public function setAmountPresent(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -344,7 +349,7 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/resetamountpresent", name="reset_amount_present")
      */
-    public function resetAmountPresent(Request $request, Activity $activity)
+    public function resetAmountPresent(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -372,7 +377,7 @@ class ActivityController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(Activity $activity)
+    private function createDeleteForm(Activity $activity): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_delete', ['id' => $activity->getId()]))
