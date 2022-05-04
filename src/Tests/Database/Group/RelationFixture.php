@@ -25,7 +25,7 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
         $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
 
         $relations = self::generate($group, $person)->return();
-        $parentrelations = self::generate($child, $group)->return();
+        $parentrelations = self::generatesubgroup($child, $group)->return();
         foreach ($relations as $relation) {
             $manager->persist($relation);
         }
@@ -58,7 +58,7 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
     /**
      * @return TestData<Relation>
      */
-    public static function generatesubgroup(Group $group, LocalAccount $parent): TestData
+    public static function generatesubgroup(Group $group, Group $parent): TestData
     {
         return TestData::from(new Relation())
             ->with('group', $group)
