@@ -906,11 +906,6 @@ parameters:
 			path: src/Tests/AuthWebTestCase.php
 
 		-
-			message: "#^Parameter \\#2 \\$person of static method App\\\\Tests\\\\Database\\\\Group\\\\RelationFixture\\:\\:generate\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, App\\\\Entity\\\\Group\\\\Group given\\.$#"
-			count: 1
-			path: src/Tests/Database/Group/RelationFixture.php
-
-		-
 			message: "#^Parameter \\#1 \\$content of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setContent\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Tests/Database/Mail/MailFixture.php
@@ -1111,21 +1106,6 @@ parameters:
 			path: tests/Functional/GraphQL/QueryTest.php
 
 		-
-			message: "#^Class App\\\\Form\\\\Activity\\\\ActivityEditType constructor invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/ActivityEditTypeTest.php
-
-		-
-			message: "#^Class App\\\\Form\\\\Activity\\\\ActivityNewType constructor invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/ActivityNewTypeTest.php
-
-		-
-			message: "#^Class App\\\\Form\\\\Activity\\\\Admin\\\\ActivityEditType constructor invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
-
-		-
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
 			count: 1
 			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
@@ -1134,11 +1114,6 @@ parameters:
 			message: "#^Method Tests\\\\Integration\\\\Form\\\\Activity\\\\Admin\\\\ActivityEditTypeTest\\:\\:testBindValidData\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
-
-		-
-			message: "#^Class App\\\\Form\\\\Activity\\\\Admin\\\\ActivityNewType constructor invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
 
 		-
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
@@ -1309,11 +1284,6 @@ parameters:
 			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 1
 			path: tests/Unit/Log/AbstractEventTest.php
-
-		-
-			message: "#^PHPDoc tag @var above assignment does not specify variable name\\.$#"
-			count: 4
-			path: tests/Unit/Mail/MailServiceTest.php
 
 		-
 			message: "#^Access to an undefined property Tests\\\\Unit\\\\Repository\\\\ActivityRepositoryTest\\:\\:\\$em\\.$#"

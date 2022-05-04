@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Form\Activity;
 
-use App\Form\Activity\ActivityEditType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -13,20 +12,12 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class ActivityEditTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityEditType
-     */
-    protected $activityEditType;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
         self::bootKernel();
-
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->activityEditType = new ActivityEditType();
     }
 
     /**
@@ -35,8 +26,6 @@ class ActivityEditTypeTest extends KernelTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        unset($this->activityEditType);
     }
 
     public function testBuildForm(): void

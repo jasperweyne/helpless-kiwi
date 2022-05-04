@@ -4,9 +4,15 @@ namespace Tests\Integration\Form\Activity\Admin;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
+use App\Entity\Security\LocalAccount;
 use App\Form\Activity\Admin\ActivityNewType;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Class ActivityNewTypeTest.
@@ -16,11 +22,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ActivityNewTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityNewType
-     */
-    protected $activityNewType;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -28,8 +29,14 @@ class ActivityNewTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->activityNewType = new ActivityNewType();
+        $firewallName = 'main';
+
+        $user = new LocalAccount();
+        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_USER']);
+
+        /** @var TokenStorageInterface */
+        $storage = self::$container->get(TokenStorageInterface::class);
+        $storage->setToken($token);
     }
 
     /**
@@ -38,8 +45,6 @@ class ActivityNewTypeTest extends KernelTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        unset($this->activityNewType);
     }
 
     public function testBindValidData()
@@ -68,6 +73,7 @@ class ActivityNewTypeTest extends KernelTestCase
             ),
         ];
 
+        /** @var FormFactoryInterface */
         $formfactory = self::$container->get('form.factory');
         $form = $formfactory->create(ActivityNewType::class, $type);
 
@@ -78,10 +84,11 @@ class ActivityNewTypeTest extends KernelTestCase
 
     public function testConfigureOptions(): void
     {
+        /** @var MockObject&OptionsResolver */
         $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")
             ->disableOriginalConstructor()
             ->getMock();
         $resolver->expects($this->exactly(1))->method('setDefaults');
-        $this->activityNewType->configureOptions($resolver);
+        self::$container->get(ActivityNewType::class)->configureOptions($resolver);
     }
 }

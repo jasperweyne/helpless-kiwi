@@ -4,10 +4,13 @@ namespace Tests\Integration\Form\Activity\Admin;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
+use App\Entity\Security\LocalAccount;
 use App\Form\Activity\Admin\ActivityEditType;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Class ActivityEditTypeTest.
@@ -17,11 +20,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ActivityEditTypeTest extends KernelTestCase
 {
     /**
-     * @var ActivityEditType
-     */
-    protected $activityEditType;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -29,8 +27,14 @@ class ActivityEditTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->activityEditType = new ActivityEditType();
+        $firewallName = 'main';
+
+        $user = new LocalAccount();
+        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_USER']);
+
+        /** @var TokenStorageInterface */
+        $storage = self::$container->get(TokenStorageInterface::class);
+        $storage->setToken($token);
     }
 
     /**
@@ -39,8 +43,6 @@ class ActivityEditTypeTest extends KernelTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        unset($this->activityEditType);
     }
 
     public function testBindValidData()
@@ -75,6 +77,6 @@ class ActivityEditTypeTest extends KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $resolver->expects($this->exactly(1))->method('setDefaults');
-        $this->activityEditType->configureOptions($resolver);
+        self::$container->get(ActivityEditType::class)->configureOptions($resolver);
     }
 }

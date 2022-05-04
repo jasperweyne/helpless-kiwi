@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Repository;
 
-use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Repository\GroupRepository;
+use App\Tests\Database\Activity\RegistrationFixture;
 use App\Tests\Database\Group\GroupFixture;
 use App\Tests\Database\Group\RelationFixture;
 use App\Tests\Database\Security\LocalAccountFixture;
@@ -55,6 +55,7 @@ class GroupRepositoryTest extends KernelTestCase
         $schema->createSchema($classes);
 
         $this->loadFixtures([
+            RegistrationFixture::class,
             GroupFixture::class,
             LocalAccountFixture::class,
             RelationFixture::class,
@@ -86,7 +87,7 @@ class GroupRepositoryTest extends KernelTestCase
 
     public function testFindSubGroupsFor(): void
     {
-        $registration = $this->em->getRepository(Registration::class)->findAll()[0];
+        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
         $group = $this->em->getRepository(Group::class)->findAllFor($registration)[0];
 
         $allgroups = $this->em
@@ -98,7 +99,7 @@ class GroupRepositoryTest extends KernelTestCase
 
     public function testFindSubGroupsForPerson(): void
     {
-        $registration = $this->em->getRepository(Registration::class)->findAll()[0];
+        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
 
         $allgroups = $this->em
             ->getRepository(Group::class)
