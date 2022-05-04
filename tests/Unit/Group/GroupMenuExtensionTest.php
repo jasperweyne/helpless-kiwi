@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class GroupMenuExtensionTest extends KernelTestCase
 {
     /**
-     * @var OrganiseMenuExtension
+     * @var GroupMenuExtension
      */
     protected $groupMenuExtension;
 

@@ -96,11 +96,6 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
 			count: 1
 			path: src/Controller/Admin/ActivityController.php
@@ -113,16 +108,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, App\\\\Entity\\\\Location\\\\Location\\|null given\\.$#"
 			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, object\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Admin/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findSubGroupsForPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, object\\|null given\\.$#"
-			count: 2
 			path: src/Controller/Admin/ActivityController.php
 
 		-
@@ -194,11 +179,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Admin/MailController.php
-
-		-
-			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 4
-			path: src/Controller/Admin/RegistrationController.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
@@ -456,16 +436,6 @@ parameters:
 			path: src/Entity/Order.php
 
 		-
-			message: "#^Argument of an invalid type Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null supplied for foreach, only iterables are supported\\.$#"
-			count: 2
-			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getActiveGroups\\(\\) has invalid return type App\\\\Entity\\\\Security\\\\Group\\.$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Entity/Security/LocalAccount.php
@@ -479,26 +449,6 @@ parameters:
 			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
 			count: 2
 			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
-			count: 1
-			path: src/Form/Activity/Admin/ActivityEditType.php
-
-		-
-			message: "#^Cannot call method getRoles\\(\\) on string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
-			count: 1
-			path: src/Form/Activity/Admin/ActivityEditType.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\TokenInterface\\|null\\.$#"
-			count: 1
-			path: src/Form/Activity/Admin/ActivityEditType.php
-
-		-
-			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, mixed given\\.$#"
-			count: 1
-			path: src/Form/Activity/Admin/ActivityEditType.php
 
 		-
 			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
@@ -524,31 +474,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$datetime of class DateTime constructor expects string, mixed given\\.$#"
 			count: 1
 			path: src/GraphQL/Types/DatetimeScalar.php
-
-		-
-			message: "#^Method App\\\\Group\\\\GroupMenuExtension\\:\\:getMenuItems\\(\\) should return array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}, role\\?\\: string, class\\?\\: string, activeCriteria\\?\\: string, order\\?\\: int\\}\\> but returns array\\{array\\{title\\: 'Activiteiten', sub\\: array\\<string, array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\>\\}\\}\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Group\\\\GroupMenuExtension\\:\\:getUser\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<string, array\\<array\\<string, array\\<int, array\\<string, string\\|null\\>\\|string\\|null\\>\\|string\\>\\>\\> given\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, bool\\|null given\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Property App\\\\Group\\\\GroupMenuExtension\\:\\:\\$menuItems \\(array\\<string, array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\>\\) does not accept non\\-empty\\-array\\<int\\|string, array\\<array\\{'admin_activity_group', array\\{id\\: string\\|null\\}\\}\\|array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\|string\\|null\\>\\>\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
 
 		-
 			message: "#^Generator expects value type Symfony\\\\Component\\\\HttpKernel\\\\Bundle\\\\BundleInterface, object given\\.$#"
@@ -726,21 +651,6 @@ parameters:
 			path: src/Reflection/ReflectionService.php
 
 		-
-			message: "#^Method App\\\\Repository\\\\ActivityRepository\\:\\:findAuthor\\(\\) has parameter \\$groups with no type specified\\.$#"
-			count: 1
-			path: src/Repository/ActivityRepository.php
-
-		-
-			message: "#^Foreach overwrites \\$group with its value variable\\.$#"
-			count: 1
-			path: src/Repository/GroupRepository.php
-
-		-
-			message: "#^Method App\\\\Repository\\\\GroupRepository\\:\\:findSubGroupsFor\\(\\) has parameter \\$skipgroups with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Repository/GroupRepository.php
-
-		-
 			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:countPresent\\(\\) should return int but returns mixed\\.$#"
 			count: 1
 			path: src/Repository/RegistrationRepository.php
@@ -759,31 +669,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$s of static method App\\\\Entity\\\\Order\\:\\:create\\(\\) expects string, App\\\\Entity\\\\Order\\|null given\\.$#"
 			count: 2
 			path: src/Repository/RegistrationRepository.php
-
-		-
-			message: "#^Argument of an invalid type Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null supplied for foreach, only iterables are supported\\.$#"
-			count: 2
-			path: src/Security/GroupVoter.php
-
-		-
-			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
-			count: 2
-			path: src/Security/GroupVoter.php
-
-		-
-			message: "#^Only booleans are allowed in &&, bool\\|null given on the left side\\.$#"
-			count: 1
-			path: src/Security/GroupVoter.php
-
-		-
-			message: "#^Only booleans are allowed in &&, mixed given on the left side\\.$#"
-			count: 1
-			path: src/Security/GroupVoter.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 1
-			path: src/Security/GroupVoter.php
 
 		-
 			message: "#^Cannot access offset 'csrf_token' on mixed\\.$#"
@@ -879,21 +764,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Method App\\\\Template\\\\MenuBuilder\\:\\:getItems\\(\\) should return array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|string, role\\?\\: string, class\\?\\: string, activeCriteria\\?\\: string, order\\?\\: int\\}\\> but returns array\\<array\\<string, array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|int\\|string\\>\\>\\.$#"
-			count: 1
-			path: src/Template/MenuBuilder.php
-
-		-
-			message: "#^Property App\\\\Template\\\\MenuBuilder\\:\\:\\$menuitems \\(array\\<string, array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|string, role\\?\\: string, class\\?\\: string, activeCriteria\\?\\: string, order\\?\\: int\\}\\>\\>\\) does not accept non\\-empty\\-array\\<string, array\\<array\\<string, array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|int\\|string\\>\\>\\>\\.$#"
-			count: 1
-			path: src/Template/MenuBuilder.php
-
-		-
-			message: "#^Unary operation \"\\-\" on array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\|int\\|string results in an error\\.$#"
-			count: 1
-			path: src/Template/MenuBuilder.php
 
 		-
 			message: "#^Cannot call method get\\(\\) on Symfony\\\\Component\\\\DependencyInjection\\\\ContainerInterface\\|null\\.$#"
@@ -1261,21 +1131,6 @@ parameters:
 			path: tests/Unit/GraphQL/Types/DatetimeScalarTest.php
 
 		-
-			message: "#^Call to method getMenuItems\\(\\) on an unknown class Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtension\\.$#"
-			count: 1
-			path: tests/Unit/Group/GroupMenuExtensionTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Group\\\\GroupMenuExtensionTest\\:\\:\\$groupMenuExtension \\(Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtension\\) does not accept App\\\\Group\\\\GroupMenuExtension\\.$#"
-			count: 1
-			path: tests/Unit/Group/GroupMenuExtensionTest.php
-
-		-
-			message: "#^Property Tests\\\\Unit\\\\Group\\\\GroupMenuExtensionTest\\:\\:\\$groupMenuExtension has unknown class Tests\\\\Unit\\\\Group\\\\OrganiseMenuExtension as its type\\.$#"
-			count: 1
-			path: tests/Unit/Group/GroupMenuExtensionTest.php
-
-		-
 			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with stdClass and ''\\|class\\-string\\|null will always evaluate to false\\.$#"
 			count: 1
 			path: tests/Unit/Log/AbstractEventTest.php
@@ -1284,36 +1139,6 @@ parameters:
 			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 1
 			path: tests/Unit/Log/AbstractEventTest.php
-
-		-
-			message: "#^Access to an undefined property Tests\\\\Unit\\\\Repository\\\\ActivityRepositoryTest\\:\\:\\$em\\.$#"
-			count: 5
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
-			message: "#^Access to an undefined property Tests\\\\Unit\\\\Repository\\\\GroupRepositoryTest\\:\\:\\$em\\.$#"
-			count: 8
-			path: tests/Unit/Repository/GroupRepositoryTest.php
-
-		-
-			message: "#^Method Tests\\\\Unit\\\\Security\\\\GroupVoterTest\\:\\:provideCases\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Unit/Security/GroupVoterTest.php
-
-		-
-			message: "#^Method Tests\\\\Unit\\\\Security\\\\GroupVoterTest\\:\\:testVote\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Unit/Security/GroupVoterTest.php
-
-		-
-			message: "#^Method Tests\\\\Unit\\\\Security\\\\GroupVoterTest\\:\\:testVote\\(\\) has parameter \\$expectedVote with no type specified\\.$#"
-			count: 1
-			path: tests/Unit/Security/GroupVoterTest.php
-
-		-
-			message: "#^Only booleans are allowed in an if condition, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given\\.$#"
-			count: 1
-			path: tests/Unit/Security/GroupVoterTest.php
 
 		-
 			message: "#^PHPDoc tag @var contains generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
