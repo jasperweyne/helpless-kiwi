@@ -39,7 +39,7 @@ class GroupRepository extends ServiceEntityRepository
     /**
      * @return Group[] Returns an array of Group objects
      */
-    public function findSubGroupsFor(Group $group, array $skipgroups = [])
+    public function findSubGroupsFor(Group $group)
     {
         $allsubgroups = [];
         $qb = $this->createQueryBuilder('g');
@@ -49,9 +49,9 @@ class GroupRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        foreach ($subgroups as $group) {
-            $allsubgroups = array_merge($allsubgroups, [...$this->findSubGroupsFor($group)]);
-            array_push($allsubgroups, $group);
+        foreach ($subgroups as $subgroup) {
+            $allsubgroups = array_merge($allsubgroups, [...$this->findSubGroupsFor($subgroup)]);
+            array_push($allsubgroups, $subgroup);
         }
 
         return $allsubgroups;

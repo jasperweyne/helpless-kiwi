@@ -15,12 +15,12 @@ class GroupVoter extends Voter
     protected function supports($attribute, $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::IN_GROUP, self::ANY_GROUP])) {
+        if (!in_array($attribute, [self::IN_GROUP, self::ANY_GROUP], true)) {
             return false;
         }
 
         // only vote on `Group` objects or null
-        if ($subject && !$subject instanceof Group) {
+        if (null !== $subject && !$subject instanceof Group) {
             return false;
         }
 
@@ -37,7 +37,7 @@ class GroupVoter extends Voter
         }
 
         // admins always have access
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
             return true;
         }
 
@@ -58,13 +58,13 @@ class GroupVoter extends Voter
     private function validGroup(?Group $group, LocalAccount $user): bool
     {
         // if group is null, assume user may not pass (unless admin, see above)
-        if (!$group) {
+        if (null === $group) {
             return false;
         }
 
         // if one of the (active) groups
-        foreach ($user->getRelations() as $relation) {
-            if ($group->isActive() && $group === $relation->getGroup()) {
+        foreach ($user->getRelations() ?? [] as $relation) {
+            if (true === $group->isActive() && $group === $relation->getGroup()) {
                 return true;
             }
         }
@@ -75,12 +75,6 @@ class GroupVoter extends Voter
     private function anyGroup(LocalAccount $user): bool
     {
         // if one of the (active) groups
-        foreach ($user->getRelations() as $relation) {
-            if ($relation->getGroup()->isActive()) {
-                return true;
-            }
-        }
-
-        return false;
+        return count($user->getActiveGroups()) > 0;
     }
 }

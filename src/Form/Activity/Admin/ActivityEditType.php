@@ -3,7 +3,10 @@
 namespace App\Form\Activity\Admin;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
 use App\Form\Location\LocationType;
+use App\Repository\GroupRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,14 +22,24 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class ActivityEditType extends AbstractType
 {
     /** @var bool */
-    private $isadmin = false;
+    protected $isadmin = false;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    /** @var Group[] */
+    protected $groups;
+
+    public function __construct(TokenStorageInterface $tokenStorage, GroupRepository $groupRepo)
     {
-        $user = $tokenStorage->getToken()->getUser();
+        $user = !is_null($tokenStorage->getToken()) ? $tokenStorage->getToken()->getUser() : null;
 
-        if (null != $user) {
-            $this->isadmin = in_array('ROLE_ADMIN', $user->getRoles());
+        if ($user instanceof LocalAccount) {
+            $this->isadmin = in_array('ROLE_ADMIN', $user->getRoles(), true);
+            if ($this->isadmin) {
+                $this->groups = $groupRepo->findAll();
+            } else {
+                $this->groups = $groupRepo->findSubGroupsForPerson($user);
+            }
+        } else {
+            $this->groups = [];
         }
     }
 
@@ -51,18 +64,18 @@ class ActivityEditType extends AbstractType
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
                 'placeholder' => 'Geen groep',
-                'choices' => $options['groups'],
+                'choices' => $this->groups,
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
                 'help' => 'De groep die de activiteit organiseert.',
             ]);
-        } elseif (1 != count($options['groups'])) {
+        } elseif (1 != count($this->groups)) {
             $builder->add('author', EntityType::class, [
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => true,
-                'choices' => $options['groups'],
+                'choices' => $this->groups,
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
@@ -138,7 +151,6 @@ class ActivityEditType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Activity::class,
-            'groups' => [],
         ]);
     }
 }

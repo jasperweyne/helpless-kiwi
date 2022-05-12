@@ -43,6 +43,9 @@ class GroupVoterTest extends KernelTestCase
         return $user;
     }
 
+    /**
+     * @return iterable<array{string, ?Group, ?LocalAccount, int}>
+     */
     public function provideCases()
     {
         $group1 = new Group();
@@ -108,12 +111,12 @@ class GroupVoterTest extends KernelTestCase
         string $attribute,
         ?Group $group,
         ?LocalAccount $user,
-        $expectedVote
-    ) {
+        int $expectedVote
+    ): void {
         $voter = new GroupVoter();
 
         $token = new AnonymousToken('secret', 'anonymous');
-        if ($user) {
+        if (null !== $user) {
             $token = new UsernamePasswordToken(
                 $user, 'credentials', 'memory'
             );

@@ -6,9 +6,13 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
+use App\Repository\ActivityRepository;
+use App\Repository\GroupRepository;
+use App\Repository\RegistrationRepository;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -39,15 +43,16 @@ class ActivityController extends AbstractController
      * @MenuItem(title="Activiteiten", menu="admin", activeCriteria="admin_activity_")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction(): Response
+    public function indexAction(GroupRepository $groupRepo, ActivityRepository $activityRepo): Response
     {
         $em = $this->getDoctrine()->getManager();
 
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = $em->getRepository(Activity::class)->findBy([], ['start' => 'DESC']);
+            $activities = $activityRepo->findBy([], ['start' => 'DESC']);
         } else {
-            $groups = $em->getRepository(Group::class)->findAllFor($this->getUser());
-            $activities = $em->getRepository(Activity::class)->findAuthor($groups);
+            /** @var LocalAccount */
+            $user = $this->getUser();
+            $activities = $activityRepo->findAuthor($groupRepo->findAllFor($user));
         }
 
         return $this->render('admin/activity/index.html.twig', [
@@ -76,19 +81,12 @@ class ActivityController extends AbstractController
      *
      * @Route("/new", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request): Response
+    public function newAction(Request $request, GroupRepository $groupRepo): Response
     {
         $activity = new Activity();
         $em = $this->getDoctrine()->getManager();
-        $usergroups = [];
 
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $usergroups = $em->getRepository(Group::class)->findAll();
-        } else {
-            $usergroups = $em->getRepository(Group::class)->findSubGroupsForPerson($this->getUser());
-        }
-
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityNewType', $activity, ['groups' => $usergroups]);
+        $form = $this->createForm('App\Form\Activity\Admin\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -119,6 +117,7 @@ class ActivityController extends AbstractController
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
+        /** @var RegistrationRepository */
         $repository = $em->getRepository(Registration::class);
 
         $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
@@ -142,19 +141,11 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Activity $activity): Response
+    public function editAction(Request $request, Activity $activity, GroupRepository $groupRepo): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
-        $em = $this->getDoctrine()->getManager();
-        $usergroups = [];
 
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $usergroups = $em->getRepository(Group::class)->findAll();
-        } else {
-            $usergroups = $em->getRepository(Group::class)->findSubGroupsForPerson($this->getUser());
-        }
-
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity, ['groups' => $usergroups]);
+        $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -260,7 +251,11 @@ class ActivityController extends AbstractController
      */
     public function priceEditAction(Request $request, PriceOption $price): Response
     {
-        $this->denyAccessUnlessGranted('in_group', $price->getActivity()->getAuthor());
+        if (null !== $price->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $price->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin price option');
+        }
 
         $activity = $price->getActivity();
         $originalPrice = $price->getPrice();

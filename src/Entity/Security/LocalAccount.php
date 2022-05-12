@@ -3,6 +3,7 @@
 namespace App\Entity\Security;
 
 use App\Entity\Activity\Registration;
+use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -209,11 +210,8 @@ class LocalAccount implements UserInterface, EquatableInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        foreach ($this->getRelations() as $rel) {
-            if ($rel->getGroup()->isActive()) {
-                $roles[] = 'ROLE_AUTHOR';
-                break;
-            }
+        if (count($this->getActiveGroups()) > 0) {
+            $roles[] = 'ROLE_AUTHOR';
         }
 
         return array_unique($roles);
@@ -421,8 +419,8 @@ class LocalAccount implements UserInterface, EquatableInterface
     public function getActiveGroups(): array
     {
         $groups = [];
-        foreach ($this->getRelations() as $relation) {
-            if ($relation->getGroup()->isActive()) {
+        foreach ($this->getRelations() ?? [] as $relation) {
+            if (null !== $relation->getGroup() && true === $relation->getGroup()->isActive()) {
                 $groups[] = $relation->getGroup();
             }
         }

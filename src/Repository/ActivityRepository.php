@@ -23,6 +23,8 @@ class ActivityRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param Group[] $groups
+     *
      * @return Activity[] Returns an array of Activity objects
      */
     public function findAuthor($groups)

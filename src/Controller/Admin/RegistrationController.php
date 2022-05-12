@@ -51,7 +51,11 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ): Response {
-        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
 
         return $this->registrationEdit($request, $registration, 'admin/activity/registration/edit.html.twig', 'admin_activity_show');
     }
@@ -65,7 +69,11 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ): Response {
-        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
 
         $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
         $form = $this->createRegistrationDeleteForm($url);
@@ -118,7 +126,11 @@ class RegistrationController extends RegistrationHelper
     public function reserveMoveUpAction(
         Registration $registration
     ): Response {
-        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
 
         $returnData = $this->promoteReserve($registration);
 
@@ -133,7 +145,11 @@ class RegistrationController extends RegistrationHelper
     public function reserveMoveDownAction(
         Registration $registration
     ): Response {
-        $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
 
         $returnData = $this->demoteReserve($registration);
 
