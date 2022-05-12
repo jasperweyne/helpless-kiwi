@@ -4,6 +4,7 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\ActivityController;
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\PriceOption;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Activity\ActivityFixture;
@@ -34,6 +35,11 @@ class ActivityControllerTest extends AuthWebTestCase
      * @var EventService
      */
     protected $events;
+
+    /**
+     * @var string
+     */
+    private $controllerEndpoint = '/admin/activity';
 
     /**
      * {@inheritdoc}
@@ -69,7 +75,9 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
-        self::markTestIncomplete();
+        $this->client->request('GET', $this->controllerEndpoint.'/');
+        self::assertSelectorTextContains('span', 'Activiteiten');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNewAction(): void
@@ -108,38 +116,126 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testShowAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        /* Arrange */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', $this->controllerEndpoint."/{$id}/");
+
+        // Assert
+        self::assertSelectorTextContains('span', "Activiteit {$activity->getName()}");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testEditAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+        $newName = 'Activity Editing!';
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/edit");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['activity_edit[name]'] = $newName;
+        $crawler = $this->client->submit($form);
+        $newActivity = $this->em->getRepository(Activity::class)->find($id);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals($newName, $newActivity->getName());
     }
 
     public function testImageAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+        $local_file = __DIR__.'/../../../assets/Faint.png';
+        $newImage = new UploadedFile(
+            $local_file,
+            'Faint.png',
+            'image/png',
+            null,
+            null,
+            true
+        );
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/image");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['activity_image[imageFile][file]']->setValue($newImage);
+        $crawler = $this->client->submit($form);
+        $newActivity = $this->em->getRepository(Activity::class)->find($id);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals($newImage->getClientOriginalName(), $newActivity->getImage()->getName());
     }
 
     public function testDeleteAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/delete");
+        $form = $crawler->selectButton('Ja, verwijder')->form();
+        $crawler = $this->client->submit($form);
+
+        $allActivity = $this->em->getRepository(Activity::class)->findAll();
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertNotContains($activity, $allActivity);
     }
 
     public function testPriceNewAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+        $priceName = 'Free';
+        $priceAmount = 0.1;
+        $priceOptions = count($activity->getOptions());
+
+        //Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/new/{$id}");
+        $form = $crawler->selectButton('Toevoegen')->form();
+        //var_dump($form);
+        //exit;
+        $form['price_option[name]'] = $priceName;
+        $form['price_option[price]'] = $priceAmount;
+        $crawler = $this->client->submit($form);
+
+        $editedActivity = $this->em->getRepository(Activity::class)->find($id);
+        $newPriceOptions = count($editedActivity->getOptions());
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertTrue($newPriceOptions > $priceOptions);
     }
 
     public function testPriceEditAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        //Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $priceOption = $activity->getOptions()[0];
+        $id = $priceOption->getId();
+        $newPrice = 0;
+
+        //Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/{$id}");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['price_option[price]'] = $newPrice;
+        $crawler = $this->client->submit($form);
+        $newPriceOption = $this->em->getRepository(PriceOption::class)->find($id);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals($newPrice, $newPriceOption->getPrice());
     }
 
     public function testPresentEditAction(): void
@@ -161,13 +257,39 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testSetAmountPresent(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        //Arange
+        $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activitie->getId();
+        $present = $activitie->getPresent();
+
+        //Act
+        $crawler = $this->client->request('GET', "/admin/activity/{$id}/setamountpresent");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form['activity_set_present_amount[present]'] = 1000;
+        $this->client->submit($form);
+        $newActivity = $this->em->getRepository(Activity::class)->find($id);
+
+        //Assert
+        self::assertSelectorTextContains('.flash', 'Aanwezigen genoteerd!');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertTrue($newActivity->getPresent() != $present);
     }
 
     public function testResetAmountPresent(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        //Arange
+        $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activitie->getId();
+
+        //Act
+        $crawler = $this->client->request('GET', "/admin/activity/{$id}/resetamountpresent");
+        $form = $crawler->selectButton('Opslaan')->form();
+        $this->client->submit($form);
+        $newActivity = $this->em->getRepository(Activity::class)->find($id);
+
+        //Assert
+        self::assertSelectorTextContains('.flash', 'Aanwezigen geteld!');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertTrue(null == $newActivity->getPresent());
     }
 }
