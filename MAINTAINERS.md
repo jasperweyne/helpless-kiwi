@@ -45,10 +45,10 @@ vote must be held.
 Maintainers are expected to be active, supportive and responsive. Upon questions
 or requests from fellow maintainers, a response or indication of acknowledgement
 of the request must be given within 72 hours. A request to review a pull request
-must be fullfilled within 7 days. Upon failure to do so, the project owner can
-make any and all decisions to resolve any issues arising by this failure, except
-for any decisions which are in direct contradiction to these terms or the code
-of conduct.
+must be fullfilled within 7 days, unless a longer deadline is agreed upon. Upon
+failure to do so, the project owner can make any and all decisions to resolve 
+any issues arising by this failure, except for any decisions which are in direct
+contradiction to these terms or the code of conduct.
 
 If a maintainer is unavailable for a longer period of time, a notice to must be
 provided accordingly. Maintainers are expected to adhere to all deadlines and
