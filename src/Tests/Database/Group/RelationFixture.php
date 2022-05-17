@@ -19,18 +19,12 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
     {
         /** @var Group */
         $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0');
-        /** @var Group */
-        $child = $this->getReference(GroupFixture::GROUP_REFERENCE.'1');
         /** @var LocalAccount */
         $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
 
         $relations = self::generate($group, $person)->return();
-        $parentrelations = self::generatesubgroup($child, $group)->return();
         foreach ($relations as $relation) {
             $manager->persist($relation);
-        }
-        foreach ($parentrelations as $parentrelation) {
-            $manager->persist($parentrelation);
         }
 
         $manager->flush();
@@ -52,17 +46,6 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
         return TestData::from(new Relation())
             ->with('group', $group)
             ->with('person', $person)
-        ;
-    }
-
-    /**
-     * @return TestData<Relation>
-     */
-    public static function generatesubgroup(Group $group, Group $parent): TestData
-    {
-        return TestData::from(new Relation())
-            ->with('group', $group)
-            ->with('parent', $parent)
         ;
     }
 }
