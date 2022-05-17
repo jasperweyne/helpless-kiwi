@@ -37,7 +37,7 @@ Any maintainer may introduce topics, for a period of at least 4 days after the
 vote has been announced. Minutes are taken during votes and are published within
 14 days after the vote.
 
-Each entity with partner status can cast a single vote per topic. The maintainer
+Each entity with partner status may cast a single vote per topic. The maintainer
 that will cast the vote on behalf of a partner is registered at the start of
 each vote. For any changes to these terms, as well as the the code of conduct, a
 vote must be held.
