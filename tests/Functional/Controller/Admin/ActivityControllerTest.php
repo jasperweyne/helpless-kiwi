@@ -143,6 +143,9 @@ class ActivityControllerTest extends AuthWebTestCase
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 
         // Assert
+        if (null == $newActivity) {
+            self::fail();
+        }
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertEquals($newName, $newActivity->getName());
     }
@@ -170,6 +173,9 @@ class ActivityControllerTest extends AuthWebTestCase
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 
         // Assert
+        if (null == $newActivity) {
+            self::fail();
+        }
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertEquals($newImage->getClientOriginalName(), $newActivity->getImage()->getName());
     }
@@ -198,16 +204,14 @@ class ActivityControllerTest extends AuthWebTestCase
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
         $id = $activity->getId();
         $priceName = 'Free';
-        $priceAmount = 0.1;
+        $priceAmount = 1;
         $priceOptions = count($activity->getOptions());
 
         //Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/new/{$id}");
         $form = $crawler->selectButton('Toevoegen')->form();
-        //var_dump($form);
-        //exit;
-        $form['price_option[name]'] = $priceName;
-        $form['price_option[price]'] = $priceAmount;
+        $form['price_option[name]']->setValue($priceName);
+        $form['price_option[price]']->setValue($priceAmount);
         $crawler = $this->client->submit($form);
 
         $editedActivity = $this->em->getRepository(Activity::class)->find($id);
@@ -229,7 +233,7 @@ class ActivityControllerTest extends AuthWebTestCase
         //Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/{$id}");
         $form = $crawler->selectButton('Opslaan')->form();
-        $form['price_option[price]'] = $newPrice;
+        $form['price_option[price]']->setValue($newPrice);
         $crawler = $this->client->submit($form);
         $newPriceOption = $this->em->getRepository(PriceOption::class)->find($id);
 
@@ -270,6 +274,9 @@ class ActivityControllerTest extends AuthWebTestCase
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 
         //Assert
+        if (null == $newActivity) {
+            self::fail();
+        }
         self::assertSelectorTextContains('.flash', 'Aanwezigen genoteerd!');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertTrue($newActivity->getPresent() != $present);
@@ -288,6 +295,9 @@ class ActivityControllerTest extends AuthWebTestCase
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 
         //Assert
+        if (null == $newActivity) {
+            self::fail();
+        }
         self::assertSelectorTextContains('.flash', 'Aanwezigen geteld!');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertTrue(null == $newActivity->getPresent());
