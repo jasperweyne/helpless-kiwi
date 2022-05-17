@@ -28,23 +28,31 @@ maintainers takes place through an online channel, indicated after being granted
 partner status.
 
 At least once every six months, a vote is held on the priorities and agreements
-for the next six months. A vote will be announced by the project owner at least
-two weeks in advance, through the online communication channel for maintainers,
-distinctly from any other communication. Any maintainer may introduce topics, up
-to week before the vote.
+for the period until the next vote. A partner will be assigned the task to
+organise a vote. An individual maintainer will be assigned to be the point of
+contact regarding the organisation of the vote. The vote will be announced by
+the organising partner at least a week in advance, through the online
+communication channel for maintainers, distinctly from any other communication.
+Any maintainer may introduce topics, for a period of at least 4 days after the
+vote has been announced. Minutes are taken during votes and are published within
+14 days after the vote.
 
-Each entity with partner status gets a single vote. If multiple maintainers
-representing a single entity are present, only of them may cast a vote on behalf
-of the entity they represent. For any changes to these terms, as well as the
-contribution guidelines and the code of conduct, a vote must be held.
+Each entity with partner status can cast a single vote per topic. The maintainer
+that will cast the vote on behalf of a partner is registered at the start of
+each vote. For any changes to these terms, as well as the the code of conduct, a
+vote must be held.
 
 Maintainers are expected to be active, supportive and responsive. Upon questions
 or requests from fellow maintainers, a response or indication of acknowledgement
-of the request must be given within 72 hours. If a maintainer is unavailable for
-a longer period of time, a notice to must be provided accordingly. Maintainers
-are expected to adhere to all deadlines and agreements. General development
-meetings (whose schedule is decided upon during votes) shall be regularly
-attended by maintainers.
+of the request must be given within 72 hours. A request to review a pull request
+must be fullfilled within 7 days. Upon failure to do so, the project owner can
+make any and all decisions to resolve any issues arising by this failure, except
+for any decisions which are in direct contradiction to these terms or the code
+of conduct.
+
+If a maintainer is unavailable for a longer period of time, a notice to must be
+provided accordingly. Maintainers are expected to adhere to all deadlines and
+agreements. Votes shall be regularly attended by maintainers.
 
 Upon failure to adhere to these terms, partner status may be revoked, or a
 single maintainer may be expelled. The project owner is responsible for granting,
