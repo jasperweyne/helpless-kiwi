@@ -47,7 +47,6 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin/event, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/admin/group, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/admin/mail, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/admin/security, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/admin, allow_if: "has_role('ROLE_ADMIN') or has_role('ROLE_AUTHOR') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }

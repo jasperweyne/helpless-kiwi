@@ -4,8 +4,10 @@ namespace App\Controller\Admin;
 
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
+use App\Entity\Security\LocalAccount;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
+use App\Repository\GroupRepository;
 use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -39,6 +41,8 @@ class GroupController extends AbstractController
      */
     public function generateAction(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createFormBuilder()
             ->add('board', TextType::class, [
                 'label' => 'Bestuur',
@@ -73,6 +77,8 @@ class GroupController extends AbstractController
      */
     public function newAction(Request $request, ?Group $parent): Response
     {
+        $this->denyAccessUnlessGranted('in_group', $parent);
+
         $group = new Group();
 
         $form = $this->createForm('App\Form\Group\GroupType', $group);
@@ -101,30 +107,51 @@ class GroupController extends AbstractController
     /**
      * Lists all groups.
      *
-     * @MenuItem(title="Groepen", menu="admin", role="ROLE_ADMIN")
+     * @MenuItem(title="Groepen", menu="admin")
      * @Route("/{id?}", name="show", methods={"GET"})
      */
-    public function showAction(Request $request, ?Group $group): Response
+    public function showAction(Request $request, ?Group $group, GroupRepository $groupRepo): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        /** @var LocalAccount */
+        $user = $this->getUser();
 
-        if (!$group) {
-            if ($request->query->get('showall')) {
-                return $this->render('admin/group/show.html.twig', [
-                    'group' => null,
-                    'all_groups' => true,
-                    'groups' => $em->getRepository(Group::class)->findAll(),
-                ]);
+        if (null === $group) {
+            $this->denyAccessUnlessGranted('ROLE_AUTHOR');
+
+            // setup basic render parameters
+            $params = [
+                'group' => null,
+                'can_edit' => $this->isGranted('edit_group'),
+            ];
+
+            // all groups or only the top level groups
+            if ((bool) $request->query->get('showall')) {
+                $params['all_groups'] = true;
+
+                if ($this->isGranted('ROLE_ADMIN')) {
+                    $db = $groupRepo->findAll();
+                } else {
+                    $db = $groupRepo->findSubGroupsForPerson($user);
+                }
             } else {
-                return $this->render('admin/group/show.html.twig', [
-                    'group' => null,
-                    'groups' => $em->getRepository(Group::class)->findBy(['parent' => null]),
-                ]);
+                if ($this->isGranted('ROLE_ADMIN')) {
+                    $db = $groupRepo->findBy(['parent' => null]);
+                } else {
+                    $db = $groupRepo->findAllFor($user);
+                }
             }
+
+            // render
+            $params['groups'] = $db;
+
+            return $this->render('admin/group/show.html.twig', $params);
         }
+
+        $this->denyAccessUnlessGranted('in_group', $group);
 
         return $this->render('admin/group/show.html.twig', [
             'group' => $group,
+            'can_edit' => $this->isGranted('edit_group', $group),
             'modifs' => $this->events->findBy($group, EntityUpdateEvent::class),
         ]);
     }
@@ -136,6 +163,8 @@ class GroupController extends AbstractController
      */
     public function editAction(Request $request, Group $group): Response
     {
+        $this->denyAccessUnlessGranted('edit_group', $group);
+
         $form = $this->createForm('App\Form\Group\GroupType', $group);
         $form->handleRequest($request);
 
@@ -158,6 +187,8 @@ class GroupController extends AbstractController
      */
     public function deleteAction(Request $request, Group $group): Response
     {
+        $this->denyAccessUnlessGranted('edit_group', $group);
+
         $form = $this->createDeleteForm($group);
         $form->handleRequest($request);
 
@@ -182,6 +213,8 @@ class GroupController extends AbstractController
      */
     public function relationNewAction(Request $request, Group $group): Response
     {
+        $this->denyAccessUnlessGranted('edit_group', $group);
+
         $em = $this->getDoctrine()->getManager();
 
         $relation = new Relation();
@@ -214,6 +247,8 @@ class GroupController extends AbstractController
      */
     public function relationAddAction(Request $request, Relation $parent): Response
     {
+        $this->denyAccessUnlessGranted('edit_group', $parent->getGroup());
+
         $em = $this->getDoctrine()->getManager();
 
         $relation = new Relation();
@@ -257,6 +292,8 @@ class GroupController extends AbstractController
      */
     public function relationDeleteAction(Request $request, Relation $relation): Response
     {
+        $this->denyAccessUnlessGranted('edit_group', $relation->getGroup());
+
         $form = $this->createRelationDeleteForm($relation);
         $form->handleRequest($request);
 
