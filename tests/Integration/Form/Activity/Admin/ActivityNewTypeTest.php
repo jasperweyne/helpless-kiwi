@@ -6,6 +6,9 @@ use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
 use App\Entity\Security\LocalAccount;
 use App\Form\Activity\Admin\ActivityNewType;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -21,6 +24,8 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class ActivityNewTypeTest extends KernelTestCase
 {
+    use FixturesTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -37,6 +42,15 @@ class ActivityNewTypeTest extends KernelTestCase
         /** @var TokenStorageInterface */
         $storage = self::$container->get(TokenStorageInterface::class);
         $storage->setToken($token);
+
+        // Get all database tables
+        $em = self::$container->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
+
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
     }
 
     /**
