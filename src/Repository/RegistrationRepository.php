@@ -71,18 +71,18 @@ class RegistrationRepository extends ServiceEntityRepository
         return Order::avg(
             $current,
             Order::avg(
-                   $current,
-                   Order::avg(
-                   $current,
-                   Order::avg(
-                   $current,
-                   Order::avg(
-                   $current,
-                   Order::avg($current, self::MINORDER())
-               )
-               )
-               )
-               )
+                $current,
+                Order::avg(
+                    $current,
+                    Order::avg(
+                        $current,
+                        Order::avg(
+                            $current,
+                            Order::avg($current, self::MINORDER())
+                        )
+                    )
+                )
+            )
         );
     }
 
@@ -110,18 +110,18 @@ class RegistrationRepository extends ServiceEntityRepository
         return Order::avg(
             $current,
             Order::avg(
-                   $current,
-                   Order::avg(
-                   $current,
-                   Order::avg(
-                   $current,
-                   Order::avg(
-                   $current,
-                   Order::avg($current, self::MAXORDER())
-               )
-               )
-               )
-               )
+                $current,
+                Order::avg(
+                    $current,
+                    Order::avg(
+                        $current,
+                        Order::avg(
+                            $current,
+                            Order::avg($current, self::MAXORDER())
+                        )
+                    )
+                )
+            )
         );
     }
 
