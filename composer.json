@@ -6,7 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "dg/mysql-dump": "^1.5",
-        "doctrine/doctrine-migrations-bundle": "2.2",
+        "doctrine/doctrine-migrations-bundle": "2.2.3",
         "doctrine/migrations": "2.2",
         "drenso/symfony-oidc-bundle": "^1.11",
         "overblog/graphql-bundle": "^0.13.6",
