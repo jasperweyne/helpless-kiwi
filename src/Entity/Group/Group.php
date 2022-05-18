@@ -254,10 +254,6 @@ class Group
     {
         if ($this->relations->contains($relation)) {
             $this->relations->removeElement($relation);
-            // set the owning side to null (unless already changed)
-            if ($relation->getGroup() === $this) {
-                $relation->setGroup(null);
-            }
         }
 
         return $this;

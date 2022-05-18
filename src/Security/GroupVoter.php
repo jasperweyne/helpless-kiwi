@@ -95,7 +95,7 @@ class GroupVoter extends Voter
     private function anyGroup(LocalAccount $user): bool
     {
         // if in one of the (active) groups
-        foreach ($user->getRelations() ?? [] as $relation) {
+        foreach ($user->getRelations() as $relation) {
             if (null !== $relation->getGroup() && true === $relation->getGroup()->isActive()) {
                 return true;
             }

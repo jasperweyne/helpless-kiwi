@@ -151,17 +151,7 @@ parameters:
 			path: src/Controller/Admin/GroupController.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
 			message: "#^Only booleans are allowed in an if condition, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
 
@@ -381,11 +371,6 @@ parameters:
 			path: src/Entity/Activity/Activity.php
 
 		-
-			message: "#^Cannot call method map\\(\\) on Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
 			message: "#^Only booleans are allowed in &&, DateTime\\|null given on the right side\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
@@ -414,11 +399,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$option of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setOption\\(\\) expects App\\\\Entity\\\\Activity\\\\PriceOption, null given\\.$#"
 			count: 1
 			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Parameter \\#1 \\$group of method App\\\\Entity\\\\Group\\\\Relation\\:\\:setGroup\\(\\) expects App\\\\Entity\\\\Group\\\\Group, null given\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
 
 		-
 			message: "#^Method App\\\\Entity\\\\Log\\\\Event\\:\\:getDiscr\\(\\) should return class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null but returns string\\.$#"

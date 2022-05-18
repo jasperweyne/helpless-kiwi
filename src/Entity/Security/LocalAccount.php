@@ -384,7 +384,7 @@ class LocalAccount implements UserInterface, EquatableInterface
     }
 
     /**
-     * @return Collection<int, Relation> | null
+     * @return Collection<int, Relation>
      */
     public function getRelations()
     {
@@ -419,7 +419,7 @@ class LocalAccount implements UserInterface, EquatableInterface
     public function getActiveGroups(): array
     {
         $groups = [];
-        foreach ($this->getRelations() ?? [] as $relation) {
+        foreach ($this->getRelations() as $relation) {
             if (null !== $relation->getGroup() && true === $relation->getGroup()->isActive()) {
                 $groups[] = $relation->getGroup();
             }
