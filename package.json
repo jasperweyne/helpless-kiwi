@@ -1,6 +1,6 @@
 {
     "devDependencies": {
-        "@symfony/webpack-encore": "^1.0.0",
+        "@symfony/webpack-encore": "1.8.2",
         "autoprefixer": "^10.3.7",
         "core-js": "^3.18.3",
         "file-loader": "^6.0.0",
