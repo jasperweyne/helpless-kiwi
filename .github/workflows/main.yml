@@ -113,7 +113,7 @@ jobs:
     needs: [build]
     steps:
       - name: Get current date
-        uses: actions/github-script@0.3.0
+        uses: actions/github-script@0.9.0
         id: author-date
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
