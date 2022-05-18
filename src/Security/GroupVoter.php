@@ -12,11 +12,12 @@ class GroupVoter extends Voter
 {
     const IN_GROUP = 'in_group';
     const EDIT_GROUP = 'edit_group';
+    const ANY_GROUP = 'any_group';
 
     protected function supports($attribute, $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::IN_GROUP, self::EDIT_GROUP], true)) {
+        if (!in_array($attribute, [self::IN_GROUP, self::EDIT_GROUP, self::ANY_GROUP], true)) {
             return false;
         }
 
@@ -51,6 +52,8 @@ class GroupVoter extends Voter
                 return $this->validGroup($group, $user);
             case self::EDIT_GROUP:
                 return $this->editGroup($group, $user);
+            case self::ANY_GROUP:
+                return $this->anyGroup($user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -87,5 +90,17 @@ class GroupVoter extends Voter
 
             return null !== $current && true === $current->isActive() && $current !== $group;
         });
+    }
+
+    private function anyGroup(LocalAccount $user): bool
+    {
+        // if in one of the (active) groups
+        foreach ($user->getRelations() ?? [] as $relation) {
+            if (null !== $relation->getGroup() && true === $relation->getGroup()->isActive()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

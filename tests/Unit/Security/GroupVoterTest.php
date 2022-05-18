@@ -126,6 +126,20 @@ class GroupVoterTest extends KernelTestCase
             $this->createUser(true, $group1),
             Voter::ACCESS_GRANTED,
         ];
+
+        yield 'non-author cannot pass any' => [
+            GroupVoter::ANY_GROUP,
+            null,
+            $this->createUser(false),
+            Voter::ACCESS_DENIED,
+        ];
+
+        yield 'author can pass any' => [
+            GroupVoter::ANY_GROUP,
+            null,
+            $this->createUser(false, $group1),
+            Voter::ACCESS_GRANTED,
+        ];
     }
 
     /**

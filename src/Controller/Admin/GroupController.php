@@ -116,7 +116,7 @@ class GroupController extends AbstractController
         $user = $this->getUser();
 
         if (null === $group) {
-            $this->denyAccessUnlessGranted('ROLE_AUTHOR');
+            $this->denyAccessUnlessGranted('any_group');
 
             // setup basic render parameters
             $params = [
