@@ -104,10 +104,9 @@ class ActivityControllerTest extends AuthWebTestCase
             'Faint.png',
             'image/png',
             null,
-            null,
             true
         );
-        $form['activity_new[color]'] = 1;
+        $form['activity_new[color]'] = '1';
 
         $crawler = $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -161,14 +160,15 @@ class ActivityControllerTest extends AuthWebTestCase
             'Faint.png',
             'image/png',
             null,
-            null,
             true
         );
 
         // Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/image");
         $form = $crawler->selectButton('Opslaan')->form();
+        /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
         $form['activity_image[imageFile][file]']->setValue($newImage);
+        /** @var \Symfony\Component\DomCrawler\Form $form */
         $crawler = $this->client->submit($form);
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 
@@ -176,8 +176,11 @@ class ActivityControllerTest extends AuthWebTestCase
         if (null == $newActivity) {
             self::fail();
         }
+        $activityImage = $newActivity->getImage();
+
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertEquals($newImage->getClientOriginalName(), $newActivity->getImage()->getName());
+        self::assertNotNull($activityImage);
+        self::assertEquals($newImage->getClientOriginalName(), $activityImage->getName());
     }
 
     public function testDeleteAction(): void
@@ -210,11 +213,14 @@ class ActivityControllerTest extends AuthWebTestCase
         //Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/new/{$id}");
         $form = $crawler->selectButton('Toevoegen')->form();
+        /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
         $form['price_option[name]']->setValue($priceName);
-        $form['price_option[price]']->setValue($priceAmount);
+        $form['price_option[price]']->setValue((string) $priceAmount);
+        /** @var \Symfony\Component\DomCrawler\Form $form */
         $crawler = $this->client->submit($form);
 
         $editedActivity = $this->em->getRepository(Activity::class)->find($id);
+        self::assertInstanceOf(Activity::class, $editedActivity);
         $newPriceOptions = count($editedActivity->getOptions());
 
         // Assert
@@ -225,20 +231,25 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testPriceEditAction(): void
     {
         //Arrange
+        /** @var Activity $activity */
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
         $priceOption = $activity->getOptions()[0];
+        self::assertInstanceOf(PriceOption::class, $priceOption);
         $id = $priceOption->getId();
         $newPrice = 0;
 
         //Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/{$id}");
         $form = $crawler->selectButton('Opslaan')->form();
-        $form['price_option[price]']->setValue($newPrice);
+        /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
+        $form['price_option[price]']->setValue((string) $newPrice);
+        /** @var \Symfony\Component\DomCrawler\Form $form */
         $crawler = $this->client->submit($form);
         $newPriceOption = $this->em->getRepository(PriceOption::class)->find($id);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertInstanceOf(PriceOption::class, $newPriceOption);
         self::assertEquals($newPrice, $newPriceOption->getPrice());
     }
 
@@ -251,7 +262,9 @@ class ActivityControllerTest extends AuthWebTestCase
         //Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present");
         $form = $crawler->selectButton('Opslaan')->form();
+        /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
         $form['activity_edit_present[registrations][0][present]']->setValue('2');
+        /** @var \Symfony\Component\DomCrawler\Form $form */
         $this->client->submit($form);
 
         //Assert
@@ -269,7 +282,7 @@ class ActivityControllerTest extends AuthWebTestCase
         //Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/setamountpresent");
         $form = $crawler->selectButton('Opslaan')->form();
-        $form['activity_set_present_amount[present]'] = 1000;
+        $form['activity_set_present_amount[present]'] = '1000';
         $this->client->submit($form);
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 

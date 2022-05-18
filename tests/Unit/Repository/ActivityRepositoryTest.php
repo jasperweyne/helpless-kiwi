@@ -10,6 +10,7 @@ use App\Tests\Database\Group\GroupFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -21,6 +22,11 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class ActivityRepositoryTest extends KernelTestCase
 {
     use FixturesTrait;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $em;
 
     /**
      * @var ActivityRepository

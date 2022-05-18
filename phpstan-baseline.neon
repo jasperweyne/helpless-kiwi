@@ -831,22 +831,7 @@ parameters:
 			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
 
 		-
-			message: "#^Cannot call method setValue\\(\\) on array\\<array\\<Symfony\\\\Component\\\\DomCrawler\\\\Field\\\\FormField\\>\\|Symfony\\\\Component\\\\DomCrawler\\\\Field\\\\FormField\\>\\|Symfony\\\\Component\\\\DomCrawler\\\\Field\\\\FormField\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Parameter \\#5 \\$test of class Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile constructor expects bool, null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
 			message: "#^Symfony\\\\Component\\\\DomCrawler\\\\Form does not accept Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Symfony\\\\Component\\\\DomCrawler\\\\Form does not accept int\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
 
