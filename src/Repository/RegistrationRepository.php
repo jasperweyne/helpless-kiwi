@@ -68,12 +68,22 @@ class RegistrationRepository extends ServiceEntityRepository
         $current = Order::create($val->getReservePosition());
 
         // Six orders of magnitude removed
-        return Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current, self::MINORDER()))))));
+        return Order::avg(
+            $current,
+            Order::avg(
+                   $current,
+                   Order::avg(
+                   $current,
+                   Order::avg(
+                   $current,
+                   Order::avg(
+                   $current,
+                   Order::avg($current, self::MINORDER())
+               )
+               )
+               )
+               )
+        );
     }
 
     public function findAppendPosition(Activity $activity): Order
@@ -97,12 +107,22 @@ class RegistrationRepository extends ServiceEntityRepository
         $current = Order::create($val->getReservePosition());
 
         // Six orders of magnitude removed
-        return Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current, self::MAXORDER()))))));
+        return Order::avg(
+            $current,
+            Order::avg(
+                   $current,
+                   Order::avg(
+                   $current,
+                   Order::avg(
+                   $current,
+                   Order::avg(
+                   $current,
+                   Order::avg($current, self::MAXORDER())
+               )
+               )
+               )
+               )
+        );
     }
 
     public function findBefore(Activity $activity, Order $position): Order

@@ -10,9 +10,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class GroupVoter extends Voter
 {
-    const IN_GROUP = 'in_group';
-    const EDIT_GROUP = 'edit_group';
-    const ANY_GROUP = 'any_group';
+    public const IN_GROUP = 'in_group';
+    public const EDIT_GROUP = 'edit_group';
+    public const ANY_GROUP = 'any_group';
 
     protected function supports($attribute, $subject): bool
     {

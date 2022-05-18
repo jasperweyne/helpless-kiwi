@@ -57,11 +57,12 @@ class EventController extends AbstractController
         $limit = \max(1, $limit);
 
         $cqb = clone $qb;
-        $count = current($cqb
+        $count = current(
+            $cqb
             ->select('count('.$qb->getRootAlias().')')
             ->getQuery()
             ->getOneOrNullResult()
-                );
+        );
 
         $rqb = clone $qb;
         $results = $rqb

@@ -67,9 +67,7 @@ class MenuBuilder
                 return $a['title'] <=> $b['title'];
             });
 
-            /*
-             * @var array<string, MenuItemArray> $items
-             */
+            /** @var array<string, MenuItemArray> $items */
             $this->menuitems[$menu] = $items;
         }
 

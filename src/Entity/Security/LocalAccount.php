@@ -307,7 +307,8 @@ class LocalAccount implements UserInterface, EquatableInterface
     public function isPasswordRequestNonExpired(int $ttl): bool
     {
         return null === $this->getPasswordRequestedAt() || (
-               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time());
+            $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time()
+        );
     }
 
     public function isEqualTo(UserInterface $user): bool
