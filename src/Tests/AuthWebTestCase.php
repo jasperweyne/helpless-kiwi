@@ -82,4 +82,28 @@ class AuthWebTestCase extends WebTestCase
         $this->client->getContainer()->get('session')->invalidate();
         $this->client->getContainer()->get('security.token_storage')->setToken(null);
     }
+
+    protected function loginNotAdmin(): void
+    {
+        /** @var EntityManagerInterface */
+        $em = self::$container->get(EntityManagerInterface::class);
+        $users = $em->getRepository(LocalAccount::class)->findAll();
+        if (empty($users)) {
+            throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
+        }
+
+        $session = $this->client->getContainer()->get('session');
+
+        $firewallName = 'main';
+        $firewallContext = 'main';
+
+        $user = new LocalAccount();
+        $user->setEmail(LocalAccountFixture::USERNAME);
+        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_USER']);
+        $session->set('_security_'.$firewallContext, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
+    }
 }

@@ -214,4 +214,41 @@ class RegistrationControllerTest extends AuthWebTestCase
         self::assertEquals($updatedRegistrationId, $firstReserveId);
         self::assertSelectorTextContains('.container', 'naar beneden verplaatst!');
     }
+
+    /**
+     * @dataProvider noAccessProvider
+     */
+    public function testNoAccess($url)
+    {
+        //arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getRegistrations()[0]->getId();
+        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $reserveId = $reserves[0]->getId();
+
+        $url = str_replace('id', $id, $url);
+        $url = str_replace('rid', $reserveId, $url);
+
+        //act
+        $this->logout();
+        $this->loginNotAdmin();
+        $this->client->request('GET', $url);
+
+        //assert
+        self::assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @return iterable<array{string}>
+     */
+    public function noAccessProvider()
+    {
+        return [
+            ['/admin/activity/register/edit/id'],
+            ['/admin/activity/register/delete/id'],
+            ['/admin/activity/register/reserve/new/id'],
+            ['/admin/activity/register/reserve/move/rid/up'],
+            ['/admin/activity/register/reserve/move/rid/down'],
+        ];
+    }
 }
