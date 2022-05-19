@@ -10,6 +10,8 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
@@ -88,11 +90,15 @@ class AuthWebTestCase extends WebTestCase
         /** @var EntityManagerInterface */
         $em = self::$container->get(EntityManagerInterface::class);
         $users = $em->getRepository(LocalAccount::class)->findAll();
-        if (empty($users)) {
+        if (count($users) <= 0) {
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 
-        $session = $this->client->getContainer()->get('session');
+        /** @var ContainerInterface $container */
+        $container = $this->client->getContainer();
+
+        /** @var Session $session */
+        $session = $container->get('session');
 
         $firewallName = 'main';
         $firewallContext = 'main';

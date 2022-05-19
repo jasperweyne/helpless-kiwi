@@ -218,16 +218,21 @@ class RegistrationControllerTest extends AuthWebTestCase
     /**
      * @dataProvider noAccessProvider
      */
-    public function testNoAccess($url)
+    public function testNoAccess(string $url): void
     {
         //arrange
+        /** @var Activity $activity */
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
-        $id = $activity->getRegistrations()[0]->getId();
-        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
-        $reserveId = $reserves[0]->getId();
 
-        $url = str_replace('id', $id, $url);
-        $url = str_replace('rid', $reserveId, $url);
+        /** @var Registration $registration */
+        $registration = $activity->getRegistrations()[0];
+        $id = $registration->getId();
+
+        $reserve = $this->em->getRepository(Registration::class)->findReserve($activity)[0];
+        $reserveId = $reserve->getId();
+
+        $url = str_replace('id', strval($id), $url);
+        $url = str_replace('rid', strval($reserveId), $url);
 
         //act
         $this->logout();
