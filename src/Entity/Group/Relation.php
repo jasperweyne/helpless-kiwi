@@ -85,6 +85,13 @@ class Relation
         return $this->id;
     }
 
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;

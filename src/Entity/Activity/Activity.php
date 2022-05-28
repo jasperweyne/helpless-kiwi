@@ -473,6 +473,26 @@ class Activity
         return $this->image;
     }
 
+    /**
+     * Get imageUpdatedAt.
+     *
+     * @return \DateTime
+     */
+    public function getImageUpdatedAt(): ?\DateTime
+    {
+        return $this->end;
+    }
+
+    /**
+     * Set id.
+     */
+    public function setImageUpdatedAt(\DateTime $imageUpdatedAt): self
+    {
+        $this->imageUpdatedAt = $imageUpdatedAt;
+
+        return $this;
+    }
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
