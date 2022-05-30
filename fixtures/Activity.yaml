@@ -8,7 +8,6 @@ App\Entity\Activity\Activity:
     start: <dateTimeBetween('-5 days', 'now')>
     end: <dateTimeBetween('+2 days', '+1 week')>
     deadline: <dateTimeBetween('now', '+2 days')>
-    image: <image('public/', 640, 480)>
     imageUpdatedAt: <dateTimeBetween('-5 days', 'now')>
     location: '@Location_<current()>'
 

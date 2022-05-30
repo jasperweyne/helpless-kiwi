@@ -2,6 +2,6 @@
 App\Entity\Group\Relation:
   Relation_{1..10}:
     id: <uuid()>
-    description: <realText(50)>
+    description: <realText(10)>
     group: '@Group_*'
 
