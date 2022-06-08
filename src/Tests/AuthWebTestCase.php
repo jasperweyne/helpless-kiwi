@@ -3,6 +3,8 @@
 namespace App\Tests;
 
 use App\Entity\Security\LocalAccount;
+use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -55,7 +57,13 @@ class AuthWebTestCase extends WebTestCase
         unset($this->client);
     }
 
-    protected function login(): void
+    protected function logout(): void
+    {
+        $this->client->getContainer()->get('session')->invalidate();
+        $this->client->getContainer()->get('security.token_storage')->setToken(null);
+    }
+
+    protected function login(bool $admin = true)
     {
         /** @var EntityManagerInterface */
         $em = self::$container->get(EntityManagerInterface::class);
@@ -64,6 +72,7 @@ class AuthWebTestCase extends WebTestCase
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 
+        /** @var Session $session */
         $session = $this->client->getContainer()->get('session');
 
         $firewallName = 'main';
@@ -71,41 +80,21 @@ class AuthWebTestCase extends WebTestCase
 
         $user = new LocalAccount();
         $user->setEmail(LocalAccountFixture::USERNAME);
-        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_ADMIN', 'ROLE_USER']);
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
+        $roles = ['ROLE_USER'];
 
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
-    }
+        if ($admin) {
+            $roles[] = 'ROLE_ADMIN';
+        } else {
+            $group = new Group();
+            $group->setActive(true);
+            $group->setRelationable(true);
 
-    protected function logout(): void
-    {
-        $this->client->getContainer()->get('session')->invalidate();
-        $this->client->getContainer()->get('security.token_storage')->setToken(null);
-    }
-
-    protected function loginNotAdmin(): void
-    {
-        /** @var EntityManagerInterface */
-        $em = self::$container->get(EntityManagerInterface::class);
-        $users = $em->getRepository(LocalAccount::class)->findAll();
-        if (count($users) <= 0) {
-            throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
+            $rel = new Relation();
+            $rel->setGroup($group);
+            $user->addRelation($rel);
         }
 
-        /** @var ContainerInterface $container */
-        $container = $this->client->getContainer();
-
-        /** @var Session $session */
-        $session = $container->get('session');
-
-        $firewallName = 'main';
-        $firewallContext = 'main';
-
-        $user = new LocalAccount();
-        $user->setEmail(LocalAccountFixture::USERNAME);
-        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_USER']);
+        $token = new PostAuthenticationGuardToken($user, $firewallName, $roles);
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 
