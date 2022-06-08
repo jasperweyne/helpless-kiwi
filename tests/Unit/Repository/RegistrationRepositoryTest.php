@@ -16,6 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Order;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Doctrine\Persistence\ObjectManager;
 
 /**
  * Class RegistrationRepositoryTest.
@@ -53,6 +54,7 @@ class RegistrationRepositoryTest extends KernelTestCase
         $this->registrationRepository = new RegistrationRepository($this->registry);
 
         // Get all database tables
+        /** @var EntityManagerInterface $em */
         $em = self::$container->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
@@ -104,7 +106,7 @@ class RegistrationRepositoryTest extends KernelTestCase
 
         /** @var Order $position */
         $position = $this->em->getRepository(Registration::class)->findPrependPosition($activity);
-        $this->assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
+        self::assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
     }
 
     public function testFindAppendPosition(): void
@@ -114,7 +116,7 @@ class RegistrationRepositoryTest extends KernelTestCase
 
         /** @var Order $position */
         $position = $this->em->getRepository(Registration::class)->findPrependPosition($activity);
-        $this->assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
+        self::assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
     }
 
     public function testFindBefore(): void
