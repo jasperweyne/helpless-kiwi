@@ -244,6 +244,29 @@ class RegistrationControllerTest extends AuthWebTestCase
     }
 
     /**
+     * @dataProvider noAccessProvider
+     */
+    public function testNullRegistrationNotAdmin(string $url)
+    {
+
+        //arrange
+        /** @var Registration $registration */
+        $registration = $this->em->getRepository(Registration::class)->findOneBy(['activity' => null]);
+        $id = $registration->getId();
+
+        $url = str_replace('id', strval($id), $url);
+        $url = str_replace('rid', strval($id), $url);
+
+        //act
+        $this->logout();
+        $this->login(false);
+        $this->client->request('GET', $url);
+
+        //assert
+        self::assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
      * @return iterable<array{string}>
      */
     public function noAccessProvider()
