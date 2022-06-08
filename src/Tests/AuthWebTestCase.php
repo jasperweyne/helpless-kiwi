@@ -63,7 +63,7 @@ class AuthWebTestCase extends WebTestCase
         $this->client->getContainer()->get('security.token_storage')->setToken(null);
     }
 
-    protected function login(bool $admin = true)
+    protected function login(bool $admin = true): void
     {
         /** @var EntityManagerInterface */
         $em = self::$container->get(EntityManagerInterface::class);
