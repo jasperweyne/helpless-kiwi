@@ -221,7 +221,7 @@ class GroupTest extends KernelTestCase
         $expected->add($relation2);
 
         //Assert
-        self::assertSame(count($expected), count($this->group->getAllRelationFor($user)));
+        self::assertCount(count($expected), $this->group->getAllRelationFor($user));
     }
 
     public function testAddRelation(): void
