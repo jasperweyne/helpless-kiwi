@@ -3,7 +3,18 @@
 namespace Tests\Unit\Repository;
 
 use App\Repository\RegistrationRepository;
+use App\Entity\Activity\Activity;
+use App\Entity\Activity\Registration;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Activity\RegistrationFixture;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Group\RelationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Order;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -13,6 +24,13 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RegistrationRepositoryTest extends KernelTestCase
 {
+    use FixturesTrait;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $em;
+
     /**
      * @var RegistrationRepository
      */
@@ -33,6 +51,27 @@ class RegistrationRepositoryTest extends KernelTestCase
 
         $this->registry = self::$container->get(ManagerRegistry::class);
         $this->registrationRepository = new RegistrationRepository($this->registry);
+
+        // Get all database tables
+        $em = self::$container->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
+
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
+
+        $this->loadFixtures([
+            RegistrationFixture::class,
+            GroupFixture::class,
+            ActivityFixture::class,
+            LocalAccountFixture::class,
+            RelationFixture::class,
+        ]);
+
+        $this->em = static::$kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
     }
 
     /**
@@ -60,14 +99,22 @@ class RegistrationRepositoryTest extends KernelTestCase
 
     public function testFindPrependPosition(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+
+        /** @var Order $position */
+        $position = $this->em->getRepository(Registration::class)->findPrependPosition($activity);
+        $this->assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
     }
 
     public function testFindAppendPosition(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+
+        /** @var Order $position */
+        $position = $this->em->getRepository(Registration::class)->findPrependPosition($activity);
+        $this->assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
     }
 
     public function testFindBefore(): void
