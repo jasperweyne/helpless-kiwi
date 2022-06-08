@@ -246,7 +246,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     /**
      * @dataProvider noAccessProvider
      */
-    public function testNullRegistrationNotAdmin(string $url)
+    public function testNullActivityNotAdmin(string $url): void
     {
 
         //arrange
