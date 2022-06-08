@@ -236,7 +236,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         //act
         $this->logout();
-        $this->loginNotAdmin();
+        $this->login(false);
         $this->client->request('GET', $url);
 
         //assert

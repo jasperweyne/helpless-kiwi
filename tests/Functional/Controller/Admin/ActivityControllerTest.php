@@ -80,6 +80,14 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testIndexActionNotAdmin(): void
+    {
+        $this->logout();
+        $this->login(false);
+        $this->client->request('GET', $this->controllerEndpoint.'/');
+        self::assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testNewAction(): void
     {
         $local_file = __DIR__.'/../../../assets/Faint.png';
