@@ -32,9 +32,21 @@ class ActivityController extends AbstractController
      */
     private $events;
 
-    public function __construct(EventService $events)
+    /**
+     * @var ActivityRepository
+     */
+    private $activitiesDb;
+
+    /**
+     * @var GroupRepository
+     */
+    private $groupsDb;
+
+    public function __construct(EventService $events, GroupRepository $groups, ActivityRepository $activities)
     {
         $this->events = $events;
+        $this->activitiesDb = $activities;
+        $this->groupsDb = $groups;
     }
 
     /**
@@ -43,16 +55,15 @@ class ActivityController extends AbstractController
      * @MenuItem(title="Activiteiten", menu="admin", activeCriteria="admin_activity_")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction(GroupRepository $groupRepo, ActivityRepository $activityRepo): Response
+    public function indexAction(): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = $activityRepo->findBy([], ['start' => 'DESC']);
+            $activities = $this->activitiesDb->findBy([], ['start' => 'DESC']);
         } else {
             /** @var LocalAccount */
             $user = $this->getUser();
-            $activities = $activityRepo->findAuthor($groupRepo->findAllFor($user));
+            $groups = $this->groupsDb->findSubGroupsForPerson($user);
+            $activities = $this->activitiesDb->findAuthor($groups);
         }
 
         return $this->render('admin/activity/index.html.twig', [
@@ -67,9 +78,7 @@ class ActivityController extends AbstractController
      */
     public function groupAction(Group $group): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $activities = $em->getRepository(Activity::class)->findBy(['author' => $group], ['start' => 'DESC']);
+        $activities = $this->activitiesDb->findAuthor($this->groupsDb->findSubGroupsFor($group));
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
