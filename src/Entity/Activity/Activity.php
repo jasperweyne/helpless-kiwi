@@ -480,7 +480,7 @@ class Activity
      */
     public function getImageUpdatedAt(): ?\DateTime
     {
-        return $this->end;
+        return $this->imageUpdatedAt;
     }
 
     /**
