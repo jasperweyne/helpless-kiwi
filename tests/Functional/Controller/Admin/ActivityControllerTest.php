@@ -27,16 +27,6 @@ class ActivityControllerTest extends AuthWebTestCase
     private $em;
 
     /**
-     * @var ActivityController
-     */
-    protected $activityController;
-
-    /**
-     * @var EventService
-     */
-    protected $events;
-
-    /**
      * @var string
      */
     private $controllerEndpoint = '/admin/activity';
@@ -57,8 +47,6 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->login();
 
         $this->em = self::$container->get(EntityManagerInterface::class);
-        $this->events = self::$container->get(EventService::class);
-        $this->activityController = new ActivityController($this->events);
     }
 
     /**
@@ -68,8 +56,6 @@ class ActivityControllerTest extends AuthWebTestCase
     {
         parent::tearDown();
 
-        unset($this->activityController);
-        unset($this->events);
         unset($this->em);
     }
 
