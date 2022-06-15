@@ -1,0 +1,102 @@
+<?php
+
+namespace Tests\Integration\Group;
+
+use App\Entity\Group\Relation;
+use App\Entity\Security\LocalAccount;
+use App\Group\GroupMenuExtension;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Group\RelationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
+
+/**
+ * Class GroupMenuExtensionTest.
+ *
+ * @covers \App\Group\GroupMenuExtension
+ */
+class GroupMenuExtensionTest extends KernelTestCase
+{
+    use FixturesTrait;
+
+    /**
+     * @var GroupMenuExtension
+     */
+    protected $groupMenuExtension;
+
+    /**
+     * @var LocalAccount
+     */
+    protected $user;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        self::bootKernel();
+
+        // Get all database tables
+        $em = self::$container->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
+
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
+
+        // load database fixtures
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+            GroupFixture::class,
+            RelationFixture::class,
+        ]);
+
+        // get user
+        $relation = $em->getRepository(Relation::class)->findAll()[0];
+        $user = $relation->getPerson();
+        assert($user !== null);
+        $this->user = $user;
+
+        // build token storage
+        $token = new PostAuthenticationGuardToken($this->user, 'main', ['ROLE_USER']);
+        $tokenStorage = self::$container->get(TokenStorageInterface::class);
+        $tokenStorage->setToken($token);
+
+        $this->groupMenuExtension = new GroupMenuExtension($em, $tokenStorage);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        unset($this->groupMenuExtension);
+        unset($this->user);
+    }
+
+    public function testGetMenuItems(): void
+    {
+        $expected = [];
+        self::assertSame($expected, $this->groupMenuExtension->getMenuItems());
+    }
+
+    public function testGetAdminMenuItems(): void
+    {
+        $expected = count($this->user->getActiveGroups());
+        $result = $this->groupMenuExtension->getMenuItems('admin');
+        self::assertCount(1, $result);
+        self::assertSame('Activiteiten', $result[0]['title']);
+        self::assertNotEquals(0, $expected);
+        self::assertArrayHasKey('sub', $result[0]);
+        self::assertCount($expected, $result[0]['sub']);
+    }
+}
