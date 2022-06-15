@@ -1,0 +1,7 @@
+# fixture/Relation
+App\Entity\Group\Relation:
+  Relation_{1..10}:
+    id: <uuid()>
+    description: <realText(10)>
+    group: '@Group_*'
+

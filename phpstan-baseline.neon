@@ -1166,26 +1166,6 @@ parameters:
 			path: tests/Unit/Entity/Activity/ActivityTest.php
 
 		-
-			message: "#^PHPDoc tag @var contains unknown class Tests\\\\Unit\\\\Entity\\\\Activity\\\\MockObject\\.$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/ActivityTest.php
-
-		-
-			message: "#^You should use assertFalse\\(\\) instead of assertSame\\(\\) when expecting \"false\"$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/ActivityTest.php
-
-		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/ActivityTest.php
-
-		-
-			message: "#^You should use assertTrue\\(\\) instead of assertSame\\(\\) when expecting \"true\"$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/ActivityTest.php
-
-		-
 			message: "#^Cannot access offset 0 on mixed\\.$#"
 			count: 1
 			path: tests/Unit/Entity/Activity/PriceOptionTest.php

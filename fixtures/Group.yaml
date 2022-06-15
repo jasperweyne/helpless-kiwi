@@ -1,0 +1,14 @@
+# fixture/Group
+# I do believe we can clean this up
+App\Entity\Group\Group:
+  Group_{1}:
+    id: <uuid()>
+    name: <realText(50)>
+  Group_{2..10}:
+    id: <uuid()>
+    name: <realText(50)>
+    parent: '@Group_1'
+  Group_{11}:
+    id: <uuid()>
+    name: <realText(50)>
+    parent: '@Group_2'

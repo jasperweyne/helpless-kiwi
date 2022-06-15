@@ -1,0 +1,15 @@
+# fixture/LocalAccount
+
+App\Entity\Security\LocalAccount:
+  LocalAccount_1:
+    id: <uuid()>
+    email: admin@kiwi.nl
+    givenName: <firstName()>
+    familyName: <lastName()>
+    roles: ["ROLE_USER", "ROLE_ADMIN"]
+  LocalAccount_{2..10}:
+    id: <uuid()>
+    email: <email()>
+    givenName: <firstName()>
+    familyName: <lastName()>
+    roles: ["ROLE_USER"]
