@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Order;
+use Doctrine\Common\Collections\ArrayCollection;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Doctrine\Persistence\ObjectManager;
@@ -104,9 +105,23 @@ class RegistrationRepositoryTest extends KernelTestCase
         /** @var Activity $activity */
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
 
-        /** @var Order $position */
-        $position = $this->em->getRepository(Registration::class)->findPrependPosition($activity);
-        self::assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
+        // get list of stringified reserve positions
+        $registrations = $activity->getRegistrations()->filter(function (Registration $registration) {
+            return $registration->isReserve();
+        })->map(function (Registration $registration) {
+            return strval($registration->getReservePosition());
+        });
+
+        $prepend = strval($this->em->getRepository(Registration::class)->findPrependPosition($activity));
+        $registrations[] = $prepend;
+
+        // sort positions
+        $regArray = $registrations->toArray();
+        sort($regArray);
+        $registrations = new ArrayCollection($regArray);
+
+        // check that prepend position is first when list is ordered
+        self::assertSame($prepend, $registrations->first());
     }
 
     public function testFindAppendPosition(): void
@@ -114,9 +129,23 @@ class RegistrationRepositoryTest extends KernelTestCase
         /** @var Activity $activity */
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
 
-        /** @var Order $position */
-        $position = $this->em->getRepository(Registration::class)->findPrependPosition($activity);
-        self::assertNotSame($position, Order::avg($this->em->getRepository(Registration::class)::MINORDER(), $this->em->getRepository(Registration::class)::MAXORDER()));
+        // get list of stringified reserve positions
+        $registrations = $activity->getRegistrations()->filter(function (Registration $registration) {
+            return $registration->isReserve();
+        })->map(function (Registration $registration) {
+            return strval($registration->getReservePosition());
+        });
+
+        $append = strval($this->em->getRepository(Registration::class)->findAppendPosition($activity));
+        $registrations[] = $append;
+
+        // sort positions
+        $regArray = $registrations->toArray();
+        sort($regArray);
+        $registrations = new ArrayCollection($regArray);
+
+        // check that prepend position is first when list is ordered
+        self::assertSame($append, $registrations->last());
     }
 
     public function testFindBefore(): void
