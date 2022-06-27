@@ -200,6 +200,7 @@
                                 <td> <strike>{{ registration.person.canonical ?? 'Onbekend' }} </strike> </td>
                                 <td> <strike> {{ registration.option.name }}   </strike> </td> 
                                 <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
+                                <td><a href="mailto:{{ registration.person.email }}">Mailen</a></td>
                             </tr>
                         {% endfor %}
                         {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
@@ -207,7 +208,10 @@
                                 <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
-                                <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                <td>
+                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
+                                    <a href="mailto:{{ registration.person.email }}">Mailen</a>
+                                </td>
                                 <td><a href="{{ path('admin_activity_registration_edit', { 'id': registration.id }) }}">Bewerk</a></td>
                                 <td>
                                 {% if registration.present is null %}Onbekend
@@ -224,7 +228,12 @@
                         {% endfor %}
                             <tr>
                                 <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
-                                <td></td><td></td><td></td>
+                                <td></td><td></td>
+                                <td>
+                                    {% if registrations|length > 0 %}
+                                    <a href="mailto:?bcc={{ registrations|map(r => r.person.email)|join(',') }}">Deelnemers mailen</a>
+                                    {% endif %}
+                                </td>
                                 <td><a href="{{ path('admin_activity_present', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
                             </tr>
                         </tbody>
@@ -255,7 +264,10 @@
                                 <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
-                                <td><a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a></td>
+                                <td>
+                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
+                                    <a href="mailto:{{ registration.person.email }}">Mailen</a>
+                                </td>
                                 <td>{% if not loop.first %}<a href="{{ path('admin_activity_registration_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
                                 <td>{% if not loop.last %}<a href="{{ path('admin_activity_registration_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
                             </tr>
