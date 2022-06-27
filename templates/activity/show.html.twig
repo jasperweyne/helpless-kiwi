@@ -81,6 +81,9 @@
                         </div>
                     </div>
                 {% endif %}
+                {% if activity.author.active and activity.author.contactFields.email %}
+                    <a href="{{ activity.author.contactFields.email }}" target="_blank" class="rounded px-4 py-3 bg-white inline-block">Contact</a>
+                {% endif %}
             </div>
         {% endif %}
     </div>
