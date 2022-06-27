@@ -19,7 +19,7 @@
             </tr>
             <tr>
                 <th>E-mail</th>
-                <td>{{ account.email }}</td>
+                <td><a href="mailto:{{ account.email }}" target="_blank">{{ account.email }}</a></td>
             </tr>
             <tr>
                 <th>{{ oidc ? 'Lokale login' : 'Geactiveerd' }}</th>
