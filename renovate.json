@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "config:base",
+    ":npm",
+    ":disableMajorUpdates",
+    "group:allNonMajor"
+  ],
+  "lockFileMaintenance": { "enabled": true },
+  "rangeStrategy": "update-lockfile"
+}
