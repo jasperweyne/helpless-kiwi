@@ -9,7 +9,7 @@
   "rangeStrategy": "update-lockfile",
   "packageRules": [
     {
-      "matchCurrentVersion": "!/^[~^]?0/",
+      "matchCurrentVersion": "/^[~^]?0/",
       "minor": false
     }
   ]
