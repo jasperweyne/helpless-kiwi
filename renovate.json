@@ -1,6 +1,7 @@
 {
   "extends": [
     "config:base",
+    ":npm",
     ":preserveSemverRanges",
     ":disableMajorUpdates",
     "group:allNonMajor"
