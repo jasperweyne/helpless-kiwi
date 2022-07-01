@@ -5,12 +5,6 @@
     ":disableMajorUpdates",
     "group:allNonMajor"
   ],
-  "packageRules": [
-    {
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "rangeStrategy": "update-lockfile"
-    }
-  ]
+  "lockFileMaintenance": { "enabled": true },
+  "rangeStrategy": "update-lockfile"
 }
