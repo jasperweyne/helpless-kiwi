@@ -2,8 +2,15 @@
   "extends": [
     "config:base",
     ":npm",
-    ":preserveSemverRanges",
     ":disableMajorUpdates",
     "group:allNonMajor"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "rangeStrategy": "update-lockfile"
+    }
   ]
 }
