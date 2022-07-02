@@ -7,11 +7,12 @@ on:
       - master
       - develop
 
+permissions:
+  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     
     strategy:
       matrix:
