@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * Class RegistrationControllerTest.
  *
  * @covers \App\Controller\Admin\RegistrationController
- * @covers \App\Controller\Helper\RegistrationHelper
  *
  * @author A-Daneel
  */
@@ -87,7 +86,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $activity = $this->em->getRepository(Activity::class)->find($id);
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'aangemeld');
+        self::assertSelectorTextContains('.container', 'gelukt');
         self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
@@ -142,7 +141,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Assert
         $registration = $this->em->getRepository(Registration::class)->find($id);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'afgemeld');
+        self::assertSelectorTextContains('.container', 'gelukt');
         self::assertNotNull($registration->getDeleteDate());
     }
 
@@ -178,7 +177,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
-        self::assertSelectorTextContains('.container', 'aangemeld op de reservelijst');
+        self::assertSelectorTextContains('.container', 'op de reservelijst');
     }
 
     public function testReserveMoveUpAction(): void

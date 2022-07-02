@@ -57,12 +57,12 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'registration_single' on mixed\\.$#"
-			count: 2
+			count: 1
 			path: src/Controller/Activity/ActivityController.php
 
 		-
 			message: "#^Cannot access offset 'single_option' on mixed\\.$#"
-			count: 2
+			count: 1
 			path: src/Controller/Activity/ActivityController.php
 
 		-
@@ -171,21 +171,6 @@ parameters:
 			path: src/Controller/Admin/RegistrationController.php
 
 		-
-			message: "#^Parameter \\#1 \\$id of method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) expects string, string\\|null given\\.$#"
-			count: 3
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeNewReserve\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeRegistration\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
 			message: "#^Parameter \\#1 \\$route of method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Controller\\\\AbstractController\\:\\:generateUrl\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/RegistrationController.php
@@ -204,111 +189,6 @@ parameters:
 			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 3
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Cannot call method getOptions\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationDeleteForm\\(\\) has parameter \\$actionUrl with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationDeleteForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationEditForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationNewForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createReserveNewForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:demoteReserve\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:handleRedirect\\(\\) has parameter \\$type with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:promoteReserve\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$em with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$message with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$template with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$title with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given\\.$#"
-			count: 4
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#1 \\$activity of method App\\\\Repository\\\\RegistrationRepository\\:\\:findAfter\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#1 \\$activity of method App\\\\Repository\\\\RegistrationRepository\\:\\:findBefore\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#2 \\$position of method App\\\\Repository\\\\RegistrationRepository\\:\\:findAfter\\(\\) expects App\\\\Entity\\\\Order, App\\\\Entity\\\\Order\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#2 \\$position of method App\\\\Repository\\\\RegistrationRepository\\:\\:findBefore\\(\\) expects App\\\\Entity\\\\Order, App\\\\Entity\\\\Order\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
 
 		-
 			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\Exception\\\\AuthenticationException\\|null given\\.$#"
