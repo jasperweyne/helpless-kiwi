@@ -14,6 +14,7 @@ use App\Repository\ActivityRepository;
 use App\Repository\GroupRepository;
 use App\Repository\RegistrationRepository;
 use App\Template\Annotation\MenuItem;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,11 +43,21 @@ class ActivityController extends AbstractController
      */
     private $groupsDb;
 
-    public function __construct(EventService $events, GroupRepository $groups, ActivityRepository $activities)
-    {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    public function __construct(
+        EventService $events,
+        GroupRepository $groups,
+        ActivityRepository $activities,
+        EntityManagerInterface $em
+    ) {
         $this->events = $events;
         $this->activitiesDb = $activities;
         $this->groupsDb = $groups;
+        $this->em = $em;
     }
 
     /**
@@ -93,15 +104,14 @@ class ActivityController extends AbstractController
     public function newAction(Request $request, GroupRepository $groupRepo): Response
     {
         $activity = new Activity();
-        $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($activity);
-            $em->persist($activity->getLocation());
-            $em->flush();
+            $this->em->persist($activity);
+            $this->em->persist($activity->getLocation());
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -121,13 +131,11 @@ class ActivityController extends AbstractController
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
-        $em = $this->getDoctrine()->getManager();
-
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
         /** @var RegistrationRepository */
-        $repository = $em->getRepository(Registration::class);
+        $repository = $this->em->getRepository(Registration::class);
 
         $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $deregs = $repository->findDeregistrations($activity);
@@ -206,9 +214,8 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($activity);
-            $em->flush();
+            $this->em->remove($activity);
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_index');
         }
@@ -240,9 +247,8 @@ class ActivityController extends AbstractController
                 ->setConfirmationMsg('')
             ;
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($price);
-            $em->flush();
+            $this->em->persist($price);
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -271,8 +277,7 @@ class ActivityController extends AbstractController
         $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
         $form->handleRequest($request);
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(Registration::class);
+        $repository = $this->em->getRepository(Registration::class);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
@@ -284,8 +289,7 @@ class ActivityController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
-            $em = $this->getDoctrine()->getManager();
-            $em->flush();
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $price->getActivity()->getId()]);
         }
@@ -308,10 +312,8 @@ class ActivityController extends AbstractController
         $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);
 
-        $em = $this->getDoctrine()->getManager();
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Aanwezigheid aangepast');
         }
 
@@ -330,13 +332,11 @@ class ActivityController extends AbstractController
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
-        $em = $this->getDoctrine()->getManager();
-
         $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Aanwezigen genoteerd!');
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
@@ -357,14 +357,12 @@ class ActivityController extends AbstractController
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
-        $em = $this->getDoctrine()->getManager();
-
         $form = $this->createForm('App\Form\Activity\ActivityCountPresent', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $activity->setPresent(null);
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Aanwezigen geteld!');
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
