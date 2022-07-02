@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Activity\Activity;
 use App\Entity\Group\Group;
 use App\Entity\Location\Location;
 use App\Entity\Location\Note;
@@ -88,6 +89,57 @@ class LocationController extends AbstractController
         }
 
         return $this->render('admin/location/edit.html.twig', [
+            'location' => $location,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Merges other locations into this one a location entity.
+     *
+     * @Route("/{id}/deduplicate", name="dedupe", methods={"GET", "POST"})
+     */
+    public function dedupeAction(Request $request, Location $location): Response
+    {
+        $locations = $this->em->getRepository(Location::class)->findAll();
+        if (($key = array_search($location, $locations, true)) !== false) {
+            unset($locations[$key]);
+        }
+
+        $form = $this->createForm('App\Form\Location\DedupeLocationsType', [], ['locations' => $locations]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ((array) $form->getData() as $id => $dedupe) {
+                if ($dedupe === true) {
+                    // update activities
+                    /** @var Activity[] */
+                    $activities = $this->em->getRepository(Activity::class)->findBy([
+                        'location' => $id,
+                    ]);
+                    foreach ($activities as $activity) {
+                        $activity->setLocation($location);
+                    }
+
+                    // update notes
+                    /** @var Note[] */
+                    $notes = $this->em->getRepository(Note::class)->findBy([
+                        'location' => $id,
+                    ]);
+                    foreach ($notes as $note) {
+                        $note->setLocation($location);
+                    }
+
+                    // remove the location
+                    $this->em->remove($this->em->getPartialReference(Location::class, $id));
+                }
+            }
+            $this->em->flush();
+
+            return $this->redirectToRoute('admin_location_show', ['id' => $location->getId()]);
+        }
+
+        return $this->render('admin/location/dedupe.html.twig', [
             'location' => $location,
             'form' => $form->createView(),
         ]);

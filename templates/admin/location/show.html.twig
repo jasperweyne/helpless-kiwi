@@ -4,6 +4,7 @@
     {% set page_title = 'Locatie ' ~ location.address %}
     
     {% block buttons %}
+        <a href="{{ path('admin_location_dedupe', { 'id': location.id }) }}">Duplicaten samenvoegen</a>
         <a href="{{ path('admin_location_edit', { 'id': location.id }) }}">Bewerken</a>
         <a href="{{ path('admin_location_delete', { 'id': location.id }) }}">Verwijderen</a>
     {% endblock %}

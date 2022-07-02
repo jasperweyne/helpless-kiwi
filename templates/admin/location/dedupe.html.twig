@@ -1,0 +1,17 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set page_title = 'Duplicaten samenvoegen met ' ~ location.address %}
+
+{% block body %}
+    <div class="form">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <br />
+            <span><strong>Let op!</strong> Wanneer je 'Dedupliceren' drukt, worden de geselecteerde locaties verwijderd. Deze actie kan niet teruggedraaid worden, controleer je selectie voordat je verder gaat.</span> 
+            <div class="button-group">
+                <button type="submit">Dedupliceren</button>
+                <a href="{{ path('admin_location_show', { 'id': location.id }) }}">Annuleren</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
