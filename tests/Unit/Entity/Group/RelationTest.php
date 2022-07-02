@@ -53,6 +53,16 @@ class RelationTest extends KernelTestCase
         self::assertSame($expected, $this->relation->getId());
     }
 
+    public function testSetId(): void
+    {
+        $expected = '42';
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('id');
+        $property->setAccessible(true);
+        $this->relation->setId($expected);
+        self::assertSame($expected, $property->getValue($this->relation));
+    }
+
     public function testGetDescription(): void
     {
         $expected = '42';

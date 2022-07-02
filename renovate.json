@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "config:base",
+    ":npm",
+    ":disableMajorUpdates",
+    "group:allNonMajor"
+  ],
+  "lockFileMaintenance": { "enabled": true },
+  "rangeStrategy": "update-lockfile",
+  "packageRules": [
+    {
+      "matchCurrentVersion": "/^[~^]?0/",
+      "minor": false
+    }
+  ]
+}

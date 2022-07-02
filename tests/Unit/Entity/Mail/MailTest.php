@@ -54,6 +54,16 @@ class MailTest extends KernelTestCase
         self::assertSame($expected, $this->mail->getId());
     }
 
+    public function testSetId(): void
+    {
+        $expected = '42';
+        $property = (new ReflectionClass(Mail::class))
+            ->getProperty('id');
+        $property->setAccessible(true);
+        $this->mail->setId($expected);
+        self::assertSame($expected, $property->getValue($this->mail));
+    }
+
     public function testGetTitle(): void
     {
         $expected = '42';

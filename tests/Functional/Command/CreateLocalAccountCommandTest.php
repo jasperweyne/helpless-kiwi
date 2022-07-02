@@ -46,6 +46,10 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
     // But for now it will at least show us where the error resides.
     public function testInteract(): void
     {
+        if (PHP_OS == 'WINNT') {
+            $this::markTestSkipped();
+        }
+
         $email = 'user@kiwi.au';
         $commandName = 'app:create-account';
         $application = new Application($this->client->getKernel());

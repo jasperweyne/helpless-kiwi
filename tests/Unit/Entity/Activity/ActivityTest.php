@@ -336,6 +336,26 @@ class ActivityTest extends KernelTestCase
         self::assertSame($expected, $this->activity->getImageFile());
     }
 
+    public function testGetImageUpdatedAt(): void
+    {
+        $expected = new DateTime();
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('imageUpdatedAt');
+        $property->setAccessible(true);
+        $property->setValue($this->activity, $expected);
+        self::assertSame($expected, $this->activity->getImageUpdatedAt());
+    }
+
+    public function testSetImageUpdatedAt(): void
+    {
+        $expected = new DateTime();
+        $property = (new ReflectionClass(Activity::class))
+            ->getProperty('imageUpdatedAt');
+        $property->setAccessible(true);
+        $this->activity->setImageUpdatedAt($expected);
+        self::assertSame($expected, $property->getValue($this->activity));
+    }
+
     public function testSetImage(): void
     {
         $expected = new EmbeddedFile();
@@ -358,19 +378,17 @@ class ActivityTest extends KernelTestCase
 
     public function testHasCapacity(): void
     {
-        $expected = true;
         $capacity = 42;
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('capacity');
         $property->setAccessible(true);
         $property->setValue($this->activity, $capacity);
-        self::assertSame($expected, $this->activity->hasCapacity());
+        self::assertTrue($this->activity->hasCapacity());
     }
 
     public function testHasCapacityWhileEmpty(): void
     {
-        $expected = false;
-        self::assertSame($expected, $this->activity->hasCapacity());
+        self::assertFalse($this->activity->hasCapacity());
     }
 
     public function testGetCapacity(): void
@@ -395,12 +413,11 @@ class ActivityTest extends KernelTestCase
 
     public function testGetPresent(): void
     {
-        $expected = null;
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('present');
         $property->setAccessible(true);
-        $property->setValue($this->activity, $expected);
-        self::assertSame($expected, $this->activity->getPresent());
+        $property->setValue($this->activity, null);
+        self::assertNull($this->activity->getPresent());
     }
 
     public function testSetPresent(): void
@@ -435,7 +452,6 @@ class ActivityTest extends KernelTestCase
 
     public function testIsVisible(): void
     {
-        /** @var MockObject&Group */
         $expected = $this->createMock(Group::class);
         $target = (new ReflectionClass(Activity::class))
             ->getProperty('target');

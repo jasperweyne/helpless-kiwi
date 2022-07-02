@@ -35,6 +35,18 @@ class Location
         return $this->id;
     }
 
+    /**
+     *  DONT USE THIS METHOD
+     *  This method only exists to please Alice.
+     *
+     *  We're returning a void so that if someone accidentally used this method
+     *  they'll observe unexpected behaviour
+     */
+    public function setId(string $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getAddress(): ?string
     {
         return $this->address;

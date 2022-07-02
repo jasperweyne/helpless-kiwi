@@ -2,6 +2,9 @@
 
 namespace Tests\Integration\Form\Activity;
 
+use App\Entity\Activity\Activity;
+use App\Form\Activity\ActivityEditType;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -30,7 +33,20 @@ class ActivityEditTypeTest extends KernelTestCase
 
     public function testBuildForm(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        $type = new Activity();
+        $formData = [
+            'name' => 'test name',
+            'description' => 'test description',
+            'deadline' => new DateTime(),
+            'start' => new DateTime(),
+            'end' => new DateTime(),
+        ];
+
+        $formfactory = self::$container->get('form.factory');
+        $form = $formfactory->create(ActivityEditType::class, $type);
+
+        $form->submit($formData);
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
     }
 }

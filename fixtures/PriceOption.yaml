@@ -1,0 +1,9 @@
+# fixture/PriceOption
+App\Entity\Activity\PriceOption:
+  PriceOption_{1..10}:
+    id: <uuid()>
+    name: 'price for admission'
+    price: <numberBetween(100, 1000)>
+    details: '[the price for admission]'
+    confirmation_msg: 'greatest of successes'
+    activity: '@Activity_<current()>'

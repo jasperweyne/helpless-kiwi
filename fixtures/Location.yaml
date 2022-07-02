@@ -1,0 +1,6 @@
+# fixture/Location
+
+App\Entity\Location\Location:
+  Location_{1..10}:
+    id: <uuid()>
+    address: <address()>

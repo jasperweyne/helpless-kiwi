@@ -201,13 +201,15 @@ class Activity
     }
 
     /**
-     * Set id.
+     *  DONT USE THIS METHOD
+     *  This method only exists to please Alice.
+     *
+     *  We're returning a void so that if someone accidentally used this method
+     *  they'll observe unexpected behaviour
      */
-    public function setId(string $id): self
+    public function setId(string $id): void
     {
         $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -471,6 +473,26 @@ class Activity
     public function getImage(): ?EmbeddedFile
     {
         return $this->image;
+    }
+
+    /**
+     * Get imageUpdatedAt.
+     *
+     * @return \DateTime
+     */
+    public function getImageUpdatedAt(): ?\DateTime
+    {
+        return $this->imageUpdatedAt;
+    }
+
+    /**
+     * Set id.
+     */
+    public function setImageUpdatedAt(\DateTime $imageUpdatedAt): self
+    {
+        $this->imageUpdatedAt = $imageUpdatedAt;
+
+        return $this;
     }
 
     public function __construct()
