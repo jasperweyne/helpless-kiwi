@@ -807,31 +807,6 @@ parameters:
 
 		-
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
-
-		-
-			message: "#^Method Tests\\\\Integration\\\\Form\\\\Activity\\\\Admin\\\\ActivityEditTypeTest\\:\\:testBindValidData\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
-
-		-
-			message: "#^Method Tests\\\\Integration\\\\Form\\\\Activity\\\\Admin\\\\ActivityNewTypeTest\\:\\:testBindValidData\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
-
-		-
-			message: "#^Parameter \\#5 \\$test of class Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile constructor expects bool, null given\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
 			count: 2
 			path: tests/Integration/Form/Activity/PresentTypeTest.php
 

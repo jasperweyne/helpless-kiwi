@@ -95,7 +95,7 @@ class ActivityController extends AbstractController
         $activity = new Activity();
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityNewType', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -154,7 +154,7 @@ class ActivityController extends AbstractController
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityEditType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
