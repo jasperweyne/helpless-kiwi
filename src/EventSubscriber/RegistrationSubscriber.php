@@ -21,7 +21,7 @@ class RegistrationSubscriber implements EventSubscriberInterface
      * @var FlashBagInterface
      */
     private $flash;
-    
+
     /**
      * @var LocalAccount
      */
@@ -34,7 +34,7 @@ class RegistrationSubscriber implements EventSubscriberInterface
     ) {
         $this->em = $em;
         $this->flash = $flash;
-        
+
         $user = $security->getUser();
         assert($user instanceof LocalAccount);
         $this->user = $user;
@@ -65,10 +65,10 @@ class RegistrationSubscriber implements EventSubscriberInterface
             $name = ' van ' . $registrant->getName();
         }
         $location = $event->getRegistration()->isReserve() ? ' op de reservelijst!' : ' gelukt!';
-        
+
         $this->flash->add('success', 'Aanmelding' . $name  . $location);
     }
-    
+
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void
     {
         $event->getRegistration()->setDeleteDate(new \DateTime('now'));

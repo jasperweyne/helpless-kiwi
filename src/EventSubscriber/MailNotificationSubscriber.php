@@ -17,17 +17,17 @@ class MailNotificationSubscriber implements EventSubscriberInterface
      * @var \Twig\Environment
      */
     private $template;
-    
+
     /**
      * @var MailService
      */
     private $mailer;
-    
+
     /**
      * @var ICalProvider
      */
     private $calendar;
-    
+
     /**
      * @var ?LocalAccount
      */

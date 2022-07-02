@@ -17,7 +17,7 @@ class RegistrationRemovedEvent extends Event
      * @var Registration
      */
     protected $registration;
-    
+
 
     public function __construct(Registration $registration)
     {

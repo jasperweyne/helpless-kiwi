@@ -26,7 +26,7 @@ class RegistrationController extends AbstractController
      * @var EventDispatcherInterface
      */
     protected $events;
-    
+
     /**
      * @var EntityManagerInterface
      */
@@ -87,7 +87,7 @@ class RegistrationController extends AbstractController
         $form = $this->createForm('App\Form\Activity\RegistrationEditType', $registration, [
             'allowed_options' => $registration->getActivity()->getOptions(),
         ]);
-        
+
         //Check if the form is submitted and valid from Admin
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -189,7 +189,7 @@ class RegistrationController extends AbstractController
         } elseif (!$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Admin registration');
         }
-        
+
         $x1 = $this->em->getRepository(Registration::class)->findBefore($registration->getActivity(), $registration->getReservePosition());
         $x2 = $this->em->getRepository(Registration::class)->findBefore($registration->getActivity(), $x1);
 

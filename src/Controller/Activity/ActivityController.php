@@ -31,7 +31,7 @@ class ActivityController extends AbstractController
      * @var EventDispatcherInterface
      */
     protected $events;
-    
+
     /**
      * @var EntityManagerInterface
      */
@@ -143,7 +143,7 @@ class ActivityController extends AbstractController
                 'deletedate' => null,
             ]);
             $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($this->em->getRepository(Registration::class)->findReserve($activity)) > 0);
-                
+
             $registration = new Registration();
             $registration
                 ->setActivity($activity)
