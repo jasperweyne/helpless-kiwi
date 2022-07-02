@@ -72,7 +72,7 @@ class Activity
     private $registrations;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Location\Location")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Location\Location", inversedBy="activities")
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
      * @GQL\Field(type="Location!")
      * @GQL\Description("The (physical) location of the activity.")

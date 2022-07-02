@@ -38,6 +38,10 @@
                                 {% endif %}
                             </tr>
                             <tr>
+                                <th>Locatie</th>
+                                <td><a href="{{ path('admin_location_show', { 'id': activity.location.id }) }}">{{ activity.location.address }}</a></td>
+                            </tr>
+                            <tr>
                                 <th>Aanmelddeadline</th>
                                 <td>{{ activity.deadline|date('d-m-Y') }}</td>
                             </tr>

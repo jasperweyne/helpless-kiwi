@@ -2,6 +2,9 @@
 
 namespace App\Entity\Location;
 
+use App\Entity\Activity\Activity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
@@ -30,6 +33,15 @@ class Location
      */
     private $address;
 
+    /**
+     * @GQL\Field(type="[Activity]")
+     * @GQL\Description("All activities whose destination as this location.")
+     * @ORM\OneToMany(targetEntity="App\Entity\Activity\Activity", mappedBy="location")
+     *
+     * @var Collection<int, Activity>
+     */
+    private $activities;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -57,5 +69,28 @@ class Location
         $this->address = $address;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Activity>
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
+    }
+
+    public function addActivity(Activity $activity): self
+    {
+        if (!$this->activities->contains($activity)) {
+            $this->activities[] = $activity;
+            $activity->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function __construct()
+    {
+        $this->activities = new ArrayCollection();
     }
 }
