@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class ActivityEditType extends AbstractType
 {
     /** @var bool */
-    protected $isadmin = false;
+    protected $isAdmin = false;
 
     /** @var Group[] */
     protected $groups;
@@ -32,8 +32,8 @@ class ActivityEditType extends AbstractType
         $user = !is_null($tokenStorage->getToken()) ? $tokenStorage->getToken()->getUser() : null;
 
         if ($user instanceof LocalAccount) {
-            $this->isadmin = in_array('ROLE_ADMIN', $user->getRoles(), true);
-            if ($this->isadmin) {
+            $this->isAdmin = in_array('ROLE_ADMIN', $user->getRoles(), true);
+            if ($this->isAdmin) {
                 $this->groups = $groupRepo->findAll();
             } else {
                 $this->groups = $groupRepo->findSubGroupsForPerson($user);
@@ -58,7 +58,7 @@ class ActivityEditType extends AbstractType
                 'label' => 'Locatie',
                 'help' => '  ',
             ]);
-        if ($this->isadmin) {
+        if ($this->isAdmin) {
             $builder->add('author', EntityType::class, [
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
