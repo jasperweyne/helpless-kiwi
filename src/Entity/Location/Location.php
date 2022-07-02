@@ -42,6 +42,13 @@ class Location
      */
     private $activities;
 
+    /**
+     * @GQL\Field(type="[Note]")
+     * @GQL\Description("All notes and commits about this location.")
+     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="location")
+     */
+    private $notes;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -89,8 +96,39 @@ class Location
         return $this;
     }
 
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): self
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes[] = $note;
+            $note->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): self
+    {
+        if ($this->notes->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getLocation() === $this) {
+                $note->setLocation(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
+        $this->notes = new ArrayCollection();
     }
 }

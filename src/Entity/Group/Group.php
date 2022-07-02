@@ -2,6 +2,7 @@
 
 namespace App\Entity\Group;
 
+use App\Entity\Location\Note;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -117,12 +118,20 @@ class Group
      */
     private $register;
 
+    /**
+     * @GQL\Field(type="[Note]")
+     * @GQL\Description("All notes and commits authored by this group.")
+     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="author")
+     */
+    private $notes;
+
     public function __construct()
     {
         $this->relations = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->readonly = false;
         $this->active = false;
+        $this->notes = new ArrayCollection();
     }
 
     /**
@@ -313,6 +322,36 @@ class Group
     public function setRegister(bool $register): self
     {
         $this->register = $register;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): self
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes[] = $note;
+            $note->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): self
+    {
+        if ($this->notes->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getAuthor() === $this) {
+                $note->setAuthor(null);
+            }
+        }
 
         return $this;
     }

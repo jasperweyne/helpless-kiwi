@@ -9,77 +9,129 @@
     {% endblock %}
 {% endif %}
 
-{% block body %}
-    <div class="table">
-    <table>
-        <tbody>
-            <tr>
-                <th>Adres</th>
-                <td>{{ location.address }}</td>
-            </tr>
-            <tr>
-                <th>Activiteiten</th>
-                <td>
+
+
+{% block body_wrap %}
+    <div class="tabs">
+        <input type="radio" name="tabs" id="details" checked>
+        <label for="details" class="tab active">
+            <span>Details</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>Activiteit</th>
-                                <th>Tijdstip</th>
-                            </tr>
-                        </thead>
                         <tbody>
-                        {% for activity in location.activities %}
                             <tr>
-                                <td>{{ activity.name ?? '' }}</td>
-                                <td>{{ activity.start|date('d-m-Y - H:i') }}</td>
+                                <th>Adres</th>
+                                <td>{{ location.address }}</td>
                             </tr>
-                        {% else %}
                             <tr>
-                                <td>Geen activiteiten.</td>
+                                <th>Notities</th>
+                                <td>{{ location.address }}</td>
                             </tr>
-                        {% endfor %}
+                            <tr>
+                                <th>Activiteiten</th>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Activiteit</th>
+                                                <th>Tijdstip</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for activity in location.activities %}
+                                            <tr>
+                                                <td>{{ activity.name ?? '' }}</td>
+                                                <td>{{ activity.start|date('d-m-Y - H:i') }}</td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>Geen activiteiten.</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Gemaakt op</th>
+                                <td>
+                                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Gemaakt door</th>
+                                <td>
+                                    {{ createdAt.person.canonical ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Aanpassingen</th>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Door</th>
+                                                <th>Tijdstip</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for modif in modifs %}
+                                            <tr>
+                                                <td>{{ modif.person.canonical ?? '' }}</td>
+                                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>Geen aanpassingen.</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
-                </td>
-            </tr>
-            <tr>
-                <th>Gemaakt op</th>
-                <td>
-                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Gemaakt door</th>
-                <td>
-                    {{ createdAt.person.canonical ?? '' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Aanpassingen</th>
-                <td>
+                </div>
+            </div>
+        </div>      
+
+        <input type="radio" name="tabs" id="notes">
+        <label for="notes" class="tab">
+            <span>Notities</span>
+        </label>
+        <div class="panel">
+            <div class="card">
+                <div class="table">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>Door</th>
-                                <th>Tijdstip</th>
-                            </tr>
-                        </thead>
                         <tbody>
-                        {% for modif in modifs %}
                             <tr>
-                                <td>{{ modif.person.canonical ?? '' }}</td>
-                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                <td><a href="{{ path('admin_location_note_new', { 'id': location.id }) }}">Notitie toevoegen</a></td>
                             </tr>
-                        {% else %}
-                            <tr>
-                                <td>Geen aanpassingen.</td>
-                            </tr>
-                        {% endfor %}
+                            {% for note in location.notes %}
+                                <tr>
+                                    <td>
+                                        {{ note.content }}
+                                        <br />
+                                        <i>- {{ note.author.name ?? 'Admin' }}
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            - <a href="{{ path('admin_location_note_edit', { 'id': note.id }) }}">Bewerken</a>
+                                            | <a href="{{ path('admin_location_note_delete', { 'id': note.id }) }}">Verwijderen</a>
+                                        {% endif %}
+                                        </i>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Geen notities.</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
