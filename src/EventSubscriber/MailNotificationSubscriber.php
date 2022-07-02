@@ -42,7 +42,10 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $this->template = $template;
         $this->mailer = $mailer;
         $this->calendar = $calendar;
-        $this->user = $security->getUser();
+
+        $user = $security->getUser();
+        assert($user instanceof LocalAccount);
+        $this->user = $user;
     }
 
     public static function getSubscribedEvents()

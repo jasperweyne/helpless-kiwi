@@ -23,7 +23,7 @@ class RegistrationSubscriber implements EventSubscriberInterface
     private $flash;
     
     /**
-     * @var ?LocalAccount
+     * @var LocalAccount
      */
     private $user;
 
@@ -34,7 +34,10 @@ class RegistrationSubscriber implements EventSubscriberInterface
     ) {
         $this->em = $em;
         $this->flash = $flash;
-        $this->user = $security->getUser();
+        
+        $user = $security->getUser();
+        assert($user instanceof LocalAccount);
+        $this->user = $user;
     }
 
     public static function getSubscribedEvents()
@@ -57,6 +60,7 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
         $name = '';
         $registrant = $event->getRegistration()->getPerson();
+        assert($registrant instanceof LocalAccount);
         if ($registrant->getId() !== $this->user->getId()) {
             $name = ' van ' . $registrant->getName();
         }
@@ -72,6 +76,7 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
         $name = '';
         $registrant = $event->getRegistration()->getPerson();
+        assert($registrant instanceof LocalAccount);
         if ($registrant->getId() !== $this->user->getId()) {
             $name = ' van ' . $registrant->getName();
         }
