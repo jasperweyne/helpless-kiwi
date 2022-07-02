@@ -235,8 +235,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testEraseCredentials(): void
     {
-        //To-Do: implement or remove function
-        self::assertNull($this->localAccount->eraseCredentials());
+        self::markTestIncomplete();
     }
 
     public function testGetOidc(): void

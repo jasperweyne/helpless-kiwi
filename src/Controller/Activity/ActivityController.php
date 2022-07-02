@@ -121,6 +121,13 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $option = $this->em->getRepository(PriceOption::class)->find($data['single_option'] ?? null);
+            if ($option === null) {
+                $this->addFlash('error', 'Probleem met aanmelding.');
+                return $this->redirectToRoute(
+                    'activity_show',
+                    ['id' => $activity->getId()]
+                );
+            }
 
             // currently only a single registration per person is allowed, this check enforces that
             $registrations = $this->em->getRepository(Registration::class)->count([

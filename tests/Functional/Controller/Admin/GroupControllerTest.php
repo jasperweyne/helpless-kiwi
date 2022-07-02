@@ -75,7 +75,7 @@ class GroupControllerTest extends AuthWebTestCase
         $form['group[name]'] = $newName;
         $crawler = $this->client->submit($form);
         $allGroups = $this->em->getRepository(Group::class)->findAll();
-        $newGroupId = explode('group/', $crawler->getUri())[1];
+        $newGroupId = explode('group/', $crawler->getUri() ?? '')[1];
         $newGroup = $this->em->getRepository(Group::class)->find($newGroupId);
 
         // Assert
@@ -138,7 +138,7 @@ class GroupControllerTest extends AuthWebTestCase
         $form = $crawler->selectButton('Toevoegen')->form();
         $crawler = $this->client->submit($form);
         $allGroups = $this->em->getRepository(Group::class)->findAll();
-        $newGroupId = explode('group/', $crawler->getUri())[1];
+        $newGroupId = explode('group/', $crawler->getUri() ?? '')[1];
         $newGroup = $this->em->getRepository(Group::class)->find($newGroupId);
 
         // Assert
@@ -158,7 +158,7 @@ class GroupControllerTest extends AuthWebTestCase
         $form['relation_add[_token]'] = 'Penningmeester';
         $crawler = $this->client->submit($form);
         $allRelations = $this->em->getRepository(Relation::class)->findAll();
-        $newGroupId = explode('add/', $crawler->getUri())[1];
+        $newGroupId = explode('add/', $crawler->getUri() ?? '')[1];
         $newRelation = $this->em->getRepository(Relation::class)->find($newGroupId);
 
         // Assert

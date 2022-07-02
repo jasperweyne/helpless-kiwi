@@ -351,11 +351,6 @@ parameters:
 			path: src/Log/AbstractEvent.php
 
 		-
-			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\ORM\\\\EntityManager\\:\\:getClassMetadata\\(\\) expects string, class\\-string\\|false given\\.$#"
-			count: 2
-			path: src/Log/Doctrine/EntityEventListener.php
-
-		-
 			message: "#^Parameter \\#1 \\$entity of method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) expects object, mixed given\\.$#"
 			count: 1
 			path: src/Log/Doctrine/EntityEventListener.php
@@ -402,11 +397,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getValue\\(\\) on ReflectionProperty\\|null\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) should return class\\-string\\<T of object\\> but returns string\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -891,21 +881,6 @@ parameters:
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
 
 		-
-			message: "#^You should use assertFalse\\(\\) instead of assertSame\\(\\) when expecting \"false\"$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
-			count: 3
-			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
-			message: "#^You should use assertTrue\\(\\) instead of assertSame\\(\\) when expecting \"true\"$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
 			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with '42' and class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null will always evaluate to false\\.$#"
 			count: 1
 			path: tests/Unit/Entity/Log/EventTest.php
@@ -922,16 +897,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method add\\(\\) on mixed\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Result of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:eraseCredentials\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
 
@@ -956,19 +921,9 @@ parameters:
 			path: tests/Unit/Log/AbstractEventTest.php
 
 		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
-			count: 1
-			path: tests/Unit/Log/AbstractEventTest.php
-
-		-
 			message: "#^PHPDoc tag @var contains generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
 			count: 2
 			path: tests/Unit/Security/LocalUserProviderTest.php
-
-		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
-			count: 2
-			path: tests/Unit/Template/Annotation/MenuItemTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$extensions of class App\\\\Template\\\\MenuBuilder constructor expects array\\<App\\\\Template\\\\MenuExtensionInterface\\>, null given\\.$#"

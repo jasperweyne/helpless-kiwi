@@ -84,8 +84,11 @@ class RegistrationController extends AbstractController
             throw $this->createAccessDeniedException('Admin registration');
         }
 
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
         $form = $this->createForm('App\Form\Activity\RegistrationEditType', $registration, [
-            'allowed_options' => $registration->getActivity()->getOptions(),
+            'allowed_options' => $activity->getOptions(),
         ]);
 
         //Check if the form is submitted and valid from Admin
@@ -95,7 +98,7 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Registratie aangepast!');
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $registration->getActivity()->getId(),
+                'id' => $activity->getId(),
             ]);
         }
 
@@ -121,6 +124,9 @@ class RegistrationController extends AbstractController
             throw $this->createAccessDeniedException('Admin registration');
         }
 
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
         $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
         $form = $this->createRegistrationDeleteForm($url);
         $form->handleRequest($request);
@@ -129,7 +135,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationRemovedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $registration->getActivity()->getId()
+                'id' => $activity->getId()
             ]);
         }
 
@@ -190,8 +196,19 @@ class RegistrationController extends AbstractController
             throw $this->createAccessDeniedException('Admin registration');
         }
 
-        $x1 = $this->em->getRepository(Registration::class)->findBefore($registration->getActivity(), $registration->getReservePosition());
-        $x2 = $this->em->getRepository(Registration::class)->findBefore($registration->getActivity(), $x1);
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
+        $position = $registration->getReservePosition();
+        if ($position === null) {
+            $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId()
+            ]);
+        }
+
+        $x1 = $this->em->getRepository(Registration::class)->findBefore($activity, $position);
+        $x2 = $this->em->getRepository(Registration::class)->findBefore($activity, $x1);
 
         $registration->setReservePosition(Order::avg($x1, $x2));
 
@@ -201,7 +218,7 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', ($person !== null ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', [
-            'id' => $registration->getActivity()->getId()
+            'id' => $activity->getId()
         ]);
     }
 
@@ -219,15 +236,26 @@ class RegistrationController extends AbstractController
             throw $this->createAccessDeniedException('Admin registration');
         }
 
-        $x1 = $this->em->getRepository(Registration::class)->findAfter($registration->getActivity(), $registration->getReservePosition());
-        $x2 = $this->em->getRepository(Registration::class)->findAfter($registration->getActivity(), $x1);
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
+        $position = $registration->getReservePosition();
+        if ($position === null) {
+            $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId()
+            ]);
+        }
+
+        $x1 = $this->em->getRepository(Registration::class)->findAfter($activity, $position);
+        $x2 = $this->em->getRepository(Registration::class)->findAfter($activity, $x1);
 
         $registration->setReservePosition(Order::avg($x1, $x2));
 
         $this->em->flush();
 
         $person = $registration->getPerson();
-        $this->addFlash('success', ($person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
+        $this->addFlash('success', ($person !== null ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', [
             'id' => $registration->getActivity()->getId()
@@ -238,10 +266,10 @@ class RegistrationController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface The form
      */
     protected function createRegistrationDeleteForm(
-        $actionUrl
+        string $actionUrl
     ): FormInterface {
         return $this->createFormBuilder()
             ->setAction($actionUrl)
