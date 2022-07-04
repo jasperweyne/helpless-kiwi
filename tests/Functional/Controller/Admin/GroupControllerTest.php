@@ -51,19 +51,6 @@ class GroupControllerTest extends AuthWebTestCase
         unset($this->em);
     }
 
-    public function testGenerateAction(): void
-    {
-        // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/generate');
-        $form = $crawler->selectButton('Genereren')->form();
-        $form['form[board]'] = 'bestuur 30: Wispeltuur';
-        $crawler = $this->client->submit($form);
-
-        // Assert
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'Standaard groepen gegenereerd, begin met invullen!');
-    }
-
     public function testNewAction(): void
     {
         // Arrange
