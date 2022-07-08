@@ -67,7 +67,7 @@ class AuthWebTestCase extends WebTestCase
         }
 
         /** @var Session $session */
-        $session = $this->client->getContainer()->get('session');
+        $session = self::$container->get('session');
 
         $firewallName = 'main';
         $firewallContext = 'main';
@@ -98,7 +98,7 @@ class AuthWebTestCase extends WebTestCase
 
     protected function logout(): void
     {
-        $this->client->getContainer()->get('session')->invalidate();
-        $this->client->getContainer()->get('security.token_storage')->setToken(null);
+        self::$container->get('session')->invalidate();
+        self::$container->get('security.token_storage')->setToken(null);
     }
 }
