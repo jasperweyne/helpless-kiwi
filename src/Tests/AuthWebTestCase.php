@@ -57,12 +57,6 @@ class AuthWebTestCase extends WebTestCase
         unset($this->client);
     }
 
-    protected function logout(): void
-    {
-        $this->client->getContainer()->get('session')->invalidate();
-        $this->client->getContainer()->get('security.token_storage')->setToken(null);
-    }
-
     protected function login(bool $admin = true): void
     {
         /** @var EntityManagerInterface */
@@ -100,5 +94,11 @@ class AuthWebTestCase extends WebTestCase
 
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
+    }
+
+    protected function logout(): void
+    {
+        $this->client->getContainer()->get('session')->invalidate();
+        $this->client->getContainer()->get('security.token_storage')->setToken(null);
     }
 }
