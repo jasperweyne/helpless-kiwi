@@ -110,6 +110,14 @@ class ActivityRepositoryTest extends KernelTestCase
             ->getRepository(Activity::class)
             ->findVisibleUpcomingByGroup($groups);
 
+        $check = true;
+        foreach ($activities as $activitie) {
+            if (!in_array($activitie->getAuthor(), $groups)) {
+                $check = false;
+            }
+        }
+
         self::assertTrue(count($activities) > 0);
+        self::assertTrue($check);
     }
 }
