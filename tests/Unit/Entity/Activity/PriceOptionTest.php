@@ -183,7 +183,7 @@ class PriceOptionTest extends KernelTestCase
         self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
-    public function testToString(): void
+    public function test__ToString(): void
     {
         $expected = 'free €0.00';
         $priceOption = new PriceOption();

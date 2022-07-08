@@ -39,7 +39,7 @@ class OrderTest extends KernelTestCase
         unset($this->order);
     }
 
-    public function testToString(): void
+    public function test__ToString(): void
     {
         /* @todo This test is incomplete. */
         self::markTestIncomplete();
