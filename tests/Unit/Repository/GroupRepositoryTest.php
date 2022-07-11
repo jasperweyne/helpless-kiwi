@@ -100,16 +100,40 @@ class GroupRepositoryTest extends KernelTestCase
             ->getRepository(Group::class)
             ->findSubGroupsFor($group);
 
+        foreach ($allgroups as $parent) {
+            // keep iterating over parents until $group is found
+            while (true) {
+                $parent = $parent->getParent();
+                if ($parent == $group) {
+                    // $parent is in hierarchy, success! Continue with next $g
+                    break;
+                }
+                self::assertNotNull($parent);
+            }
+        }
+
         self::assertTrue(count($allgroups) > 0);
     }
 
     public function testFindSubGroupsForPerson(): void
     {
+        $repo = $this->em->getRepository(Group::class);
         $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
 
-        $allgroups = $this->em
-            ->getRepository(Group::class)
-            ->findSubGroupsForPerson($registration);
+        $allgroups = $repo->findSubGroupsForPerson($registration);
+        $parents = $repo->findAllFor($registration);
+
+        foreach ($allgroups as $parent) {
+            // keep iterating over parents until $group is found
+            while (true) {
+                if (in_array($parent, $parents)) {
+                    // $parent is in hierarchy, success! Continue with next $g
+                    break;
+                }
+                self::assertNotNull($parent);
+                $parent = $parent->getParent();
+            }
+        }
 
         self::assertTrue(count($allgroups) > 1);
     }
