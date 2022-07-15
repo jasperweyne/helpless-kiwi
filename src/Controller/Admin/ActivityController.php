@@ -36,12 +36,12 @@ class ActivityController extends AbstractController
     /**
      * @var ActivityRepository
      */
-    private $activitiesDb;
+    private $activitiesRepo;
 
     /**
      * @var GroupRepository
      */
-    private $groupsDb;
+    private $groupsRepo;
 
     /**
      * @var EntityManagerInterface
@@ -55,8 +55,8 @@ class ActivityController extends AbstractController
         EntityManagerInterface $em
     ) {
         $this->events = $events;
-        $this->activitiesDb = $activities;
-        $this->groupsDb = $groups;
+        $this->activitiesRepo = $activities;
+        $this->groupsRepo = $groups;
         $this->em = $em;
     }
 
@@ -69,12 +69,12 @@ class ActivityController extends AbstractController
     public function indexAction(): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = $this->activitiesDb->findBy([], ['start' => 'DESC']);
+            $activities = $this->activitiesRepo->findBy([], ['start' => 'DESC']);
         } else {
             /** @var LocalAccount */
             $user = $this->getUser();
-            $groups = $this->groupsDb->findSubGroupsForPerson($user);
-            $activities = $this->activitiesDb->findAuthor($groups);
+            $groups = $this->groupsRepo->findSubGroupsForPerson($user);
+            $activities = $this->activitiesRepo->findAuthor($groups);
         }
 
         return $this->render('admin/activity/index.html.twig', [
@@ -89,7 +89,7 @@ class ActivityController extends AbstractController
      */
     public function groupAction(Group $group): Response
     {
-        $activities = $this->activitiesDb->findAuthor($this->groupsDb->findSubGroupsFor($group));
+        $activities = $this->activitiesRepo->findAuthor($this->groupsRepo->findSubGroupsFor($group));
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
