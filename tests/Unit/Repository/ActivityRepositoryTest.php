@@ -88,7 +88,7 @@ class ActivityRepositoryTest extends KernelTestCase
             ->findAuthor($groups);
 
         foreach ($activities as $activitie) {
-            self::assertTrue(in_array($activitie->getAuthor(), $groups));
+            self::assertTrue(in_array($activitie->getAuthor(), $groups, true));
         }
 
         self::assertTrue(count($activities) > 0);
@@ -115,7 +115,7 @@ class ActivityRepositoryTest extends KernelTestCase
             ->findVisibleUpcomingByGroup($groups);
 
         foreach ($activities as $activitie) {
-            self::assertTrue(in_array($activitie->getAuthor(), $groups));
+            self::assertTrue(in_array($activitie->getAuthor(), $groups, true));
         }
 
         self::assertTrue(count($activities) > 0);

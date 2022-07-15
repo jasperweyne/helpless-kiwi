@@ -126,7 +126,7 @@ class GroupRepositoryTest extends KernelTestCase
         foreach ($allgroups as $parent) {
             // keep iterating over parents until $group is found
             while (true) {
-                if (in_array($parent, $parents)) {
+                if (in_array($parent, $parents, true)) {
                     // $parent is in hierarchy, success! Continue with next $g
                     break;
                 }
