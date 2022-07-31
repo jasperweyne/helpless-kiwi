@@ -18,7 +18,7 @@ class MailController extends AbstractController
     /**
      * Lists all mails.
      *
-     * @MenuItem(title="Mails", menu="admin")
+     * @MenuItem(title="Mails", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction(): Response

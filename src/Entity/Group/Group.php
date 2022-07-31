@@ -2,6 +2,7 @@
 
 namespace App\Entity\Group;
 
+use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -253,13 +254,35 @@ class Group
     {
         if ($this->relations->contains($relation)) {
             $this->relations->removeElement($relation);
-            // set the owning side to null (unless already changed)
-            if ($relation->getGroup() === $this) {
-                $relation->setGroup(null);
-            }
         }
 
         return $this;
+    }
+
+    /**
+     * Returns a list of all relations related to this group or its parent
+     * groups for the provided user. Relations are ordered based on the group
+     * hierarchy, from the root parent group down to the current group.
+     *
+     * @return Collection<int, Relation>
+     */
+    public function getAllRelationFor(LocalAccount $user): Collection
+    {
+        // if a parent group is present, retrieve those relations first
+        $relationList = null !== $this->parent ? $this->parent->getAllRelationFor($user) : new ArrayCollection();
+
+        // get relations for this group
+        $groupRelations = $user->getRelations()->filter(function (Relation $relation) {
+            return $relation->getGroup() === $this;
+        });
+
+        // add relations to the list (assumption is made of at most one relation per user)
+        $rel = $groupRelations->first();
+        if (false !== $rel) {
+            $relationList->add($rel);
+        }
+
+        return $relationList;
     }
 
     /**

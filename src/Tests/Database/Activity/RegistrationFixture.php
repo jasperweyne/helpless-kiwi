@@ -55,7 +55,7 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
         return TestData::from(new Registration())
             ->with('id', '')
             ->with('option', ...$priceOption)
-            ->with('activity', $activity)
+            ->with('activity', $activity, null)
             ->with('person', $person)
             ->do('reserve_position', function ($registration) use (&$counter) {
                 $counter = Order::calc($counter, Order::create('b'), fn ($a, $b) => $a + $b);

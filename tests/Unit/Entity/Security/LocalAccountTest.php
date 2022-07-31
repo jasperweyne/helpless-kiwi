@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entity\Security;
 
 use App\Entity\Activity\Registration;
+use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -164,12 +165,26 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetRoles(): void
     {
+        $group = new Group();
+        $group->setActive(true);
+        $relation = new Relation();
+        $relation->setGroup($group);
+
         $expected = ['ROLE_USER'];
-        $property = (new ReflectionClass(LocalAccount::class))
+        $local = new ReflectionClass(LocalAccount::class);
+        $roleProperty = $local
             ->getProperty('roles');
-        $property->setAccessible(true);
-        $property->setValue($this->localAccount, $expected);
-        self::assertSame($expected, $this->localAccount->getRoles());
+        $roleProperty->setAccessible(true);
+        $roleProperty->setValue($this->localAccount, $expected);
+
+        $relations = new ArrayCollection([$relation]);
+        $relationProperty = $local
+            ->getProperty('relations');
+        $relationProperty->setAccessible(true);
+        $relationProperty->setValue($this->localAccount, $relations);
+
+        $expectedroles = ['ROLE_USER', 'ROLE_AUTHOR'];
+        self::assertEqualsCanonicalizing($expectedroles, $this->localAccount->getRoles());
     }
 
     public function testSetRoles(): void
@@ -220,8 +235,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testEraseCredentials(): void
     {
-        //To-Do: implement or remove function
-        self::assertNull($this->localAccount->eraseCredentials());
+        self::markTestIncomplete();
     }
 
     public function testGetOidc(): void
@@ -459,5 +473,24 @@ class LocalAccountTest extends KernelTestCase
         $property->getValue($this->localAccount)->add($expected);
         $this->localAccount->removeRelation($expected);
         self::assertNotContains($expected, $property->getValue($this->localAccount));
+    }
+
+    public function testGetActivityGroups(): void
+    {
+        $group = new Group();
+        $group->setActive(true);
+        $relation = new Relation();
+        $relation->setGroup($group);
+
+        $local = new ReflectionClass(LocalAccount::class);
+
+        $relations = new ArrayCollection([$relation]);
+        $relationProperty = $local
+            ->getProperty('relations');
+        $relationProperty->setAccessible(true);
+        $relationProperty->setValue($this->localAccount, $relations);
+
+        $expectedroles = ['ROLE_USER', 'ROLE_AUTHOR'];
+        self::assertSame([$group], $this->localAccount->getActiveGroups());
     }
 }

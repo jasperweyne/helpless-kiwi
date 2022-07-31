@@ -3,6 +3,8 @@
 namespace Tests\Unit\Entity\Group;
 
 use App\Entity\Group\Group;
+use App\Entity\Group\Relation;
+use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -189,6 +191,37 @@ class GroupTest extends KernelTestCase
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
         self::assertSame($expected, $this->group->getRelations());
+    }
+
+    public function testGetAllRelationFor(): void
+    {
+        //Assign
+        $user = new LocalAccount();
+        $group = new Group();
+        $group2 = new Group();
+        $relation = new Relation();
+        $relation2 = new Relation();
+
+        $this->group->setParent($group);
+        $group->setParent($group2);
+
+        $relation->setGroup($group);
+        $relation->setPerson($user);
+
+        $relation2->setGroup($group2);
+        $relation2->setPerson($user);
+
+        $user->addRelation($relation);
+        $user->addRelation($relation2);
+        $group->addRelation($relation);
+        $group2->addRelation($relation2);
+
+        $expected = new ArrayCollection();
+        $expected->add($relation);
+        $expected->add($relation2);
+
+        //Assert
+        self::assertCount(count($expected), $this->group->getAllRelationFor($user));
     }
 
     public function testAddRelation(): void

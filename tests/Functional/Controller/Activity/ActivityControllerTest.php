@@ -2,7 +2,6 @@
 
 namespace Tests\Functional\Controller\Activity;
 
-use App\Controller\Activity\ActivityController;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
@@ -22,19 +21,11 @@ use Doctrine\ORM\EntityManagerInterface;
 class ActivityControllerTest extends AuthWebTestCase
 {
     /**
-     * @var ActivityController
-     */
-    protected $activityController;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
-
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->activityController = new ActivityController();
 
         // Get all database tables
         $this->loadFixtures([
@@ -54,8 +45,6 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        unset($this->activityController);
     }
 
     public function testIndexAction(): void
@@ -70,9 +59,9 @@ class ActivityControllerTest extends AuthWebTestCase
             ->first()->filter('h2');
 
         $exist = false;
-        /* @var Activity */
+        /** @var Activity $activity */
         foreach ($activities as $activity) {
-            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() && $activity->getVisibleAfter() < new \DateTime()) {
+            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() !== null && $activity->getVisibleAfter() < new \DateTime()) {
                 $exist = true;
             }
         }

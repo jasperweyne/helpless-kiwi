@@ -6,9 +6,9 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
-use DateTime;
 use App\Entity\Security\LocalAccount;
 use App\Repository\RegistrationRepository;
+use DateTime;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 

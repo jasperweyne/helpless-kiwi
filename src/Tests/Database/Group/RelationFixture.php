@@ -13,12 +13,12 @@ use Doctrine\Persistence\ObjectManager;
 
 class RelationFixture extends Fixture implements DependentFixtureInterface
 {
-    public const RELATION_REFERENCE = 'link_admin';
+    public const RELATION_REFERENCE = 'local_admin';
 
     public function load(ObjectManager $manager): void
     {
         /** @var Group */
-        $group = $this->getReference(GroupFixture::GROUP_REFERENCE);
+        $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0');
         /** @var LocalAccount */
         $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
 

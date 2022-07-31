@@ -3,6 +3,7 @@
 namespace App\Entity\Security;
 
 use App\Entity\Activity\Registration;
+use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -209,6 +210,10 @@ class LocalAccount implements UserInterface, EquatableInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
+        if (count($this->getActiveGroups()) > 0) {
+            $roles[] = 'ROLE_AUTHOR';
+        }
+
         return array_unique($roles);
     }
 
@@ -302,7 +307,8 @@ class LocalAccount implements UserInterface, EquatableInterface
     public function isPasswordRequestNonExpired(int $ttl): bool
     {
         return null === $this->getPasswordRequestedAt() || (
-               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time());
+            $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time()
+        );
     }
 
     public function isEqualTo(UserInterface $user): bool
@@ -379,7 +385,7 @@ class LocalAccount implements UserInterface, EquatableInterface
     }
 
     /**
-     * @return Collection<int, Relation> | null
+     * @return Collection<int, Relation>
      */
     public function getRelations()
     {
@@ -406,5 +412,20 @@ class LocalAccount implements UserInterface, EquatableInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Group[]
+     */
+    public function getActiveGroups(): array
+    {
+        $groups = [];
+        foreach ($this->getRelations() as $relation) {
+            if (null !== $relation->getGroup() && true === $relation->getGroup()->isActive()) {
+                $groups[] = $relation->getGroup();
+            }
+        }
+
+        return $groups;
     }
 }

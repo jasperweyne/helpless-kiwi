@@ -147,6 +147,7 @@ class RelationTest extends KernelTestCase
 
     public function testGetChildren(): void
     {
+        /** @var ArrayCollection<int, Relation> */
         $expected = new ArrayCollection();
         $property = (new ReflectionClass(Relation::class))
             ->getProperty('children');

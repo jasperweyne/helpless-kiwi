@@ -51,13 +51,9 @@ class MailServiceTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @var Swift_Mailer&MockObject */
         $this->mailer = $this->createMock(Swift_Mailer::class);
-        /** @var EntityManagerInterface&MockObject */
         $this->em = $this->createMock(EntityManagerInterface::class);
-        /** @var TokenStorageInterface&MockObject */
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
-        /** @var ParameterBagInterface&MockObject */
         $this->params = $this->createMock(ParameterBagInterface::class);
 
         $this->mailService = new MailService($this->mailer, $this->em, $this->tokenStorage, $this->params);

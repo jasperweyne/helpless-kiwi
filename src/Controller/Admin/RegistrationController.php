@@ -2,20 +2,42 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Helper\RegistrationHelper;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
+use App\Entity\Order;
+use App\Event\RegistrationAddedEvent;
+use App\Event\RegistrationRemovedEvent;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Activity controller.
  *
  * @Route("/admin/activity/register", name="admin_activity_registration_")
  */
-class RegistrationController extends RegistrationHelper
+class RegistrationController extends AbstractController
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $events;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
+
+    public function __construct(EventDispatcherInterface $events, EntityManagerInterface $em)
+    {
+        $this->events = $events;
+        $this->em = $em;
+    }
+
     /**
      * Add someones registration from an activity.
      *
@@ -25,19 +47,26 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Activity $activity
     ): Response {
-        $form = $this->createRegistrationNewForm($activity);
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
+        $registration = new Registration();
+        $registration->setActivity($activity);
+
+        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, ['allowed_options' => $activity->getOptions()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->storeRegistration($form->getData());
+            $this->events->dispatch(new RegistrationAddedEvent($registration));
 
-            return $this->handleRedirect($activity->getId());
-        } else {
-            return $this->render('admin/activity/registration/new.html.twig', [
-                'activity' => $activity,
-                'form' => $form->createView(),
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId()
             ]);
         }
+
+        return $this->render('admin/activity/registration/new.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -49,7 +78,35 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ): Response {
-        return $this->registrationEdit($request, $registration, 'admin/activity/registration/edit.html.twig', 'admin_activity_show');
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
+
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
+        $form = $this->createForm('App\Form\Activity\RegistrationEditType', $registration, [
+            'allowed_options' => $activity->getOptions(),
+        ]);
+
+        //Check if the form is submitted and valid from Admin
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+            $this->addFlash('success', 'Registratie aangepast!');
+
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId(),
+            ]);
+        }
+
+        //Render the Admin Page edit registration page with correct form
+        return $this->render('admin/activity/registration/edit.html.twig', [
+            'registration' => $registration,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -61,20 +118,31 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Registration $registration
     ): Response {
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
+
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
         $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
         $form = $this->createRegistrationDeleteForm($url);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->removeRegistration($registration);
+            $this->events->dispatch(new RegistrationRemovedEvent($registration));
 
-            return $this->handleRedirect($registration->getActivity()->getId());
-        } else {
-            return $this->render('admin/activity/registration/delete.html.twig', [
-                'registration' => $registration,
-                'form' => $form->createView(),
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId()
             ]);
         }
+
+        return $this->render('admin/activity/registration/delete.html.twig', [
+            'registration' => $registration,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -86,13 +154,25 @@ class RegistrationController extends RegistrationHelper
         Request $request,
         Activity $activity
     ): Response {
-        $form = $this->createReserveNewForm($activity);
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
+        $registration = new Registration();
+        $registration
+            ->setActivity($activity)
+            ->setReservePosition($this->em->getRepository(Registration::class)->findAppendPosition($activity))
+        ;
+
+        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
+            'allowed_options' => $activity->getOptions(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->storeNewReserve($form->getData());
+            $this->events->dispatch(new RegistrationAddedEvent($registration));
 
-            return $this->handleRedirect($activity->getId());
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId()
+            ]);
         } else {
             return $this->render('admin/activity/registration/new.html.twig', [
                 'activity' => $activity,
@@ -110,9 +190,36 @@ class RegistrationController extends RegistrationHelper
     public function reserveMoveUpAction(
         Registration $registration
     ): Response {
-        $returnData = $this->promoteReserve($registration);
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
 
-        return $this->handleRedirect($returnData);
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
+        $position = $registration->getReservePosition();
+        if ($position === null) {
+            $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId()
+            ]);
+        }
+
+        $x1 = $this->em->getRepository(Registration::class)->findBefore($activity, $position);
+        $x2 = $this->em->getRepository(Registration::class)->findBefore($activity, $x1);
+
+        $registration->setReservePosition(Order::avg($x1, $x2));
+
+        $this->em->flush();
+
+        $person = $registration->getPerson();
+        $this->addFlash('success', ($person !== null ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
+
+        return $this->redirectToRoute('admin_activity_show', [
+            'id' => $activity->getId()
+        ]);
     }
 
     /**
@@ -123,15 +230,51 @@ class RegistrationController extends RegistrationHelper
     public function reserveMoveDownAction(
         Registration $registration
     ): Response {
-        $returnData = $this->demoteReserve($registration);
+        if (null !== $registration->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin registration');
+        }
 
-        return $this->handleRedirect($returnData);
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+
+        $position = $registration->getReservePosition();
+        if ($position === null) {
+            $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
+            return $this->redirectToRoute('admin_activity_show', [
+                'id' => $activity->getId()
+            ]);
+        }
+
+        $x1 = $this->em->getRepository(Registration::class)->findAfter($activity, $position);
+        $x2 = $this->em->getRepository(Registration::class)->findAfter($activity, $x1);
+
+        $registration->setReservePosition(Order::avg($x1, $x2));
+
+        $this->em->flush();
+
+        $person = $registration->getPerson();
+        $this->addFlash('success', ($person !== null ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
+
+        return $this->redirectToRoute('admin_activity_show', [
+            'id' => $registration->getActivity()->getId()
+        ]);
     }
 
-    private function handleRedirect(string $id): Response
-    {
-        return $this->redirectToRoute('admin_activity_show', [
-            'id' => $id,
-        ]);
+
+    /**
+     * Creates a form to check out all checked in users.
+     *
+     * @return \Symfony\Component\Form\FormInterface The form
+     */
+    protected function createRegistrationDeleteForm(
+        string $actionUrl
+    ): FormInterface {
+        return $this->createFormBuilder()
+            ->setAction($actionUrl)
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
     }
 }

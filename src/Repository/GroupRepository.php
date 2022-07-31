@@ -36,6 +36,42 @@ class GroupRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return Group[] Returns an array of Group objects
+     */
+    public function findSubGroupsFor(Group $group)
+    {
+        $allsubgroups = [];
+        $qb = $this->createQueryBuilder('g');
+        $subgroups = $qb
+            ->andWhere('g.parent = :id')
+            ->setParameter('id', $group->getId())
+            ->getQuery()
+            ->getResult();
+
+        foreach ($subgroups as $subgroup) {
+            $allsubgroups = array_merge($allsubgroups, [...$this->findSubGroupsFor($subgroup)]);
+            array_push($allsubgroups, $subgroup);
+        }
+
+        return $allsubgroups;
+    }
+
+    /**
+     * @return Group[] Returns an array of Group objects
+     */
+    public function findSubGroupsForPerson(LocalAccount $person)
+    {
+        $allgroups = [];
+        $groups = $this->findAllFor($person);
+        $allgroups = array_merge($groups, $allgroups);
+        foreach ($groups as $group) {
+            $allgroups = array_merge($allgroups, $this->findSubGroupsFor($group));
+        }
+
+        return $allgroups;
+    }
+
     // /**
     //  * @return Group[] Returns an array of Group objects
     //  */

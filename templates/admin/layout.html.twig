@@ -37,7 +37,7 @@
                     {% if item.sub is defined %}
                         <div class="sub">
                         {% for sub in item.sub %}
-                            <a href="{{ path(sub.path) }}">{{ sub.title }}</a>
+                            <a href="{{ sub.path is iterable ? path(sub.path[0], sub.path[1]) : path(sub.path) }}">{{ sub.title }}</a>
                         {% endfor %}
                         </div>
                     {% endif %}

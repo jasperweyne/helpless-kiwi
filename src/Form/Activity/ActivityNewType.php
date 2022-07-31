@@ -2,17 +2,21 @@
 
 namespace App\Form\Activity;
 
-use App\Form\Activity\Admin\ActivityNewType as DefaultActivityType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class ActivityNewType extends DefaultActivityType
+class ActivityNewType extends ActivityEditType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
         $builder
-            ->remove('author')
+            ->add('imageFile', VichImageType::class, [
+                'label' => 'Image file',
+                'required' => true,
+                'allow_delete' => false,
+            ])
         ;
     }
 }

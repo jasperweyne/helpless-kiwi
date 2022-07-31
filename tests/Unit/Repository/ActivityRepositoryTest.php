@@ -10,6 +10,7 @@ use App\Tests\Database\Group\GroupFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -21,6 +22,11 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class ActivityRepositoryTest extends KernelTestCase
 {
     use FixturesTrait;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $em;
 
     /**
      * @var ActivityRepository
@@ -73,6 +79,21 @@ class ActivityRepositoryTest extends KernelTestCase
         unset($this->registry);
     }
 
+    public function testFindAuthor(): void
+    {
+        $groups = $this->em->getRepository(Group::class)->findAll();
+
+        $activities = $this->em
+            ->getRepository(Activity::class)
+            ->findAuthor($groups);
+
+        foreach ($activities as $activitie) {
+            self::assertTrue(in_array($activitie->getAuthor(), $groups, true));
+        }
+
+        self::assertTrue(count($activities) > 0);
+    }
+
     public function testFindUpcoming(): void
     {
         /* @todo This test is incomplete. */
@@ -92,6 +113,10 @@ class ActivityRepositoryTest extends KernelTestCase
         $activities = $this->em
             ->getRepository(Activity::class)
             ->findVisibleUpcomingByGroup($groups);
+
+        foreach ($activities as $activitie) {
+            self::assertTrue(in_array($activitie->getAuthor(), $groups, true));
+        }
 
         self::assertTrue(count($activities) > 0);
     }

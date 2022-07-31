@@ -230,4 +230,9 @@ class Registration
     {
         $this->comment = $comment;
     }
+
+    public function __construct()
+    {
+        $this->newdate = new DateTime('now');
+    }
 }

@@ -9,6 +9,9 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 // ToDo: implement caching
+/**
+ * @phpstan-import-type MenuItemArray from MenuExtensionInterface
+ */
 class AnnotationMenuExtension implements MenuExtensionInterface
 {
     /**
@@ -57,7 +60,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
     /**
      * Returns all the menu items.
      *
-     * @return array{title: string, path: string, role?: string, class?: string, activeCriteria?: string, order?: int}[]
+     * @return MenuItemArray[]
      */
     public function getMenuItems(string $menu = ''): array
     {

@@ -2,6 +2,9 @@
 
 namespace App\Template;
 
+/**
+ * @phpstan-import-type MenuItemArray from MenuExtensionInterface
+ */
 class MenuBuilder
 {
     /**
@@ -10,7 +13,7 @@ class MenuBuilder
     private $extensions;
 
     /**
-     * @var array<string, array{title: string, path: string|array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]>
+     * @var array<string, MenuItemArray[]>
      */
     private $menuitems;
 
@@ -36,7 +39,7 @@ class MenuBuilder
     /**
      * Returns a list of available menu items.
      *
-     * @return array{title: string, path: string|array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]
+     * @return MenuItemArray[]
      */
     public function getItems(string $menu = '')
     {
@@ -44,21 +47,27 @@ class MenuBuilder
             $items = [];
 
             foreach ($this->extensions as $extension) {
-                $items = array_merge($items, $extension->getMenuItems($menu));
+                foreach ($extension->getMenuItems($menu) as $item) {
+                    $title = $item['title'];
+                    $items[$title] = array_merge($items[$title] ?? [], $item);
+                }
             }
 
             usort($items, function ($a, $b) {
+                /** @var array{title: string, order?: int} $a */
+                /** @var array{title: string, order?: int} $b */
                 if (array_key_exists('order', $a) && array_key_exists('order', $b)) {
                     return $a['order'] <=> $b['order'];
                 } elseif (array_key_exists('order', $b)) {
                     return -$b['order'];
                 } elseif (array_key_exists('order', $a)) {
                     return $a['order'];
-                } else {
-                    return $a['title'] <=> $b['title'];
                 }
+
+                return $a['title'] <=> $b['title'];
             });
 
+            /** @var array<string, MenuItemArray> $items */
             $this->menuitems[$menu] = $items;
         }
 

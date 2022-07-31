@@ -31,7 +31,7 @@ class EventController extends AbstractController
     /**
      * Lists all events.
      *
-     * @MenuItem(title="Gebeurtenislog", menu="admin")
+     * @MenuItem(title="Gebeurtenislog", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
     public function indexAction(Request $request): Response
@@ -57,11 +57,12 @@ class EventController extends AbstractController
         $limit = \max(1, $limit);
 
         $cqb = clone $qb;
-        $count = current($cqb
+        $count = current(
+            $cqb
             ->select('count('.$qb->getRootAlias().')')
             ->getQuery()
             ->getOneOrNullResult()
-                );
+        );
 
         $rqb = clone $qb;
         $results = $rqb

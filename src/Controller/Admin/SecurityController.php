@@ -36,7 +36,7 @@ class SecurityController extends AbstractController
     /**
      * Lists all local account entities.
      *
-     * @MenuItem(title="Accounts", menu="admin", activeCriteria="admin_security_")
+     * @MenuItem(title="Accounts", menu="admin", activeCriteria="admin_security_", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET", "POST"})
      */
     public function indexAction(Request $request): Response

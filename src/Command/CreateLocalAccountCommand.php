@@ -64,7 +64,9 @@ class CreateLocalAccountCommand extends Command
 
         if (is_null($input->getArgument('name'))) {
             $question = new Question('Public name: ');
-            $input->setArgument('name', $helper->ask($input, $output, $question));
+            /** @var string $name */
+            $name = $helper->ask($input, $output, $question);
+            $input->setArgument('name', $name);
         }
 
         if (is_null($input->getArgument('pass'))) {
@@ -72,6 +74,7 @@ class CreateLocalAccountCommand extends Command
                 $question = new Question('Please enter a password: ');
                 $question->setHidden(true);
                 $question->setHiddenFallback(false);
+                /** @var string $pass */
                 $pass = $helper->ask($input, $output, $question);
 
                 $question = new Question('Confirm the password: ');

@@ -51,23 +51,18 @@ parameters:
 			path: src/Command/CreateLocalAccountCommand.php
 
 		-
-			message: "#^Parameter \\#2 \\$value of method Symfony\\\\Component\\\\Console\\\\Input\\\\InputInterface\\:\\:setArgument\\(\\) expects array\\<string\\>\\|string\\|null, mixed given\\.$#"
-			count: 2
-			path: src/Command/CreateLocalAccountCommand.php
-
-		-
 			message: "#^Call to method App\\\\Calendar\\\\ICalProvider\\:\\:icalFeed\\(\\) with incorrect case\\: IcalFeed$#"
 			count: 1
 			path: src/Controller/Activity/ActivityController.php
 
 		-
 			message: "#^Cannot access offset 'registration_single' on mixed\\.$#"
-			count: 2
+			count: 1
 			path: src/Controller/Activity/ActivityController.php
 
 		-
 			message: "#^Cannot access offset 'single_option' on mixed\\.$#"
-			count: 2
+			count: 1
 			path: src/Controller/Activity/ActivityController.php
 
 		-
@@ -151,22 +146,7 @@ parameters:
 			path: src/Controller/Admin/GroupController.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
 			message: "#^Only booleans are allowed in an if condition, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Parameter \\#1 \\$defaultBoard of method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:generateStructure\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
 
@@ -182,21 +162,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method App\\\\Controller\\\\Admin\\\\RegistrationController\\:\\:handleRedirect\\(\\) expects string, string\\|null given\\.$#"
-			count: 3
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeNewReserve\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeRegistration\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/RegistrationController.php
 
@@ -219,176 +184,6 @@ parameters:
 			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/SecurityController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 3
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Cannot call method getOptions\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationDeleteForm\\(\\) has parameter \\$actionUrl with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationDeleteForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationEditForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createRegistrationNewForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:createReserveNewForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:demoteReserve\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:handleRedirect\\(\\) has parameter \\$type with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:promoteReserve\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$em with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$message with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$template with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:sendConfermationMail\\(\\) has parameter \\$title with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given\\.$#"
-			count: 4
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#1 \\$activity of method App\\\\Repository\\\\RegistrationRepository\\:\\:findAfter\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#1 \\$activity of method App\\\\Repository\\\\RegistrationRepository\\:\\:findBefore\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#2 \\$position of method App\\\\Repository\\\\RegistrationRepository\\:\\:findAfter\\(\\) expects App\\\\Entity\\\\Order, App\\\\Entity\\\\Order\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Parameter \\#2 \\$position of method App\\\\Repository\\\\RegistrationRepository\\:\\:findBefore\\(\\) expects App\\\\Entity\\\\Order, App\\\\Entity\\\\Order\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Helper/RegistrationHelper.php
-
-		-
-			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:blockUnauthorisedUsers\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:createDeleteForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$group of method App\\\\Controller\\\\Organise\\\\ActivityController\\:\\:blockUnauthorisedUsers\\(\\) expects App\\\\Entity\\\\Group\\\\Group, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 7
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:persist\\(\\) expects object, App\\\\Entity\\\\Location\\\\Location\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Organise/ActivityController.php
-
-		-
-			message: "#^Cannot call method getAuthor\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 3
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:handleRedirect\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$group of method App\\\\Controller\\\\Organise\\\\RegistrationController\\:\\:blockUnauthorisedUsers\\(\\) expects App\\\\Entity\\\\Group\\\\Group, App\\\\Entity\\\\Group\\\\Group\\|null given\\.$#"
-			count: 5
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeNewReserve\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$registration of method App\\\\Controller\\\\Helper\\\\RegistrationHelper\\:\\:storeRegistration\\(\\) expects App\\\\Entity\\\\Activity\\\\Registration, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$route of method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Controller\\\\AbstractController\\:\\:generateUrl\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Organise/RegistrationController.php
 
 		-
 			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\Exception\\\\AuthenticationException\\|null given\\.$#"
@@ -446,11 +241,6 @@ parameters:
 			path: src/Entity/Activity/Activity.php
 
 		-
-			message: "#^Cannot call method map\\(\\) on Doctrine\\\\Common\\\\Collections\\\\Collection\\<int, App\\\\Entity\\\\Group\\\\Relation\\>\\|null\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
 			message: "#^Only booleans are allowed in &&, DateTime\\|null given on the right side\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
@@ -479,11 +269,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$option of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setOption\\(\\) expects App\\\\Entity\\\\Activity\\\\PriceOption, null given\\.$#"
 			count: 1
 			path: src/Entity/Activity/PriceOption.php
-
-		-
-			message: "#^Parameter \\#1 \\$group of method App\\\\Entity\\\\Group\\\\Relation\\:\\:setGroup\\(\\) expects App\\\\Entity\\\\Group\\\\Group, null given\\.$#"
-			count: 1
-			path: src/Entity/Group/Group.php
 
 		-
 			message: "#^Method App\\\\Entity\\\\Log\\\\Event\\:\\:getDiscr\\(\\) should return class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null but returns string\\.$#"
@@ -541,46 +326,6 @@ parameters:
 			path: src/GraphQL/Types/DatetimeScalar.php
 
 		-
-			message: "#^Call to method App\\\\Repository\\\\GroupRepository\\<App\\\\Entity\\\\Group\\\\Group\\>\\:\\:findBy\\(\\) \\- entity App\\\\Entity\\\\Group\\\\Group does not have a field named \\$category\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Property App\\\\Group\\\\GroupMenuExtension\\:\\:\\$menuItems \\(array\\<string, array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\>\\) does not accept non\\-empty\\-array\\<string, array\\<array\\{title\\: string\\|null, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\>\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Property App\\\\Group\\\\GroupMenuExtension\\:\\:\\$menuItems is never read, only written\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/Group/GroupMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<array\\<string, array\\<int, array\\<string, string\\|null\\>\\|string\\|null\\>\\|string\\>\\> given\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, bool\\|null given\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
-
-		-
-			message: "#^Property App\\\\Group\\\\OrganiseMenuExtension\\:\\:\\$menuItems \\(array\\<array\\{title\\: string, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\) does not accept non\\-empty\\-array\\<array\\{title\\: string\\|null, path\\: array\\{string\\|null, array\\{id\\: string\\|null\\}\\}\\}\\>\\.$#"
-			count: 1
-			path: src/Group/OrganiseMenuExtension.php
-
-		-
 			message: "#^Generator expects value type Symfony\\\\Component\\\\HttpKernel\\\\Bundle\\\\BundleInterface, object given\\.$#"
 			count: 1
 			path: src/Kernel.php
@@ -599,11 +344,6 @@ parameters:
 			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$time is never written, only read\\.$#"
 			count: 1
 			path: src/Log/AbstractEvent.php
-
-		-
-			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\ORM\\\\EntityManager\\:\\:getClassMetadata\\(\\) expects string, class\\-string\\|false given\\.$#"
-			count: 2
-			path: src/Log/Doctrine/EntityEventListener.php
 
 		-
 			message: "#^Parameter \\#1 \\$entity of method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) expects object, mixed given\\.$#"
@@ -652,11 +392,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getValue\\(\\) on ReflectionProperty\\|null\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Method App\\\\Log\\\\EventService\\:\\:getClassName\\(\\) should return class\\-string\\<T of object\\> but returns string\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -871,11 +606,6 @@ parameters:
 			path: src/Template/AnnotationMenuExtension.php
 
 		-
-			message: "#^Cannot call method get\\(\\) on Symfony\\\\Component\\\\DependencyInjection\\\\ContainerInterface\\|null\\.$#"
-			count: 3
-			path: src/Tests/AuthWebTestCase.php
-
-		-
 			message: "#^Construct empty\\(\\) is not allowed\\. Use more strict comparison\\.$#"
 			count: 1
 			path: src/Tests/AuthWebTestCase.php
@@ -961,22 +691,7 @@ parameters:
 			path: tests/Functional/Controller/Activity/ActivityControllerTest.php
 
 		-
-			message: "#^Cannot call method setValue\\(\\) on array\\<array\\<Symfony\\\\Component\\\\DomCrawler\\\\Field\\\\FormField\\>\\|Symfony\\\\Component\\\\DomCrawler\\\\Field\\\\FormField\\>\\|Symfony\\\\Component\\\\DomCrawler\\\\Field\\\\FormField\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Parameter \\#5 \\$test of class Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile constructor expects bool, null given\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
 			message: "#^Symfony\\\\Component\\\\DomCrawler\\\\Form does not accept Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
-
-		-
-			message: "#^Symfony\\\\Component\\\\DomCrawler\\\\Form does not accept int\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
 
@@ -1031,31 +746,6 @@ parameters:
 			path: tests/Functional/Controller/Admin/SecurityControllerTest.php
 
 		-
-			message: "#^Cannot call method getComment\\(\\) on App\\\\Entity\\\\Activity\\\\Registration\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getDeleteDate\\(\\) on App\\\\Entity\\\\Activity\\\\Registration\\|null\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Registration\\|null\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Group\\\\Group\\|null\\.$#"
-			count: 8
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
-			message: "#^Cannot call method getRegistrations\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 2
-			path: tests/Functional/Controller/Organise/RegistrationControllerTest.php
-
-		-
 			message: "#^Method Tests\\\\Functional\\\\Controller\\\\Security\\\\LoginControllerTest\\:\\:setupOidc\\(\\) has parameter \\$container with no type specified\\.$#"
 			count: 1
 			path: tests/Functional/Controller/Security/LoginControllerTest.php
@@ -1104,31 +794,6 @@ parameters:
 			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\Client\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
 			count: 1
 			path: tests/Functional/GraphQL/QueryTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
-
-		-
-			message: "#^Method Tests\\\\Integration\\\\Form\\\\Activity\\\\Admin\\\\ActivityEditTypeTest\\:\\:testBindValidData\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityEditTypeTest.php
-
-		-
-			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
-
-		-
-			message: "#^Method Tests\\\\Integration\\\\Form\\\\Activity\\\\Admin\\\\ActivityNewTypeTest\\:\\:testBindValidData\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
-
-		-
-			message: "#^Parameter \\#5 \\$test of class Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile constructor expects bool, null given\\.$#"
-			count: 1
-			path: tests/Integration/Form/Activity/Admin/ActivityNewTypeTest.php
 
 		-
 			message: "#^Dynamic call to static method PHPUnit\\\\Framework\\\\TestCase\\:\\:exactly\\(\\)\\.$#"
@@ -1181,21 +846,6 @@ parameters:
 			path: tests/Unit/Entity/Activity/RegistrationTest.php
 
 		-
-			message: "#^You should use assertFalse\\(\\) instead of assertSame\\(\\) when expecting \"false\"$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
-			count: 3
-			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
-			message: "#^You should use assertTrue\\(\\) instead of assertSame\\(\\) when expecting \"true\"$#"
-			count: 1
-			path: tests/Unit/Entity/Activity/RegistrationTest.php
-
-		-
 			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with '42' and class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null will always evaluate to false\\.$#"
 			count: 1
 			path: tests/Unit/Entity/Log/EventTest.php
@@ -1212,16 +862,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method add\\(\\) on mixed\\.$#"
-			count: 2
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^Result of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:eraseCredentials\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: tests/Unit/Entity/Security/LocalAccountTest.php
-
-		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
 			count: 2
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
 
@@ -1246,29 +886,9 @@ parameters:
 			path: tests/Unit/Log/AbstractEventTest.php
 
 		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
-			count: 1
-			path: tests/Unit/Log/AbstractEventTest.php
-
-		-
-			message: "#^PHPDoc tag @var above assignment does not specify variable name\\.$#"
-			count: 4
-			path: tests/Unit/Mail/MailServiceTest.php
-
-		-
-			message: "#^Access to an undefined property Tests\\\\Unit\\\\Repository\\\\ActivityRepositoryTest\\:\\:\\$em\\.$#"
-			count: 3
-			path: tests/Unit/Repository/ActivityRepositoryTest.php
-
-		-
 			message: "#^PHPDoc tag @var contains generic class Doctrine\\\\Bundle\\\\DoctrineBundle\\\\Repository\\\\ServiceEntityRepository but does not specify its types\\: TEntityClass$#"
 			count: 2
 			path: tests/Unit/Security/LocalUserProviderTest.php
-
-		-
-			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
-			count: 2
-			path: tests/Unit/Template/Annotation/MenuItemTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$extensions of class App\\\\Template\\\\MenuBuilder constructor expects array\\<App\\\\Template\\\\MenuExtensionInterface\\>, null given\\.$#"

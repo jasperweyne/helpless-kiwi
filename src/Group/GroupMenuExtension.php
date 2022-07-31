@@ -3,9 +3,15 @@
 namespace App\Group;
 
 use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
+use App\Repository\GroupRepository;
 use App\Template\MenuExtensionInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * @phpstan-import-type MenuItemArray from MenuExtensionInterface
+ */
 class GroupMenuExtension implements MenuExtensionInterface
 {
     /**
@@ -14,36 +20,43 @@ class GroupMenuExtension implements MenuExtensionInterface
     private $em;
 
     /**
-     * @var array<string, array{title: string, path: array{0: ?string, 1: array{id: ?string}}}[]>
+     * @var TokenStorageInterface
      */
-    private $menuItems = [];
+    private $tokenStorage;
+
+    /**
+     * @var array{title: string, path: array{0: ?string, 1: array{id: ?string}}}[]
+     */
+    private $menuItems;
 
     /**
      * GroupMenuExtension constructor.
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
      * Returns all the menu items.
      *
-     * @return array{title: string, path: array{0: ?string, 1: array{id: ?string}}, role?: string, class?: string, activeCriteria?: string, order?: int}[]
+     * @return MenuItemArray[]
      */
     public function getMenuItems(string $menu = '')
     {
-        return []; // disable for now
-
-        if (!$this->menuItems) {
-            $this->discoverMenuItems();
-        }
-
-        if (!array_key_exists($menu, $this->menuItems)) {
+        if ('admin' !== $menu) {
             return [];
         }
 
-        return $this->menuItems[$menu];
+        if (null === $this->menuItems) {
+            $this->discoverMenuItems();
+        }
+
+        return [[
+            'title' => 'Activiteiten',
+            'sub' => $this->menuItems,
+        ]];
     }
 
     /**
@@ -51,16 +64,44 @@ class GroupMenuExtension implements MenuExtensionInterface
      */
     private function discoverMenuItems(): void
     {
-        $groups = $this->em->getRepository(Group::class)->findBy(['category' => true]);
+        $this->menuItems = [];
 
-        $mapped = [];
-        foreach ($groups as $group) {
-            $mapped[] = [
-                'title' => $group->getName(),
-                'path' => ['admin_group_show', ['id' => $group->getId()]],
-            ];
+        if (null != $this->getUser()) {
+            /** @var GroupRepository */
+            $groupRepo = $this->em->getRepository(Group::class);
+            $groups = $groupRepo->findAllFor($this->getUser());
+
+            /** @var Group $group */
+            foreach ($groups as $group) {
+                if (true !== $group->isActive() || null === $group->getName()) {
+                    continue;
+                }
+
+                $this->menuItems[] = [
+                    'title' => $group->getName(),
+                    'path' => ['admin_activity_group', [
+                        'id' => $group->getId(),
+                    ]],
+                ];
+            }
+        }
+    }
+
+    private function getUser(): ?LocalAccount
+    {
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return null;
         }
 
-        $this->menuItems['admin'] = $mapped;
+        if (!\is_object($user = $token->getUser())) {
+            // e.g. anonymous authentication
+            return null;
+        }
+
+        if (!$user instanceof LocalAccount) {
+            throw new \LogicException('The user must be an instance of LocalAccount.');
+        }
+
+        return $user;
     }
 }

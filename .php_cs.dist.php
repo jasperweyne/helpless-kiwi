@@ -12,6 +12,7 @@ return PhpCsFixer\Config::create()
         'array_indentation' => true,
         'method_chaining_indentation' => true,
         'align_multiline_comment' => true,
+        'phpdoc_to_comment' => ['ignored_tags' => ['var']],
     ])
     ->setIndent("    ")
     ->setLineEnding("\n")

@@ -68,7 +68,7 @@ class Relation
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("The children relation objects, in case of multiple overlapping relations.")
      *
-     * @var Collection<int, Relation>s
+     * @var Collection<int, Relation>
      */
     private $children;
 

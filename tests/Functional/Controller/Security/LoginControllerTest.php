@@ -13,7 +13,6 @@ use Drenso\OidcBundle\OidcClient;
  */
 class LoginControllerTest extends AuthWebTestCase
 {
-
     public function testLoginWhileLoggedIn(): void
     {
         // Arrange

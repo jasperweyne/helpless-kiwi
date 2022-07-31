@@ -34,7 +34,7 @@ class LocalUserProviderTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        /* @var EntityManagerInterface&MockObject */
+
         $this->em = $this->createMock(EntityManager::class);
         $this->localUserProvider = new LocalUserProvider($this->em);
     }

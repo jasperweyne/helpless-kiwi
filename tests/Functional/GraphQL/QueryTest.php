@@ -214,7 +214,7 @@ GRAPHQL;
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayNotHasKey('errors', $data);
         self::assertTrue(isset($data['data']['groups']));
-        self::assertCount(1, $data['data']['groups']);
+        self::assertCount(2, $data['data']['groups']);
     }
 
     public function testUsersAnonymous(): void

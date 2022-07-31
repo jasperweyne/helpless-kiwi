@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * Class RegistrationControllerTest.
  *
  * @covers \App\Controller\Admin\RegistrationController
- * @covers \App\Controller\Helper\RegistrationHelper
  *
  * @author A-Daneel
  */
@@ -26,7 +25,7 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     private $em;
 
-    private $controller = "/admin/group/";
+    private $controller = '/admin/group/';
 
     /**
      * {@inheritdoc}
@@ -87,7 +86,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $activity = $this->em->getRepository(Activity::class)->find($id);
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'aangemeld');
+        self::assertSelectorTextContains('.container', 'gelukt');
         self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
@@ -142,7 +141,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Assert
         $registration = $this->em->getRepository(Registration::class)->find($id);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'afgemeld');
+        self::assertSelectorTextContains('.container', 'gelukt');
         self::assertNotNull($registration->getDeleteDate());
     }
 
@@ -178,7 +177,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
-        self::assertSelectorTextContains('.container', 'aangemeld op de reservelijst');
+        self::assertSelectorTextContains('.container', 'op de reservelijst');
     }
 
     public function testReserveMoveUpAction(): void
@@ -213,5 +212,70 @@ class RegistrationControllerTest extends AuthWebTestCase
         $updatedRegistrationId = $updatedReserves[1]->getId();
         self::assertEquals($updatedRegistrationId, $firstReserveId);
         self::assertSelectorTextContains('.container', 'naar beneden verplaatst!');
+    }
+
+    /**
+     * @dataProvider noAccessProvider
+     */
+    public function testNoAccess(string $url): void
+    {
+        //arrange
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+
+        /** @var Registration $registration */
+        $registration = $activity->getRegistrations()[0];
+        $id = $registration->getId();
+
+        $reserve = $this->em->getRepository(Registration::class)->findReserve($activity)[0];
+        $reserveId = $reserve->getId();
+
+        $url = str_replace('id', strval($id), $url);
+        $url = str_replace('rid', strval($reserveId), $url);
+
+        //act
+        $this->logout();
+        $this->login(false);
+        $this->client->request('GET', $url);
+
+        //assert
+        self::assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @dataProvider noAccessProvider
+     */
+    public function testNullActivityNotAdmin(string $url): void
+    {
+
+        //arrange
+        /** @var Registration $registration */
+        $registration = $this->em->getRepository(Registration::class)->findOneBy(['activity' => null]);
+        $id = $registration->getId();
+
+        $url = str_replace('id', strval($id), $url);
+        $url = str_replace('rid', strval($id), $url);
+
+        //act
+        $this->logout();
+        $this->login(false);
+        $this->client->request('GET', $url);
+
+        //assert
+        self::assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @return iterable<array{string}>
+     */
+    public function noAccessProvider()
+    {
+        return [
+            ['/admin/activity/register/edit/id'],
+            ['/admin/activity/register/delete/id'],
+            ['/admin/activity/register/reserve/new/id'],
+            ['/admin/activity/register/reserve/move/rid/up'],
+            ['/admin/activity/register/reserve/move/rid/down'],
+        ];
     }
 }

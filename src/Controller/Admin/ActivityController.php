@@ -5,10 +5,16 @@ namespace App\Controller\Admin;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
+use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
+use App\Repository\ActivityRepository;
+use App\Repository\GroupRepository;
+use App\Repository\RegistrationRepository;
 use App\Template\Annotation\MenuItem;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,9 +33,31 @@ class ActivityController extends AbstractController
      */
     private $events;
 
-    public function __construct(EventService $events)
-    {
+    /**
+     * @var ActivityRepository
+     */
+    private $activitiesRepo;
+
+    /**
+     * @var GroupRepository
+     */
+    private $groupsRepo;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    public function __construct(
+        EventService $events,
+        GroupRepository $groups,
+        ActivityRepository $activities,
+        EntityManagerInterface $em
+    ) {
         $this->events = $events;
+        $this->activitiesRepo = $activities;
+        $this->groupsRepo = $groups;
+        $this->em = $em;
     }
 
     /**
@@ -40,9 +68,28 @@ class ActivityController extends AbstractController
      */
     public function indexAction(): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $activities = $this->activitiesRepo->findBy([], ['start' => 'DESC']);
+        } else {
+            /** @var LocalAccount */
+            $user = $this->getUser();
+            $groups = $this->groupsRepo->findSubGroupsForPerson($user);
+            $activities = $this->activitiesRepo->findAuthor($groups);
+        }
 
-        $activities = $em->getRepository(Activity::class)->findBy([], ['start' => 'DESC']);
+        return $this->render('admin/activity/index.html.twig', [
+            'activities' => $activities,
+        ]);
+    }
+
+    /**
+     * Lists all activities with a group as author.
+     *
+     * @Route("/group/{id}", name="group", methods={"GET"})
+     */
+    public function groupAction(Group $group): Response
+    {
+        $activities = $this->activitiesRepo->findAuthor($this->groupsRepo->findSubGroupsFor($group));
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
@@ -54,18 +101,17 @@ class ActivityController extends AbstractController
      *
      * @Route("/new", name="new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request): Response
+    public function newAction(Request $request, GroupRepository $groupRepo): Response
     {
         $activity = new Activity();
 
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityNewType', $activity);
+        $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($activity);
-            $em->persist($activity->getLocation());
-            $em->flush();
+            $this->em->persist($activity);
+            $this->em->persist($activity->getLocation());
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -83,12 +129,13 @@ class ActivityController extends AbstractController
      */
     public function showAction(Activity $activity): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
         $createdAt = $this->events->findOneBy($activity, EntityNewEvent::class);
         $modifs = $this->events->findBy($activity, EntityUpdateEvent::class);
 
-        $repository = $em->getRepository(Registration::class);
+        /** @var RegistrationRepository */
+        $repository = $this->em->getRepository(Registration::class);
 
         $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $deregs = $repository->findDeregistrations($activity);
@@ -111,9 +158,11 @@ class ActivityController extends AbstractController
      *
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, Activity $activity): Response
+    public function editAction(Request $request, Activity $activity, GroupRepository $groupRepo): Response
     {
-        $form = $this->createForm('App\Form\Activity\Admin\ActivityEditType', $activity);
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
+        $form = $this->createForm('App\Form\Activity\ActivityEditType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -135,6 +184,8 @@ class ActivityController extends AbstractController
      */
     public function imageAction(Request $request, Activity $activity): Response
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createForm('App\Form\Activity\ActivityImageType', $activity);
         $form->handleRequest($request);
 
@@ -157,13 +208,14 @@ class ActivityController extends AbstractController
      */
     public function deleteAction(Request $request, Activity $activity): Response
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createDeleteForm($activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($activity);
-            $em->flush();
+            $this->em->remove($activity);
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_index');
         }
@@ -181,6 +233,8 @@ class ActivityController extends AbstractController
      */
     public function priceNewAction(Request $request, Activity $activity): Response
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $price = new PriceOption();
         $price->setActivity($activity);
 
@@ -193,9 +247,8 @@ class ActivityController extends AbstractController
                 ->setConfirmationMsg('')
             ;
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($price);
-            $em->flush();
+            $this->em->persist($price);
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
@@ -213,13 +266,18 @@ class ActivityController extends AbstractController
      */
     public function priceEditAction(Request $request, PriceOption $price): Response
     {
+        if (null !== $price->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $price->getActivity()->getAuthor());
+        } elseif (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Admin price option');
+        }
+
         $activity = $price->getActivity();
         $originalPrice = $price->getPrice();
         $form = $this->createForm('App\Form\Activity\PriceOptionType', $price);
         $form->handleRequest($request);
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(Registration::class);
+        $repository = $this->em->getRepository(Registration::class);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
@@ -231,8 +289,7 @@ class ActivityController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
-            $em = $this->getDoctrine()->getManager();
-            $em->flush();
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $price->getActivity()->getId()]);
         }
@@ -250,13 +307,13 @@ class ActivityController extends AbstractController
      */
     public function presentEditAction(Request $request, Activity $activity): Response
     {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
         $form = $this->createForm('App\Form\Activity\ActivityEditPresent', $activity);
         $form->handleRequest($request);
 
-        $em = $this->getDoctrine()->getManager();
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Aanwezigheid aangepast');
         }
 
@@ -273,13 +330,13 @@ class ActivityController extends AbstractController
      */
     public function setAmountPresent(Request $request, Activity $activity): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
         $form = $this->createForm('App\Form\Activity\ActivitySetPresentAmount', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Aanwezigen genoteerd!');
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
@@ -298,14 +355,14 @@ class ActivityController extends AbstractController
      */
     public function resetAmountPresent(Request $request, Activity $activity): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
         $form = $this->createForm('App\Form\Activity\ActivityCountPresent', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $activity->setPresent(null);
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Aanwezigen geteld!');
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
