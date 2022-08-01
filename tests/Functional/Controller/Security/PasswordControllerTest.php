@@ -67,8 +67,8 @@ class PasswordControllerTest extends AuthWebTestCase
     }
 
     /**
-    *   @testdox Reset action with valid token
-    */
+     *   @testdox Reset action with valid token
+     */
     public function testResetAction(): void
     {
         // Act
@@ -76,7 +76,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
         $crawler = $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode($token));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Nieuw wachtwoord bevestigen')->form();
         $newPassword = 'password123';
@@ -85,27 +85,27 @@ class PasswordControllerTest extends AuthWebTestCase
         $crawler = $this->client->submit($form);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Wachtwoord aangepast!');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Wachtwoord aangepast!');
     }
 
     /**
-    *   @testdox Reset action with invalid token
-    */
+     *   @testdox Reset action with invalid token
+     */
     public function testResetWithNonValidToken(): void
     {
         // Act
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
-        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode("invalid-token"));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Invalid password token.');
+        $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode('invalid-token'));
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Invalid password token.');
     }
 
     /**
-    *   @testdox Register action with valid token
-    */
+     *   @testdox Register action with valid token
+     */
     public function testRegisterAction(): void
     {
         // Act
@@ -113,7 +113,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
         $crawler = $this->client->request('GET', '/password/register/'.$auth->getId().'?token='.urlencode($token));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Account activeren')->form();
         $newPassword = 'password123';
@@ -122,39 +122,59 @@ class PasswordControllerTest extends AuthWebTestCase
         $crawler = $this->client->submit($form);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Account succesvol geregistreed, log in!');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Account succesvol geregistreed, log in!');
     }
 
     /**
-    *   @testdox Register action with invalid token
-    */
+     *   @testdox Register action with invalid token
+     */
     public function testRegisterWithNonValidToken(): void
     {
         // Act
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
-        $this->client->request('GET', '/password/register/'.$auth->getId().'?token='.urlencode("invalid-token"));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Invalid password token.');
+        $this->client->request('GET', '/password/register/'.$auth->getId().'?token='.urlencode('invalid-token'));
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Invalid password token.');
     }
 
     /**
-    *   @testdox Request action with valid email
-    */
+     *   @testdox Request action with valid email
+     */
     public function testRequestAction(): void
     {
         // Act
         $crawler = $this->client->request('GET', '/password/request');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Verzenden')->form();
         $form['password_request[email]'] = LocalAccountFixture::USERNAME;
         $crawler = $this->client->submit($form);
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar '.LocalAccountFixture::USERNAME);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar '.LocalAccountFixture::USERNAME);
+    }
+
+    /**
+     *   @testdox Request action with invalid email
+     */
+    public function testRequestActionWithInvalidEmail(): void
+    {
+        $inValidEmail = 'this@email.isnotvalid';
+
+        // Act
+        $crawler = $this->client->request('GET', '/password/request');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Verzenden')->form();
+        $form['password_request[email]'] = $inValidEmail;
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', "Er is een mail met instructies gestuurd naar ${inValidEmail}");
     }
 }

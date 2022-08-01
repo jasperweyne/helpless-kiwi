@@ -16,6 +16,8 @@ class Location
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -23,12 +25,26 @@ class Location
      * @ORM\Column(type="string")
      * @GQL\Field(type="String")
      * @GQL\Description("The address of the location.")
+     *
+     * @var string
      */
     private $address;
 
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    /**
+     *  DONT USE THIS METHOD
+     *  This method only exists to please Alice.
+     *
+     *  We're returning a void so that if someone accidentally used this method
+     *  they'll observe unexpected behaviour
+     */
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 
     public function getAddress(): ?string

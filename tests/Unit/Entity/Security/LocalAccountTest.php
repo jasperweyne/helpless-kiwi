@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entity\Security;
 
 use App\Entity\Activity\Registration;
+use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -49,7 +50,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getId());
+        self::assertSame($expected, $this->localAccount->getId());
     }
 
     public function testSetId(): void
@@ -59,7 +60,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $this->localAccount->setId($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetEmail(): void
@@ -69,7 +70,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getEmail());
+        self::assertSame($expected, $this->localAccount->getEmail());
     }
 
     public function testSetEmail(): void
@@ -79,7 +80,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('email');
         $property->setAccessible(true);
         $this->localAccount->setEmail($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetUsername(): void
@@ -89,18 +90,18 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getUsername());
+        self::assertSame($expected, $this->localAccount->getUsername());
     }
 
     public function testGetName(): void
     {
-        $this->assertNull($this->localAccount->getName());
+        self::assertNull($this->localAccount->getName());
         $expectedJohn = 'John';
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expectedJohn);
-        $this->assertSame($expectedJohn, $this->localAccount->getName());
+        self::assertSame($expectedJohn, $this->localAccount->getName());
 
         $expectedDoe = 'Doe';
         $property = (new ReflectionClass(LocalAccount::class))
@@ -109,7 +110,7 @@ class LocalAccountTest extends KernelTestCase
         $property->setValue($this->localAccount, $expectedDoe);
 
         $expectedResult = 'John Doe';
-        $this->assertSame($expectedResult, $this->localAccount->getName());
+        self::assertSame($expectedResult, $this->localAccount->getName());
     }
 
     public function testSetName(): void
@@ -119,7 +120,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('givenName');
         $property->setAccessible(true);
         $this->localAccount->setName($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetGivenName(): void
@@ -129,7 +130,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('givenName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getGivenName());
+        self::assertSame($expected, $this->localAccount->getGivenName());
     }
 
     public function testSetGivenName(): void
@@ -139,7 +140,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('givenName');
         $property->setAccessible(true);
         $this->localAccount->setGivenName($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetFamilyName(): void
@@ -149,7 +150,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getFamilyName());
+        self::assertSame($expected, $this->localAccount->getFamilyName());
     }
 
     public function testSetFamilyName(): void
@@ -159,17 +160,31 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('familyName');
         $property->setAccessible(true);
         $this->localAccount->setFamilyName($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetRoles(): void
     {
+        $group = new Group();
+        $group->setActive(true);
+        $relation = new Relation();
+        $relation->setGroup($group);
+
         $expected = ['ROLE_USER'];
-        $property = (new ReflectionClass(LocalAccount::class))
+        $local = new ReflectionClass(LocalAccount::class);
+        $roleProperty = $local
             ->getProperty('roles');
-        $property->setAccessible(true);
-        $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getRoles());
+        $roleProperty->setAccessible(true);
+        $roleProperty->setValue($this->localAccount, $expected);
+
+        $relations = new ArrayCollection([$relation]);
+        $relationProperty = $local
+            ->getProperty('relations');
+        $relationProperty->setAccessible(true);
+        $relationProperty->setValue($this->localAccount, $relations);
+
+        $expectedroles = ['ROLE_USER', 'ROLE_AUTHOR'];
+        self::assertEqualsCanonicalizing($expectedroles, $this->localAccount->getRoles());
     }
 
     public function testSetRoles(): void
@@ -179,7 +194,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('roles');
         $property->setAccessible(true);
         $this->localAccount->setRoles($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testIsAdmin(): void
@@ -189,7 +204,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('roles');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertTrue($this->localAccount->isAdmin());
+        self::assertTrue($this->localAccount->isAdmin());
     }
 
     public function testGetPassword(): void
@@ -199,7 +214,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('password');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getPassword());
+        self::assertSame($expected, $this->localAccount->getPassword());
     }
 
     public function testSetPassword(): void
@@ -209,19 +224,18 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('password');
         $property->setAccessible(true);
         $this->localAccount->setPassword($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetSalt(): void
     {
         //To-Do: implement or remove function
-        $this->assertNull($this->localAccount->getSalt());
+        self::assertNull($this->localAccount->getSalt());
     }
 
     public function testEraseCredentials(): void
     {
-        //To-Do: implement or remove function
-        $this->assertNull($this->localAccount->eraseCredentials());
+        self::markTestIncomplete();
     }
 
     public function testGetOidc(): void
@@ -231,7 +245,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('oidc');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getOidc());
+        self::assertSame($expected, $this->localAccount->getOidc());
     }
 
     public function testSetOidc(): void
@@ -241,7 +255,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('oidc');
         $property->setAccessible(true);
         $this->localAccount->setOidc($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testSetPasswordRequestToken(): void
@@ -251,7 +265,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('passwordRequestToken');
         $property->setAccessible(true);
         $this->localAccount->setPasswordRequestToken($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testSetPasswordRequestedAt(): void
@@ -261,7 +275,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
         $this->localAccount->setPasswordRequestedAt($expected);
-        $this->assertSame($expected, $property->getValue($this->localAccount));
+        self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetPasswordRequestedAt(): void
@@ -271,7 +285,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getPasswordRequestedAt());
+        self::assertSame($expected, $this->localAccount->getPasswordRequestedAt());
     }
 
     /**
@@ -284,7 +298,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
         $this->localAccount->setPasswordRequestedAt($expected);
-        $this->assertTrue($this->localAccount->isPasswordRequestNonExpired(100));
+        self::assertTrue($this->localAccount->isPasswordRequestNonExpired(100));
     }
 
     public function testIsEqualTo(): void
@@ -294,7 +308,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('email');
         $property->setAccessible(true);
         $this->localAccount->setEmail($expected);
-        $this->assertTrue($this->localAccount->isEqualTo($this->localAccount));
+        self::assertTrue($this->localAccount->isEqualTo($this->localAccount));
     }
 
     public function testGetPasswordRequestToken(): void
@@ -304,17 +318,17 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('passwordRequestToken');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getPasswordRequestToken());
+        self::assertSame($expected, $this->localAccount->getPasswordRequestToken());
     }
 
     public function testGetPasswordRequestSalt(): void
     {
-        $this->assertNull($this->localAccount->getPasswordRequestSalt());
+        self::assertNull($this->localAccount->getPasswordRequestSalt());
     }
 
     public function testSetPasswordRequestSalt(): void
     {
-        $this->assertSame($this->localAccount->setPasswordRequestSalt(), $this->localAccount);
+        self::assertSame($this->localAccount->setPasswordRequestSalt(), $this->localAccount);
     }
 
     public function testGetCanonical(): void
@@ -331,14 +345,14 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $id);
-        $this->assertSame($expectedPseudo, $this->localAccount->getCanonical());
+        self::assertSame($expectedPseudo, $this->localAccount->getCanonical());
 
         //test with email
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $email);
-        $this->assertSame($email, $this->localAccount->getCanonical());
+        self::assertSame($email, $this->localAccount->getCanonical());
 
         //test with full name
         $property = (new ReflectionClass(LocalAccount::class))
@@ -350,7 +364,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $familyName);
-        $this->assertSame($fullName, $this->localAccount->getCanonical());
+        self::assertSame($fullName, $this->localAccount->getCanonical());
     }
 
     public function testToString(): void
@@ -367,14 +381,14 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $id);
-        $this->assertSame($expectedPseudo, $this->localAccount->__toString());
+        self::assertSame($expectedPseudo, $this->localAccount->__toString());
 
         //test with email
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $email);
-        $this->assertSame($email, $this->localAccount->__toString());
+        self::assertSame($email, $this->localAccount->__toString());
 
         //test with full name
         $property = (new ReflectionClass(LocalAccount::class))
@@ -386,7 +400,7 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $familyName);
-        $this->assertSame($fullName, $this->localAccount->__toString());
+        self::assertSame($fullName, $this->localAccount->__toString());
     }
 
     public function testGetRegistrations(): void
@@ -396,19 +410,19 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getRegistrations());
+        self::assertSame($expected, $this->localAccount->getRegistrations());
     }
 
     public function testAddRegistration(): void
     {
         /** @var MockObject&Registration */
         $expected = $this->createMock(Registration::class);
-        $expected->expects($this->once())->method('setPerson')->with($this->localAccount);
+        $expected->expects(self::once())->method('setPerson')->with($this->localAccount);
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $this->localAccount->addRegistration($expected);
-        $this->assertContains($expected, $property->getValue($this->localAccount));
+        self::assertContains($expected, $property->getValue($this->localAccount));
     }
 
     public function testRemoveRegistration(): void
@@ -416,13 +430,13 @@ class LocalAccountTest extends KernelTestCase
         /** @var MockObject&Registration */
         $expected = $this->createMock(Registration::class);
         $expected->method('getPerson')->willReturn($this->localAccount);
-        $expected->expects($this->once())->method('setPerson')->with(null);
+        $expected->expects(self::once())->method('setPerson')->with(null);
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->getValue($this->localAccount)->add($expected);
         $this->localAccount->removeRegistration($expected);
-        $this->assertNotContains($expected, $property->getValue($this->localAccount));
+        self::assertNotContains($expected, $property->getValue($this->localAccount));
     }
 
     public function testGetRelations(): void
@@ -432,19 +446,19 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('relations');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
-        $this->assertSame($expected, $this->localAccount->getRelations());
+        self::assertSame($expected, $this->localAccount->getRelations());
     }
 
     public function testAddRelation(): void
     {
         /** @var MockObject&Relation */
         $expected = $this->createMock(Relation::class);
-        $expected->expects($this->once())->method('setPerson')->with($this->localAccount);
+        $expected->expects(self::once())->method('setPerson')->with($this->localAccount);
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $this->localAccount->addRelation($expected);
-        $this->assertContains($expected, $property->getValue($this->localAccount));
+        self::assertContains($expected, $property->getValue($this->localAccount));
     }
 
     public function testRemoveRelation(): void
@@ -452,12 +466,31 @@ class LocalAccountTest extends KernelTestCase
         /** @var MockObject&Relation */
         $expected = $this->createMock(Relation::class);
         $expected->method('getPerson')->willReturn($this->localAccount);
-        $expected->expects($this->once())->method('setPerson')->with(null);
+        $expected->expects(self::once())->method('setPerson')->with(null);
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $property->getValue($this->localAccount)->add($expected);
         $this->localAccount->removeRelation($expected);
-        $this->assertNotContains($expected, $property->getValue($this->localAccount));
+        self::assertNotContains($expected, $property->getValue($this->localAccount));
+    }
+
+    public function testGetActivityGroups(): void
+    {
+        $group = new Group();
+        $group->setActive(true);
+        $relation = new Relation();
+        $relation->setGroup($group);
+
+        $local = new ReflectionClass(LocalAccount::class);
+
+        $relations = new ArrayCollection([$relation]);
+        $relationProperty = $local
+            ->getProperty('relations');
+        $relationProperty->setAccessible(true);
+        $relationProperty->setValue($this->localAccount, $relations);
+
+        $expectedroles = ['ROLE_USER', 'ROLE_AUTHOR'];
+        self::assertSame([$group], $this->localAccount->getActiveGroups());
     }
 }

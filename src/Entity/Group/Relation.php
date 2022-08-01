@@ -19,6 +19,8 @@ class Relation
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -26,6 +28,8 @@ class Relation
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("A textual description of membership status of a user in a group.")
+     *
+     * @var ?string
      */
     private $description;
 
@@ -34,6 +38,8 @@ class Relation
      * @ORM\JoinColumn(nullable=false)
      * @GQL\Field(type="Group!")
      * @GQL\Description("The group the user is a member of.")
+     *
+     * @var Group
      */
     private $group;
 
@@ -43,6 +49,8 @@ class Relation
      * @GQL\Field(type="LocalAccount")
      * @GQL\Description("The user who is a member of a group.")
      * @GQL\Access("hasRole('ROLE_ADMIN')")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
@@ -50,6 +58,8 @@ class Relation
      * @ORM\ManyToOne(targetEntity="App\Entity\Group\Relation", inversedBy="children")
      * @GQL\Field(type="Relation")
      * @GQL\Description("The parent relation object, in case of multiple overlapping relations.")
+     *
+     * @var ?Relation
      */
     private $parent;
 
@@ -57,6 +67,8 @@ class Relation
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="parent")
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("The children relation objects, in case of multiple overlapping relations.")
+     *
+     * @var Collection<int, Relation>
      */
     private $children;
 
@@ -67,12 +79,22 @@ class Relation
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    /**
+     *  DONT USE THIS METHOD
+     *  This method only exists to please Alice.
+     *
+     *  We're returning a void so that if someone accidentally used this method
+     *  they'll observe unexpected behaviour
+     */
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 
     public function getDescription(): ?string
@@ -92,7 +114,7 @@ class Relation
         return $this->group;
     }
 
-    public function setGroup(?Group $group): self
+    public function setGroup(Group $group): self
     {
         $this->group = $group;
 
@@ -124,7 +146,7 @@ class Relation
     }
 
     /**
-     * @return Collection|self[]
+     * @return Collection<int, Relation>|self[]
      */
     public function getChildren(): Collection
     {
@@ -154,29 +176,34 @@ class Relation
         return $this;
     }
 
+    //TODO, changed the logic a little to appeas phpstan needs a test
     public function getRoot(): self
     {
-        if ($this->parent) {
-            return $this->parent->getRoot();
+        if (!is_null($this->getParent())) {
+            return $this->getParent()->getRoot();
         }
 
         return $this;
     }
 
+    /** @return Collection<int, Relation> */
     public function getChildrenRecursive(): Collection
     {
-        $childTaxes = $this->children->map(function ($a) {
+        /** @var Relation[][] */
+        $childTaxes = $this->children->map(function (Relation $a) {
             $children = $a->getChildrenRecursive()->toArray();
             $children[] = $a;
 
             return $children;
         })->toArray();
 
-        $taxonomies = array_merge([], ...$childTaxes);
+        /** @var Collection<int, Relation> */
+        $taxonomies = new ArrayCollection(array_merge([], ...$childTaxes));
 
-        return new ArrayCollection($taxonomies);
+        return $taxonomies;
     }
 
+    /** @return Collection<int, Relation> */
     public function getAllRelations(): Collection
     {
         $tree = $this->getRoot()->getChildrenRecursive();

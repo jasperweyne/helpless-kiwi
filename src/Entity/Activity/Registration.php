@@ -4,6 +4,7 @@ namespace App\Entity\Activity;
 
 use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,6 +20,8 @@ class Registration
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -28,6 +31,8 @@ class Registration
      * @GQL\Field(type="PriceOption!")
      * @GQL\Description("The specific registration option of the activity this registration points to.")
      * @Assert\NotBlank
+     *
+     * @var PriceOption
      */
     private $option;
 
@@ -37,6 +42,8 @@ class Registration
      * @GQL\Field(type="LocalAccount")
      * @GQL\Description("The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.")
      * @GQL\Access("hasRole('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")
+     *
+     * @var ?LocalAccount
      */
     private $person;
 
@@ -45,6 +52,8 @@ class Registration
      * @ORM\JoinColumn(name="activity", referencedColumnName="id")
      * @GQL\Field(type="Activity!")
      * @GQL\Description("The activity for which the user registered.")
+     *
+     * @var ?Activity
      */
     private $activity;
 
@@ -52,24 +61,26 @@ class Registration
      * @ORM\Column(type="string", length=255, nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")
+     *
+     * @var ?string
      */
     private $reserve_position;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="newdate", type="datetime", nullable=false)
      * @GQL\Field(name="created", type="DateTimeScalar!", resolve="@=value.getNewDate()")
      * @GQL\Description("The date and time the user registered for the activity.")
+     *
+     * @var DateTime
      */
     private $newdate;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="deletedate", type="datetime", nullable=true)
      * @GQL\Field(name="deleted", type="DateTimeScalar", resolve="@=value.getDeleteDate()")
      * @GQL\Description("The date and time the user deleted their registration for the activity.")
+     *
+     * @var ?DateTime
      */
     private $deletedate;
 
@@ -77,18 +88,20 @@ class Registration
      * @ORM\Column(name="present", type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the user was present during the activity.")
+     *
+     * @var ?bool
      */
     private $present;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @var ?string
      */
     private $comment;
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -110,7 +123,7 @@ class Registration
         return $this->option;
     }
 
-    public function setOption(?PriceOption $option): self
+    public function setOption(PriceOption $option): self
     {
         $this->option = $option;
 
@@ -148,12 +161,20 @@ class Registration
 
     public function getReservePosition(): ?Order
     {
-        return $this->reserve_position ? Order::create($this->reserve_position) : null;
+        if (!\is_null($this->reserve_position)) {
+            return Order::create($this->reserve_position);
+        } else {
+            return null;
+        }
     }
 
     public function setReservePosition(?Order $reserve_position): self
     {
-        $this->reserve_position = ($reserve_position ? strval($reserve_position) : null);
+        if (!\is_null($reserve_position)) {
+            $this->reserve_position = strval($reserve_position);
+        } else {
+            $this->reserve_position = null;
+        }
 
         return $this;
     }
@@ -168,7 +189,7 @@ class Registration
         return $this->newdate;
     }
 
-    public function setNewDate(\DateTime $date): self
+    public function setNewDate(DateTime $date): self
     {
         $this->newdate = $date;
 
@@ -177,27 +198,25 @@ class Registration
 
     /**
      * Get date and time of deregistration.
-     *
-     * @return DateTime
      */
-    public function getDeleteDate()
+    public function getDeleteDate(): ?DateTime
     {
         return $this->deletedate;
     }
 
-    public function setDeleteDate(\DateTime $date): self
+    public function setDeleteDate(DateTime $date): self
     {
         $this->deletedate = $date;
 
         return $this;
     }
 
-    public function getPresent()
+    public function getPresent(): ?bool
     {
         return $this->present;
     }
 
-    public function setPresent($present)
+    public function setPresent(?bool $present): void
     {
         $this->present = $present;
     }
@@ -207,8 +226,13 @@ class Registration
         return $this->comment;
     }
 
-    public function setComment(?string $comment)
+    public function setComment(?string $comment): void
     {
         $this->comment = $comment;
+    }
+
+    public function __construct()
+    {
+        $this->newdate = new DateTime('now');
     }
 }

@@ -3,8 +3,21 @@
 namespace Tests\Unit\Repository;
 
 use App\Repository\RegistrationRepository;
+use App\Entity\Activity\Activity;
+use App\Entity\Activity\Registration;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Activity\RegistrationFixture;
+use App\Tests\Database\Group\GroupFixture;
+use App\Tests\Database\Group\RelationFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Order;
+use Doctrine\Common\Collections\ArrayCollection;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Doctrine\Persistence\ObjectManager;
 
 /**
  * Class RegistrationRepositoryTest.
@@ -13,6 +26,13 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RegistrationRepositoryTest extends KernelTestCase
 {
+    use FixturesTrait;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $em;
+
     /**
      * @var RegistrationRepository
      */
@@ -33,6 +53,28 @@ class RegistrationRepositoryTest extends KernelTestCase
 
         $this->registry = self::$container->get(ManagerRegistry::class);
         $this->registrationRepository = new RegistrationRepository($this->registry);
+
+        // Get all database tables
+        /** @var EntityManagerInterface $em */
+        $em = self::$container->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
+
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
+
+        $this->loadFixtures([
+            RegistrationFixture::class,
+            GroupFixture::class,
+            ActivityFixture::class,
+            LocalAccountFixture::class,
+            RelationFixture::class,
+        ]);
+
+        $this->em = static::$kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
     }
 
     /**
@@ -49,54 +91,90 @@ class RegistrationRepositoryTest extends KernelTestCase
     public function testMINORDER(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testMAXORDER(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testFindPrependPosition(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+
+        // get list of stringified reserve positions
+        $registrations = $activity->getRegistrations()->filter(function (Registration $registration) {
+            return $registration->isReserve();
+        })->map(function (Registration $registration) {
+            return strval($registration->getReservePosition());
+        });
+
+        $prepend = strval($this->em->getRepository(Registration::class)->findPrependPosition($activity));
+        $registrations[] = $prepend;
+
+        // sort positions
+        $regArray = $registrations->toArray();
+        sort($regArray);
+        $registrations = new ArrayCollection($regArray);
+
+        // check that prepend position is first when list is ordered
+        self::assertSame($prepend, $registrations->first());
     }
 
     public function testFindAppendPosition(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+
+        // get list of stringified reserve positions
+        $registrations = $activity->getRegistrations()->filter(function (Registration $registration) {
+            return $registration->isReserve();
+        })->map(function (Registration $registration) {
+            return strval($registration->getReservePosition());
+        });
+
+        $append = strval($this->em->getRepository(Registration::class)->findAppendPosition($activity));
+        $registrations[] = $append;
+
+        // sort positions
+        $regArray = $registrations->toArray();
+        sort($regArray);
+        $registrations = new ArrayCollection($regArray);
+
+        // check that prepend position is first when list is ordered
+        self::assertSame($append, $registrations->last());
     }
 
     public function testFindBefore(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testFindAfter(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testFindDeregistrations(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testFindReserve(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testCountPresent(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

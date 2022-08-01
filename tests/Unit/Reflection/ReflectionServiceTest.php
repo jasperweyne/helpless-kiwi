@@ -41,18 +41,18 @@ class ReflectionServiceTest extends KernelTestCase
     public function testInstantiate(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetAccessibleProperty(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetAllProperties(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

@@ -39,14 +39,16 @@ class LoginController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig',
-            ['last_username' => $lastUsername]);
+        return $this->render(
+            'security/login.html.twig',
+            ['last_username' => $lastUsername]
+        );
     }
 
     /**
      * @Route("/login_check", name="app_login_check")
      */
-    public function login_check()
+    public function login_check(): Response
     {
         return $this->redirect('/');
     }
@@ -55,9 +57,9 @@ class LoginController extends AbstractController
      * @MenuItem(title="Uitloggen", menu="admin-profile", class="mobile")
      * @Route("/logout", name="app_logout", methods={"GET"})
      */
-    public function logout()
+    public function logout(): Response
     {
         // controller can be blank: it will never be executed!
-        throw new \Exception('Don\'t forget to activate logout in security.yaml');
+        throw new \LogicException('Don\'t forget to activate logout in security.yaml');
     }
 }

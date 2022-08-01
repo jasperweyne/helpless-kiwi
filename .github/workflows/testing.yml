@@ -9,9 +9,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     
     strategy:
       matrix:
@@ -33,8 +31,17 @@ jobs:
       env:
         APP_ENV: test
   
+    - name: Run linter
+      run: composer lint
+
     - name: Run unit/functional tests
       run: composer test
+
+    - name: Warmup dev cache
+      run: php bin/console cache:warmup --env=dev
+      
+    - name: Run static code analyser
+      run: composer analyse
 
     - name: fix code coverage paths
       working-directory: ./var/reports

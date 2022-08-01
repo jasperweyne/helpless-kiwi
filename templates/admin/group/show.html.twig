@@ -14,8 +14,10 @@
     
     {% block buttons %}
         {% if group %}
-            <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
-            <a href="{{ path('admin_group_delete', { 'id': group.id }) }}">Verwijderen</a>
+            {% if can_edit %}
+                <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
+                <a href="{{ path('admin_group_delete', { 'id': group.id }) }}">Verwijderen</a>
+            {% endif %}
             <a href="{{ path('admin_group_show', { 'id': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
         {% else %}
             {% if all_groups %}
@@ -69,13 +71,15 @@
                                 {% if group %}
                                 <td>Geen subgroepen.</td>
                                 {% else %}
-                                <td>Geen groepen. Wil je een <a href="{{ path('admin_group_generate_default') }}">standaard indeling genereren</a>?</td>
+                                <td>Geen groepen.</td>
                                 {% endif %}
                             </tr>
                         {% endfor %}
-                        <tr>
-                            <td><a href="{{ path("admin_group_new", { 'id': group.id ?? '' }) }}">Nieuwe {{ group ? 'sub' : '' }}groep toevoegen</a></td>  
-                        </tr>
+                        {% if can_edit or group %}
+                            <tr>
+                                <td><a href="{{ path("admin_group_new", { 'id': group.id ?? '' }) }}">Nieuwe {{ group ? 'sub' : '' }}groep toevoegen</a></td>  
+                            </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -96,7 +100,7 @@
                                 <tr>
                                     <th>Leden</th>
                                     <th>Aanvullende groepen</th>
-                                    <th></th>
+                                    <th>Acties</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -105,20 +109,29 @@
                                     <td>{{ relation.root.person.canonical ?? 'Onbekend' }}</td>
                                     <td>
                                         {% for r in relation.allRelations.toArray|filter(a => a.group != group) %}
-                                            <a href="{{ path('admin_group_show', { 'id': r.group.id }) }}">{{ r.group.name }}</a>{% if r.group.id != relation.root.group.id %} <a href="{{ path('admin_group_relation_delete', { 'id': r.id }) }}">&#128473;</a>{% endif %}{{ loop.last ? '' : ', ' }}
+                                            <a href="{{ path('admin_group_show', { 'id': r.group.id }) }}">{{ r.group.name }}</a>{% if r.group.id != relation.root.group.id and can_edit %} <a href="{{ path('admin_group_relation_delete', { 'id': r.id }) }}">&#128473;</a>{% endif %}{{ loop.last ? '' : ', ' }}
                                         {% endfor %}
                                     </td>
-                                    <td><a href="{{ path('admin_group_relation_add', { 'id': relation.id }) }}">Toevoegen</a></td>
-                                    <td><a href="{{ path('admin_group_relation_delete', { 'id': relation.root.id }) }}">Verwijderen</a></td>
+                                    <td>
+                                    {% if can_edit %}
+                                        <a href="{{ path('admin_group_relation_add', { 'id': relation.id }) }}">Toevoegen</a>
+                                        <a href="{{ path('admin_group_relation_delete', { 'id': relation.root.id }) }}">Verwijderen</a>
+                                        <a href="mailto:{{ relation.root.person.email }}" target="_blank">Mailen</a>
+                                    {% endif %}
+                                    </td>
                                 </tr>
                             {% else %}
                                 <tr>
                                     <td>Geen leden.</td>
                                 </tr>
                             {% endfor %}
+                            {% if can_edit %}
                             <tr>
                                 <td><a href="{{ path('admin_group_relation_new', { 'id': group.id }) }}">Lid toevoegen</a></td>
+                                <td></td>
+                                <td><a href="mailto:?bcc={{ group.relations|map(r => r.root.person.email)|join(',') }}" target="_blank">Groepsleden mailen</a></td>
                             </tr>
+                            {% endif %}
                             </tbody>
                         </table>
                     </div>

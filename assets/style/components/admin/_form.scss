@@ -15,6 +15,11 @@ form {
                 text-align: #{$global-left};
                 width: 40%;
                 float: left;
+
+                &.required:before {
+                    content: "*";
+                    color: red;
+                }
             }
         
             & > :not(label) {

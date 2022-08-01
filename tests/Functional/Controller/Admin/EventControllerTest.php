@@ -49,6 +49,6 @@ class EventControllerTest extends WebTestCase
     public function testIndexAction(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

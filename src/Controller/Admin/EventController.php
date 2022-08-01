@@ -2,13 +2,14 @@
 
 namespace App\Controller\Admin;
 
-use App\Template\Annotation\MenuItem;
 use App\Entity\Log\Event;
 use App\Log\EventService;
+use App\Template\Annotation\MenuItem;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Event controller.
@@ -17,6 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class EventController extends AbstractController
 {
+    /**
+     * @var EventService
+     */
     private $events;
 
     public function __construct(EventService $events)
@@ -27,10 +31,10 @@ class EventController extends AbstractController
     /**
      * Lists all events.
      *
-     * @MenuItem(title="Gebeurtenislog", menu="admin")
+     * @MenuItem(title="Gebeurtenislog", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder()
@@ -53,11 +57,12 @@ class EventController extends AbstractController
         $limit = \max(1, $limit);
 
         $cqb = clone $qb;
-        $count = current($cqb
-                    ->select('count('.$qb->getRootAlias().')')
-                    ->getQuery()
-                    ->getOneOrNullResult()
-                );
+        $count = current(
+            $cqb
+            ->select('count('.$qb->getRootAlias().')')
+            ->getQuery()
+            ->getOneOrNullResult()
+        );
 
         $rqb = clone $qb;
         $results = $rqb

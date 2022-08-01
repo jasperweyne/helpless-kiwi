@@ -65,48 +65,48 @@ class EventServiceTest extends KernelTestCase
     public function testLog(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testHydrate(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testPopulate(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testPopulateAll(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testFindBy(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testFindOneBy(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetIdentifier(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetClassName(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

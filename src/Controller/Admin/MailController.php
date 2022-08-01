@@ -2,10 +2,11 @@
 
 namespace App\Controller\Admin;
 
-use App\Template\Annotation\MenuItem;
 use App\Entity\Mail\Mail;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Template\Annotation\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Mail controller.
@@ -17,10 +18,10 @@ class MailController extends AbstractController
     /**
      * Lists all mails.
      *
-     * @MenuItem(title="Mails", menu="admin")
+     * @MenuItem(title="Mails", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -36,7 +37,7 @@ class MailController extends AbstractController
      *
      * @Route("/{id}", name="show", methods={"GET"})
      */
-    public function showAction(Mail $mail)
+    public function showAction(Mail $mail): Response
     {
         $content = json_decode($mail->getContent(), true);
 

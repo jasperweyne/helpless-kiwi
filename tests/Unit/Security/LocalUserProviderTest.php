@@ -34,7 +34,7 @@ class LocalUserProviderTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        /* @var EntityManagerInterface&MockObject */
+
         $this->em = $this->createMock(EntityManager::class);
         $this->localUserProvider = new LocalUserProvider($this->em);
     }
@@ -53,13 +53,13 @@ class LocalUserProviderTest extends KernelTestCase
     public function testRefreshUser(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testSupportsClass(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testLoadUserByTokenNewAccount(): void
@@ -75,8 +75,8 @@ class LocalUserProviderTest extends KernelTestCase
         $this->em->method('getRepository')->willReturn($repo);
 
         // Expect the object to be flushed to db
-        $this->em->expects($this->once())->method('persist');
-        $this->em->expects($this->once())->method('flush');
+        $this->em->expects(self::once())->method('persist');
+        $this->em->expects(self::once())->method('flush');
 
         // Act
         $return = $this->localUserProvider->loadUserByToken($token);
@@ -86,7 +86,7 @@ class LocalUserProviderTest extends KernelTestCase
             throw new \Exception('Should always be an instance of LocalAccount');
         }
 
-        $this->assertSame($token->getSub(), $return->getOidc());
+        self::assertSame($token->getSub(), $return->getOidc());
     }
 
     public function testLoadUserByToken(): void
@@ -103,19 +103,19 @@ class LocalUserProviderTest extends KernelTestCase
         $this->em->method('getRepository')->willReturn($repo);
 
         // Expect the object to be flushed to db
-        $this->em->expects($this->once())->method('flush');
+        $this->em->expects(self::once())->method('flush');
 
         // Act
         $return = $this->localUserProvider->loadUserByToken($token);
 
         // Assert that $account has been updated to match token
-        $this->assertSame($account->getEmail(), $token->getEmail());
-        $this->assertSame($account, $return);
+        self::assertSame($account->getEmail(), $token->getEmail());
+        self::assertSame($account, $return);
     }
 
     public function testLoadUserByUsername(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

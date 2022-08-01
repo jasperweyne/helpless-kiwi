@@ -3,6 +3,7 @@
 namespace Tests\Functional\Controller\Security;
 
 use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Drenso\OidcBundle\OidcClient;
 
 /**
@@ -12,10 +13,21 @@ use Drenso\OidcBundle\OidcClient;
  */
 class LoginControllerTest extends AuthWebTestCase
 {
-    public function testLogin(): void
+    public function testLoginWhileLoggedIn(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        // Arrange
+        $this->client->followRedirects(false);
+        $this->loadFixtures([
+            LocalAccountFixture::class,
+        ]);
+        $this->login();
+
+        // Act
+        $this->client->request('GET', '/login');
+
+        // Assert
+        $response = $this->client->getResponse();
+        self::assertEquals(302, $response->getStatusCode());
     }
 
     public function testLoginOidc(): void
@@ -30,8 +42,8 @@ class LoginControllerTest extends AuthWebTestCase
 
         // Assert
         $response = $this->client->getResponse();
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertStringContainsString($address, $response->headers->get('Location'));
+        self::assertEquals(302, $response->getStatusCode());
+        self::assertStringContainsString($address, $response->headers->get('Location'));
     }
 
     public function testLoginCheck(): void
@@ -44,13 +56,27 @@ class LoginControllerTest extends AuthWebTestCase
 
         // Assert
         // Testing actual OIDC flow is unfeasible, just check the redirect to home
-        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(302, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testLogin(): void
+    {
+        $crawler = $this->client->request('GET', '/login');
+
+        $form = $crawler->selectButton('Log in')->form();
+        $form['username'] = 'wrong';
+        $form['password'] = 'login';
+        $crawler = $this->client->submit($form);
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Invalid credentials.');
     }
 
     public function testLogout(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $this->client->request('GET', '/logout');
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public static function setupOidc($container): void

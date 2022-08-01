@@ -9,6 +9,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @extends ServiceEntityRepository<Registration>
+ *
  * @method Registration|null find($id, $lockMode = null, $lockVersion = null)
  * @method Registration|null findOneBy(array $criteria, array $orderBy = null)
  * @method Registration[]    findAll()
@@ -16,11 +18,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RegistrationRepository extends ServiceEntityRepository
 {
+    /** @var ?Order */
     private static $min;
 
+    /** @var ?Order */
     private static $max;
 
-    public static function MINORDER()
+    public static function MINORDER(): Order
     {
         if (is_null(self::$min)) {
             self::$min = Order::create('aaaaaaaaaaaaaaaa');
@@ -29,7 +33,7 @@ class RegistrationRepository extends ServiceEntityRepository
         return self::$min;
     }
 
-    public static function MAXORDER()
+    public static function MAXORDER(): Order
     {
         if (is_null(self::$max)) {
             self::$max = Order::create('zzzzzzzzzzzzzzzz');
@@ -43,8 +47,9 @@ class RegistrationRepository extends ServiceEntityRepository
         parent::__construct($registry, Registration::class);
     }
 
-    public function findPrependPosition(Activity $activity)
+    public function findPrependPosition(Activity $activity): Order
     {
+        /** @var ?Registration */
         $val = $this->createQueryBuilder('r')
             ->where('r.reserve_position IS NOT NULL')
             ->andWhere('r.activity = :activity')
@@ -63,16 +68,27 @@ class RegistrationRepository extends ServiceEntityRepository
         $current = Order::create($val->getReservePosition());
 
         // Six orders of magnitude removed
-        return Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current, self::MINORDER()))))));
+        return Order::avg(
+            $current,
+            Order::avg(
+                $current,
+                Order::avg(
+                    $current,
+                    Order::avg(
+                        $current,
+                        Order::avg(
+                            $current,
+                            Order::avg($current, self::MINORDER())
+                        )
+                    )
+                )
+            )
+        );
     }
 
-    public function findAppendPosition(Activity $activity)
+    public function findAppendPosition(Activity $activity): Order
     {
+        /** @var ?Registration */
         $val = $this->createQueryBuilder('r')
             ->where('r.reserve_position IS NOT NULL')
             ->andWhere('r.activity = :activity')
@@ -91,16 +107,27 @@ class RegistrationRepository extends ServiceEntityRepository
         $current = Order::create($val->getReservePosition());
 
         // Six orders of magnitude removed
-        return Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current,
-               Order::avg($current, self::MAXORDER()))))));
+        return Order::avg(
+            $current,
+            Order::avg(
+                $current,
+                Order::avg(
+                    $current,
+                    Order::avg(
+                        $current,
+                        Order::avg(
+                            $current,
+                            Order::avg($current, self::MAXORDER())
+                        )
+                    )
+                )
+            )
+        );
     }
 
-    public function findBefore(Activity $activity, Order $position)
+    public function findBefore(Activity $activity, Order $position): Order
     {
+        /** @var ?Registration */
         $reg = $this->createQueryBuilder('r')
             ->where('r.reserve_position < :position')
             ->andWhere('r.activity = :activity')
@@ -120,8 +147,9 @@ class RegistrationRepository extends ServiceEntityRepository
         return $reg->getReservePosition();
     }
 
-    public function findAfter(Activity $activity, Order $position)
+    public function findAfter(Activity $activity, Order $position): Order
     {
+        /** @var ?Registration */
         $reg = $this->createQueryBuilder('r')
             ->where('r.reserve_position > :position')
             ->andWhere('r.activity = :activity')

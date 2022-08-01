@@ -2,6 +2,7 @@
 
 namespace App\Entity\Group;
 
+use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,6 +21,8 @@ class Group
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
+     *
+     * @var ?string
      */
     private $id;
 
@@ -28,6 +31,8 @@ class Group
      * @GQL\Field(type="String!")
      * @GQL\Description("The name of the group.")
      * @Assert\NotBlank
+     *
+     * @var string
      */
     private $name;
 
@@ -35,6 +40,8 @@ class Group
      * @ORM\Column(type="text", nullable=true)
      * @GQL\Field(type="String")
      * @GQL\Description("A textual description of the the group.")
+     *
+     * @var ?string
      */
     private $description;
 
@@ -43,6 +50,8 @@ class Group
      * @ORM\JoinColumn(name="parent", referencedColumnName="id")
      * @GQL\Field(type="Group")
      * @GQL\Description("The parent group of this (sub)group. Note that the members don't need to be a subset of the parent group.")
+     *
+     * @var ?Group
      */
     private $parent;
 
@@ -50,6 +59,8 @@ class Group
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Group", mappedBy="parent")
      * @GQL\Field(type="[Group]")
      * @GQL\Description("The child (sub)groups of this group. Note that their members don't need to be a subset of this group.")
+     *
+     * @var Collection<int, Group>
      */
     protected $children;
 
@@ -57,6 +68,8 @@ class Group
      * @ORM\Column(type="boolean")
      * @GQL\Field(type="Boolean!")
      * @GQL\Description("Whether the group can be modified.")
+     *
+     * @var bool
      */
     private $readonly;
 
@@ -64,6 +77,8 @@ class Group
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can contain member users.")
+     *
+     * @var ?bool
      */
     private $relationable;
 
@@ -71,6 +86,8 @@ class Group
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can contain children (sub)groups.")
+     *
+     * @var ?bool
      */
     private $subgroupable;
 
@@ -78,6 +95,8 @@ class Group
      * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="group", orphanRemoval=true)
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("The member users of this group.")
+     *
+     * @var Collection<int, Relation>
      */
     private $relations;
 
@@ -85,6 +104,8 @@ class Group
      * @ORM\Column(type="boolean")
      * @GQL\Field(type="Boolean!")
      * @GQL\Description("Whether the group is currently active, eg. whether it can organise activities.")
+     *
+     * @var bool
      */
     private $active;
 
@@ -92,6 +113,8 @@ class Group
      * @ORM\Column(type="boolean", nullable=true)
      * @GQL\Field(type="Boolean")
      * @GQL\Description("Whether the group can be currently used as a target group for activities.")
+     *
+     * @var ?bool
      */
     private $register;
 
@@ -105,8 +128,6 @@ class Group
 
     /**
      * Get id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -125,8 +146,6 @@ class Group
 
     /**
      * Get name.
-     *
-     * @return string
      */
     public function getName(): ?string
     {
@@ -145,8 +164,6 @@ class Group
 
     /**
      * Get description.
-     *
-     * @return string
      */
     public function getDescription(): ?string
     {
@@ -216,7 +233,7 @@ class Group
     }
 
     /**
-     * @return Collection|Relation[]
+     * @return Collection<int, Relation>
      */
     public function getRelations(): Collection
     {
@@ -237,17 +254,39 @@ class Group
     {
         if ($this->relations->contains($relation)) {
             $this->relations->removeElement($relation);
-            // set the owning side to null (unless already changed)
-            if ($relation->getGroup() === $this) {
-                $relation->setGroup(null);
-            }
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|Group[]
+     * Returns a list of all relations related to this group or its parent
+     * groups for the provided user. Relations are ordered based on the group
+     * hierarchy, from the root parent group down to the current group.
+     *
+     * @return Collection<int, Relation>
+     */
+    public function getAllRelationFor(LocalAccount $user): Collection
+    {
+        // if a parent group is present, retrieve those relations first
+        $relationList = null !== $this->parent ? $this->parent->getAllRelationFor($user) : new ArrayCollection();
+
+        // get relations for this group
+        $groupRelations = $user->getRelations()->filter(function (Relation $relation) {
+            return $relation->getGroup() === $this;
+        });
+
+        // add relations to the list (assumption is made of at most one relation per user)
+        $rel = $groupRelations->first();
+        if (false !== $rel) {
+            $relationList->add($rel);
+        }
+
+        return $relationList;
+    }
+
+    /**
+     * @return Collection<int, Group>
      */
     public function getChildren(): Collection
     {

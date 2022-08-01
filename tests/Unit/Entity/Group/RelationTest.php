@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * Class RelationTest.
  *
  * @covers \App\Entity\Group\Relation
+ * @group entities
  */
 class RelationTest extends KernelTestCase
 {
@@ -49,7 +50,17 @@ class RelationTest extends KernelTestCase
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getId());
+        self::assertSame($expected, $this->relation->getId());
+    }
+
+    public function testSetId(): void
+    {
+        $expected = '42';
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('id');
+        $property->setAccessible(true);
+        $this->relation->setId($expected);
+        self::assertSame($expected, $property->getValue($this->relation));
     }
 
     public function testGetDescription(): void
@@ -59,7 +70,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getDescription());
+        self::assertSame($expected, $this->relation->getDescription());
     }
 
     public function testSetDescription(): void
@@ -69,7 +80,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('description');
         $property->setAccessible(true);
         $this->relation->setDescription($expected);
-        $this->assertSame($expected, $property->getValue($this->relation));
+        self::assertSame($expected, $property->getValue($this->relation));
     }
 
     public function testGetGroup(): void
@@ -79,7 +90,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('group');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getGroup());
+        self::assertSame($expected, $this->relation->getGroup());
     }
 
     public function testSetGroup(): void
@@ -89,7 +100,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('group');
         $property->setAccessible(true);
         $this->relation->setGroup($expected);
-        $this->assertSame($expected, $property->getValue($this->relation));
+        self::assertSame($expected, $property->getValue($this->relation));
     }
 
     public function testGetPerson(): void
@@ -100,7 +111,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getPerson());
+        self::assertSame($expected, $this->relation->getPerson());
     }
 
     public function testSetPerson(): void
@@ -111,7 +122,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('person');
         $property->setAccessible(true);
         $this->relation->setPerson($expected);
-        $this->assertSame($expected, $this->relation->getPerson());
+        self::assertSame($expected, $this->relation->getPerson());
     }
 
     public function testGetParent(): void
@@ -121,7 +132,7 @@ class RelationTest extends KernelTestCase
             ->getProperty('parent');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getParent());
+        self::assertSame($expected, $this->relation->getParent());
     }
 
     public function testSetParent(): void
@@ -131,46 +142,67 @@ class RelationTest extends KernelTestCase
             ->getProperty('parent');
         $property->setAccessible(true);
         $this->relation->setParent($expected);
-        $this->assertSame($expected, $property->getValue($this->relation));
+        self::assertSame($expected, $property->getValue($this->relation));
     }
 
     public function testGetChildren(): void
     {
+        /** @var ArrayCollection<int, Relation> */
         $expected = new ArrayCollection();
         $property = (new ReflectionClass(Relation::class))
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->relation, $expected);
-        $this->assertSame($expected, $this->relation->getChildren());
+        self::assertSame($expected, $this->relation->getChildren());
     }
 
     public function testAddChild(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testRemoveChild(): void
     {
-        /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        $expected = new ArrayCollection();
+        $relation = new Relation();
+        $expected->add($relation);
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('children');
+        $property->setAccessible(true);
+        $property->setValue($this->relation, $expected);
+
+        $this->relation->removeChild($relation);
+        self::assertNotSame($relation, $property->getValue($this->relation));
     }
 
+    //TODO figure out how to create recurvice testing objects
     public function testGetRoot(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
+    }
+
+    //TODO this feels.... funky, and not in the good way.
+    public function testGetRootChildless(): void
+    {
+        $expected = '42';
+        $property = (new ReflectionClass(Relation::class))
+            ->getProperty('id');
+        $property->setAccessible(true);
+        $property->setValue($this->relation, $expected);
+        self::assertSame($expected, $this->relation->getRoot()->getId());
     }
 
     public function testGetChildrenRecursive(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testGetAllRelations(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }

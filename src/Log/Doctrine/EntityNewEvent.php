@@ -7,23 +7,32 @@ use App\Reflection\ClassNameService;
 
 class EntityNewEvent extends AbstractEvent
 {
+    /**
+     * @var mixed
+     */
     private $fields;
 
     private $type;
 
-    public function __construct($entity, $fields)
+    /**
+     * @param mixed $fields
+     */
+    public function __construct(object $entity, $fields)
     {
         $this->setEntity($entity);
 
         $this->fields = $fields;
     }
 
+    /**
+     * @return mixed
+     */
     public function getFields()
     {
         return $this->fields;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return 'Updated '.ClassNameService::fqcnToName($this->getEntityType());
     }

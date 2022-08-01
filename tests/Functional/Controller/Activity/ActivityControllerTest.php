@@ -2,7 +2,6 @@
 
 namespace Tests\Functional\Controller\Activity;
 
-use App\Controller\Activity\ActivityController;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
@@ -22,19 +21,11 @@ use Doctrine\ORM\EntityManagerInterface;
 class ActivityControllerTest extends AuthWebTestCase
 {
     /**
-     * @var ActivityController
-     */
-    protected $activityController;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
-
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->activityController = new ActivityController();
 
         // Get all database tables
         $this->loadFixtures([
@@ -54,8 +45,6 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        unset($this->activityController);
     }
 
     public function testIndexAction(): void
@@ -70,16 +59,16 @@ class ActivityControllerTest extends AuthWebTestCase
             ->first()->filter('h2');
 
         $exist = false;
-        /* @var Activity */
+        /** @var Activity $activity */
         foreach ($activities as $activity) {
-            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() && $activity->getVisibleAfter() < new \DateTime()) {
+            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() !== null && $activity->getVisibleAfter() < new \DateTime()) {
                 $exist = true;
             }
         }
 
         // Assert
-        $this->assertTrue($exist);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertTrue($exist);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testUnregisterAction(): void
@@ -96,11 +85,11 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->submitForm('Afmelden');
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'gelukt');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'gelukt');
         /** @var Registration */
         $dereg = $this->em->getRepository(Registration::class)->find($reg->getId());
-        $this->assertNotNull($dereg->getDeleteDate());
+        self::assertNotNull($dereg->getDeleteDate());
     }
 
     public function testRegisterAction(): void
@@ -125,10 +114,10 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->submitForm('Aanmelden');
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('.container', 'gelukt');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'gelukt');
         $reg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user, 'option' => $option]);
-        $this->assertNotNull($reg);
+        self::assertNotNull($reg);
     }
 
     public function testShowAction(): void
@@ -141,18 +130,18 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->request('GET', "/activity/{$id}");
 
         // Assert
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testSingleUnregistrationForm(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 
     public function testSingleRegistrationForm(): void
     {
         /* @todo This test is incomplete. */
-        $this->markTestIncomplete();
+        self::markTestIncomplete();
     }
 }
