@@ -7,6 +7,7 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use App\Template\Annotation\MenuItem;
@@ -151,11 +152,14 @@ class ActivityController extends AbstractController
             ]);
             $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($this->em->getRepository(Registration::class)->findReserve($activity)) > 0);
 
+            $user = $this->getUser();
+            assert($user instanceof LocalAccount);
+
             $registration = new Registration();
             $registration
                 ->setActivity($activity)
                 ->setOption($option)
-                ->setPerson($this->getUser())
+                ->setPerson($user)
                 ->setReservePosition($reserve ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
             ;
 

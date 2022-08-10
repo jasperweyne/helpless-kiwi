@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
@@ -60,8 +61,8 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
         $name = '';
         $registrant = $event->getRegistration()->getPerson();
-        assert($registrant instanceof LocalAccount);
-        if ($registrant->getId() !== $this->user->getId()) {
+        assert($registrant instanceof ContactInterface);
+        if ($registrant->getName() !== $this->user->getName()) {
             $name = ' van ' . $registrant->getName();
         }
         $location = $event->getRegistration()->isReserve() ? ' op de reservelijst!' : ' gelukt!';
@@ -76,8 +77,8 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
         $name = '';
         $registrant = $event->getRegistration()->getPerson();
-        assert($registrant instanceof LocalAccount);
-        if ($registrant->getId() !== $this->user->getId()) {
+        assert($registrant instanceof ContactInterface);
+        if ($registrant->getName() !== $this->user->getName()) {
             $name = ' van ' . $registrant->getName();
         }
         $this->flash->add('success', 'Afmelding' . $name  .' gelukt!');

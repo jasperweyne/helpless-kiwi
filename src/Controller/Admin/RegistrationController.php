@@ -7,6 +7,8 @@ use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
+use App\Form\Activity\RegistrationExternalType;
+use App\Form\Activity\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -38,6 +40,19 @@ class RegistrationController extends AbstractController
         $this->em = $em;
     }
 
+
+    /**
+     * Add someones registration from an activity.
+     *
+     * @Route("/new/{id}/external", name="new_external", methods={"GET", "POST"})
+     */
+    public function newExternalAction(
+        Request $request,
+        Activity $activity
+    ): Response {
+        return $this->newAction($request, $activity, true);
+    }
+
     /**
      * Add someones registration from an activity.
      *
@@ -45,14 +60,18 @@ class RegistrationController extends AbstractController
      */
     public function newAction(
         Request $request,
-        Activity $activity
+        Activity $activity,
+        bool $external = false
     ): Response {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
         $registration = new Registration();
         $registration->setActivity($activity);
 
-        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, ['allowed_options' => $activity->getOptions()]);
+        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
+            'allowed_options' => $activity->getOptions(),
+            'external_registrant' => $external,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

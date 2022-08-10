@@ -81,11 +81,6 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount\\|null, object\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
 			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, object given\\.$#"
 			count: 2
 			path: src/Controller/Activity/ActivityController.php

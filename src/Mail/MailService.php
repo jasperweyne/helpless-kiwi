@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
+use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -92,6 +93,9 @@ class MailService
         $this->em->persist($msgEntity);
 
         foreach ($to as $person) {
+            if (!$person instanceof LocalAccount) {
+                continue;
+            }
             $recipient = new Recipient();
             $recipient
                 ->setPerson($person)

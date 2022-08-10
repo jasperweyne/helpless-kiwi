@@ -14,14 +14,19 @@ class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('person', EntityType::class, [
+        if (true === ($options['external_registrant'] ?? false)) {
+            $builder->add('person', ExternalRegistrantType::class);
+        } else {
+            $builder->add('person', EntityType::class, [
                 'attr' => ['data-select' => 'true'],
                 'label' => 'Naam',
                 'class' => LocalAccount::class,
                 'choice_label' => 'canonical',
                 'required' => true,
-            ])
+            ]);
+        }
+
+        $builder
             ->add('option', EntityType::class, [
                 'label' => 'Optie',
                 'class' => 'App\Entity\Activity\PriceOption',
@@ -42,6 +47,7 @@ class RegistrationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Registration::class,
             'allowed_options' => [],
+            'external_registrant' => false,
         ]);
     }
 }

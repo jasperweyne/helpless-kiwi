@@ -3,6 +3,7 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Order;
+use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -101,6 +102,13 @@ class Registration
     private $comment;
 
     /**
+     * @ORM\Embedded(class="ExternalRegistrant")
+     *
+     * @var ?ExternalRegistrant
+     */
+    private $external;
+
+    /**
      * Get id.
      */
     public function getId(): ?string
@@ -130,14 +138,21 @@ class Registration
         return $this;
     }
 
-    public function getPerson(): ?LocalAccount
+    public function getPerson(): ?ContactInterface
     {
-        return $this->person;
+        return $this->person ?? $this->external;
     }
 
-    public function setPerson(?LocalAccount $person): self
+    public function setPerson(?ContactInterface $person): self
     {
-        $this->person = $person;
+        $this->person = null;
+        $this->external = null;
+
+        if ($person instanceof LocalAccount) {
+            $this->person = $person;
+        } elseif ($person instanceof ExternalRegistrant) {
+            $this->external = $person;
+        }
 
         return $this;
     }
