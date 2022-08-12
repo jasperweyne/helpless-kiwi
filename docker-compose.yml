@@ -31,9 +31,9 @@ services:
       - database
     build:
       context: .
+      dockerfile: ./docker/php/Dockerfile
     restart: on-failure
     environment:
-      APP_ENV: dev
       APP_DEBUG: 1
       SECURE_SCHEME: http
       DATABASE_URL: mysql://root:root@database/kiwi_dev
