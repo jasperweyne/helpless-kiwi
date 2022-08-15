@@ -71,13 +71,39 @@ class ExternalRegistrantTest extends KernelTestCase
         self::assertSame($expected, $this->exteralRegistrant->getName());
     }
 
-    public function testSetName(): void
+    public function testGetCanonicalNameAndEmail(): void
+    {
+        $expected = 'Chase@kiwi.com';
+        $property = (new ReflectionClass(ExternalRegistrant::class))
+            ->getProperty('email');
+        $property->setAccessible(true);
+        $property->setValue($this->exteralRegistrant, $expected);
+        self::assertSame($expected, $this->exteralRegistrant->getCanonical());
+    }
+
+    public function testGetCanonicalOnlyName(): void
     {
         $expected = 'Chase';
         $property = (new ReflectionClass(ExternalRegistrant::class))
             ->getProperty('name');
         $property->setAccessible(true);
-        $this->exteralRegistrant->setName($expected);
-        self::assertSame($expected, $property->getValue($this->exteralRegistrant));
+        $property->setValue($this->exteralRegistrant, $expected);
+        self::assertSame($expected, $this->exteralRegistrant->getCanonical());
+    }
+
+    public function testGetCanonicalOnlyEmail(): void
+    {
+        $expected = 'Chase@kiwi.com';
+        $property = (new ReflectionClass(ExternalRegistrant::class))
+            ->getProperty('email');
+        $property->setAccessible(true);
+        $property->setValue($this->exteralRegistrant, $expected);
+        self::assertSame($expected, $this->exteralRegistrant->getCanonical());
+    }
+
+    public function testGetCanonicalFallback(): void
+    {
+        $expected = 'Unknown registrant';
+        self::assertSame($expected, $this->exteralRegistrant->getCanonical());
     }
 }
