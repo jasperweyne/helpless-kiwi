@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entity\Activity;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\ExternalRegistrant;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Order;
@@ -103,6 +104,17 @@ class RegistrationTest extends KernelTestCase
         $expected->setEmail('john@doe.eyes');
         $property = (new ReflectionClass(Registration::class))
             ->getProperty('person');
+        $property->setAccessible(true);
+        $this->registration->setPerson($expected);
+        self::assertSame($expected, $this->registration->getPerson());
+    }
+
+    public function testSetPersonExternal(): void
+    {
+        $expected = new LocalAccount();
+        $expected->setEmail('john@doe.eyes');
+        $property = (new ReflectionClass(ExternalRegistrant::class))
+            ->getProperty('name');
         $property->setAccessible(true);
         $this->registration->setPerson($expected);
         self::assertSame($expected, $this->registration->getPerson());
