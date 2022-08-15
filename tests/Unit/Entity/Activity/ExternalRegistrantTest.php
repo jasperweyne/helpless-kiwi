@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Entity\Activity;
 
-use App\Entity\Activity\Activity;
 use App\Entity\Activity\ExternalRegistrant;
 use App\Entity\Group\Group;
 use ReflectionClass;

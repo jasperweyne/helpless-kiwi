@@ -296,6 +296,11 @@ parameters:
 			path: src/Entity/Security/LocalAccount.php
 
 		-
+			message: "#^Offset 'joinTable' does not exist on array\\{cache\\?\\: array, cascade\\: array\\<string\\>, declared\\?\\: class\\-string, fetch\\: mixed, fieldName\\: string, id\\?\\: bool, inherited\\?\\: class\\-string, indexBy\\?\\: string, \\.\\.\\.\\}\\.$#"
+			count: 2
+			path: src/EventListener/DoctrineTablePrefixListener.php
+
+		-
 			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
 			count: 1
 			path: src/GraphQL/Query.php
