@@ -21,7 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class RegistrationTest extends KernelTestCase
 {
     /**
-     * @var Registration
+     * @var registration
      */
     protected $registration;
 
@@ -111,10 +111,10 @@ class RegistrationTest extends KernelTestCase
 
     public function testSetPersonExternal(): void
     {
-        $expected = new LocalAccount();
+        $expected = new ExternalRegistrant();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(ExternalRegistrant::class))
-            ->getProperty('name');
+        $property = (new ReflectionClass(Registration::class))
+            ->getProperty('person');
         $property->setAccessible(true);
         $this->registration->setPerson($expected);
         self::assertSame($expected, $this->registration->getPerson());
