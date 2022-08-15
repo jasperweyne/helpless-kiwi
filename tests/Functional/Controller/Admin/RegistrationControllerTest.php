@@ -55,6 +55,19 @@ class RegistrationControllerTest extends AuthWebTestCase
         unset($this->em);
     }
 
+    public function testNewExternalActionGet(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', "/admin/activity/register/new/{$id}/external");
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testNewActionGet(): void
     {
         // Arrange
