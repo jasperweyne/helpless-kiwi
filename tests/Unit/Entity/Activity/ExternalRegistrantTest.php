@@ -77,7 +77,7 @@ class ExternalRegistrantTest extends KernelTestCase
         $property = (new ReflectionClass(ExternalRegistrant::class))
             ->getProperty('name');
         $property->setAccessible(true);
-        $this->exteralRegistrant->setEmail($expected);
+        $this->exteralRegistrant->setName($expected);
         self::assertSame($expected, $property->getValue($this->exteralRegistrant));
     }
 
