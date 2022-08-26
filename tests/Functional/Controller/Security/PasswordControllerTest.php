@@ -47,7 +47,7 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->em = self::$container->get(EntityManagerInterface::class);
         $this->userProvider = new LocalUserProvider($this->em);
 
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
         ]);
     }

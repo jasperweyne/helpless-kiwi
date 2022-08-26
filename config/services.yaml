@@ -45,7 +45,7 @@ services:
 
     App\Template\AnnotationMenuExtension:
         class: App\Template\AnnotationMenuExtension
-        arguments: ["App\\Controller", "../src/Controller", "%kernel.root_dir%", "@annotation_reader"]
+        arguments: ["App\\Controller", "src/Controller", "%kernel.project_dir%", "@annotation_reader"]
 
     App\Log\Doctrine\EntityEventListener:
         tags:

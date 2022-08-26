@@ -29,7 +29,7 @@ class MailControllerTest extends AuthWebTestCase
     {
         parent::setUp();
 
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             MailFixture::class,
         ]);

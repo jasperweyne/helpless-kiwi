@@ -8,7 +8,8 @@ use App\Entity\Security\LocalAccount;
 use App\Form\Activity\ActivityNewType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -24,7 +25,10 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class ActivityNewTypeTest extends KernelTestCase
 {
-    use FixturesTrait;
+    /**
+     * @var AbstractDatabaseTool
+     */
+    protected $databaseTool;
 
     /**
      * {@inheritdoc}
@@ -51,6 +55,9 @@ class ActivityNewTypeTest extends KernelTestCase
         // Write all tables to database
         $schema = new SchemaTool($em);
         $schema->createSchema($classes);
+
+        // Load database tool
+        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
     /**

@@ -8,7 +8,8 @@ use App\Entity\Group\Relation;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
@@ -20,12 +21,16 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class AuthWebTestCase extends WebTestCase
 {
-    use FixturesTrait;
-
     /**
      * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
      */
     protected $client;
+
+
+    /**
+     * @var AbstractDatabaseTool
+     */
+    protected $databaseTool;
 
     /**
      * {@inheritdoc}
@@ -45,6 +50,9 @@ class AuthWebTestCase extends WebTestCase
         // Write all tables to database
         $schema = new SchemaTool($em);
         $schema->createSchema($classes);
+
+        // Load database tool
+        $this->databaseTool = $this->client->getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
     /**

@@ -56,7 +56,7 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
     public function testExecuteWithFixtures(): void
     {
         // Arrange
-        $this->loadFixtures([LocalAccountFixture::class]);
+        $this->databaseTool->loadFixtures([LocalAccountFixture::class]);
         $application = new Application($this->client->getKernel());
 
         // Act

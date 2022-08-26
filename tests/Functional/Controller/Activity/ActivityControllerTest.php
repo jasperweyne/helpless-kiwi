@@ -28,7 +28,7 @@ class ActivityControllerTest extends AuthWebTestCase
         parent::setUp();
 
         // Get all database tables
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,
@@ -96,7 +96,7 @@ class ActivityControllerTest extends AuthWebTestCase
     {
         // Arrange
         // Unload th Registration Fixture
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,

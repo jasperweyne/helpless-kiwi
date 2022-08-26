@@ -17,7 +17,7 @@ class LoginControllerTest extends AuthWebTestCase
     {
         // Arrange
         $this->client->followRedirects(false);
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
         ]);
         $this->login();

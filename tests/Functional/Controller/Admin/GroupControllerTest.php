@@ -31,7 +31,7 @@ class GroupControllerTest extends AuthWebTestCase
     {
         parent::setUp();
 
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             RelationFixture::class,
             GroupFixture::class,

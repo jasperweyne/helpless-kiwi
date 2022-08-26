@@ -15,7 +15,8 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Doctrine\Persistence\ObjectManager;
 
@@ -26,7 +27,10 @@ use Doctrine\Persistence\ObjectManager;
  */
 class RegistrationRepositoryTest extends KernelTestCase
 {
-    use FixturesTrait;
+    /**
+     * @var AbstractDatabaseTool
+     */
+    protected $databaseTool;
 
     /**
      * @var ObjectManager
@@ -64,7 +68,10 @@ class RegistrationRepositoryTest extends KernelTestCase
         $schema = new SchemaTool($em);
         $schema->createSchema($classes);
 
-        $this->loadFixtures([
+        // Load database tool
+        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+
+        $this->databaseTool->loadFixtures([
             RegistrationFixture::class,
             GroupFixture::class,
             ActivityFixture::class,
