@@ -92,7 +92,7 @@ class Query
     /**
      * @GQL\Field(type="[LocalAccount]")
      * @GQL\Description("All users stored in the database.")
-     * @GQL\Access("hasRole('ROLE_ADMIN')")
+     * @GQL\Access("isGranted('ROLE_ADMIN')")
      *
      * @return LocalAccount[]
      */

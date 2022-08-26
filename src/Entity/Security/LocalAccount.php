@@ -33,7 +33,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @GQL\Field(type="String")
      * @GQL\Description("The e-mail address of the user.")
-     * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     * @GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")
      *
      * @var string
      */
@@ -104,7 +104,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\OneToMany(targetEntity=Registration::class, mappedBy="person")
      * @GQL\Field(type="[Registration]")
      * @GQL\Description("All activity registrations for the user.")
-     * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     * @GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")
      *
      * @var Collection<int, Registration>
      */
@@ -114,7 +114,7 @@ class LocalAccount implements UserInterface, EquatableInterface
      * @ORM\OneToMany(targetEntity=Relation::class, mappedBy="person")
      * @GQL\Field(type="[Relation]")
      * @GQL\Description("All group membership relations for the user.")
-     * @GQL\Access("hasRole('ROLE_ADMIN') or value == getUser()")
+     * @GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")
      *
      * @var Collection<int, Relation>
      */
