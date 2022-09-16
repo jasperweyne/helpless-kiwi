@@ -13,7 +13,7 @@ parameters:
         maximumNumberOfProcesses: 32
         minimumNumberOfJobsPerProcess: 2
     symfony:
-        containerXmlPath: var/cache/dev/srcApp_KernelDevDebugContainer.xml
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
         consoleApplicationLoader: config/console.php
     doctrine:
         objectManagerLoader: config/object-manager.php
