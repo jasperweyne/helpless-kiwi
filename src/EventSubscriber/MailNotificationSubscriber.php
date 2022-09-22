@@ -6,8 +6,8 @@ use App\Calendar\ICalProvider;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
+use App\Mail\Attachment;
 use App\Mail\MailService;
-use Swift_Attachment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -71,7 +71,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $activity = $event->getRegistration()->getActivity();
         assert($activity !== null);
 
-        $ics = new Swift_Attachment(
+        $ics = new Attachment(
             $this->calendar->icalSingle($activity),
             $activity->getName().'.ics',
             'text/calendar'
