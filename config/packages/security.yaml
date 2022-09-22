@@ -9,7 +9,7 @@ parameters:
 security:
     enable_authenticator_manager: true
 
-    encoders:
+    password_hashers:
         App\Entity\Security\LocalAccount:
             algorithm: auto
 
@@ -54,4 +54,4 @@ security:
         - { path: ^/admin/security, allow_if: "is_granted('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/admin, allow_if: "is_granted('ROLE_ADMIN') or is_granted('ROLE_AUTHOR') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/profile, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }

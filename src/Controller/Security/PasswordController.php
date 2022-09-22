@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 class PasswordController extends AbstractController
 {
     public function __construct(
-        private UserPasswordHasherInterface $passwordEncoder,
+        private UserPasswordHasherInterface $passwordHasher,
         private PasswordResetService $passwordReset,
         private EntityManagerInterface $em
     ) {
@@ -148,7 +148,7 @@ class PasswordController extends AbstractController
         $pass = $data['password'];
 
         $this->passwordReset->resetPasswordRequestToken($auth, false);
-        $auth->setPassword($this->passwordEncoder->hashPassword($auth, $pass));
+        $auth->setPassword($this->passwordHasher->hashPassword($auth, $pass));
 
         $this->em->persist($auth);
         $this->em->flush();

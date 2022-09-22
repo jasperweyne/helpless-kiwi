@@ -26,7 +26,7 @@ class PasswordControllerTest extends AuthWebTestCase
     /**
      * @var UserPasswordHasherInterface
      */
-    protected $passwordEncoder;
+    protected $passwordHasher;
 
     /**
      * @var PasswordResetService
@@ -41,9 +41,9 @@ class PasswordControllerTest extends AuthWebTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->passwordEncoder = self::getContainer()->get(UserPasswordHasherInterface::class);
+        $this->passwordHasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         $this->passwordReset = self::getContainer()->get(PasswordResetService::class);
-        $this->passwordController = new PasswordController($this->passwordEncoder, $this->passwordReset);
+        $this->passwordController = new PasswordController($this->passwordHasher, $this->passwordReset);
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->userProvider = new LocalUserProvider($this->em);
 
@@ -60,7 +60,7 @@ class PasswordControllerTest extends AuthWebTestCase
         parent::tearDown();
 
         unset($this->passwordController);
-        unset($this->passwordEncoder);
+        unset($this->passwordHasher);
         unset($this->passwordReset);
         unset($this->userProvider);
         unset($this->em);

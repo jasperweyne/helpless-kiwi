@@ -22,15 +22,15 @@ class CreateLocalAccountCommand extends Command
     /**
      * @var UserPasswordHasherInterface
      */
-    private $userPasswordEncoder;
+    private $userpasswordHasher;
 
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:create-account';
 
-    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordEncoder)
+    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $userpasswordHasher)
     {
         $this->em = $em;
-        $this->userPasswordEncoder = $userPasswordEncoder;
+        $this->userpasswordHasher = $userpasswordHasher;
 
         parent::__construct();
     }
@@ -103,7 +103,7 @@ class CreateLocalAccountCommand extends Command
             // Persons
             ->setName($name)
             ->setEmail($email)
-            ->setPassword($this->userPasswordEncoder->hashPassword($account, $pass))
+            ->setPassword($this->userpasswordHasher->hashPassword($account, $pass))
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : [])
         ;
 

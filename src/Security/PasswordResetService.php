@@ -16,17 +16,17 @@ class PasswordResetService
     /**
      * @var PasswordHasherFactoryInterface
      */
-    private $passwordEncoder;
+    private $passwordHasher;
 
-    public function __construct(EntityManagerInterface $em, PasswordHasherFactoryInterface $passwordEncoder)
+    public function __construct(EntityManagerInterface $em, PasswordHasherFactoryInterface $passwordHasher)
     {
         $this->em = $em;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function isPasswordRequestTokenValid(LocalAccount $auth, string $token): bool
     {
-        $encoder = $this->passwordEncoder->getPasswordHasher($auth);
+        $encoder = $this->passwordHasher->getPasswordHasher($auth);
         $valid = $encoder->verify($auth->getPasswordRequestToken(), $token);
 
         $interval = new \DateTime('24:00');
@@ -37,7 +37,7 @@ class PasswordResetService
 
     public function generatePasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true): string
     {
-        $encoder = $this->passwordEncoder->getPasswordHasher($auth);
+        $encoder = $this->passwordHasher->getPasswordHasher($auth);
         $token = base64_encode(random_bytes(18));
 
         $auth->setPasswordRequestToken($encoder->hash($token));

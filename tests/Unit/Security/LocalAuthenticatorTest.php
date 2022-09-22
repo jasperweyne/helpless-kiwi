@@ -5,8 +5,8 @@ namespace Tests\Unit\Security;
 use App\Security\LocalAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
@@ -37,9 +37,9 @@ class LocalAuthenticatorTest extends KernelTestCase
     protected $csrfTokenManager;
 
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
-    protected $passwordEncoder;
+    protected $passwordHasher;
 
     /**
      * {@inheritdoc}
@@ -52,8 +52,8 @@ class LocalAuthenticatorTest extends KernelTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         $this->csrfTokenManager = self::getContainer()->get(CsrfTokenManagerInterface::class);
-        $this->passwordEncoder = self::getContainer()->get(UserPasswordEncoderInterface::class);
-        $this->localAuthenticator = new LocalAuthenticator($this->em, $this->urlGenerator, $this->csrfTokenManager, $this->passwordEncoder);
+        $this->passwordHasher = self::getContainer()->get(UserPasswordHasherInterface::class);
+        $this->localAuthenticator = new LocalAuthenticator($this->em, $this->urlGenerator, $this->csrfTokenManager, $this->passwordHasher);
     }
 
     /**
@@ -67,7 +67,7 @@ class LocalAuthenticatorTest extends KernelTestCase
         unset($this->em);
         unset($this->urlGenerator);
         unset($this->csrfTokenManager);
-        unset($this->passwordEncoder);
+        unset($this->passwordHasher);
     }
 
     public function testSupports(): void

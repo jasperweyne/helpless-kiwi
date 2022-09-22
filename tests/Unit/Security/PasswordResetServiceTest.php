@@ -5,7 +5,7 @@ namespace Tests\Unit\Security;
 use App\Security\PasswordResetService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 /**
  * Class PasswordResetServiceTest.
@@ -25,7 +25,7 @@ class PasswordResetServiceTest extends KernelTestCase
     protected $em;
 
     /**
-     * @var EncoderFactoryInterface
+     * @var PasswordHasherFactoryInterface
      */
     protected $encoderFactory;
 
@@ -38,7 +38,7 @@ class PasswordResetServiceTest extends KernelTestCase
         self::bootKernel();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->encoderFactory = self::getContainer()->get(EncoderFactoryInterface::class);
+        $this->encoderFactory = self::getContainer()->get(PasswordHasherFactoryInterface::class);
         $this->passwordResetService = new PasswordResetService($this->em, $this->encoderFactory);
     }
 
