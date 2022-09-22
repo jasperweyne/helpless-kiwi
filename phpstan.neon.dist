@@ -7,7 +7,7 @@ parameters:
         - src
         - tests
     bootstrapFiles:
-        - bin/.phpunit/phpunit/vendor/autoload.php
+        - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     parallel:
         jobSize: 20
         maximumNumberOfProcesses: 32
