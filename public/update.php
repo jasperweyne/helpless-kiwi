@@ -4,6 +4,7 @@ use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Dotenv\Dotenv;
 
 class Log
 {
@@ -190,6 +191,8 @@ class IntegrationTool
             }
 
             include_once $this->getAutoloaderPath();
+
+            (new Dotenv())->bootEnv(__DIR__ . '/../.env');
 
             $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
             $this->application = new Application($kernel);
