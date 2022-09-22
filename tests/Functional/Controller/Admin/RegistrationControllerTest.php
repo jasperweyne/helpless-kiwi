@@ -73,6 +73,8 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     public function testNewActionPost(): void
     {
+        $this->fail('PHP8 migration issue');
+
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
         $originalCount = $activity->getRegistrations()->count();

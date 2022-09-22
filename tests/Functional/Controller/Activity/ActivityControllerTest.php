@@ -94,6 +94,8 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testRegisterAction(): void
     {
+        $this->fail('PHP8 migration issue');
+
         // Arrange
         // Unload th Registration Fixture
         $this->databaseTool->loadFixtures([
