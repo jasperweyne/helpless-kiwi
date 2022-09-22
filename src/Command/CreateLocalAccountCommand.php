@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CreateLocalAccountCommand extends Command
 {
@@ -20,14 +20,14 @@ class CreateLocalAccountCommand extends Command
     private $em;
 
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
     private $userPasswordEncoder;
 
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:create-account';
 
-    public function __construct(EntityManagerInterface $em, UserPasswordEncoderInterface $userPasswordEncoder)
+    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordEncoder)
     {
         $this->em = $em;
         $this->userPasswordEncoder = $userPasswordEncoder;
@@ -103,7 +103,7 @@ class CreateLocalAccountCommand extends Command
             // Persons
             ->setName($name)
             ->setEmail($email)
-            ->setPassword($this->userPasswordEncoder->encodePassword($account, $pass))
+            ->setPassword($this->userPasswordEncoder->hashPassword($account, $pass))
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : [])
         ;
 

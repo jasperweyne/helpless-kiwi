@@ -4,8 +4,7 @@ namespace App\Security;
 
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\Core\Encoder\SelfSaltingEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class PasswordResetService
 {
@@ -15,26 +14,20 @@ class PasswordResetService
     private $em;
 
     /**
-     * @var EncoderFactoryInterface
+     * @var PasswordHasherFactoryInterface
      */
-    private $encoderFactory;
+    private $passwordEncoder;
 
-    public function __construct(EntityManagerInterface $em, EncoderFactoryInterface $encoderFactory)
+    public function __construct(EntityManagerInterface $em, PasswordHasherFactoryInterface $passwordEncoder)
     {
         $this->em = $em;
-        $this->encoderFactory = $encoderFactory;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function isPasswordRequestTokenValid(LocalAccount $auth, string $token): bool
     {
-        $encoder = $this->encoderFactory->getEncoder($auth);
-
-        $valid = false;
-        if ($encoder instanceof SelfSaltingEncoderInterface) {
-            $valid = $encoder->isPasswordValid($auth->getPasswordRequestToken(), $token, '');
-        } else {
-            $valid = $encoder->isPasswordValid($auth->getPasswordRequestToken(), $token, $auth->getPasswordRequestSalt());
-        }
+        $encoder = $this->passwordEncoder->getPasswordHasher($auth);
+        $valid = $encoder->verify($auth->getPasswordRequestToken(), $token);
 
         $interval = new \DateTime('24:00');
         $nonExpired = $auth->isPasswordRequestNonExpired($interval->getTimestamp());
@@ -44,19 +37,10 @@ class PasswordResetService
 
     public function generatePasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true): string
     {
-        $encoder = $this->encoderFactory->getEncoder($auth);
+        $encoder = $this->passwordEncoder->getPasswordHasher($auth);
         $token = base64_encode(random_bytes(18));
 
-        $valid = false;
-        if ($encoder instanceof SelfSaltingEncoderInterface) {
-            $auth->setPasswordRequestToken($encoder->encodePassword($token, ''));
-        } else {
-            $salt = base64_encode(random_bytes(10));
-
-            $auth->setPasswordRequestSalt($salt);
-            $auth->setPasswordRequestToken($encoder->encodePassword($token, $salt));
-        }
-
+        $auth->setPasswordRequestToken($encoder->hash($token));
         $auth->setPasswordRequestedAt(new \DateTime());
 
         if ($persistAndFlush) {
@@ -69,11 +53,6 @@ class PasswordResetService
 
     public function resetPasswordRequestToken(LocalAccount $auth, bool $persistAndFlush = true): void
     {
-        $encoder = $this->encoderFactory->getEncoder($auth);
-        if (!$encoder instanceof SelfSaltingEncoderInterface) {
-            $auth->setPasswordRequestSalt(null);
-        }
-
         $auth->setPasswordRequestToken(null);
         $auth->setPasswordRequestedAt(null);
 

@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -18,7 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @GQL\Type
  * @GQL\Description("A registered user who can log in and register for activities.")
  */
-class LocalAccount implements UserInterface, EquatableInterface
+class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     /**
      * @ORM\Id()
@@ -158,6 +159,11 @@ class LocalAccount implements UserInterface, EquatableInterface
     public function getUsername(): ?string
     {
         return $this->getEmail();
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->getUsername();
     }
 
     /**
@@ -313,7 +319,7 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     public function isEqualTo(UserInterface $user): bool
     {
-        return $this->getUsername() === $user->getUsername();
+        return $this->getUserIdentifier() === $user->getUserIdentifier();
     }
 
     public function getPasswordRequestToken(): ?string

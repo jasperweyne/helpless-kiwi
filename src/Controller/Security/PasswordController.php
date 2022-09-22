@@ -9,8 +9,8 @@ use App\Security\PasswordResetService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 /**
@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 class PasswordController extends AbstractController
 {
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
     private $passwordEncoder;
 
@@ -30,7 +30,7 @@ class PasswordController extends AbstractController
      */
     private $passwordReset;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, PasswordResetService $passwordReset)
+    public function __construct(UserPasswordHasherInterface $passwordEncoder, PasswordResetService $passwordReset)
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->passwordReset = $passwordReset;
@@ -158,7 +158,7 @@ class PasswordController extends AbstractController
         $pass = $data['password'];
 
         $this->passwordReset->resetPasswordRequestToken($auth, false);
-        $auth->setPassword($this->passwordEncoder->encodePassword($auth, $pass));
+        $auth->setPassword($this->passwordEncoder->hashPassword($auth, $pass));
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($auth);

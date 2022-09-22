@@ -8,7 +8,7 @@ use App\Security\PasswordResetService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class PasswordControllerTest.
@@ -24,7 +24,7 @@ class PasswordControllerTest extends AuthWebTestCase
     protected $passwordController;
 
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
     protected $passwordEncoder;
 
@@ -41,10 +41,10 @@ class PasswordControllerTest extends AuthWebTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->passwordEncoder = self::$container->get(UserPasswordEncoderInterface::class);
-        $this->passwordReset = self::$container->get(PasswordResetService::class);
+        $this->passwordEncoder = self::getContainer()->get(UserPasswordHasherInterface::class);
+        $this->passwordReset = self::getContainer()->get(PasswordResetService::class);
         $this->passwordController = new PasswordController($this->passwordEncoder, $this->passwordReset);
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->userProvider = new LocalUserProvider($this->em);
 
         $this->databaseTool->loadFixtures([

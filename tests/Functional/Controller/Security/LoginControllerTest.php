@@ -2,9 +2,9 @@
 
 namespace Tests\Functional\Controller\Security;
 
+use App\Security\OptionalOidcClient;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
-use Drenso\OidcBundle\OidcClient;
 
 /**
  * Class LoginControllerTest.
@@ -34,7 +34,7 @@ class LoginControllerTest extends AuthWebTestCase
     {
         // Arrange
         $this->client->followRedirects(false);
-        self::setupOidc(self::$container);
+        self::setupOidc(self::getContainer());
 
         // Act
         $this->client->request('GET', '/login');
@@ -85,7 +85,7 @@ class LoginControllerTest extends AuthWebTestCase
         $_ENV['OIDC_ADDRESS'] = 'accounts.google.com'; // use as example
 
         // override OidcClient configuration from assets
-        $oidc = $container->get(OidcClient::class);
+        $oidc = $container->get(OptionalOidcClient::class);
         $refl = new \ReflectionClass($oidc);
         $prop = $refl->getProperty('configuration');
         $conf = file_get_contents(__DIR__.'/../../../assets/google-openid-configuration.json');

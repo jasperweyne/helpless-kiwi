@@ -27,7 +27,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
     /**
      * {@inheritdoc}
      */
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$this->supportsClass(get_class($user))) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
@@ -39,7 +39,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
     /**
      * {@inheritdoc}
      */
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return LocalAccount::class === $class || is_subclass_of($class, LocalAccount::class);
     }
@@ -77,7 +77,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         return $user;
     }
 
-    public function loadUserByUsername(string $username)
+    public function loadUserByUsername(string $username): UserInterface
     {
         return $this->loadUserByIdentifier($username);
     }
@@ -85,7 +85,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
     /**
      * Find user in storage through secret id.
      */
-    public function loadUserByIdentifier($email)
+    public function loadUserByIdentifier($email): UserInterface
     {
         $repository = $this->em->getRepository(LocalAccount::class);
 
