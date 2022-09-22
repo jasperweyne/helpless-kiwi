@@ -37,8 +37,8 @@ class PasswordResetServiceTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->em = self::$container->get(EntityManagerInterface::class);
-        $this->encoderFactory = self::$container->get(EncoderFactoryInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->encoderFactory = self::getContainer()->get(EncoderFactoryInterface::class);
         $this->passwordResetService = new PasswordResetService($this->em, $this->encoderFactory);
     }
 

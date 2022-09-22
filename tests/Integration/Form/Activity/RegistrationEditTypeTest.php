@@ -58,7 +58,7 @@ class RegistrationEditTypeTest extends KernelTestCase
             'comment' => 'test comment',
         ];
 
-        $formfactory = self::$container->get('form.factory');
+        $formfactory = self::getContainer()->get('form.factory');
         $form = $formfactory->create(RegistrationEditType::class, $type);
 
         $form->submit($formData);

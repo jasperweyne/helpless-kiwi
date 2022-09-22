@@ -31,7 +31,7 @@ class RegistrationTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->registrationType = new RegistrationType($this->em);
     }
 

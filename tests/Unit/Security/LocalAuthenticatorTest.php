@@ -49,10 +49,10 @@ class LocalAuthenticatorTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->em = self::$container->get(EntityManagerInterface::class);
-        $this->urlGenerator = self::$container->get(UrlGeneratorInterface::class);
-        $this->csrfTokenManager = self::$container->get(CsrfTokenManagerInterface::class);
-        $this->passwordEncoder = self::$container->get(UserPasswordEncoderInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
+        $this->csrfTokenManager = self::getContainer()->get(CsrfTokenManagerInterface::class);
+        $this->passwordEncoder = self::getContainer()->get(UserPasswordEncoderInterface::class);
         $this->localAuthenticator = new LocalAuthenticator($this->em, $this->urlGenerator, $this->csrfTokenManager, $this->passwordEncoder);
     }
 

@@ -55,12 +55,12 @@ class RegistrationRepositoryTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->registry = self::$container->get(ManagerRegistry::class);
+        $this->registry = self::getContainer()->get(ManagerRegistry::class);
         $this->registrationRepository = new RegistrationRepository($this->registry);
 
         // Get all database tables
         /** @var EntityManagerInterface $em */
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
 

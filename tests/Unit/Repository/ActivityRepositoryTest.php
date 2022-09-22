@@ -50,11 +50,11 @@ class ActivityRepositoryTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->registry = self::$container->get(ManagerRegistry::class);
+        $this->registry = self::getContainer()->get(ManagerRegistry::class);
         $this->activityRepository = new ActivityRepository($this->registry);
 
         // Get all database tables
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
 

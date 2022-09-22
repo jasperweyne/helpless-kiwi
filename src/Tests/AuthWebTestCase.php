@@ -43,7 +43,7 @@ class AuthWebTestCase extends WebTestCase
         $this->client->followRedirects(true);
 
         // Get all database tables
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
 
@@ -68,14 +68,14 @@ class AuthWebTestCase extends WebTestCase
     protected function login(bool $admin = true): void
     {
         /** @var EntityManagerInterface */
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $users = $em->getRepository(LocalAccount::class)->findAll();
         if (empty($users)) {
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 
         /** @var Session $session */
-        $session = self::$container->get('session');
+        $session = self::getContainer()->get('session');
 
         $firewallName = 'main';
         $firewallContext = 'main';
@@ -106,7 +106,7 @@ class AuthWebTestCase extends WebTestCase
 
     protected function logout(): void
     {
-        self::$container->get('session')->invalidate();
-        self::$container->get('security.token_storage')->setToken(null);
+        self::getContainer()->get('session')->invalidate();
+        self::getContainer()->get('security.token_storage')->setToken(null);
     }
 }

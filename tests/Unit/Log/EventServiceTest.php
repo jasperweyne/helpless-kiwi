@@ -43,9 +43,9 @@ class EventServiceTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->em = self::$container->get(EntityManagerInterface::class);
-        $this->tokenStorage = self::$container->get(TokenStorageInterface::class);
-        $this->refl = self::$container->get(ReflectionService::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->tokenStorage = self::getContainer()->get(TokenStorageInterface::class);
+        $this->refl = self::getContainer()->get(ReflectionService::class);
         $this->eventService = new EventService($this->em, $this->tokenStorage, $this->refl);
     }
 

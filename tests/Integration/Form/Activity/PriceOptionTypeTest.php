@@ -52,7 +52,7 @@ class PriceOptionTypeTest extends KernelTestCase
         ];
 
         /** @var FormFactoryInterface $formfactory */
-        $formfactory = self::$container->get('form.factory');
+        $formfactory = self::getContainer()->get('form.factory');
         $form = $formfactory->create(PriceOptionType::class, $type);
 
         $form->submit($formdata);

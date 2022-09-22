@@ -44,11 +44,11 @@ class ActivityNewTypeTest extends KernelTestCase
         $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_USER']);
 
         /** @var TokenStorageInterface */
-        $storage = self::$container->get(TokenStorageInterface::class);
+        $storage = self::getContainer()->get(TokenStorageInterface::class);
         $storage->setToken($token);
 
         // Get all database tables
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
 
@@ -94,7 +94,7 @@ class ActivityNewTypeTest extends KernelTestCase
         ];
 
         /** @var FormFactoryInterface */
-        $formfactory = self::$container->get('form.factory');
+        $formfactory = self::getContainer()->get('form.factory');
         $form = $formfactory->create(ActivityNewType::class, $type);
 
         $form->submit($formdata);
@@ -109,6 +109,6 @@ class ActivityNewTypeTest extends KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $resolver->expects(self::exactly(1))->method('setDefaults');
-        self::$container->get(ActivityNewType::class)->configureOptions($resolver);
+        self::getContainer()->get(ActivityNewType::class)->configureOptions($resolver);
     }
 }

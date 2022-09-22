@@ -47,7 +47,7 @@ class GroupMenuExtensionTest extends KernelTestCase
         self::bootKernel();
 
         // Get all database tables
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
 
@@ -73,7 +73,7 @@ class GroupMenuExtensionTest extends KernelTestCase
 
         // build token storage
         $token = new PostAuthenticationGuardToken($this->user, 'main', ['ROLE_USER']);
-        $tokenStorage = self::$container->get(TokenStorageInterface::class);
+        $tokenStorage = self::getContainer()->get(TokenStorageInterface::class);
         $tokenStorage->setToken($token);
 
         $this->groupMenuExtension = new GroupMenuExtension($em, $tokenStorage);
