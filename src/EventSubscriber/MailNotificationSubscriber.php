@@ -72,7 +72,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         assert($activity !== null);
 
         $ics = new Swift_Attachment(
-            $this->calendar->icalSingle($activity)->export(),
+            $this->calendar->icalSingle($activity),
             $activity->getName().'.ics',
             'text/calendar'
         );
