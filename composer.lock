@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c489de281d8d24082e0903bc21a10296",
+    "content-hash": "4ff5d80c53f033db16461a2d29b5bdf4",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -1986,52 +1986,110 @@
             "time": "2022-06-09T08:53:42+00:00"
         },
         {
-            "name": "overblog/graphql-bundle",
-            "version": "v0.13.7",
+            "name": "murtukov/php-code-generator",
+            "version": "v0.1.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/overblog/GraphQLBundle.git",
-                "reference": "53a2f88285142db02704ad8902de298712616d6b"
+                "url": "https://github.com/murtukov/php-code-generator.git",
+                "reference": "89b6063daa42870bc08e4ce6e670f2ae62634bba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/overblog/GraphQLBundle/zipball/53a2f88285142db02704ad8902de298712616d6b",
-                "reference": "53a2f88285142db02704ad8902de298712616d6b",
+                "url": "https://api.github.com/repos/murtukov/php-code-generator/zipball/89b6063daa42870bc08e4ce6e670f2ae62634bba",
+                "reference": "89b6063daa42870bc08e4ce6e670f2ae62634bba",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=7.2",
-                "psr/log": "^1.0",
-                "symfony/config": "^4.3 || ^5.0",
-                "symfony/dependency-injection": "^4.3 || ^5.0",
-                "symfony/event-dispatcher": "^4.3 || ^5.0",
-                "symfony/expression-language": "^4.3 || ^5.0",
-                "symfony/framework-bundle": "^4.3 || ^5.0",
-                "symfony/options-resolver": "^4.3 || ^5.0",
-                "symfony/property-access": "^4.3 || ^5.0",
-                "webonyx/graphql-php": "^0.13.5"
-            },
-            "replace": {
-                "overblog/graphql-php-generator": "self.version"
+                "php": ">=7.4"
             },
             "require-dev": {
+                "phpstan/phpstan": "^0.12.58",
+                "phpunit/phpunit": "^9.4.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Murtukov\\PHPCodeGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Timur Murtukov",
+                    "email": "murtukov@gmail.com"
+                }
+            ],
+            "description": "A library to generate php code",
+            "support": {
+                "issues": "https://github.com/murtukov/php-code-generator/issues",
+                "source": "https://github.com/murtukov/php-code-generator/tree/v0.1.6"
+            },
+            "time": "2021-05-04T16:39:00+00:00"
+        },
+        {
+            "name": "overblog/graphql-bundle",
+            "version": "v0.15.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/overblog/GraphQLBundle.git",
+                "reference": "bf90bae01f079e02f9d2a1cf75f06ab5e602707d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/overblog/GraphQLBundle/zipball/bf90bae01f079e02f9d2a1cf75f06ab5e602707d",
+                "reference": "bf90bae01f079e02f9d2a1cf75f06ab5e602707d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "murtukov/php-code-generator": "^0.1.5",
+                "php": "^8.0",
+                "phpdocumentor/reflection-docblock": "^5.2",
+                "phpdocumentor/type-resolver": ">1.4.0,<1.6.0",
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "symfony/config": "^5.4 || ^6.0",
+                "symfony/dependency-injection": "^5.4 || ^6.0",
+                "symfony/event-dispatcher": "^5.4 || ^6.0",
+                "symfony/expression-language": "^5.4 || ^6.0",
+                "symfony/framework-bundle": "^5.4 || ^6.0",
+                "symfony/http-foundation": "^5.4 || ^6.0",
+                "symfony/http-kernel": "^5.4 || ^6.0",
+                "symfony/options-resolver": "^5.4 || ^6.0",
+                "symfony/property-access": "^5.4 || ^6.0",
+                "webonyx/graphql-php": ">=14.5"
+            },
+            "conflict": {
+                "react/promise": "<2.8"
+            },
+            "require-dev": {
+                "doctrine/annotations": "^1.13",
                 "doctrine/orm": "^2.5",
+                "monolog/monolog": "^1.26.1",
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan-phpunit": "^0.11",
-                "phpstan/phpstan-shim": "^0.11.19",
-                "phpstan/phpstan-symfony": "^0.11",
-                "phpunit/phpunit": "<8.3",
+                "phpstan/phpstan": "^0.12.58",
+                "phpstan/phpstan-phpunit": "^0.12.11",
+                "phpstan/phpstan-symfony": "^0.12.6",
+                "phpunit/phpunit": "^9.5.10",
                 "react/promise": "^2.5",
-                "symfony/asset": "^4.3 || ^5.0",
-                "symfony/browser-kit": "^4.3 || ^5.0",
-                "symfony/console": "^4.3 || ^5.0",
-                "symfony/css-selector": "^4.3 || ^5.0",
-                "symfony/phpunit-bridge": "^4.3 || ^5.0",
-                "symfony/process": "^4.3 || ^5.0",
-                "symfony/security-bundle": "^4.3 || ^5.0",
-                "symfony/validator": "^4.3 || ^5.0",
-                "symfony/yaml": "^4.3 || ^5.0"
+                "symfony/asset": "^5.4 || ^6.0",
+                "symfony/browser-kit": "^5.4 || ^6.0",
+                "symfony/console": "^5.4 || ^6.0",
+                "symfony/css-selector": "^5.4 || ^6.0",
+                "symfony/dom-crawler": "^5.4 || ^6.0",
+                "symfony/finder": "^5.4 || ^6.0",
+                "symfony/monolog-bundle": "^3.7",
+                "symfony/phpunit-bridge": "^6.0",
+                "symfony/process": "^5.4 || ^6.0",
+                "symfony/routing": "^5.4 || ^6.0",
+                "symfony/security-bundle": "^5.4 || ^6.0",
+                "symfony/validator": "^5.4 || ^6.0",
+                "symfony/var-dumper": "^5.4 || ^6.0",
+                "symfony/yaml": "^5.4 || ^6.0",
+                "twig/twig": "^2.10|^3.0"
             },
             "suggest": {
                 "nelmio/cors-bundle": "For more flexibility when using CORS prefight",
@@ -2042,13 +2100,12 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.13-dev"
+                    "dev-master": "0.15-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Overblog\\GraphQLBundle\\": "src/",
-                    "Overblog\\GraphQLGenerator\\": "lib/generator/src/"
+                    "Overblog\\GraphQLBundle\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2068,9 +2125,9 @@
             ],
             "support": {
                 "issues": "https://github.com/overblog/GraphQLBundle/issues",
-                "source": "https://github.com/overblog/GraphQLBundle/tree/v0.13.7"
+                "source": "https://github.com/overblog/GraphQLBundle/tree/v0.15.1"
             },
-            "time": "2021-11-22T13:33:12+00:00"
+            "time": "2022-07-05T07:30:54+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -2251,16 +2308,16 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.6.1",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "77a32518733312af16a44300404e945338981de3"
+                "reference": "a12f7e301eb7258bb68acd89d4aefa05c2906cae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/77a32518733312af16a44300404e945338981de3",
-                "reference": "77a32518733312af16a44300404e945338981de3",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/a12f7e301eb7258bb68acd89d4aefa05c2906cae",
+                "reference": "a12f7e301eb7258bb68acd89d4aefa05c2906cae",
                 "shasum": ""
             },
             "require": {
@@ -2295,9 +2352,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.1"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.5.1"
             },
-            "time": "2022-03-15T21:29:03+00:00"
+            "time": "2021-10-02T14:08:47+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -2410,20 +2467,20 @@
         },
         {
             "name": "psr/cache",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/cache.git",
-                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8"
+                "reference": "213f9dbc5b9bfbc4f8db86d2838dc968752ce13b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/cache/zipball/d11b50ad223250cf17b86e38383413f5a6764bf8",
-                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/213f9dbc5b9bfbc4f8db86d2838dc968752ce13b",
+                "reference": "213f9dbc5b9bfbc4f8db86d2838dc968752ce13b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=8.0.0"
             },
             "type": "library",
             "extra": {
@@ -2443,7 +2500,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for caching libraries",
@@ -2453,9 +2510,9 @@
                 "psr-6"
             ],
             "support": {
-                "source": "https://github.com/php-fig/cache/tree/master"
+                "source": "https://github.com/php-fig/cache/tree/2.0.0"
             },
-            "time": "2016-08-06T20:24:11+00:00"
+            "time": "2021-02-03T23:23:37+00:00"
         },
         {
             "name": "psr/container",
@@ -2659,25 +2716,25 @@
         },
         {
             "name": "sensio/framework-extra-bundle",
-            "version": "v5.6.1",
+            "version": "v6.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
-                "reference": "430d14c01836b77c28092883d195a43ce413ee32"
+                "reference": "bb962f8aed09e60b0942545f6e4842ffeee4aafd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/430d14c01836b77c28092883d195a43ce413ee32",
-                "reference": "430d14c01836b77c28092883d195a43ce413ee32",
+                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/bb962f8aed09e60b0942545f6e4842ffeee4aafd",
+                "reference": "bb962f8aed09e60b0942545f6e4842ffeee4aafd",
                 "shasum": ""
             },
             "require": {
                 "doctrine/annotations": "^1.0",
                 "php": ">=7.2.5",
-                "symfony/config": "^4.4|^5.0",
-                "symfony/dependency-injection": "^4.4|^5.0",
-                "symfony/framework-bundle": "^4.4|^5.0",
-                "symfony/http-kernel": "^4.4|^5.0"
+                "symfony/config": "^4.4|^5.0|^6.0",
+                "symfony/dependency-injection": "^4.4|^5.0|^6.0",
+                "symfony/framework-bundle": "^4.4|^5.0|^6.0",
+                "symfony/http-kernel": "^4.4|^5.0|^6.0"
             },
             "conflict": {
                 "doctrine/doctrine-cache-bundle": "<1.3.1",
@@ -2687,25 +2744,23 @@
                 "doctrine/dbal": "^2.10|^3.0",
                 "doctrine/doctrine-bundle": "^1.11|^2.0",
                 "doctrine/orm": "^2.5",
-                "nyholm/psr7": "^1.1",
-                "symfony/browser-kit": "^4.4|^5.0",
-                "symfony/doctrine-bridge": "^4.4|^5.0",
-                "symfony/dom-crawler": "^4.4|^5.0",
-                "symfony/expression-language": "^4.4|^5.0",
-                "symfony/finder": "^4.4|^5.0",
-                "symfony/monolog-bridge": "^4.0|^5.0",
+                "symfony/browser-kit": "^4.4|^5.0|^6.0",
+                "symfony/doctrine-bridge": "^4.4|^5.0|^6.0",
+                "symfony/dom-crawler": "^4.4|^5.0|^6.0",
+                "symfony/expression-language": "^4.4|^5.0|^6.0",
+                "symfony/finder": "^4.4|^5.0|^6.0",
+                "symfony/monolog-bridge": "^4.0|^5.0|^6.0",
                 "symfony/monolog-bundle": "^3.2",
-                "symfony/phpunit-bridge": "^4.4.9|^5.0.9",
-                "symfony/psr-http-message-bridge": "^1.1",
-                "symfony/security-bundle": "^4.4|^5.0",
-                "symfony/twig-bundle": "^4.4|^5.0",
-                "symfony/yaml": "^4.4|^5.0",
+                "symfony/phpunit-bridge": "^4.4.9|^5.0.9|^6.0",
+                "symfony/security-bundle": "^4.4|^5.0|^6.0",
+                "symfony/twig-bundle": "^4.4|^5.0|^6.0",
+                "symfony/yaml": "^4.4|^5.0|^6.0",
                 "twig/twig": "^1.34|^2.4|^3.0"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.6.x-dev"
+                    "dev-master": "6.1.x-dev"
                 }
             },
             "autoload": {
@@ -2733,9 +2788,9 @@
             ],
             "support": {
                 "issues": "https://github.com/sensiolabs/SensioFrameworkExtraBundle/issues",
-                "source": "https://github.com/sensiolabs/SensioFrameworkExtraBundle/tree/v5.6.1"
+                "source": "https://github.com/sensiolabs/SensioFrameworkExtraBundle/tree/v6.2.8"
             },
-            "time": "2020-08-25T19:10:18+00:00"
+            "time": "2022-09-05T16:44:56+00:00"
         },
         {
             "name": "symfony/apache-pack",
@@ -3282,25 +3337,25 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v2.5.2",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "e8b495ea28c1d97b5e0c121748d6f9b53d075c66"
+                "reference": "07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/e8b495ea28c1d97b5e0c121748d6f9b53d075c66",
-                "reference": "e8b495ea28c1d97b5e0c121748d6f9b53d075c66",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918",
+                "reference": "07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": ">=8.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "2.5-dev"
+                    "dev-main": "3.1-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -3329,7 +3384,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.2"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.1.1"
             },
             "funding": [
                 {
@@ -3345,7 +3400,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-02T09:53:40+00:00"
+            "time": "2022-02-25T11:15:52+00:00"
         },
         {
             "name": "symfony/doctrine-bridge",
@@ -3693,20 +3748,20 @@
         },
         {
             "name": "symfony/event-dispatcher-contracts",
-            "version": "v2.5.2",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher-contracts.git",
-                "reference": "f98b54df6ad059855739db6fcbc2d36995283fe1"
+                "reference": "02ff5eea2f453731cfbc6bc215e456b781480448"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/f98b54df6ad059855739db6fcbc2d36995283fe1",
-                "reference": "f98b54df6ad059855739db6fcbc2d36995283fe1",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/02ff5eea2f453731cfbc6bc215e456b781480448",
+                "reference": "02ff5eea2f453731cfbc6bc215e456b781480448",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.1",
                 "psr/event-dispatcher": "^1"
             },
             "suggest": {
@@ -3715,7 +3770,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "2.5-dev"
+                    "dev-main": "3.1-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -3752,7 +3807,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v2.5.2"
+                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.1.1"
             },
             "funding": [
                 {
@@ -3768,7 +3823,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-02T09:53:40+00:00"
+            "time": "2022-02-25T11:15:52+00:00"
         },
         {
             "name": "symfony/expression-language",
@@ -7882,16 +7937,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.15.1",
+            "version": "v2.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "3b7cedb2f736899a7dbd0ba3d6da335a015f5cc4"
+                "reference": "3e43405a9a8b578809426339cc3780e16fba0c52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3b7cedb2f736899a7dbd0ba3d6da335a015f5cc4",
-                "reference": "3b7cedb2f736899a7dbd0ba3d6da335a015f5cc4",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3e43405a9a8b578809426339cc3780e16fba0c52",
+                "reference": "3e43405a9a8b578809426339cc3780e16fba0c52",
                 "shasum": ""
             },
             "require": {
@@ -7946,7 +8001,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v2.15.1"
+                "source": "https://github.com/twigphp/Twig/tree/v2.15.2"
             },
             "funding": [
                 {
@@ -7958,7 +8013,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-17T05:46:24+00:00"
+            "time": "2022-08-12T06:43:37+00:00"
         },
         {
             "name": "vich/uploader-bundle",
@@ -8127,33 +8182,37 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v0.13.9",
+            "version": "v14.11.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "d9a94fddcad0a35d4bced212b8a44ad1bc59bdf3"
+                "reference": "04a48693acd785330eefd3b0e4fa67df8dfee7c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/d9a94fddcad0a35d4bced212b8a44ad1bc59bdf3",
-                "reference": "d9a94fddcad0a35d4bced212b8a44ad1bc59bdf3",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/04a48693acd785330eefd3b0e4fa67df8dfee7c3",
+                "reference": "04a48693acd785330eefd3b0e4fa67df8dfee7c3",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "php": "^7.1||^8.0"
+                "php": "^7.1 || ^8"
             },
             "require-dev": {
+                "amphp/amp": "^2.3",
                 "doctrine/coding-standard": "^6.0",
-                "phpbench/phpbench": "^0.14.0",
-                "phpstan/phpstan": "^0.11.4",
-                "phpstan/phpstan-phpunit": "^0.11.0",
-                "phpstan/phpstan-strict-rules": "^0.11.0",
-                "phpunit/phpcov": "^5.0",
-                "phpunit/phpunit": "^7.2",
+                "nyholm/psr7": "^1.2",
+                "phpbench/phpbench": "^1.2",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "0.12.82",
+                "phpstan/phpstan-phpunit": "0.12.18",
+                "phpstan/phpstan-strict-rules": "0.12.9",
+                "phpunit/phpunit": "^7.2 || ^8.5",
                 "psr/http-message": "^1.0",
-                "react/promise": "2.*"
+                "react/promise": "2.*",
+                "simpod/php-coveralls-mirror": "^3.0",
+                "squizlabs/php_codesniffer": "3.5.4"
             },
             "suggest": {
                 "psr/http-message": "To use standard GraphQL server",
@@ -8177,7 +8236,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/0.13.x"
+                "source": "https://github.com/webonyx/graphql-php/tree/v14.11.8"
             },
             "funding": [
                 {
@@ -8185,7 +8244,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2020-07-02T05:49:25+00:00"
+            "time": "2022-09-21T15:35:03+00:00"
         }
     ],
     "packages-dev": [
@@ -8797,33 +8856,35 @@
         },
         {
             "name": "hautelook/alice-bundle",
-            "version": "2.9.0",
+            "version": "2.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/AliceBundle.git",
-                "reference": "17c5199b2a6efbc1383b0afe1cddfa3c176b7b6f"
+                "reference": "0dd4e9e5391e0c7acc21602f0fadb66210b33726"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/AliceBundle/zipball/17c5199b2a6efbc1383b0afe1cddfa3c176b7b6f",
-                "reference": "17c5199b2a6efbc1383b0afe1cddfa3c176b7b6f",
+                "url": "https://api.github.com/repos/theofidry/AliceBundle/zipball/0dd4e9e5391e0c7acc21602f0fadb66210b33726",
+                "reference": "0dd4e9e5391e0c7acc21602f0fadb66210b33726",
                 "shasum": ""
             },
             "require": {
-                "doctrine/data-fixtures": "^1.2",
-                "doctrine/doctrine-bundle": "^1.8 || ^2.0",
-                "doctrine/orm": "^2.5.11",
-                "doctrine/persistence": "^1.3.4 || ^2.0",
-                "php": "^7.3 || ^8.0",
-                "psr/log": "^1.0",
-                "symfony/finder": "^3.4 || ^4.0 || ^5.0",
-                "symfony/framework-bundle": "^3.4.24 || ^4.0 || ^5.0",
-                "theofidry/alice-data-fixtures": "^1.4"
+                "doctrine/data-fixtures": "^1.5",
+                "doctrine/doctrine-bundle": "^2.5",
+                "doctrine/orm": "^2.10.0",
+                "doctrine/persistence": "^2.2 || ^3.0",
+                "php": "^8.1",
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "symfony/finder": "^5.4.2 || ^6.0",
+                "symfony/framework-bundle": "^5.4.2 || ^6.0",
+                "theofidry/alice-data-fixtures": "^1.5"
             },
             "require-dev": {
+                "doctrine/shards": "^1.0",
                 "phpspec/prophecy": "^1.7",
-                "phpunit/phpunit": "^8.5",
-                "symfony/phpunit-bridge": "^5.1"
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
+                "symfony/phpunit-bridge": "^6.0"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -8863,9 +8924,9 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/AliceBundle/issues",
-                "source": "https://github.com/theofidry/AliceBundle/tree/2.9.0"
+                "source": "https://github.com/theofidry/AliceBundle/tree/2.11.0"
             },
-            "time": "2021-02-23T08:45:57+00:00"
+            "time": "2022-07-03T14:56:03+00:00"
         },
         {
             "name": "liip/test-fixtures-bundle",
