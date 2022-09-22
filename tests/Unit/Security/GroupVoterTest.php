@@ -9,7 +9,7 @@ use App\Security\GroupVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -153,10 +153,11 @@ class GroupVoterTest extends KernelTestCase
     ): void {
         $voter = new GroupVoter();
 
-        $token = new AnonymousToken('secret', 'anonymous');
+        $token = new NullToken();
         if (null !== $user) {
             $token = new UsernamePasswordToken(
-                $user, 'credentials', 'memory'
+                $user,
+                'memory'
             );
         }
 
