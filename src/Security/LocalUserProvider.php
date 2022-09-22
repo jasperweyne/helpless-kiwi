@@ -39,7 +39,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
     /**
      * {@inheritdoc}
      */
-    public function supportsClass($class): bool
+    public function supportsClass(string $class): bool
     {
         return LocalAccount::class === $class || is_subclass_of($class, LocalAccount::class);
     }
@@ -85,7 +85,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
     /**
      * Find user in storage through secret id.
      */
-    public function loadUserByIdentifier($email): UserInterface
+    public function loadUserByIdentifier(string $email): UserInterface
     {
         $repository = $this->em->getRepository(LocalAccount::class);
 

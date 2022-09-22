@@ -33,6 +33,7 @@ class GroupVoterTest extends KernelTestCase
 
         $rels = [];
         foreach ($groups as $group) {
+            /** @var Relation&MockObject */
             $rel = $this->createMock(Relation::class);
             $rel->method('getGroup')->willReturn($group);
             $rels[] = $rel;
