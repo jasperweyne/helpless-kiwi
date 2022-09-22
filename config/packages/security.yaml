@@ -7,6 +7,8 @@ parameters:
     env(SECURE_SCHEME): 'https'
 
 security:
+    enable_authenticator_manager: true
+
     encoders:
         App\Entity\Security\LocalAccount:
             algorithm: auto
@@ -22,7 +24,6 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
             oidc: ~
             provider: app_user_provider
             guard:
@@ -36,6 +37,8 @@ security:
                 secret: '%kernel.secret%'
                 always_remember_me: true
                 name: KIWI_REMEMBERME
+            
+            entry_point: App\Security\LocalAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

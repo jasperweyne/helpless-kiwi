@@ -66,3 +66,19 @@ services:
 
     App\GraphQL\Query:
         public: true
+
+    drenso.oidc.client:
+        class: App\Security\OptionalOidcClient
+        arguments:
+            - '@request_stack'
+            - '@security.http_utils'
+            - '@cache.app'
+            - '@drenso.oidc.url_fetcher.default'
+            - '@drenso.oidc.session_storage.default'
+            - '@drenso.oidc.jwt_helper.default'
+            - '%env(SECURE_SCHEME)%://%env(OIDC_ADDRESS)%/.well-known/openid-configuration'
+            - 3600
+            - '%env(OIDC_ID)%'
+            - '%env(OIDC_SECRET)%'
+            - '/login_check'
+            - '_remember_me'

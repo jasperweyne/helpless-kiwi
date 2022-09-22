@@ -4,10 +4,11 @@ namespace App\Security;
 
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
-use Drenso\OidcBundle\Security\Authentication\Token\OidcToken;
+use Drenso\OidcBundle\Model\OidcUserData;
+use Drenso\OidcBundle\Security\Exception\OidcUserNotFoundException;
 use Drenso\OidcBundle\Security\UserProvider\OidcUserProviderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -43,22 +44,15 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         return LocalAccount::class === $class || is_subclass_of($class, LocalAccount::class);
     }
 
-    /**
-     * Call this method to create a new user from the data available in the token,
-     * but only if the user does not exists yet.
-     * If it does exist, return that user.
-     *
-     * @return UserInterface
-     */
-    public function loadUserByToken(OidcToken $token)
+    public function ensureUserExists(string $userIdentifier, OidcUserData $token): void
     {
         $repository = $this->em->getRepository(LocalAccount::class);
-        $user = $repository->findOneBy(['oidc' => $token->getSub()]);
+        $user = $repository->findOneBy(['oidc' => $userIdentifier]);
 
         // If user does not exist, create it
         if (null === $user) {
             $user = new LocalAccount();
-            $user->setOidc($token->getSub());
+            $user->setOidc($userIdentifier);
             $user->setRoles([]);
             $this->em->persist($user);
         }
@@ -69,21 +63,36 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         $user->setFamilyName($token->getFamilyName());
         $user->setEmail($token->getEmail());
         $this->em->flush();
+    }
+
+    public function loadOidcUser(string $userIdentifier): UserInterface
+    {
+        $repository = $this->em->getRepository(LocalAccount::class);
+        $user = $repository->findOneBy(['oidc' => $userIdentifier]);
+
+        if ($user === null) {
+            throw new OidcUserNotFoundException("$userIdentifier is unknown");
+        }
 
         return $user;
+    }
+
+    public function loadUserByUsername(string $username)
+    {
+        return $this->loadUserByIdentifier($username);
     }
 
     /**
      * Find user in storage through secret id.
      */
-    public function loadUserByUsername($email)
+    public function loadUserByIdentifier($email)
     {
         $repository = $this->em->getRepository(LocalAccount::class);
 
         $user = $repository->findOneBy(['email' => $email]);
         if (null === $user) {
-            $excep = new UsernameNotFoundException('User not found.');
-            $excep->setUsername($email);
+            $excep = new UserNotFoundException('User not found.');
+            $excep->setUserIdentifier($email);
             throw $excep;
         }
 
