@@ -9,8 +9,8 @@ use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
 use App\Repository\GroupRepository;
 use App\Template\Annotation\MenuItem;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,14 +23,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class GroupController extends AbstractController
 {
-    /**
-     * @var EventService
-     */
-    private $events;
-
-    public function __construct(EventService $events)
-    {
-        $this->events = $events;
+    public function __construct(
+        private EventService $events,
+        private EntityManagerInterface $em
+    ) {
     }
 
     /**
@@ -48,15 +44,14 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($group);
+            $this->em->persist($group);
 
             if ($parent) {
                 $parent->addChild($group);
-                $em->persist($parent);
+                $this->em->persist($parent);
             }
 
-            $em->flush();
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
         }
@@ -132,7 +127,7 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
         }
@@ -156,9 +151,8 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($group);
-            $em->flush();
+            $this->em->remove($group);
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_group_show');
         }
@@ -178,8 +172,6 @@ class GroupController extends AbstractController
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
 
-        $em = $this->getDoctrine()->getManager();
-
         $relation = new Relation();
         $relation->setGroup($group);
 
@@ -188,8 +180,8 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($relation);
-            $em->flush();
+            $this->em->persist($relation);
+            $this->em->flush();
 
             $name = $relation->getPerson()->getCanonical();
             $this->addFlash('success', $name.' toegevoegd!');
@@ -212,8 +204,6 @@ class GroupController extends AbstractController
     {
         $this->denyAccessUnlessGranted('edit_group', $parent->getGroup());
 
-        $em = $this->getDoctrine()->getManager();
-
         $relation = new Relation();
 
         $form = $this->createForm('App\Form\Group\RelationAddType', $relation);
@@ -234,8 +224,8 @@ class GroupController extends AbstractController
             $root = $parent->getRoot();
             $relation->setParent($root);
 
-            $em->persist($relation);
-            $em->flush();
+            $this->em->persist($relation);
+            $this->em->flush();
 
             $this->addFlash('success', $relation->getGroup()->getName().' toegevoegd!');
 
@@ -261,9 +251,8 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($relation);
-            $em->flush();
+            $this->em->remove($relation);
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_group_show', ['id' => $relation->getGroup()->getId()]);
         }

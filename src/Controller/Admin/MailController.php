@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Mail\Mail;
 use App\Template\Annotation\MenuItem;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,10 +22,8 @@ class MailController extends AbstractController
      * @MenuItem(title="Mails", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction(): Response
+    public function indexAction(EntityManagerInterface $em): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         $mails = $em->getRepository(Mail::class)->findBy([], ['sentAt' => 'DESC']);
 
         return $this->render('admin/mail/index.html.twig', [

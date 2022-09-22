@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Log\Event;
 use App\Log\EventService;
 use App\Template\Annotation\MenuItem;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,9 +35,8 @@ class EventController extends AbstractController
      * @MenuItem(title="Gebeurtenislog", menu="admin", role="ROLE_ADMIN")
      * @Route("/", name="index", methods={"GET"})
      */
-    public function indexAction(Request $request): Response
+    public function indexAction(Request $request, EntityManagerInterface $em): Response
     {
-        $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder()
             ->select('e')
             ->from(Event::class, 'e')

@@ -6,6 +6,7 @@ use App\Entity\Security\LocalAccount;
 use App\Mail\MailService;
 use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,20 +21,11 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
  */
 class PasswordController extends AbstractController
 {
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private $passwordEncoder;
-
-    /**
-     * @var PasswordResetService
-     */
-    private $passwordReset;
-
-    public function __construct(UserPasswordHasherInterface $passwordEncoder, PasswordResetService $passwordReset)
-    {
-        $this->passwordEncoder = $passwordEncoder;
-        $this->passwordReset = $passwordReset;
+    public function __construct(
+        private UserPasswordHasherInterface $passwordEncoder,
+        private PasswordResetService $passwordReset,
+        private EntityManagerInterface $em
+    ) {
     }
 
     /**
@@ -90,8 +82,6 @@ class PasswordController extends AbstractController
      */
     public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         $form = $this->createForm('App\Form\Security\PasswordRequestType', []);
         $form->handleRequest($request);
 
@@ -99,7 +89,7 @@ class PasswordController extends AbstractController
             $data = $form->getData();
             $mail = $data['email'];
 
-            $localAccount = $em->getRepository(LocalAccount::class)->findOneBy(['email' => $mail]);
+            $localAccount = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $mail]);
             if (!$localAccount) {
                 $localAccount = new LocalAccount();
                 $localAccount
@@ -108,8 +98,8 @@ class PasswordController extends AbstractController
                     ->setEmail($mail)
                 ;
 
-                $em->persist($localAccount);
-                $em->flush();
+                $this->em->persist($localAccount);
+                $this->em->flush();
             }
 
             try {
@@ -160,9 +150,8 @@ class PasswordController extends AbstractController
         $this->passwordReset->resetPasswordRequestToken($auth, false);
         $auth->setPassword($this->passwordEncoder->hashPassword($auth, $pass));
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($auth);
-        $em->flush();
+        $this->em->persist($auth);
+        $this->em->flush();
 
         $this->addFlash('success', $message);
 
