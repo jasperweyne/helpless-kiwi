@@ -64,34 +64,5 @@ services:
         App\Template\MenuExtensionInterface:
             tags: ['app.menu_extension']
 
-    Drenso\OidcBundle\OidcClient:
-        arguments:
-            $wellKnownUrl: '%env(SECURE_SCHEME)%://%env(OIDC_ADDRESS)%/.well-known/openid-configuration'
-            $clientId: '%env(OIDC_ID)%'
-            $clientSecret: '%env(OIDC_SECRET)%'
-            $redirectRoute: 'app_login_check'
-    
-    security.authentication.provider.oidc:
-        class: Drenso\OidcBundle\Security\Authentication\Provider\OidcProvider
-        arguments:
-            - ''
-            - '@security.user_checker'
-            - '@security.token_storage'
-            - '@logger'
-
-    security.authentication.listener.oidc:
-        class: Drenso\OidcBundle\Security\Firewall\OidcListener
-        arguments:
-            - '@security.token_storage'
-            - '@security.authentication.manager'
-            - '@security.authentication.session_strategy'
-            - '@security.http_utils'
-            - ''
-            - ''
-            - ''
-            - { }
-            - '@logger'
-            - '@Drenso\OidcBundle\OidcClient'
-
     App\GraphQL\Query:
         public: true

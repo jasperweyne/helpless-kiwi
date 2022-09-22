@@ -53,12 +53,4 @@ class Kernel extends BaseKernel
         $routes->import($confDir.'/{routes}/*'.self::CONFIG_EXTS, '/', 'glob');
         $routes->import($confDir.'/{routes}'.self::CONFIG_EXTS, '/', 'glob');
     }
-
-    protected function build(ContainerBuilder $container)
-    {
-        // Register the Oidc factory
-        $extension = $container->getExtension('security');
-        assert($extension instanceof SecurityExtension);
-        $extension->addSecurityListenerFactory(new OidcFactory());
-    }
 }
