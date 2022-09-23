@@ -1,5 +1,5 @@
 ## Prerequisites
-Make sure php 7 is installed on your machine. If you're deploying to another
+Make sure php 8 is installed on your machine. If you're deploying to another
 machine, make sure this has a php server installed, for example Apache or Nginx.
 Also, make sure that the machine you're deploying to has a database available,
 MySQL is supported primairily. When developing, it is recommended to download
@@ -24,4 +24,4 @@ composer -V
 yarn -v
 ```
 
-We're assuming php version 7.4, composer at least version 2.0 and yarn 1.22.
+We're assuming php version 8.1, composer at least version 2.0 and yarn 1.22.
