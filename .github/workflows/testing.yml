@@ -11,6 +11,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
+    strategy:
+      matrix:
+        node-version: [16.x]
+
     steps:
     - uses: actions/checkout@v2
       with:
@@ -22,11 +26,22 @@ jobs:
         php-version: '8.1'
         extensions: xdebug
       
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+      
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --optimize-autoloader
       env:
         APP_ENV: test
   
+    - name: Install JS dependencies
+      run: yarn install
+    
+    - name: Build JS dependencies
+      run: yarn build
+
     - name: Run linter
       run: composer lint
 
