@@ -29,6 +29,7 @@
         "symfony/process": "^5.0",
         "symfony/property-access": "^5.0",
         "symfony/property-info": "^5.0",
+        "symfony/runtime": "^5.0",
         "symfony/security-bundle": "^5.0",
         "symfony/serializer": "^5.0",
         "symfony/translation": "^5.0",
@@ -74,7 +75,8 @@
         "allow-plugins": {
             "ocramius/package-versions": true,
             "symfony/flex": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "symfony/runtime": true
         }
     },
     "autoload": {
