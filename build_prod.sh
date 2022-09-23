@@ -16,7 +16,7 @@ rm -rf kiwi/.git
 
 # Move kiwi/public to public_html/kiwi
 egrep -lRZ 'public/' kiwi | xargs -0 -l sed -i -e 's/public\//..\/public_html\/kiwi\//g'
-sed -i -e 's/\/config\/bootstrap.php/\/..\/kiwi\/config\/bootstrap.php/g' kiwi/public/index.php
+sed -i -e 's/\/vendor\/autoload_runtime.php/\/..\/kiwi\/vendor\/autoload_runtime.php/g' kiwi/public/index.php
 sed -i -e 's/\"extra\": {/\"extra\": {\n        \"public-dir\": \"..\/public_html\/kiwi\",/g' kiwi/composer.json
 mkdir public_html
 mv kiwi/public public_html/kiwi
