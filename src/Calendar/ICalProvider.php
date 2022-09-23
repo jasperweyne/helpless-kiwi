@@ -12,6 +12,7 @@ use Eluceo\iCal\Domain\ValueObject\EmailAddress;
 use Eluceo\iCal\Domain\ValueObject\Location;
 use Eluceo\iCal\Domain\ValueObject\Organizer;
 use Eluceo\iCal\Domain\ValueObject\TimeSpan;
+use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 
 class ICalProvider
@@ -71,7 +72,7 @@ class ICalProvider
 
         $timespan = new TimeSpan(new DateTime($activity->getStart(), false), new DateTime($activity->getEnd(), false));
 
-        $event = new Event($activity->getId());
+        $event = new Event(new UniqueIdentifier($activity->getId()));
         $event
             ->setStatus(EventStatus::CONFIRMED())
             ->setOccurrence($timespan)

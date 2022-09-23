@@ -63,6 +63,7 @@ class ICalProviderTest extends KernelTestCase
             ->setName($this->summary)
             ->setLocation($this->location)
             ->setDescription($this->description)
+            ->setId('a')
         ;
 
         $this
@@ -72,6 +73,7 @@ class ICalProviderTest extends KernelTestCase
             ->setName('second '.$this->summary)
             ->setLocation($this->location)
             ->setDescription('second '.$this->description)
+            ->setId('b')
         ;
 
         $this
