@@ -13,8 +13,7 @@ use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
@@ -74,8 +73,7 @@ class AuthWebTestCase extends WebTestCase
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 
-        /** @var Session $session */
-        $session = self::getContainer()->get('session');
+        $session = self::getContainer()->get(SessionInterface::class);
 
         $firewallName = 'main';
         $firewallContext = 'main';
@@ -106,7 +104,7 @@ class AuthWebTestCase extends WebTestCase
 
     protected function logout(): void
     {
-        self::getContainer()->get('session')->invalidate();
+        self::getContainer()->get(SessionInterface::class)->invalidate();
         self::getContainer()->get('security.token_storage')->setToken(null);
     }
 }
