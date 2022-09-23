@@ -73,8 +73,6 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     public function testNewActionPost(): void
     {
-        $this->fail('PHP8 migration issue');
-
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
         $originalCount = $activity->getRegistrations()->count();
@@ -137,8 +135,9 @@ class RegistrationControllerTest extends AuthWebTestCase
         self::assertEquals(null, $registration->getDeleteDate());
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/delete/{$id}");
-        $this->client->submitForm('Ja, meld af');
+        $crawler = $this->client->request('GET', "/admin/activity/register/delete/{$id}");
+        $form = $crawler->selectButton('Ja, meld af')->form();
+        $this->client->submit($form);
 
         // Assert
         $registration = $this->em->getRepository(Registration::class)->find($id);
