@@ -8,9 +8,10 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Drenso\OidcBundle\Model\OidcUserData;
-use Drenso\OidcBundle\Security\Token\OidcToken;
+use Drenso\OidcBundle\Security\Exception\OidcUserNotFoundException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 /**
  * Class LocalUserProviderTest.
@@ -106,19 +107,100 @@ class LocalUserProviderTest extends KernelTestCase
 
     public function testLoadOidcUser(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange data
+        $subject = 'abc123';
+
+        $user = new LocalAccount();
+        $user
+            ->setOidc($subject)
+            ->setEmail('test123')
+        ;
+
+        // Arrange stubs
+        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
+        $repo = $this->createMock(ServiceEntityRepository::class);
+        $repo->method('findOneBy')->willReturn($user);
+        $this->em->method('getRepository')->willReturn($repo);
+
+        // Act
+        $result = $this->localUserProvider->loadOidcUser($subject);
+
+        // Assert
+        self::assertEquals($user->getUserIdentifier(), $result->getUserIdentifier());
     }
 
+    public function testLoadOidcUserUnknown(): void
+    {
+        // Arrange stubs
+        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
+        $repo = $this->createMock(ServiceEntityRepository::class);
+        $repo->method('findOneBy')->willReturn(null);
+        $this->em->method('getRepository')->willReturn($repo);
+
+        // Expect
+        $this->expectException(OidcUserNotFoundException::class);
+
+        // Act
+        $this->localUserProvider->loadOidcUser('doesnt.exist');
+    }
+
+    /**
+     * @depends testLoadUserByIdentifier
+     */
     public function testLoadUserByUsername(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange data
+        $user = new LocalAccount();
+
+        // Arrange stubs
+        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
+        $repo = $this->createMock(ServiceEntityRepository::class);
+        $repo->method('findOneBy')->willReturn($user);
+        $this->em->method('getRepository')->willReturn($repo);
+
+        // Arrange loadUserByIdentifier result
+        $expect = $this->localUserProvider->loadUserByIdentifier('test');
+
+        // Act
+        $result = $this->localUserProvider->loadUserByUsername('test');
+
+        // Assert
+        self::assertEquals($expect, $result);
     }
 
     public function testLoadUserByIdentifier(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange data
+        $mail = 'email@address.com';
+
+        $user = new LocalAccount();
+        $user->setEmail($mail);
+
+        // Arrange stubs
+        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
+        $repo = $this->createMock(ServiceEntityRepository::class);
+        $repo->method('findOneBy')->willReturn($user);
+        $this->em->method('getRepository')->willReturn($repo);
+
+        // Act
+        $result = $this->localUserProvider->loadUserByIdentifier($mail);
+
+        // Assert
+        self::assertEquals($user->getUserIdentifier(), $result->getUserIdentifier());
+    }
+
+    public function testLoadUserByIdentifierUnknown(): void
+    {
+        // Arrange stubs
+        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
+        $repo = $this->createMock(ServiceEntityRepository::class);
+        $repo->method('findOneBy')->willReturn(null);
+        $this->em->method('getRepository')->willReturn($repo);
+
+        // Expect
+        $this->expectException(UserNotFoundException::class);
+
+        // Act
+        $this->localUserProvider->loadUserByIdentifier('address@doesnt.exist');
     }
 }
