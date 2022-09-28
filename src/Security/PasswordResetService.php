@@ -8,20 +8,10 @@ use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class PasswordResetService
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var PasswordHasherFactoryInterface
-     */
-    private $passwordHasher;
-
-    public function __construct(EntityManagerInterface $em, PasswordHasherFactoryInterface $passwordHasher)
-    {
-        $this->em = $em;
-        $this->passwordHasher = $passwordHasher;
+    public function __construct(
+        private EntityManagerInterface $em,
+        private PasswordHasherFactoryInterface $passwordHasher
+    ) {
     }
 
     public function isPasswordRequestTokenValid(LocalAccount $auth, string $token): bool
