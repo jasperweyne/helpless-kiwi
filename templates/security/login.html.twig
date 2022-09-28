@@ -11,9 +11,9 @@
             <span class="h3 mb-3 font-weight-normal">Inloggen</span>
         {% endif %}
         <label for="inputUsername" class="sr-only">E-mailadres</label>
-        <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" placeholder="E-mailadres" required autofocus>
+        <input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-control" placeholder="E-mailadres" required autofocus>
         <label for="inputPassword" class="sr-only">Wachtwoord</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Wachtwoord" required>
+        <input type="password" name="_password" id="inputPassword" class="form-control" placeholder="Wachtwoord" required>
 
         <input type="hidden" name="_csrf_token"
             value="{{ csrf_token('authenticate') }}"

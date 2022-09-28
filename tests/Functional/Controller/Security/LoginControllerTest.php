@@ -64,8 +64,8 @@ class LoginControllerTest extends AuthWebTestCase
         $crawler = $this->client->request('GET', '/login');
 
         $form = $crawler->selectButton('Log in')->form();
-        $form['username'] = 'wrong';
-        $form['password'] = 'login';
+        $form['_username'] = 'wrong';
+        $form['_password'] = 'login';
         $crawler = $this->client->submit($form);
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());

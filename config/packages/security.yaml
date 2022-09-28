@@ -27,9 +27,10 @@ security:
             lazy: true
             oidc: ~
             provider: app_user_provider
-            guard:
-                authenticators:
-                    - App\Security\LocalAuthenticator
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
             logout:
                 path:   app_logout
                 # where to redirect after logout
@@ -39,7 +40,7 @@ security:
                 always_remember_me: true
                 name: KIWI_REMEMBERME
             
-            entry_point: App\Security\LocalAuthenticator
+            entry_point: form_login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
