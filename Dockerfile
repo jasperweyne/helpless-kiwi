@@ -29,7 +29,7 @@ RUN docker-php-source extract \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN wget https://get.symfony.com/cli/installer -O - | bash && \
-    mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+    mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 COPY docker/php/php.ini $PHP_INI_DIR/conf.d/php.ini
 COPY docker/php/php-cli.ini $PHP_INI_DIR/conf.d/php-cli.ini
 COPY docker/php/xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
