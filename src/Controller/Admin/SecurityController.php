@@ -9,6 +9,7 @@ use App\Log\EventService;
 use App\Mail\MailService;
 use App\Security\PasswordResetService;
 use App\Template\Annotation\MenuItem;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormInterface;
@@ -23,14 +24,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SecurityController extends AbstractController
 {
-    /**
-     * @var EventService
-     */
-    private $events;
-
-    public function __construct(EventService $events)
-    {
-        $this->events = $events;
+    public function __construct(
+        private EventService $events,
+        private EntityManagerInterface $em
+    ) {
     }
 
     /**
@@ -41,9 +38,7 @@ class SecurityController extends AbstractController
      */
     public function indexAction(Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $accounts = $em->getRepository(LocalAccount::class)->findAll();
+        $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
 
         return $this->render('admin/security/index.html.twig', [
             'accounts' => $accounts,
@@ -63,13 +58,11 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
             $token = $passwordReset->generatePasswordRequestToken($account);
             $account->setPasswordRequestedAt(null);
 
-            $em->persist($account);
-            $em->flush();
+            $this->em->persist($account);
+            $this->em->flush();
 
             $body = $this->renderView('email/newaccount.html.twig', [
                 'name' => $account->getGivenName(),
@@ -95,8 +88,6 @@ class SecurityController extends AbstractController
      */
     public function showAction(LocalAccount $account): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         $createdAt = $this->events->findOneBy($account, EntityNewEvent::class);
         $modifs = $this->events->findBy($account, EntityUpdateEvent::class);
 
@@ -118,7 +109,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
         }
@@ -140,9 +131,8 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($account);
-            $em->flush();
+            $this->em->remove($account);
+            $this->em->flush();
 
             return $this->redirectToRoute('admin_security_index');
         }
@@ -160,8 +150,6 @@ class SecurityController extends AbstractController
      */
     public function rolesAction(Request $request, LocalAccount $account): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         $form = $this->createRoleForm($account);
         $form->handleRequest($request);
 
@@ -175,8 +163,8 @@ class SecurityController extends AbstractController
 
             $account->setRoles($roles);
 
-            $em->persist($account);
-            $em->flush();
+            $this->em->persist($account);
+            $this->em->flush();
 
             $this->addFlash('success', 'Rollen bewerkt');
 

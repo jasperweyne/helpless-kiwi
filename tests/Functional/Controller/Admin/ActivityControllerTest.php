@@ -37,7 +37,7 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,
@@ -46,7 +46,7 @@ class ActivityControllerTest extends AuthWebTestCase
 
         $this->login();
 
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
     /**

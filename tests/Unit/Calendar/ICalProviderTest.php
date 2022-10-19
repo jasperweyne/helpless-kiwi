@@ -63,6 +63,7 @@ class ICalProviderTest extends KernelTestCase
             ->setName($this->summary)
             ->setLocation($this->location)
             ->setDescription($this->description)
+            ->setId('a')
         ;
 
         $this
@@ -72,6 +73,7 @@ class ICalProviderTest extends KernelTestCase
             ->setName('second '.$this->summary)
             ->setLocation($this->location)
             ->setDescription('second '.$this->description)
+            ->setId('b')
         ;
 
         $this
@@ -101,7 +103,8 @@ class ICalProviderTest extends KernelTestCase
     {
         $recieved = $this->iCalProvider->icalSingle(
             $this->firstActivity
-        )->export();
+        );
+
         self::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
         $start = $this->firstActivity->getStart();
         if (!is_null($start)) {
@@ -118,10 +121,10 @@ class ICalProviderTest extends KernelTestCase
      */
     public function icalsingleSuccesWithErrorHandling(): void
     {
-        $this->expectExceptionMessage('Error: Failed to create the event');
+        $this->expectError();
         $this->iCalProvider->icalSingle(
             $this->invalidActivity
-        )->export();
+        );
     }
 
     /**
@@ -131,7 +134,7 @@ class ICalProviderTest extends KernelTestCase
     {
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
-        ])->export();
+        ]);
         self::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
         $start = $this->firstActivity->getStart();
         if (!is_null($start)) {
@@ -151,7 +154,7 @@ class ICalProviderTest extends KernelTestCase
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
             $this->secondActivity,
-        ])->export();
+        ]);
         self::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
         self::assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
     }
@@ -164,7 +167,7 @@ class ICalProviderTest extends KernelTestCase
         $recieved = $this->iCalProvider->icalFeed([
             $this->invalidActivity,
             $this->secondActivity,
-        ])->export();
+        ]);
         self::assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
     }
 
@@ -177,7 +180,7 @@ class ICalProviderTest extends KernelTestCase
         unset($_ENV['ORG_NAME']);
         $recieved = $this->iCalProvider->icalFeed([
             $this->firstActivity,
-        ])->export();
+        ]);
         self::assertStringContainsString('PRODID:-//Helpless Kiwi//kiwi v1.0//NL', $recieved);
         $_ENV['ORG_NAME'] = $_orgName;
     }

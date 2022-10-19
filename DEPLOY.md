@@ -57,8 +57,8 @@ Additionally, add this line to `composer.json`:
 ```
 
 Now, you can move the 'public' folder to the new location. To finish, edit the 
-`require dirname(__DIR__).'/config/bootstrap.php';`` line in the index.php
-file if necessary.
+`require dirname(__DIR__).'/vendor/autoload_runtime.php';`` line in the
+index.php file if necessary.
 
 Then, install the dependencies. Not all dependencies are required. To signal
 this, begin by exporting the corresponding environment variables before running

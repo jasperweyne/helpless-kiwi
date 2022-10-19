@@ -7,11 +7,13 @@ parameters:
     env(SECURE_SCHEME): 'https'
 
 security:
-    encoders:
-        App\Entity\Security\LocalAccount:
-            algorithm: auto
+    enable_authenticator_manager: true
 
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
@@ -22,12 +24,13 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            lazy: true
             oidc: ~
             provider: app_user_provider
-            guard:
-                authenticators:
-                    - App\Security\LocalAuthenticator
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
             logout:
                 path:   app_logout
                 # where to redirect after logout
@@ -36,9 +39,11 @@ security:
                 secret: '%kernel.secret%'
                 always_remember_me: true
                 name: KIWI_REMEMBERME
+            
+            entry_point: form_login
 
             # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
+            # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
@@ -46,9 +51,22 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin/event, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/admin/mail, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/admin/security, allow_if: "has_role('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/admin, allow_if: "has_role('ROLE_ADMIN') or has_role('ROLE_AUTHOR') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/admin/event, allow_if: "is_granted('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/admin/mail, allow_if: "is_granted('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/admin/security, allow_if: "is_granted('ROLE_ADMIN') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/admin, allow_if: "is_granted('ROLE_ADMIN') or is_granted('ROLE_AUTHOR') and is_fully_authenticated()", requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/profile, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

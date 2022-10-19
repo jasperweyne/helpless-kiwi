@@ -4,6 +4,7 @@ use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Dotenv\Dotenv;
 
 class Log
 {
@@ -150,7 +151,7 @@ class IntegrationTool
      */
     public function hasApplication()
     {
-        return file_exists($this->getAutoloaderPath()) && file_exists($this->getBootstrapPath());
+        return file_exists($this->getAutoloaderPath());
     }
 
     /**
@@ -190,7 +191,8 @@ class IntegrationTool
             }
 
             include_once $this->getAutoloaderPath();
-            include_once $this->getBootstrapPath();
+
+            (new Dotenv())->bootEnv(__DIR__ . '/../.env');
 
             $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
             $this->application = new Application($kernel);
@@ -209,21 +211,11 @@ class IntegrationTool
     {
         return $this->getRootPath().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
     }
-
-    /**
-     * Get the path of the Symfony bootstrap file.
-     *
-     * @return string The filesystem path of the Symfony bootstrap file
-     */
-    protected function getBootstrapPath(): string
-    {
-        return $this->getRootPath().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'bootstrap.php';
-    }
 }
 
 class EnvFileTool
 {
-    const ENV_FILE = '.env.local.php';
+    public const ENV_FILE = '.env.local.php';
     protected $buffer;
     protected $path;
 
@@ -865,7 +857,8 @@ class ArchiveTool
         $backup->open($dest, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $dirit = new RecursiveDirectoryIterator($path);
-        $files = new RecursiveIteratorIterator($dirit,
+        $files = new RecursiveIteratorIterator(
+            $dirit,
             RecursiveIteratorIterator::LEAVES_ONLY
         );
 
@@ -957,8 +950,8 @@ class ArchiveTool
 
 class UpdaterTool
 {
-    const FILES_BACKUP = 'files.zip';
-    const DATABASE_BACKUP = 'database.sql';
+    public const FILES_BACKUP = 'files.zip';
+    public const DATABASE_BACKUP = 'database.sql';
 
     protected $integration;
     protected $database;

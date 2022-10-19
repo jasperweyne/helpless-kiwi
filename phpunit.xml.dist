@@ -2,17 +2,19 @@
 
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="bin/.phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          backupGlobals="false"
          colors="true"
          bootstrap="tests/bootstrap.php"
+         convertDeprecationsToExceptions="false"
 >
     <php>
+        <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
     </php>
 
     <testsuites>
@@ -22,15 +24,17 @@
     </testsuites>
     
     <logging>
-        <log type="coverage-clover" target="./var/reports/phpunit.coverage.xml"/>
-        <log type="junit" target="./var/reports/phpunit.xml"/>
+        <junit outputFile="./var/reports/phpunit.xml"/>
     </logging>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+        </include>
+        <report>
+            <clover outputFile="./var/reports/phpunit.coverage.xml"/>
+        </report>
+    </coverage>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
@@ -38,5 +42,9 @@
 
     <extensions>
         <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+        <!-- Run `composer require symfony/panther` before enabling this extension -->
+        <!--
+        <extension class="Symfony\Component\Panther\ServerExtension" />
+        -->
     </extensions>
 </phpunit>

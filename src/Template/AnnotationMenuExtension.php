@@ -34,7 +34,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      *
      * @var string
      */
-    private $rootDir;
+    private $projectDir;
 
     /**
      * @var array<string, MenuItem[]>
@@ -49,12 +49,12 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      * @param string $directory
      *                          The directory of the menu items
      */
-    public function __construct(string $namespace, string $directory, string $rootDir, Reader $annotationReader)
+    public function __construct(string $namespace, string $directory, string $projectDir, Reader $annotationReader)
     {
         $this->namespace = $namespace;
         $this->annotationReader = $annotationReader;
         $this->directory = $directory;
-        $this->rootDir = $rootDir;
+        $this->projectDir = $projectDir;
     }
 
     /**
@@ -101,7 +101,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      */
     private function discoverMenuItems(): void
     {
-        $path = $this->rootDir.'/../src/'.$this->directory;
+        $path = $this->projectDir.'/'.$this->directory;
         $finder = new Finder();
         $finder->files()->name('*.php')->in($path);
 

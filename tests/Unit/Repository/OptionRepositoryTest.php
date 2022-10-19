@@ -31,7 +31,7 @@ class OptionRepositoryTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->registry = self::$container->get(ManagerRegistry::class);
+        $this->registry = self::getContainer()->get(ManagerRegistry::class);
         $this->optionRepository = new OptionRepository($this->registry);
     }
 

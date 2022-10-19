@@ -37,8 +37,8 @@ class EntityEventListenerTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->eventService = self::$container->get(EventService::class);
-        $this->reflService = self::$container->get(ReflectionService::class);
+        $this->eventService = self::getContainer()->get(EventService::class);
+        $this->reflService = self::getContainer()->get(ReflectionService::class);
         $this->entityEventListener = new EntityEventListener($this->eventService, $this->reflService);
     }
 

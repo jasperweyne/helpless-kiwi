@@ -13,7 +13,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -23,14 +23,25 @@ jobs:
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.1'
         extensions: xdebug
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
       
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --optimize-autoloader
       env:
         APP_ENV: test
   
+    - name: Install JS dependencies
+      run: yarn install
+    
+    - name: Build JS dependencies
+      run: yarn build
+
     - name: Run linter
       run: composer lint
 

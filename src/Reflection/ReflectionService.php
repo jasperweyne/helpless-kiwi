@@ -40,7 +40,7 @@ class ReflectionService extends RuntimeReflectionService
         return $object;
     }
 
-    public function getAccessibleProperty($className, $propertyName)
+    public function getAccessibleProperty($className, $propertyName): ?\ReflectionProperty
     {
         try {
             $reflClass = new \ReflectionClass($className);

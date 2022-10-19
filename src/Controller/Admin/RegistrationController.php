@@ -127,8 +127,7 @@ class RegistrationController extends AbstractController
         $activity = $registration->getActivity();
         assert($activity !== null);
 
-        $url = $this->generateUrl($request->attributes->get('_route'), ['id' => $registration->getId()]);
-        $form = $this->createRegistrationDeleteForm($url);
+        $form = $this->createRegistrationDeleteForm($registration);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -268,11 +267,10 @@ class RegistrationController extends AbstractController
      *
      * @return \Symfony\Component\Form\FormInterface The form
      */
-    protected function createRegistrationDeleteForm(
-        string $actionUrl
-    ): FormInterface {
+    protected function createRegistrationDeleteForm(Registration $registration): FormInterface
+    {
         return $this->createFormBuilder()
-            ->setAction($actionUrl)
+            ->setAction($this->generateUrl('admin_activity_registration_delete', ['id' => $registration->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

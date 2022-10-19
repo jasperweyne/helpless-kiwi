@@ -14,7 +14,7 @@ class GroupVoter extends Voter
     public const EDIT_GROUP = 'edit_group';
     public const ANY_GROUP = 'any_group';
 
-    protected function supports($attribute, $subject): bool
+    protected function supports(string $attribute, $subject): bool
     {
         // if the attribute isn't one we support, return false
         if (!in_array($attribute, [self::IN_GROUP, self::EDIT_GROUP, self::ANY_GROUP], true)) {
@@ -29,7 +29,7 @@ class GroupVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 

@@ -8,7 +8,7 @@ use App\Security\PasswordResetService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class PasswordControllerTest.
@@ -24,9 +24,9 @@ class PasswordControllerTest extends AuthWebTestCase
     protected $passwordController;
 
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
-    protected $passwordEncoder;
+    protected $passwordHasher;
 
     /**
      * @var PasswordResetService
@@ -41,13 +41,13 @@ class PasswordControllerTest extends AuthWebTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->passwordEncoder = self::$container->get(UserPasswordEncoderInterface::class);
-        $this->passwordReset = self::$container->get(PasswordResetService::class);
-        $this->passwordController = new PasswordController($this->passwordEncoder, $this->passwordReset);
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->passwordHasher = self::getContainer()->get(UserPasswordHasherInterface::class);
+        $this->passwordReset = self::getContainer()->get(PasswordResetService::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->passwordController = new PasswordController($this->passwordHasher, $this->passwordReset, $this->em);
         $this->userProvider = new LocalUserProvider($this->em);
 
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
         ]);
     }
@@ -60,7 +60,7 @@ class PasswordControllerTest extends AuthWebTestCase
         parent::tearDown();
 
         unset($this->passwordController);
-        unset($this->passwordEncoder);
+        unset($this->passwordHasher);
         unset($this->passwordReset);
         unset($this->userProvider);
         unset($this->em);

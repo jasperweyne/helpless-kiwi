@@ -5,7 +5,7 @@ namespace App\Tests\Database\Security;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LocalAccountFixture extends Fixture
 {
@@ -13,11 +13,11 @@ class LocalAccountFixture extends Fixture
     public const USERNAME = 'admin@test.nl';
 
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordHasherInterface
      */
     private $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function __construct(UserPasswordHasherInterface $encoder)
     {
         $this->encoder = $encoder;
     }
@@ -27,7 +27,7 @@ class LocalAccountFixture extends Fixture
         $localAccount = new LocalAccount();
         $localAccount->setName('admin');
         $localAccount->setEmail(self::USERNAME);
-        $localAccount->setPassword($this->encoder->encodePassword($localAccount, 'root'));
+        $localAccount->setPassword($this->encoder->hashPassword($localAccount, 'root'));
         $localAccount->setRoles(['ROLE_ADMIN']);
 
         $manager->persist($localAccount);
