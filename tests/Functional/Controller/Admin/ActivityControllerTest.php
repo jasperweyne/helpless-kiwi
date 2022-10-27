@@ -101,6 +101,9 @@ class ActivityControllerTest extends AuthWebTestCase
             true
         );
         $form['activity_new[color]'] = '1';
+        $form['activity_new[options][0][name]'] = 'Price name';
+        $form['activity_new[options][0][price]'] = 10;
+        $form['activity_new[options][0][target]'] = null;
 
         $crawler = $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());

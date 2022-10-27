@@ -4,6 +4,8 @@ namespace App\Form\Activity;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
+use App\Form\Activity\PriceOptionType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class ActivityNewType extends ActivityEditType
 {
@@ -17,6 +19,11 @@ class ActivityNewType extends ActivityEditType
                 'required' => true,
                 'allow_delete' => false,
             ])
+            ->add('options', CollectionType::class, [
+                'entry_type' => PriceOptionType::class,
+                'label' => false,
+            ])
+
         ;
     }
 }

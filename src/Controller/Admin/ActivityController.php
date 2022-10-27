@@ -104,13 +104,19 @@ class ActivityController extends AbstractController
     public function newAction(Request $request, GroupRepository $groupRepo): Response
     {
         $activity = new Activity();
+        $price = new PriceOption();
+        $activity->AddOption($price);
 
         $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $price
+                ->setDetails([])
+                ->setConfirmationMsg('');
             $this->em->persist($activity);
             $this->em->persist($activity->getLocation());
+            $this->em->persist($price);
             $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);

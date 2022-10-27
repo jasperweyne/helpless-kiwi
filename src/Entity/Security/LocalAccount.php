@@ -258,7 +258,7 @@ class LocalAccount implements UserInterface, EquatableInterface
 
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        // If you store any temporary, sensitive data on t              he user, clear it here
         // $this->plainPassword = null;
     }
 
