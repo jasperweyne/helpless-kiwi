@@ -30,6 +30,10 @@
                                 <td>{{ activity.description }}</td>
                             </tr>
                             <tr>
+                                <th>Locatie</th>
+                                <td><a href="{{ path('admin_location_show', { 'id': activity.location.id }) }}">{{ activity.location.address }}</a></td>
+                            </tr>
+                            <tr>
                                 <th>Zichtbaar vanaf</th>
                                 {% if activity.visibleAfter is null %}
                                 <td><i>verborgen</i></td>
