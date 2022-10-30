@@ -4,9 +4,11 @@ namespace Tests\Integration\Form\Activity;
 
 use App\Entity\Activity\ExternalRegistrant;
 use App\Form\Activity\ExternalRegistrantType;
+use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use PHPUnit\Framework\MockObject\MockObject;
+use Doctrine\ORM\Tools\SchemaTool;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -14,17 +16,17 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  *
  * @covers \App\Form\Activity\ExternalRegistrantType
  */
-class ExternalRegistrationTypeTest extends KernelTestCase
+class ExternalRegistrantTypeTest extends KernelTestCase
 {
     /**
-     * @var EntityManagerInterface&MockObject
+     * @var ExternalRegistrantType
      */
-    protected $em;
+    protected $databaseTool;
 
     /**
      * @var ExternalRegistrantType
      */
-    protected $externalRegistrationType;
+    protected $externalRegistrantType;
 
     /**
      * {@inheritdoc}
@@ -34,14 +36,23 @@ class ExternalRegistrationTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /** @var MockObject&EntityRepository<never> $repository */
-        $repository = $this->createMock(EntityRepository::class);
-        $repository->method('findAll')->willReturn([]);
+        // Get all database tables
+        $em = self::getContainer()->get(EntityManagerInterface::class);
+        $cmf = $em->getMetadataFactory();
+        $classes = $cmf->getAllMetadata();
 
-        $this->em = $this->createMock(EntityManagerInterface::class);
-        $this->em->method('getRepository')->willReturn($repository);
+        // Write all tables to database
+        $schema = new SchemaTool($em);
+        $schema->createSchema($classes);
 
-        $this->externalRegistrationType = new ExternalRegistrantType($this->em);
+        // Load database tool
+        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+        $this->externalRegistrantType = new ExternalRegistrantType($em);
+
+        // Setup empty data
+        $this->databaseTool->loadFixtures([
+            LocalAccountFixture::class
+        ]);
     }
 
     /**
@@ -64,11 +75,29 @@ class ExternalRegistrationTypeTest extends KernelTestCase
         ];
 
         $formfactory = self::$container->get('form.factory');
-        $form = $formfactory->create(ExternalRegistrantType::class, $type);
+        $form = $formfactory->create(ExternalRegistrantType::class, $type, ['csrf_protection' => false]);
 
         $form->submit($formData);
         self::assertTrue($form->isSynchronized());
         self::assertTrue($form->isSubmitted());
+        self::assertTrue($form->isValid());
+    }
+
+    public function testBindDuplicateData(): void
+    {
+        $type = new ExternalRegistrant();
+        $formData = [
+            'name' => 'Chase',
+            'email' => LocalAccountFixture::USERNAME
+        ];
+
+        $formfactory = self::$container->get('form.factory');
+        $form = $formfactory->create(ExternalRegistrantType::class, $type, ['csrf_protection' => false]);
+
+        $form->submit($formData);
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->isSubmitted());
+        self::assertFalse($form->isValid());
     }
 
     public function testConfigureOptions(): void
@@ -77,6 +106,6 @@ class ExternalRegistrationTypeTest extends KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $resolver->expects($this::exactly(1))->method('setDefaults');
-        $this->externalRegistrationType->configureOptions($resolver);
+        $this->externalRegistrantType->configureOptions($resolver);
     }
 }
