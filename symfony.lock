@@ -221,6 +221,9 @@
     "paragonie/constant_time_encoding": {
         "version": "v2.4.0"
     },
+    "php-cs-fixer/diff": {
+        "version": "v1.3.1"
+    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
