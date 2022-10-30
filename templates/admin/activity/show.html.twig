@@ -204,7 +204,7 @@
                         {% endfor %}
                         {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
                             <tr>
-                                <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
+                                <td>{{ registration.person.canonical ?? 'Onbekend' }}{% if registration.external %} <i>(extern)</i>{% endif %}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td>
