@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class ExternalRegistrantTypeTest extends KernelTestCase
 {
     /**
-     * @var ExternalRegistrantType
+     * @var DatabaseToolCollection
      */
     protected $databaseTool;
 
