@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Activity\ExternalRegistrant;
 use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
@@ -72,7 +73,12 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void
     {
-        $event->getRegistration()->setDeleteDate(new \DateTime('now'));
+        if ($event->getRegistration()->getPerson() instanceof ExternalRegistrant) {
+            $this->em->remove($event->getRegistration());
+        } else {
+            $event->getRegistration()->setDeleteDate(new \DateTime('now'));
+        }
+
         $this->em->flush();
 
         $name = '';
