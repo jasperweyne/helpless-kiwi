@@ -15,7 +15,9 @@ class RegistrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if (true === ($options['external_registrant'] ?? false)) {
-            $builder->add('person', ExternalRegistrantType::class);
+            $builder->add('person', ExternalRegistrantType::class, [
+                'label' => false,
+            ]);
         } else {
             $builder->add('person', EntityType::class, [
                 'attr' => ['data-select' => 'true'],
