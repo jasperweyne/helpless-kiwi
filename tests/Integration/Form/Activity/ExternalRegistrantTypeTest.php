@@ -4,6 +4,9 @@ namespace Tests\Integration\Form\Activity;
 
 use App\Entity\Activity\ExternalRegistrant;
 use App\Form\Activity\ExternalRegistrantType;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -13,6 +16,11 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class ExternalRegistrationTypeTest extends KernelTestCase
 {
+    /**
+     * @var EntityManagerInterface&MockObject
+     */
+    protected $em;
+
     /**
      * @var ExternalRegistrantType
      */
@@ -26,7 +34,14 @@ class ExternalRegistrationTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->externalRegistrationType = new ExternalRegistrantType();
+        /** @var MockObject&EntityRepository<never> $repository */
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('findAll')->willReturn([]);
+
+        $this->em = $this->createMock(EntityManagerInterface::class);
+        $this->em->method('getRepository')->willReturn($repository);
+
+        $this->externalRegistrationType = new ExternalRegistrantType($this->em);
     }
 
     /**
@@ -37,6 +52,7 @@ class ExternalRegistrationTypeTest extends KernelTestCase
         parent::tearDown();
 
         unset($this->externalRegistrationType);
+        unset($this->em);
     }
 
     public function testBindValidData(): void
