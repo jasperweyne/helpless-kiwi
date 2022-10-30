@@ -2,7 +2,10 @@
 
 namespace Tests\Unit\Entity\Location;
 
+use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
+use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -78,5 +81,41 @@ class LocationTest extends KernelTestCase
         $property->setAccessible(true);
         $this->location->setAddress($expected);
         self::assertSame($expected, $property->getValue($this->location));
+    }
+
+    public function testGetActivities(): void
+    {
+        $expected = new ArrayCollection();
+        $property = (new ReflectionClass(Location::class))
+            ->getProperty('activities');
+        $property->setAccessible(true);
+        $property->setValue($this->location, $expected);
+        self::assertSame($expected, $this->location->getActivities());
+    }
+
+    public function testAddActivity(): void
+    {
+        /** @var MockObject&Activity */
+        $expected = $this->createMock(Activity::class);
+        $expected->expects(self::once())->method('setLocation')->with($this->location);
+        $property = (new ReflectionClass(Location::class))
+            ->getProperty('activities');
+        $property->setAccessible(true);
+        $this->location->addActivity($expected);
+        self::assertContains($expected, $property->getValue($this->location));
+    }
+
+    public function testRemoveActivity(): void
+    {
+        /** @var MockObject&Activity */
+        $expected = $this->createMock(Activity::class);
+        $expected->method('getLocation')->willReturn($this->location);
+        $expected->expects(self::once())->method('setLocation')->with(null);
+        $property = (new ReflectionClass(Location::class))
+            ->getProperty('activities');
+        $property->setAccessible(true);
+        $property->getValue($this->location)->add($expected);
+        $this->location->removeActivity($expected);
+        self::assertNotContains($expected, $property->getValue($this->location));
     }
 }

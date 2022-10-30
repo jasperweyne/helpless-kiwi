@@ -2,6 +2,9 @@
 
 namespace App\Entity\Location;
 
+use App\Entity\Activity\Activity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
@@ -30,6 +33,20 @@ class Location
      */
     private $address;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Activity\Activity", mappedBy="location")
+     * @GQL\Field(type="[Activity]")
+     * @GQL\Description("The activities that have taken place at this location.")
+     *
+     * @var Collection<int, Activity>
+     */
+    private $activities;
+
+    public function __construct()
+    {
+        $this->activities = new ArrayCollection();
+    }
+
     public function getId(): ?string
     {
         return $this->id;
@@ -55,6 +72,39 @@ class Location
     public function setAddress(string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get activities.
+     *
+     * @return Collection<int, Activity>
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
+    }
+
+    public function addActivity(Activity $activity): self
+    {
+        if (!$this->activities->contains($activity)) {
+            $this->activities[] = $activity;
+            $activity->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(Activity $activity): self
+    {
+        if ($this->activities->contains($activity)) {
+            $this->activities->removeElement($activity);
+            // set the owning side to null (unless already changed)
+            if ($activity->getLocation() === $this) {
+                $activity->setLocation(null);
+            }
+        }
 
         return $this;
     }
