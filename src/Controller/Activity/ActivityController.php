@@ -102,9 +102,7 @@ class ActivityController extends AbstractController
     ): Response {
         $publicActivities = $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup([]); // Only return activities without target audience
 
-        return new Response(
-            $iCalProvider->IcalFeed($publicActivities)->export().''
-        );
+        return new Response($iCalProvider->IcalFeed($publicActivities));
     }
 
     /**

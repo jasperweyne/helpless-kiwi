@@ -7,9 +7,9 @@ use App\Entity\Security\LocalAccount;
 use App\Mail\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -25,7 +25,7 @@ class MailServiceTest extends KernelTestCase
     protected $mailService;
 
     /**
-     * @var Swift_Mailer&MockObject
+     * @var MailerInterface&MockObject
      */
     protected $mailer;
 
@@ -52,7 +52,7 @@ class MailServiceTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->mailer = $this->createMock(Swift_Mailer::class);
+        $this->mailer = $this->createMock(MailerInterface::class);
         $this->em = $this->createMock(EntityManagerInterface::class);
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->params = $this->createMock(ParameterBagInterface::class);

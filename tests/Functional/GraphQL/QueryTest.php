@@ -23,7 +23,7 @@ class QueryTest extends AuthWebTestCase
     {
         parent::setUp();
 
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,

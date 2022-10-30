@@ -11,32 +11,27 @@ parameters:
 			path: src/Calendar/ICalProvider.php
 
 		-
-			message: "#^Parameter \\#1 \\$description of method Jsvrcek\\\\ICS\\\\Model\\\\CalendarEvent\\:\\:setDescription\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$description of method Eluceo\\\\iCal\\\\Domain\\\\Entity\\\\Event\\:\\:setDescription\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Calendar/ICalProvider.php
 
 		-
-			message: "#^Parameter \\#1 \\$end of method Jsvrcek\\\\ICS\\\\Model\\\\CalendarEvent\\:\\:setEnd\\(\\) expects DateTime, DateTime\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$location of class Eluceo\\\\iCal\\\\Domain\\\\ValueObject\\\\Location constructor expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Calendar/ICalProvider.php
 
 		-
-			message: "#^Parameter \\#1 \\$name of method Jsvrcek\\\\ICS\\\\Model\\\\Description\\\\Location\\:\\:setName\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$phpDateTime of class Eluceo\\\\iCal\\\\Domain\\\\ValueObject\\\\DateTime constructor expects DateTimeInterface, DateTime\\|null given\\.$#"
+			count: 2
+			path: src/Calendar/ICalProvider.php
+
+		-
+			message: "#^Parameter \\#1 \\$summary of method Eluceo\\\\iCal\\\\Domain\\\\Entity\\\\Event\\:\\:setSummary\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Calendar/ICalProvider.php
 
 		-
-			message: "#^Parameter \\#1 \\$start of method Jsvrcek\\\\ICS\\\\Model\\\\CalendarEvent\\:\\:setStart\\(\\) expects DateTime, DateTime\\|null given\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Parameter \\#1 \\$summary of method Jsvrcek\\\\ICS\\\\Model\\\\CalendarEvent\\:\\:setSummary\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Calendar/ICalProvider.php
-
-		-
-			message: "#^Parameter \\#1 \\$uid of method Jsvrcek\\\\ICS\\\\Model\\\\CalendarEvent\\:\\:setUid\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$uid of class Eluceo\\\\iCal\\\\Domain\\\\ValueObject\\\\UniqueIdentifier constructor expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Calendar/ICalProvider.php
 
@@ -46,7 +41,7 @@ parameters:
 			path: src/Command/CreateLocalAccountCommand.php
 
 		-
-			message: "#^Parameter \\#2 \\$plainPassword of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\:\\:encodePassword\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#2 \\$plainPassword of method Symfony\\\\Component\\\\PasswordHasher\\\\Hasher\\\\UserPasswordHasherInterface\\:\\:hashPassword\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Command/CreateLocalAccountCommand.php
 
@@ -66,7 +61,7 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Only booleans are allowed in an if condition, object\\|null given\\.$#"
+			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
 			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
@@ -81,7 +76,7 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, object given\\.$#"
+			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
 			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
@@ -101,17 +96,12 @@ parameters:
 			path: src/Controller/Admin/ActivityController.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:createQueryBuilder\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/Admin/EventController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\EventController\\:\\:paginate\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
 
 		-
-			message: "#^Parameter \\#1 \\$array_arg of function current expects array\\|object, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$array of function current expects array\\|object, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
 
@@ -157,11 +147,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
-			count: 1
-			path: src/Controller/Admin/RegistrationController.php
-
-		-
-			message: "#^Parameter \\#1 \\$route of method Symfony\\\\Bundle\\\\FrameworkBundle\\\\Controller\\\\AbstractController\\:\\:generateUrl\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/RegistrationController.php
 
@@ -221,12 +206,12 @@ parameters:
 			path: src/Controller/Security/PasswordController.php
 
 		-
-			message: "#^Parameter \\#1 \\$email of method App\\\\Security\\\\LocalUserProvider\\:\\:loadUserByUsername\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$username of method App\\\\Security\\\\LocalUserProvider\\:\\:loadUserByUsername\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Security/PasswordController.php
 
 		-
-			message: "#^Parameter \\#2 \\$token of method App\\\\Security\\\\PasswordResetService\\:\\:isPasswordRequestTokenValid\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#2 \\$token of method App\\\\Security\\\\PasswordResetService\\:\\:isPasswordRequestTokenValid\\(\\) expects string, string\\|null given\\.$#"
 			count: 2
 			path: src/Controller/Security/PasswordController.php
 
@@ -301,7 +286,7 @@ parameters:
 			path: src/EventListener/DoctrineTablePrefixListener.php
 
 		-
-			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
+			message: "#^Method App\\\\GraphQL\\\\Query\\:\\:user\\(\\) should return App\\\\Entity\\\\Security\\\\LocalAccount\\|null but returns Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
 			count: 1
 			path: src/GraphQL/Query.php
 
@@ -324,16 +309,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$datetime of class DateTime constructor expects string, mixed given\\.$#"
 			count: 1
 			path: src/GraphQL/Types/DatetimeScalar.php
-
-		-
-			message: "#^Generator expects value type Symfony\\\\Component\\\\HttpKernel\\\\Bundle\\\\BundleInterface, object given\\.$#"
-			count: 1
-			path: src/Kernel.php
-
-		-
-			message: "#^Method App\\\\Kernel\\:\\:build\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Kernel.php
 
 		-
 			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$person is never written, only read\\.$#"
@@ -411,12 +386,17 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
+			message: "#^Parameter \\#1 \\$class of function class_exists expects string, class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
 			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\) expects class\\-string\\<object\\>, class\\-string\\<object\\>\\|null given\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Parameter \\#1 \\$classname of function class_exists expects string, class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$data of function unserialize expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Log/EventService.php
 
@@ -431,17 +411,12 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Parameter \\#1 \\$variable_representation of function unserialize expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
 			message: "#^Method App\\\\Mail\\\\MailService\\:\\:getUser\\(\\) has invalid return type App\\\\Mail\\\\UserInterface\\.$#"
 			count: 1
 			path: src/Mail/MailService.php
 
 		-
-			message: "#^Method App\\\\Mail\\\\MailService\\:\\:getUser\\(\\) should return App\\\\Mail\\\\UserInterface\\|Stringable\\|null but returns Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
+			message: "#^Method App\\\\Mail\\\\MailService\\:\\:getUser\\(\\) should return App\\\\Mail\\\\UserInterface\\|Stringable\\|null but returns Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\.$#"
 			count: 1
 			path: src/Mail/MailService.php
 
@@ -481,12 +456,17 @@ parameters:
 			path: src/Reflection/ReflectionService.php
 
 		-
+			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:getAccessibleProperty\\(\\) has parameter \\$propertyName with no type specified\\.$#"
+			count: 1
+			path: src/Reflection/ReflectionService.php
+
+		-
 			message: "#^Method App\\\\Reflection\\\\ReflectionService\\:\\:getAllProperties\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
 
 		-
-			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
+			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
 
@@ -511,68 +491,8 @@ parameters:
 			path: src/Repository/RegistrationRepository.php
 
 		-
-			message: "#^Cannot access offset 'csrf_token' on mixed\\.$#"
+			message: "#^Parameter \\#1 \\$hashedPassword of method Symfony\\\\Component\\\\PasswordHasher\\\\PasswordHasherInterface\\:\\:verify\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Cannot access offset 'password' on mixed\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Cannot access offset 'username' on mixed\\.$#"
-			count: 2
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Cannot call method getMessage\\(\\) on mixed\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Only booleans are allowed in an if condition, string\\|null given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Parameter \\#1 \\$str of function trim expects string, mixed given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Parameter \\#1 \\$username of method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserProviderInterface\\:\\:loadUserByUsername\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Parameter \\#2 \\$raw of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\UserPasswordEncoderInterface\\:\\:isPasswordValid\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Parameter \\#2 \\$value of class Symfony\\\\Component\\\\Security\\\\Csrf\\\\CsrfToken constructor expects string\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Property App\\\\Security\\\\LocalAuthenticator\\:\\:\\$em is never read, only written\\.$#"
-			count: 1
-			path: src/Security/LocalAuthenticator.php
-
-		-
-			message: "#^Parameter \\#1 \\$encoded of method Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\PasswordEncoderInterface\\:\\:isPasswordValid\\(\\) expects string, string\\|null given\\.$#"
-			count: 2
 			path: src/Security/PasswordResetService.php
 
 		-
@@ -601,13 +521,43 @@ parameters:
 			path: src/Template/AnnotationMenuExtension.php
 
 		-
-			message: "#^Parameter \\#1 \\$argument of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
+			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Template/AnnotationMenuExtension.php
 
 		-
+			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"
+			count: 1
+			path: src/Tests/AuthWebTestCase.php
+
+		-
+			message: "#^Cannot call method getName\\(\\) on object\\|null\\.$#"
+			count: 1
+			path: src/Tests/AuthWebTestCase.php
+
+		-
+			message: "#^Cannot call method invalidate\\(\\) on object\\|null\\.$#"
+			count: 1
+			path: src/Tests/AuthWebTestCase.php
+
+		-
+			message: "#^Cannot call method save\\(\\) on object\\|null\\.$#"
+			count: 1
+			path: src/Tests/AuthWebTestCase.php
+
+		-
+			message: "#^Cannot call method set\\(\\) on object\\|null\\.$#"
+			count: 1
+			path: src/Tests/AuthWebTestCase.php
+
+		-
 			message: "#^Construct empty\\(\\) is not allowed\\. Use more strict comparison\\.$#"
 			count: 1
+			path: src/Tests/AuthWebTestCase.php
+
+		-
+			message: "#^Service \"Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\SessionInterface\" is not registered in the container\\.$#"
+			count: 2
 			path: src/Tests/AuthWebTestCase.php
 
 		-
@@ -791,7 +741,7 @@ parameters:
 			path: tests/Functional/GraphQL/QueryTest.php
 
 		-
-			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\Client\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
+			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\AbstractBrowser\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
 			count: 1
 			path: tests/Functional/GraphQL/QueryTest.php
 
@@ -866,6 +816,16 @@ parameters:
 			path: tests/Unit/Entity/Security/LocalAccountTest.php
 
 		-
+			message: "#^Parameter \\#2 \\$haystack of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertContains\\(\\) expects iterable, mixed given\\.$#"
+			count: 2
+			path: tests/Unit/Entity/Security/LocalAccountTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$haystack of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertNotContains\\(\\) expects iterable, mixed given\\.$#"
+			count: 2
+			path: tests/Unit/Entity/Security/LocalAccountTest.php
+
+		-
 			message: "#^Method Tests\\\\Unit\\\\GraphQL\\\\Types\\\\DatetimeScalarTest\\:\\:testParseLiteral\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/Unit/GraphQL/Types/DatetimeScalarTest.php
@@ -896,12 +856,7 @@ parameters:
 			path: tests/Unit/Template/MenuBuilderTest.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Dotenv\\\\Dotenv\\:\\:bootEnv\\(\\)\\.$#"
-			count: 1
-			path: tests/bootstrap.php
-
-		-
-			message: "#^Call to function method_exists\\(\\) with 'Symfony\\\\\\\\Component\\\\\\\\Dotenv\\\\\\\\Dotenv' and 'bootEnv' will always evaluate to false\\.$#"
+			message: "#^Call to function method_exists\\(\\) with 'Symfony\\\\\\\\Component\\\\\\\\Dotenv\\\\\\\\Dotenv' and 'bootEnv' will always evaluate to true\\.$#"
 			count: 1
 			path: tests/bootstrap.php
 

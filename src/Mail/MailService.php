@@ -7,12 +7,15 @@ use App\Entity\Mail\Recipient;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class MailService
 {
     /**
-     * @var \Swift_Mailer
+     * @var MailerInterface
      */
     private $mailer;
 
@@ -31,7 +34,7 @@ class MailService
      */
     private $params;
 
-    public function __construct(\Swift_Mailer $mailer, EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ParameterBagInterface $params)
+    public function __construct(MailerInterface $mailer, EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ParameterBagInterface $params)
     {
         $this->mailer = $mailer;
         $this->em = $em;
@@ -60,17 +63,18 @@ class MailService
             }
 
             if ('' == trim($person->getName() ?? $person->getUsername() ?? '')) {
-                $addresses[] = $person->getEmail();
+                $addresses[] = new Address($person->getEmail());
             } else {
-                $addresses[$person->getEmail()] = $person->getName() ?? $person->getUsername();
+                $addresses[] = new Address($person->getEmail(), $person->getName() ?? $person->getUsername());
             }
         }
 
-        $message = (new \Swift_Message($title))
-            ->setFrom($from)
-            ->setTo($addresses)
-            ->setBody($body, 'text/html')
-            ->addPart($body_plain, 'text/plain')
+        $message = (new Email())
+            ->subject($title)
+            ->from($from)
+            ->to(...$addresses)
+            ->html($body)
+            ->text($body_plain)
         ;
 
         $content = json_encode([
@@ -79,7 +83,8 @@ class MailService
         ]);
 
         foreach ($attachments as $attachment) {
-            $message->attach($attachment);
+            assert($attachment instanceof Attachment);
+            $message->attach($attachment->body, $attachment->filename, $attachment->mimetype);
         }
 
         $msgEntity = new Mail();

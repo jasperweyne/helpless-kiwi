@@ -34,7 +34,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         parent::setUp();
 
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             PriceOptionFixture::class,
             ActivityFixture::class,
@@ -42,7 +42,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         ]);
 
         $this->login();
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
     /**
@@ -148,8 +148,9 @@ class RegistrationControllerTest extends AuthWebTestCase
         self::assertEquals(null, $registration->getDeleteDate());
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/delete/{$id}");
-        $this->client->submitForm('Ja, meld af');
+        $crawler = $this->client->request('GET', "/admin/activity/register/delete/{$id}");
+        $form = $crawler->selectButton('Ja, meld af')->form();
+        $this->client->submit($form);
 
         // Assert
         $registration = $this->em->getRepository(Registration::class)->find($id);
@@ -260,7 +261,6 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     public function testNullActivityNotAdmin(string $url): void
     {
-
         //arrange
         /** @var Registration $registration */
         $registration = $this->em->getRepository(Registration::class)->findOneBy(['activity' => null]);

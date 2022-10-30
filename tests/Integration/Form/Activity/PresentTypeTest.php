@@ -46,7 +46,7 @@ class PresentTypeTest extends KernelTestCase
             'present' => 2,
         ];
 
-        $formfactory = self::$container->get('form.factory');
+        $formfactory = self::getContainer()->get('form.factory');
         $form = $formfactory->create(PresentType::class, $type);
 
         $form->submit($formData);

@@ -1,0 +1,29 @@
+parameters:
+    locale: 'en'
+    # Adds a environment variables even if OpenID Connect is not used.
+    # This allows you to run cache:warmup even if your
+    # environment variables are not available.
+    # You should not need to change this value.
+    env(OIDC_ID): ''
+    env(OIDC_SECRET): ''
+    env(OIDC_ADDRESS): ''
+
+drenso_oidc:
+    #default_client: default # The default client, will be aliased to OidcClientInterface
+    clients:
+        default: # The client name, each client will be aliased to its name (for example, $defaultOidcClient)
+            # Required OIDC client configuration
+            well_known_url: '%env(OIDC_ADDRESS)%'
+            client_id: '%env(OIDC_ID)%'
+            client_secret: '%env(OIDC_SECRET)%'
+
+            # Extra configuration options
+            #well_known_cache_time: 3600 # Time in seconds, will only be used when symfony/cache is available
+            #redirect_route: '/login_check'
+            #custom_client_headers: []
+
+        # Add any extra client
+        #link: # Will be accessible using $linkOidcClient
+            #well_known_url: '%env(LINK_WELL_KNOWN_URL)%'
+            #client_id: '%env(LINK_CLIENT_ID)%'
+            #client_secret: '%env(LINK_CLIENT_SECRET)%'

@@ -2,7 +2,7 @@
 # Files in the packages/ subdirectory configure your dependencies.
 
 # Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     locale: 'en'
     # Adds a environment variables even if OpenID Connect is not used.
@@ -45,7 +45,7 @@ services:
 
     App\Template\AnnotationMenuExtension:
         class: App\Template\AnnotationMenuExtension
-        arguments: ["App\\Controller", "../src/Controller", "%kernel.root_dir%", "@annotation_reader"]
+        arguments: ["App\\Controller", "src/Controller", "%kernel.project_dir%", "@annotation_reader"]
 
     App\Log\Doctrine\EntityEventListener:
         tags:
@@ -64,34 +64,22 @@ services:
         App\Template\MenuExtensionInterface:
             tags: ['app.menu_extension']
 
-    Drenso\OidcBundle\OidcClient:
-        arguments:
-            $wellKnownUrl: '%env(SECURE_SCHEME)%://%env(OIDC_ADDRESS)%/.well-known/openid-configuration'
-            $clientId: '%env(OIDC_ID)%'
-            $clientSecret: '%env(OIDC_SECRET)%'
-            $redirectRoute: 'app_login_check'
-    
-    security.authentication.provider.oidc:
-        class: Drenso\OidcBundle\Security\Authentication\Provider\OidcProvider
-        arguments:
-            - ''
-            - '@security.user_checker'
-            - '@security.token_storage'
-            - '@logger'
-
-    security.authentication.listener.oidc:
-        class: Drenso\OidcBundle\Security\Firewall\OidcListener
-        arguments:
-            - '@security.token_storage'
-            - '@security.authentication.manager'
-            - '@security.authentication.session_strategy'
-            - '@security.http_utils'
-            - ''
-            - ''
-            - ''
-            - { }
-            - '@logger'
-            - '@Drenso\OidcBundle\OidcClient'
-
     App\GraphQL\Query:
         public: true
+
+    drenso.oidc.client:
+        public: true
+        class: App\Security\OptionalOidcClient
+        arguments:
+            - '@request_stack'
+            - '@security.http_utils'
+            - '@cache.app'
+            - '@drenso.oidc.url_fetcher.default'
+            - '@drenso.oidc.session_storage.default'
+            - '@drenso.oidc.jwt_helper.default'
+            - '%env(SECURE_SCHEME)%://%env(OIDC_ADDRESS)%/.well-known/openid-configuration'
+            - 3600
+            - '%env(OIDC_ID)%'
+            - '%env(OIDC_SECRET)%'
+            - '/login_check'
+            - '_remember_me'

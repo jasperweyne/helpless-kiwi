@@ -31,7 +31,7 @@ class EventControllerTest extends WebTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->events = self::$container->get(EventService::class);
+        $this->events = self::getContainer()->get(EventService::class);
         $this->eventController = new EventController($this->events);
     }
 

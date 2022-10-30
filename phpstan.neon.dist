@@ -7,13 +7,13 @@ parameters:
         - src
         - tests
     bootstrapFiles:
-        - bin/.phpunit/phpunit/vendor/autoload.php
+        - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     parallel:
         jobSize: 20
         maximumNumberOfProcesses: 32
         minimumNumberOfJobsPerProcess: 2
     symfony:
-        containerXmlPath: var/cache/dev/srcApp_KernelDevDebugContainer.xml
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
         consoleApplicationLoader: config/console.php
     doctrine:
         objectManagerLoader: config/object-manager.php

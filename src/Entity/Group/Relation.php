@@ -48,7 +48,7 @@ class Relation
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * @GQL\Field(type="LocalAccount")
      * @GQL\Description("The user who is a member of a group.")
-     * @GQL\Access("hasRole('ROLE_ADMIN')")
+     * @GQL\Access("isGranted('ROLE_ADMIN')")
      *
      * @var ?LocalAccount
      */

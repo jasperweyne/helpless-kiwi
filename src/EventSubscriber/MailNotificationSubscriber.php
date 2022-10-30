@@ -6,8 +6,8 @@ use App\Calendar\ICalProvider;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
+use App\Mail\Attachment;
 use App\Mail\MailService;
-use Swift_Attachment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -48,7 +48,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $this->user = $user;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         // return the subscribed events, their methods and priorities
         return [
@@ -71,8 +71,8 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $activity = $event->getRegistration()->getActivity();
         assert($activity !== null);
 
-        $ics = new Swift_Attachment(
-            $this->calendar->icalSingle($activity)->export(),
+        $ics = new Attachment(
+            $this->calendar->icalSingle($activity),
             $activity->getName().'.ics',
             'text/calendar'
         );
