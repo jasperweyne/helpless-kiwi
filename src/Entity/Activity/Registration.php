@@ -157,6 +157,11 @@ class Registration
         return $this;
     }
 
+    public function isExternal(): bool
+    {
+        return $this->getPerson() instanceof ExternalRegistrant;
+    }
+
     public function getActivity(): ?Activity
     {
         return $this->activity;
