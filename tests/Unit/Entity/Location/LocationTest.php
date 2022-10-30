@@ -5,6 +5,7 @@ namespace Tests\Unit\Entity\Location;
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -95,18 +96,26 @@ class LocationTest extends KernelTestCase
 
     public function testAddActivity(): void
     {
+        // arrange
         /** @var MockObject&Activity */
         $expected = $this->createMock(Activity::class);
         $expected->expects(self::once())->method('setLocation')->with($this->location);
+
+        // act
+        $this->location->addActivity($expected);
+
+        // assert
         $property = (new ReflectionClass(Location::class))
             ->getProperty('activities');
         $property->setAccessible(true);
-        $this->location->addActivity($expected);
-        self::assertContains($expected, $property->getValue($this->location));
+        $activities = $property->getValue($this->location);
+        self::assertInstanceOf(Collection::class, $activities);
+        self::assertContains($expected, $activities);
     }
 
     public function testRemoveActivity(): void
     {
+        // arrange
         /** @var MockObject&Activity */
         $expected = $this->createMock(Activity::class);
         $expected->method('getLocation')->willReturn($this->location);
@@ -114,8 +123,16 @@ class LocationTest extends KernelTestCase
         $property = (new ReflectionClass(Location::class))
             ->getProperty('activities');
         $property->setAccessible(true);
-        $property->getValue($this->location)->add($expected);
+        $activities = $property->getValue($this->location);
+        self::assertInstanceOf(Collection::class, $activities);
+        $activities->add($expected);
+
+        // act
         $this->location->removeActivity($expected);
-        self::assertNotContains($expected, $property->getValue($this->location));
+
+        // assert
+        $activities = $property->getValue($this->location);
+        self::assertInstanceOf(Collection::class, $activities);
+        self::assertNotContains($expected, $activities);
     }
 }
