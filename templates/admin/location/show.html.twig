@@ -4,6 +4,8 @@
     {% set page_title = 'Locatie ' ~ location.address %}
     
     {% block buttons %}
+        <a href="{{ path('admin_location_edit', { 'id': location.id }) }}">Bewerken</a>
+        <a href="{{ path('admin_location_delete', { 'id': location.id }) }}">Verwijderen</a>
         <a href="{{ path('admin_location_index') }}">Terug</a>
     {% endblock %}
 {% endif %}

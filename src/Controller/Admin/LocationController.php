@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Location\Location;
+use App\Form\Delete\LocationDeleteData;
+use App\Form\Location\LocationDeleteType;
 use App\Form\Location\LocationType;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -114,12 +116,23 @@ class LocationController extends AbstractController
      */
     public function deleteAction(Request $request, Location $location): Response
     {
-        $form = $this->createDeleteForm($location);
+        $replace = new LocationDeleteData();
+
+        $form = $this->createForm(LocationDeleteType::class, $replace, ['location' => $location]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->beginTransaction();
+
+            $update = $this->em->createQuery('UPDATE App\Entity\Activity\Activity a SET a.location = :new WHERE a.location = :old');
+            $update->execute([
+                'new' => $replace->activity,
+                'old' => $location,
+            ]);
+
             $this->em->remove($location);
             $this->em->flush();
+            $this->em->commit();
 
             return $this->redirectToRoute('admin_location_index');
         }
@@ -128,19 +141,5 @@ class LocationController extends AbstractController
             'location' => $location,
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * Creates a form to check out all checked in users.
-     *
-     * @return \Symfony\Component\Form\FormInterface The form
-     */
-    private function createDeleteForm(Location $location): FormInterface
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_location_delete', ['id' => $location->getId()]))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }
