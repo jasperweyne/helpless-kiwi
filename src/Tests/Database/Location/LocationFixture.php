@@ -15,7 +15,11 @@ class LocationFixture extends Fixture
         $location = new Location();
         $location->setAddress('@localhost');
 
+        $location2 = new Location();
+        $location2->setAddress('@externalhost');
+
         $manager->persist($location);
+        $manager->persist($location2);
         $this->addReference(self::LOCATION_REFERENCE, $location);
 
         $manager->flush();
