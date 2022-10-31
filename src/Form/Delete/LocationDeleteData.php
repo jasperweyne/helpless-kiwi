@@ -2,10 +2,12 @@
 
 namespace App\Form\Delete;
 
+use App\Entity\Location\Location;
+
 class LocationDeleteData
 {
     /**
-     * @var ?Location
+     * @var Location
      */
     public $activity;
 }
