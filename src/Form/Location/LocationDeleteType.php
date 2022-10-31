@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class LocationDeleteType extends AbstractType
 {
@@ -33,6 +34,9 @@ class LocationDeleteType extends AbstractType
                         ;
                 },
                 'attr' => ['data-select' => 'true'],
+                'constraints' => [
+                    new NotBlank(),
+                ]
             ])
         ;
     }

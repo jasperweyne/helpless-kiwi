@@ -128,7 +128,7 @@ class LocationControllerTest extends AuthWebTestCase
 
         // Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/delete");
-        $form = $crawler->selectButton('Ja, verwijder')->form();
+        $form = $crawler->selectButton('Bevestig verwijderen')->form();
         $crawler = $this->client->submit($form);
 
         $allLocation = $this->em->getRepository(Location::class)->findAll();
