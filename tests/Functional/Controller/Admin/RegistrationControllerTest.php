@@ -236,7 +236,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         //act
         $this->logout();
-        $this->login(false);
+        $this->login([]);
         $this->client->request('GET', $url);
 
         //assert
@@ -259,7 +259,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         //act
         $this->logout();
-        $this->login(false);
+        $this->login([]);
         $this->client->request('GET', $url);
 
         //assert
