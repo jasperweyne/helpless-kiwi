@@ -31,14 +31,14 @@ class GroupControllerTest extends AuthWebTestCase
     {
         parent::setUp();
 
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             RelationFixture::class,
             GroupFixture::class,
         ]);
 
         $this->login();
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
     /**

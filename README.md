@@ -75,10 +75,8 @@ appreciated!
 | **Name** | **Organisation** |
 |---|---|
 | [Jasper Weyne](https://github.com/jasperweyne) | Project Owner |
-| [Eva Biesot](https://github.com/eeeevieb) | Particolarte |
 | [Karel Zijp](https://github.com/zpks) | Particolarte |
 | [Peter Sabel (Zabel)](https://github.com/A-Daneel) | Particolarte |
-| Arnold van Bemmelen | ViaKunst |
 | [David Koymans](https://github.com/DavidckPixel) | ViaKunst |
 | [Machiel Kruger](https://github.com/mkrugr) | ViaKunst |
 

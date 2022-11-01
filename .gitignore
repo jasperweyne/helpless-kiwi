@@ -10,7 +10,6 @@
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
-.phpunit
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
@@ -27,7 +26,7 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 ###> friendsofphp/php-cs-fixer ###
-/.php_cs.php
+/.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 

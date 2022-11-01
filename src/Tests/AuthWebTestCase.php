@@ -8,24 +8,28 @@ use App\Entity\Group\Relation;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
  */
 class AuthWebTestCase extends WebTestCase
 {
-    use FixturesTrait;
-
     /**
      * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
      */
     protected $client;
+
+
+    /**
+     * @var AbstractDatabaseTool
+     */
+    protected $databaseTool;
 
     /**
      * {@inheritdoc}
@@ -38,13 +42,16 @@ class AuthWebTestCase extends WebTestCase
         $this->client->followRedirects(true);
 
         // Get all database tables
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
 
         // Write all tables to database
         $schema = new SchemaTool($em);
         $schema->createSchema($classes);
+
+        // Load database tool
+        $this->databaseTool = $this->client->getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
     /**
@@ -60,14 +67,13 @@ class AuthWebTestCase extends WebTestCase
     protected function login(bool $admin = true): void
     {
         /** @var EntityManagerInterface */
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $users = $em->getRepository(LocalAccount::class)->findAll();
         if (empty($users)) {
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 
-        /** @var Session $session */
-        $session = self::$container->get('session');
+        $session = self::getContainer()->get(SessionInterface::class);
 
         $firewallName = 'main';
         $firewallContext = 'main';
@@ -98,7 +104,7 @@ class AuthWebTestCase extends WebTestCase
 
     protected function logout(): void
     {
-        self::$container->get('session')->invalidate();
-        self::$container->get('security.token_storage')->setToken(null);
+        self::getContainer()->get(SessionInterface::class)->invalidate();
+        self::getContainer()->get('security.token_storage')->setToken(null);
     }
 }

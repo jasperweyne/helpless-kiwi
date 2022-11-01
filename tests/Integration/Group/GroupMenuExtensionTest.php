@@ -10,7 +10,8 @@ use App\Tests\Database\Group\RelationFixture;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
@@ -22,7 +23,10 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class GroupMenuExtensionTest extends KernelTestCase
 {
-    use FixturesTrait;
+    /**
+     * @var AbstractDatabaseTool
+     */
+    protected $databaseTool;
 
     /**
      * @var GroupMenuExtension
@@ -43,7 +47,7 @@ class GroupMenuExtensionTest extends KernelTestCase
         self::bootKernel();
 
         // Get all database tables
-        $em = self::$container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $cmf = $em->getMetadataFactory();
         $classes = $cmf->getAllMetadata();
 
@@ -51,8 +55,11 @@ class GroupMenuExtensionTest extends KernelTestCase
         $schema = new SchemaTool($em);
         $schema->createSchema($classes);
 
+        // Load database tool
+        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+
         // load database fixtures
-        $this->loadFixtures([
+        $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
             GroupFixture::class,
             RelationFixture::class,
@@ -66,7 +73,7 @@ class GroupMenuExtensionTest extends KernelTestCase
 
         // build token storage
         $token = new PostAuthenticationGuardToken($this->user, 'main', ['ROLE_USER']);
-        $tokenStorage = self::$container->get(TokenStorageInterface::class);
+        $tokenStorage = self::getContainer()->get(TokenStorageInterface::class);
         $tokenStorage->setToken($token);
 
         $this->groupMenuExtension = new GroupMenuExtension($em, $tokenStorage);

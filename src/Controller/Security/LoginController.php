@@ -3,7 +3,7 @@
 namespace App\Controller\Security;
 
 use App\Template\Annotation\MenuItem;
-use Drenso\OidcBundle\OidcClient;
+use Drenso\OidcBundle\OidcClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +15,7 @@ class LoginController extends AbstractController
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(Request $request, AuthenticationUtils $authenticationUtils, OidcClient $oidc): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils, OidcClientInterface $oidc): Response
     {
         // you can't login again while you already are, redirect
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {

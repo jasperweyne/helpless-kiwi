@@ -25,7 +25,7 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
     {
         parent::setUp();
 
-        $this->em = self::$container->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
     /**
@@ -65,7 +65,7 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         $account = $this->em->getRepository(LocalAccount::class)->findBy(['email' => $email]);
 
         // Assert
-        self::assertContains('login registered!', $output);
+        self::assertStringContainsString('login registered!', $output);
         self::assertEquals(count($account), 1);
         self::assertEquals(0, $statusCode);
     }
@@ -90,7 +90,7 @@ class CreateLocalAccountCommandTest extends AuthWebTestCase
         $account = $this->em->getRepository(LocalAccount::class)->findBy(['email' => $email]);
 
         // Assert
-        self::assertContains('login registered!', $output);
+        self::assertStringContainsString('login registered!', $output);
         self::assertEquals(count($account), 1);
     }
 }
