@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use UserInterface as GlobalUserInterface;
 
 class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterface
 {
@@ -33,7 +34,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        return $this->loadUserByUsername($user->getUsername());
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
     }
 
     /**
@@ -67,6 +68,20 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
 
     public function loadOidcUser(string $userIdentifier): UserInterface
     {
+        // Dresno oidc auth flow.
+        $repository = $this->em->getRepository(LocalAccount::class);
+        $user = $repository->findOneBy(['oidc' => $userIdentifier]);
+
+        if ($user === null) {
+            throw new OidcUserNotFoundException("$userIdentifier is unknown");
+        }
+
+        return $user;
+    }
+
+    public function loadAccessTokenUser(string $userIdentifier): UserInterface 
+    {
+        // Access Token auth flow.
         $repository = $this->em->getRepository(LocalAccount::class);
         $user = $repository->findOneBy(['oidc' => $userIdentifier]);
 

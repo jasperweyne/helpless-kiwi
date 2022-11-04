@@ -41,7 +41,7 @@ class OptionalOidcClient extends OidcClient
                 $redirectRoute,
                 $rememberMeParameter
             );
-        } catch (\LogicException) {
+        } catch (\LogicException $exception) {
             // this is fine, continue
         }
     }
