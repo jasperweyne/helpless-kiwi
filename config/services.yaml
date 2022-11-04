@@ -67,6 +67,8 @@ services:
     App\GraphQL\Query:
         public: true
 
+    App\Security\LocalUserProvider:
+
     Drenso\OidcBundle\OidcClient:
         arguments:
             - '@request_stack'

@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Drenso\OidcBundle\Exception\OidcException;
 use Drenso\OidcBundle\Security\Exception\OidcAuthenticationException;
-use Symfony\Component\HttpKernel\Log\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * This class authenticates access token users.
@@ -33,9 +33,15 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
      */
     private $oidcClient;
 
-    public function __construct(OidcClient $oidcClient)
+    private LocalUserProvider $provider;
+
+    private LoggerInterface $logger;
+
+    public function __construct(OidcClient $oidcClient, LoggerInterface $logger, LocalUserProvider $provider )
     {
         $this->oidcClient = $oidcClient;
+        $this->logger = $logger;
+        $this->provider = $provider;
     }
 
     /**
@@ -55,6 +61,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
         $apiToken = $request->headers->get('Authorization');
         $matches = [];
 
+        
         if (null === $apiToken || 1 !== preg_match('/^Bearer ([A-Za-z0-9-_\.\~\+\/]+=*)$/', $apiToken, $matches)) {
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"
@@ -63,7 +70,8 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
 
         // Dump the token in the oidc class, so we can hijack their code and config.
         $tokens = new stdClass();
-        $tokens->access_token = $apiToken;
+        $tokens->access_token = substr($apiToken,7);
+        $this->logger->log(1,$tokens->access_token);
         $tokens->id_token = 'not used';
         $authData = new OidcTokens($tokens);
 
@@ -71,7 +79,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
         try {
             // Retrieve the user data with the authentication data
             $userData = $this->oidcClient->retrieveUserInfo($authData);
-
+            $this->logger->log(1,var_export($userData,true));
             // Ensure the user exists
             if (!$userIdentifier = $userData->getUserDataString('sub')) {
                 throw new UserNotFoundException(
@@ -81,12 +89,14 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
                         )
                     );
             }
-            $this->oidcUserProvider->ensureUserExists($userIdentifier, $userData);
+            $this->logger->log(1,$userIdentifier);
+
+            $this->provider->ensureUserExists($userIdentifier, $userData);
         
             // Create the passport
             $passport = new SelfValidatingPassport(new UserBadge(
                 $userIdentifier,
-                fn (string $userIdentifier) => $this->oidcUserProvider->loadOidcUser($userIdentifier),
+                fn (string $userIdentifier) => $this->provider->loadOidcUser($userIdentifier),
             ));
             $passport->setAttribute(OidcToken::AUTH_DATA_ATTR, $authData);
             $passport->setAttribute(OidcToken::USER_DATA_ATTR, $userData);
@@ -100,7 +110,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // on success, let the request continue
-        return 'ee';
+        return null;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
