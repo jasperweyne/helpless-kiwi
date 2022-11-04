@@ -60,7 +60,6 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
     {
         $apiToken = $request->headers->get('Authorization');
         $matches = [];
-
         
         if (null === $apiToken || 1 !== preg_match('/^Bearer ([A-Za-z0-9-_\.\~\+\/]+=*)$/', $apiToken, $matches)) {
             // The token header was empty, authentication fails with HTTP Status
@@ -70,16 +69,13 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
 
         // Dump the token in the oidc class, so we can hijack their code and config.
         $tokens = new stdClass();
-        $tokens->access_token = substr($apiToken,7);
-        $this->logger->log(1,$tokens->access_token);
+        $tokens->access_token = substr($apiToken, 7);
         $tokens->id_token = 'not used';
         $authData = new OidcTokens($tokens);
 
-        // Steals your code, while your not looking.
         try {
             // Retrieve the user data with the authentication data
             $userData = $this->oidcClient->retrieveUserInfo($authData);
-            $this->logger->log(1,var_export($userData,true));
             // Ensure the user exists
             if (!$userIdentifier = $userData->getUserDataString('sub')) {
                 throw new UserNotFoundException(
@@ -89,8 +85,6 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
                         )
                     );
             }
-            $this->logger->log(1,$userIdentifier);
-
             $this->provider->ensureUserExists($userIdentifier, $userData);
         
             // Create the passport
