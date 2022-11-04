@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Drenso\OidcBundle\Exception\OidcException;
 use Drenso\OidcBundle\Security\Exception\OidcAuthenticationException;
+use Symfony\Component\HttpKernel\Log\Logger;
 
 /**
  * This class authenticates access token users.
@@ -63,15 +64,16 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
         // Dump the token in the oidc class, so we can hijack their code and config.
         $tokens = new stdClass();
         $tokens->access_token = $apiToken;
+        $tokens->id_token = 'not used';
         $authData = new OidcTokens($tokens);
 
         // Steals your code, while your not looking.
         try {
             // Retrieve the user data with the authentication data
             $userData = $this->oidcClient->retrieveUserInfo($authData);
-        
+
             // Ensure the user exists
-            if (!$userIdentifier = $userData->getUserDataString($this->userIdentifierProperty)) {
+            if (!$userIdentifier = $userData->getUserDataString('sub')) {
                 throw new UserNotFoundException(
                     sprintf(
                         'User identifier property (%s) yielded empty user identifier',
@@ -98,7 +100,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // on success, let the request continue
-        return null;
+        return 'ee';
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

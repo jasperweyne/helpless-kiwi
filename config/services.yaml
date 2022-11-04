@@ -67,9 +67,7 @@ services:
     App\GraphQL\Query:
         public: true
 
-    drenso.oidc.client:
-        public: true
-        class: App\Security\OptionalOidcClient
+    Drenso\OidcBundle\OidcClient:
         arguments:
             - '@request_stack'
             - '@security.http_utils'

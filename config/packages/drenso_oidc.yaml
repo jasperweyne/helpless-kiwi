@@ -13,7 +13,7 @@ drenso_oidc:
     clients:
         default: # The client name, each client will be aliased to its name (for example, $defaultOidcClient)
             # Required OIDC client configuration
-            well_known_url: '%env(OIDC_ADDRESS)%'
+            well_known_url: '%env(SECURE_SCHEME)%://%env(OIDC_ADDRESS)%/.well-known/openid-configuration'
             client_id: '%env(OIDC_ID)%'
             client_secret: '%env(OIDC_SECRET)%'
 
