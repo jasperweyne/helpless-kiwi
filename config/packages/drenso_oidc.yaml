@@ -18,8 +18,8 @@ drenso_oidc:
             client_secret: '%env(OIDC_SECRET)%'
 
             # Extra configuration options
-            #well_known_cache_time: 3600 # Time in seconds, will only be used when symfony/cache is available
-            #redirect_route: '/login_check'
+            well_known_cache_time: 3600 
+            redirect_route: '/login_check'
             #custom_client_headers: []
 
         # Add any extra client
