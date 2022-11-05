@@ -24,17 +24,13 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         # firewall for bearer access tokens.
-        api:
-            pattern: ^/api/
-            stateless: true
-            provider: app_user_provider
-            custom_authenticators:
-                - App\Security\AccessTokenAuthenticator
         # main firewall for anything with php session tokens.
         main:
             lazy: true
             oidc: ~
             provider: app_user_provider
+            custom_authenticators:
+                - App\Security\AccessTokenAuthenticator
             form_login:
                 login_path: app_login
                 check_path: app_login
