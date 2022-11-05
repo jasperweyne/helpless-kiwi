@@ -79,7 +79,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         return $user;
     }
 
-    public function loadAccessTokenUser(string $userIdentifier): UserInterface 
+    public function loadAccessTokenUser(string $userIdentifier): UserInterface
     {
         // Access Token auth flow.
         $repository = $this->em->getRepository(LocalAccount::class);

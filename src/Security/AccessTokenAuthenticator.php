@@ -27,7 +27,6 @@ use Psr\Log\LoggerInterface;
  */
 class AccessTokenAuthenticator extends AbstractAuthenticator
 {
-        
     /**
      * @var OidcClient
      */
@@ -37,7 +36,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
 
     private LoggerInterface $logger;
 
-    public function __construct(OidcClient $oidcClient, LoggerInterface $logger, LocalUserProvider $provider )
+    public function __construct(OidcClient $oidcClient, LoggerInterface $logger, LocalUserProvider $provider)
     {
         $this->oidcClient = $oidcClient;
         $this->logger = $logger;
@@ -60,7 +59,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
     {
         $apiToken = $request->headers->get('Authorization');
         $matches = [];
-        
+
         if (null === $apiToken || 1 !== preg_match('/^Bearer ([A-Za-z0-9-_\.\~\+\/]+=*)$/', $apiToken, $matches)) {
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"
@@ -82,11 +81,11 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
                     sprintf(
                         'User identifier property (%s) yielded empty user identifier',
                         $this->userIdentifierProperty
-                        )
-                    );
+                    )
+                );
             }
             $this->provider->ensureUserExists($userIdentifier, $userData);
-        
+
             // Create the passport
             $passport = new SelfValidatingPassport(new UserBadge(
                 $userIdentifier,
@@ -94,7 +93,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
             ));
             $passport->setAttribute(OidcToken::AUTH_DATA_ATTR, $authData);
             $passport->setAttribute(OidcToken::USER_DATA_ATTR, $userData);
-        
+
             return $passport;
         } catch (OidcException $e) {
             throw new OidcAuthenticationException('OIDC authentication failed', $e);
