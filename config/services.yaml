@@ -78,7 +78,7 @@ services:
             - '@drenso.oidc.url_fetcher.default'
             - '@drenso.oidc.session_storage.default'
             - '@drenso.oidc.jwt_helper.default'
-            - "@=container.hasParameter('OIDC_ADDRESS')"
+            - '%env(SECURE_SCHEME)%://%env(OIDC_ADDRESS)%/.well-known/openid-configuration'
             - 3600
             - '%env(OIDC_ID)%'
             - '%env(OIDC_SECRET)%'
@@ -86,4 +86,7 @@ services:
             - '_remember_me'
     
     drenso.oidc.client:
+        alias: Drenso\OidcBundle\OidcClientInterface
+
+    drenso.oidc.client.default:
         alias: Drenso\OidcBundle\OidcClientInterface
