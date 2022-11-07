@@ -3,7 +3,7 @@
 namespace App\Security;
 
 use Drenso\OidcBundle\Model\OidcTokens;
-use Drenso\OidcBundle\OidcClient;
+use Drenso\OidcBundle\OidcClientInterface;
 use Drenso\OidcBundle\Security\Token\OidcToken;
 use stdClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 class AccessTokenAuthenticator extends AbstractAuthenticator
 {
     /**
-     * @var OidcClient
+     * @var OidcClientInterface
      */
     private $oidcClient;
 
@@ -36,7 +36,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
 
     private LoggerInterface $logger;
 
-    public function __construct(OidcClient $oidcClient, LoggerInterface $logger, LocalUserProvider $provider)
+    public function __construct(OidcClientInterface $oidcClient, LoggerInterface $logger, LocalUserProvider $provider)
     {
         $this->oidcClient = $oidcClient;
         $this->logger = $logger;
@@ -52,7 +52,7 @@ class AccessTokenAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return $request->headers->has('Authorization');
+        return ($request->headers->has('Authorization') && isset($_ENV['OIDC_ADDRESS'])) ;
     }
 
     public function authenticate(Request $request): Passport
