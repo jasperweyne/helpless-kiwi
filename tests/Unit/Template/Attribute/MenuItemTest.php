@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Unit\Template\Annotation;
+namespace Tests\Unit\Template\Attribute;
 
-use App\Template\Annotation\MenuItem;
+use App\Template\Attribute\MenuItem;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class MenuItemTest.
  *
- * @covers \App\Template\Annotation\MenuItem
+ * @covers \App\Template\Attribute\MenuItem
  */
 class MenuItemTest extends KernelTestCase
 {
@@ -27,7 +27,7 @@ class MenuItemTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->menuItem = new MenuItem();
+        $this->menuItem = new MenuItem('test');
     }
 
     /**

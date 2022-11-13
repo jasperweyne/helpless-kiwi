@@ -2,11 +2,11 @@
 
 namespace App\Template;
 
-use App\Template\Annotation\MenuItem;
+use App\Template\Attribute\MenuItem;
 use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Routing\Annotation\Route;
 
 // ToDo: implement caching
 /**
@@ -23,11 +23,6 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      * @var string
      */
     private $directory;
-
-    /**
-     * @var Reader
-     */
-    private $annotationReader;
 
     /**
      * The Kernel root directory.
@@ -49,10 +44,9 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      * @param string $directory
      *                          The directory of the menu items
      */
-    public function __construct(string $namespace, string $directory, string $projectDir, Reader $annotationReader)
+    public function __construct(string $namespace, string $directory, string $projectDir)
     {
         $this->namespace = $namespace;
-        $this->annotationReader = $annotationReader;
         $this->directory = $directory;
         $this->projectDir = $projectDir;
     }
@@ -101,6 +95,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      */
     private function discoverMenuItems(): void
     {
+        // Iterate over all php files in the specified directory
         $path = $this->projectDir.'/'.$this->directory;
         $finder = new Finder();
         $finder->files()->name('*.php')->in($path);
@@ -109,31 +104,40 @@ class AnnotationMenuExtension implements MenuExtensionInterface
         foreach ($finder as $file) {
             $namespace = $file->getRelativePath() ? '\\'.strtr($file->getRelativePath(), '/', '\\') : '';
             $class = $this->namespace.$namespace.'\\'.$file->getBasename('.php');
-            $refl = new \ReflectionClass($class);
+            $reflClass = new \ReflectionClass($class);
 
-            $classRoute = $this->annotationReader->getClassAnnotation($refl, 'Symfony\Component\Routing\Annotation\Route');
-            $routePrefix = $classRoute ? $classRoute->getName() : '';
+            // Check for a Symfony route prefix defined at class level
+            $routePrefix = '';
+            $classRoutes = $reflClass->getAttributes(Route::class);
+            if (count($classRoutes) > 0) {
+                /** @var Route $classRoute */
+                $classRoute = reset($classRoutes)->newInstance();
+                $routePrefix = $classRoute->getName();
+            }
 
-            foreach ($refl->getMethods() as $method) {
-                $annotations = $this->annotationReader->getMethodAnnotations($method);
-                foreach ($annotations as $annotation) {
-                    if (!$annotation instanceof MenuItem) {
-                        continue;
-                    }
+            // Find and add MenuItem attribute(s) for each method to the index
+            foreach ($reflClass->getMethods() as $method) {
+                foreach ($method->getAttributes(MenuItem::class) as $reflMethod) {
+                    /** @var MenuItem $attribute */
+                    $attribute = $reflMethod->newInstance();
 
-                    if (null === $annotation->getPath()) {
-                        $route = $this->annotationReader->getMethodAnnotation($method, 'Symfony\Component\Routing\Annotation\Route');
-                        if (!$route) {
-                            throw AnnotationException::semanticalError('An Symfony\Component\Routing\Annotation\Route annotation is required when using a App\Template\Annotation\MenuItem annotation');
+                    // If no path set, extract it from the Route attribute
+                    if (null === $attribute->getPath()) {
+                        $routes = $method->getAttributes(Route::class);
+                        if (count($routes) === 0) {
+                            throw AnnotationException::semanticalError('A Symfony\Component\Routing\Annotation\Route attribute is required when using a App\Template\Attribute\MenuItem attribute');
                         }
 
-                        $annotation->setPath($routePrefix.$route->getName());
+                        /** @var Route $route */
+                        $route = reset($routes)->newInstance();
+                        $attribute->setPath($routePrefix.$route->getName());
                     }
 
-                    if (!array_key_exists($annotation->menu, $this->menuItems)) {
-                        $this->menuItems[$annotation->menu] = [];
+                    // Add the menu item to the index
+                    if (!array_key_exists($attribute->getMenu() ?? '', $this->menuItems)) {
+                        $this->menuItems[$attribute->getMenu()] = [];
                     }
-                    $this->menuItems[$annotation->menu][] = $annotation;
+                    $this->menuItems[$attribute->getMenu()][] = $attribute;
                 }
             }
         }

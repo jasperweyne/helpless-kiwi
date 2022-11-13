@@ -14,111 +14,98 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @ORM\Entity
- * @GQL\Type
- * @GQL\Description("A registered user who can log in and register for activities.")
- */
+#[ORM\Entity]
+#[GQL\Type]
+#[GQL\Description("A registered user who can log in and register for activities.")]
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     *
      * @var ?string
      */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue(strategy: "UUID")]
+    #[ORM\Column(type: "guid")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @GQL\Field(type="String")
-     * @GQL\Description("The e-mail address of the user.")
-     * @GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")
-     *
      * @var string
      */
+    #[ORM\Column(type: "string", length: 180, unique: true)]
+    #[GQL\Field(type: "String")]
+    #[GQL\Description("The e-mail address of the user.")]
+    #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=180)
-     * @GQL\Field(type="String")
-     * @GQL\Description("The given name of the user (the first name in western cultures).")
-     * @GQL\Access("isAuthenticated()")
-     *
      * @var string
      */
+    #[ORM\Column(type: "string", length: 180)]
+    #[GQL\Field(type: "String")]
+    #[GQL\Description("The given name of the user (the first name in western cultures).")]
+    #[GQL\Access("isAuthenticated()")]
     private $givenName;
 
     /**
-     * @ORM\Column(type="string", length=180)
-     * @GQL\Field(type="String")
-     * @GQL\Description("The family name of the user (the last name in western cultures).")
-     * @GQL\Access("isAuthenticated()")
-     *
      * @var string
      */
+    #[ORM\Column(type: "string", length: 180)]
+    #[GQL\Field(type: "String")]
+    #[GQL\Description("The family name of the user (the last name in western cultures).")]
+    #[GQL\Access("isAuthenticated()")]
     private $familyName;
 
     /**
      * The hashed password.
      *
-     * @ORM\Column(type="string", nullable=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", nullable: true)]
     private $password;
 
     /**
      * The OpenID Connect subject claim value.
      *
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", length: 255, nullable: true, unique: true)]
     private $oidc;
 
     /**
-     * @ORM\Column(type="json")
-     *
      * @var string[]
      */
+    #[ORM\Column(type: "json")]
     private $roles;
 
     /**
      * Encrypted string whose value is sent to the user email address in order to (re-)set the password.
      *
-     * @ORM\Column(name="password_request_token", type="string", nullable=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(name: "password_request_token", type: "string", nullable: true)]
     protected $passwordRequestToken;
 
     /**
-     * @ORM\Column(name="password_requested_at", type="datetime", nullable=true)
-     *
      * @var ?DateTime
      */
+    #[ORM\Column(name: "password_requested_at", type: "datetime", nullable: true)]
     protected $passwordRequestedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=Registration::class, mappedBy="person")
-     * @GQL\Field(type="[Registration]")
-     * @GQL\Description("All activity registrations for the user.")
-     * @GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")
-     *
      * @var Collection<int, Registration>
      */
+    #[ORM\OneToMany(targetEntity: Registration::class, mappedBy: "person")]
+    #[GQL\Field(type: "[Registration]")]
+    #[GQL\Description("All activity registrations for the user.")]
+    #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $registrations;
 
     /**
-     * @ORM\OneToMany(targetEntity=Relation::class, mappedBy="person")
-     * @GQL\Field(type="[Relation]")
-     * @GQL\Description("All group membership relations for the user.")
-     * @GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")
-     *
      * @var Collection<int, Relation>
      */
+    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "person")]
+    #[GQL\Field(type: "[Relation]")]
+    #[GQL\Description("All group membership relations for the user.")]
+    #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $relations;
 
     /**
@@ -233,11 +220,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    /**
-     * @GQL\Field(type="Boolean!")
-     * @GQL\Description("Whether this user is an administrator.")
-     * @GQL\Access("isAuthenticated()")
-     */
+    #[GQL\Field(type: "Boolean!")]
+    #[GQL\Description("Whether this user is an administrator.")]
+    #[GQL\Access("isAuthenticated()")]
     public function isAdmin(): bool
     {
         return in_array('ROLE_ADMIN', $this->getRoles(), true);
