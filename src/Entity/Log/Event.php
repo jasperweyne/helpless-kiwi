@@ -8,15 +8,10 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(
-    name: "log",
-    indexes: [
-    new ORM\Index(name: "search_idx", columns: ["object_id", "object_type"]),
-    new ORM\Index(name: "order_idx", columns: ["time"]),
-    new ORM\Index(name: "discr_idx", columns: ["discr"])
-  ]
-)]
-
+#[ORM\Table(name: "log")]
+#[ORM\Index(name: "search_idx", columns: ["object_id", "object_type"])]
+#[ORM\Index(name: "order_idx", columns: ["time"])]
+#[ORM\Index(name: "discr_idx", columns: ["discr"])]
 class Event
 {
     /**
