@@ -67,9 +67,8 @@ services:
     App\GraphQL\Query:
         public: true
 
-    drenso.oidc.client:
-        public: true
-        class: App\Security\OptionalOidcClient
+    Drenso\OidcBundle\OidcClientInterface:
+        factory: ['@App\Security\OidcClientFactory', createOidcClient]
         arguments:
             - '@request_stack'
             - '@security.http_utils'
@@ -83,3 +82,9 @@ services:
             - '%env(OIDC_SECRET)%'
             - '/login_check'
             - '_remember_me'
+    
+    drenso.oidc.client:
+        alias: Drenso\OidcBundle\OidcClientInterface
+
+    drenso.oidc.client.default:
+        alias: Drenso\OidcBundle\OidcClientInterface
