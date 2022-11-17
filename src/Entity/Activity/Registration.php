@@ -49,7 +49,7 @@ class Registration
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
-     * @ORM\JoinColumn(name="activity", referencedColumnName="id")
+     * @ORM\JoinColumn(name="activity", referencedColumnName="id", onDelete="CASCADE"))
      * @GQL\Field(type="Activity!")
      * @GQL\Description("The activity for which the user registered.")
      *
