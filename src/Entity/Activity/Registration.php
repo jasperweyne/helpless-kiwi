@@ -27,7 +27,7 @@ class Registration
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @GQL\Field(type="PriceOption!")
      * @GQL\Description("The specific registration option of the activity this registration points to.")
      * @Assert\NotBlank

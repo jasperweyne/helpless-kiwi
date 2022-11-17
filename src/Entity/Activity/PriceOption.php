@@ -37,7 +37,7 @@ class PriceOption
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="options")
-     * @ORM\JoinColumn(name="activity", referencedColumnName="id")
+     * @ORM\JoinColumn(name="activity", referencedColumnName="id", onDelete="CASCADE")
      * @GQL\Field(type="Activity!")
      * @GQL\Description("The activity associated with this registration option.")
      *
