@@ -40,8 +40,8 @@ final class Version20201005164015 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_price_option ADD CONSTRAINT FK_171FA8E0466F2FFC FOREIGN KEY (target) REFERENCES kiwi_taxonomy (id) ');
         $this->addSql('ALTER TABLE kiwi_price_option ADD CONSTRAINT FK_171FA8E0AC74095A FOREIGN KEY (activity) REFERENCES kiwi_activity (id) ');
         $this->addSql('ALTER TABLE kiwi_recipient ADD CONSTRAINT FK_6804FB495126AC48 FOREIGN KEY (mail) REFERENCES kiwi_mail (id) ');
-        $this->addSql('ALTER TABLE kiwi_registration ADD CONSTRAINT FK_63EB17A3A7C41D6F FOREIGN KEY (option_id) REFERENCES kiwi_price_option (id) ');
-        $this->addSql('ALTER TABLE kiwi_registration ADD CONSTRAINT FK_63EB17A3AC74095A FOREIGN KEY (activity) REFERENCES kiwi_activity (id) ');
+        $this->addSql('ALTER TABLE kiwi_registration ADD CONSTRAINT FK_63EB17A3A7C41D6F FOREIGN KEY (option_id) REFERENCES kiwi_price_option (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE kiwi_registration ADD CONSTRAINT FK_63EB17A3AC74095A FOREIGN KEY (activity) REFERENCES kiwi_activity (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_62894749727ACA70 FOREIGN KEY (parent_id) REFERENCES kiwi_relation (id) ');
         $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_62894749FE54D947 FOREIGN KEY (group_id) REFERENCES kiwi_taxonomy (id) ');
         $this->addSql('ALTER TABLE kiwi_taxonomy ADD CONSTRAINT FK_FD12B83D3D8E604F FOREIGN KEY (parent) REFERENCES kiwi_taxonomy (id) ');
@@ -51,7 +51,7 @@ final class Version20201005164015 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-        
+
         $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_AC74095A466F2FFC');
         $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_AC74095A5E9E89CB');
         $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_AC74095AED07F46C');
