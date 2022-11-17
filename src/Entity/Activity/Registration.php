@@ -26,7 +26,7 @@ class Registration
      * @var PriceOption
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\PriceOption", inversedBy: 'registrations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[GQL\Field(type: 'PriceOption!')]
     #[GQL\Description('The specific registration option of the activity this registration points to.')]
     #[Assert\NotBlank]
@@ -46,7 +46,7 @@ class Registration
      * @var ?Activity
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\Activity", inversedBy: 'registrations')]
-    #[ORM\JoinColumn(name: 'activity', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'activity', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[GQL\Field(type: 'Activity!')]
     #[GQL\Description('The activity for which the user registered.')]
     private $activity;

@@ -9,10 +9,8 @@ use App\Entity\Group\Group;
 use App\Entity\Location\Location;
 use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
@@ -21,6 +19,7 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
  * Class ActivityTest.
  *
  * @covers \App\Entity\Activity\Activity
+ *
  * @group entities
  */
 class ActivityTest extends KernelTestCase
@@ -54,7 +53,7 @@ class ActivityTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -64,7 +63,7 @@ class ActivityTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->activity->setId($expected);
@@ -74,7 +73,7 @@ class ActivityTest extends KernelTestCase
     public function testGetName(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -84,17 +83,37 @@ class ActivityTest extends KernelTestCase
     public function testSetName(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $this->activity->setName($expected);
         self::assertSame($expected, $property->getValue($this->activity));
     }
 
+    public function testGetArchived(): void
+    {
+        $expected = true;
+        $property = (new \ReflectionClass(Activity::class))
+            ->getProperty('archived');
+        $property->setAccessible(true);
+        $property->setValue($this->activity, $expected);
+        self::assertSame($expected, $this->activity->getArchived());
+    }
+
+    public function testSetArchived(): void
+    {
+        $expected = true;
+        $property = (new \ReflectionClass(Activity::class))
+            ->getProperty('archived');
+        $property->setAccessible(true);
+        $this->activity->setArchived($expected);
+        self::assertSame($expected, $property->getValue($this->activity));
+    }
+
     public function testGetDescription(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('description');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -104,7 +123,7 @@ class ActivityTest extends KernelTestCase
     public function testSetDescription(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('description');
         $property->setAccessible(true);
         $this->activity->setDescription($expected);
@@ -114,7 +133,7 @@ class ActivityTest extends KernelTestCase
     public function testGetOptions(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('options');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -124,7 +143,7 @@ class ActivityTest extends KernelTestCase
     public function testAddOption(): void
     {
         $expected = new PriceOption();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('options');
         $property->setAccessible(true);
 
@@ -139,7 +158,7 @@ class ActivityTest extends KernelTestCase
         $expected = new ArrayCollection();
         $priceOption = new PriceOption();
         $expected->add($priceOption);
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('options');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -150,7 +169,7 @@ class ActivityTest extends KernelTestCase
     public function testGetRegistrations(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -160,7 +179,7 @@ class ActivityTest extends KernelTestCase
     public function testAddRegistration(): void
     {
         $expected = new Registration();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
 
@@ -175,7 +194,7 @@ class ActivityTest extends KernelTestCase
         $expected = new ArrayCollection();
         $registration = new Registration();
         $expected->add($registration);
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -186,7 +205,7 @@ class ActivityTest extends KernelTestCase
     public function testGetAuthor(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('author');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -200,7 +219,7 @@ class ActivityTest extends KernelTestCase
         $rReserve = (new Registration())->setReservePosition(Order::create('a'));
         $expected = new ArrayCollection([$rCurrent, $rDeleted, $rReserve]);
 
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -239,7 +258,7 @@ class ActivityTest extends KernelTestCase
         $rReserve = (new Registration())->setReservePosition(Order::create('a'));
         $expected = new ArrayCollection([$rCurrent, $rDeleted, $rReserve]);
 
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -280,7 +299,7 @@ class ActivityTest extends KernelTestCase
         $rReserve = (new Registration())->setReservePosition(Order::create('a'));
         $expected = new ArrayCollection([$rCurrent, $rDeleted, $rReserve]);
 
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -317,7 +336,7 @@ class ActivityTest extends KernelTestCase
     public function testSetAuthor(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('author');
         $property->setAccessible(true);
         $this->activity->setAuthor($expected);
@@ -327,7 +346,7 @@ class ActivityTest extends KernelTestCase
     public function testGetTarget(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('target');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -337,7 +356,7 @@ class ActivityTest extends KernelTestCase
     public function testSetTarget(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('target');
         $property->setAccessible(true);
         $this->activity->setTarget($expected);
@@ -347,7 +366,7 @@ class ActivityTest extends KernelTestCase
     public function testGetColor(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('color');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -357,7 +376,7 @@ class ActivityTest extends KernelTestCase
     public function testSetColor(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('color');
         $property->setAccessible(true);
         $this->activity->setColor($expected);
@@ -366,8 +385,8 @@ class ActivityTest extends KernelTestCase
 
     public function testGetStart(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('start');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -376,8 +395,8 @@ class ActivityTest extends KernelTestCase
 
     public function testSetStart(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('start');
         $property->setAccessible(true);
         $this->activity->setStart($expected);
@@ -386,8 +405,8 @@ class ActivityTest extends KernelTestCase
 
     public function testGetEnd(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('end');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -396,8 +415,8 @@ class ActivityTest extends KernelTestCase
 
     public function testSetEnd(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('end');
         $property->setAccessible(true);
         $this->activity->setEnd($expected);
@@ -406,8 +425,8 @@ class ActivityTest extends KernelTestCase
 
     public function testGetDeadline(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('deadline');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -416,8 +435,8 @@ class ActivityTest extends KernelTestCase
 
     public function testSetDeadline(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('deadline');
         $property->setAccessible(true);
         $this->activity->setDeadline($expected);
@@ -427,7 +446,7 @@ class ActivityTest extends KernelTestCase
     public function testGetLocation(): void
     {
         $expected = new Location();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('location');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -437,7 +456,7 @@ class ActivityTest extends KernelTestCase
     public function testSetLocation(): void
     {
         $expected = new Location();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('location');
         $property->setAccessible(true);
         $this->activity->setLocation($expected);
@@ -447,7 +466,7 @@ class ActivityTest extends KernelTestCase
     public function testSetImageFile(): void
     {
         $expected = new File(__DIR__, false);
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('imageFile');
         $property->setAccessible(true);
         $this->activity->setImageFile($expected);
@@ -457,7 +476,7 @@ class ActivityTest extends KernelTestCase
     public function testGetImageFile(): void
     {
         $expected = new File(__DIR__, false);
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('imageFile');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -466,8 +485,8 @@ class ActivityTest extends KernelTestCase
 
     public function testGetImageUpdatedAt(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('imageUpdatedAt');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -476,8 +495,8 @@ class ActivityTest extends KernelTestCase
 
     public function testSetImageUpdatedAt(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('imageUpdatedAt');
         $property->setAccessible(true);
         $this->activity->setImageUpdatedAt($expected);
@@ -487,7 +506,7 @@ class ActivityTest extends KernelTestCase
     public function testSetImage(): void
     {
         $expected = new EmbeddedFile();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('image');
         $property->setAccessible(true);
         $this->activity->setImage($expected);
@@ -497,7 +516,7 @@ class ActivityTest extends KernelTestCase
     public function testGetImage(): void
     {
         $expected = new EmbeddedFile();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('image');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -507,7 +526,7 @@ class ActivityTest extends KernelTestCase
     public function testHasCapacity(): void
     {
         $capacity = 42;
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('capacity');
         $property->setAccessible(true);
         $property->setValue($this->activity, $capacity);
@@ -522,7 +541,7 @@ class ActivityTest extends KernelTestCase
     public function testGetCapacity(): void
     {
         $expected = 42;
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('capacity');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -532,7 +551,7 @@ class ActivityTest extends KernelTestCase
     public function testSetCapacity(): void
     {
         $expected = 42;
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('capacity');
         $property->setAccessible(true);
         $this->activity->setCapacity($expected);
@@ -547,7 +566,7 @@ class ActivityTest extends KernelTestCase
 
     public function testGetPresent(): void
     {
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('present');
         $property->setAccessible(true);
         $property->setValue($this->activity, null);
@@ -557,7 +576,7 @@ class ActivityTest extends KernelTestCase
     public function testSetPresent(): void
     {
         $expected = 42;
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('present');
         $property->setAccessible(true);
         $this->activity->setPresent($expected);
@@ -567,7 +586,7 @@ class ActivityTest extends KernelTestCase
     public function testGetVisibleAfter(): void
     {
         $expected = new \DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('visibleAfter');
         $property->setAccessible(true);
         $property->setValue($this->activity, $expected);
@@ -577,7 +596,7 @@ class ActivityTest extends KernelTestCase
     public function testSetVisibleAfter(): void
     {
         $expected = new \DateTime();
-        $property = (new ReflectionClass(Activity::class))
+        $property = (new \ReflectionClass(Activity::class))
             ->getProperty('visibleAfter');
         $property->setAccessible(true);
         $this->activity->setVisibleAfter($expected);
@@ -587,15 +606,15 @@ class ActivityTest extends KernelTestCase
     public function testIsVisible(): void
     {
         $expected = $this->createMock(Group::class);
-        $target = (new ReflectionClass(Activity::class))
+        $target = (new \ReflectionClass(Activity::class))
             ->getProperty('target');
         $target->setAccessible(true);
         $target->setValue($this->activity, $expected);
-        $end = (new ReflectionClass(Activity::class))
+        $end = (new \ReflectionClass(Activity::class))
             ->getProperty('end');
         $end->setAccessible(true);
         $end->setValue($this->activity, new \DateTime('tomorrow'));
-        $visibleAfter = (new ReflectionClass(Activity::class))
+        $visibleAfter = (new \ReflectionClass(Activity::class))
             ->getProperty('visibleAfter');
         $visibleAfter->setAccessible(true);
         $visibleAfter->setValue($this->activity, new \DateTime('yesterday'));
@@ -608,15 +627,15 @@ class ActivityTest extends KernelTestCase
         $group = new Group();
         $value = (new LocalAccount())->addRelation($group);
 
-        $target = (new ReflectionClass(Activity::class))
+        $target = (new \ReflectionClass(Activity::class))
             ->getProperty('target');
         $target->setAccessible(true);
         $target->setValue($this->activity, $group);
-        $end = (new ReflectionClass(Activity::class))
+        $end = (new \ReflectionClass(Activity::class))
             ->getProperty('end');
         $end->setAccessible(true);
         $end->setValue($this->activity, new \DateTime('tomorrow'));
-        $visibleAfter = (new ReflectionClass(Activity::class))
+        $visibleAfter = (new \ReflectionClass(Activity::class))
             ->getProperty('visibleAfter');
         $visibleAfter->setAccessible(true);
         $visibleAfter->setValue($this->activity, new \DateTime('yesterday'));

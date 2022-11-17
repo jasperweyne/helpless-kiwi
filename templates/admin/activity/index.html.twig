@@ -8,7 +8,9 @@
             {% set resultcount = activities|length %}
             
             {% block buttons %}
-                <a href="{{ path("admin_activity_new") }} ">Nieuw</a>
+                {% if page_title == 'Activiteiten' %}
+                    <a href="{{ path("admin_activity_new") }} ">Nieuw</a>
+                {% endif %}
             {% endblock %}
         {% endembed %}
     {% endblock %}
