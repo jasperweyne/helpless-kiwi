@@ -1857,12 +1857,12 @@ class UserInterface
                     </div>
                     <div class="panel-body">
                         <?php if ($error) {
-                            echo '<p class="alert alert-warning">'.$error.' </p> <br>';
-                        } ?>
+            echo '<p class="alert alert-warning">'.$error.' </p> <br>';
+        } ?>
 <?php
-        //endregion HTML_HEADER
-        //region HTML_FORMS
-        echo $step;
+//endregion HTML_HEADER
+//region HTML_FORMS
+echo $step;
         //endregion HTML_FORMS
 //region HTML_FOOTER?>
                         </div>
@@ -1875,7 +1875,7 @@ class UserInterface
 <?php
 
 //endregion HTML_FOOTER
-                exit;
+        exit;
     }
 }
 
