@@ -3,14 +3,16 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\AdminController;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\AuthWebTestCase;
+use App\Tests\Database\Activity\ActivityFixture;
+use App\Tests\Database\Security\LocalAccountFixture;
 
 /**
  * Class AdminControllerTest.
  *
  * @covers \App\Controller\Admin\AdminController
  */
-class AdminControllerTest extends WebTestCase
+class AdminControllerTest extends AuthWebTestCase
 {
     /**
      * @var AdminController
@@ -23,9 +25,12 @@ class AdminControllerTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->databaseTool->loadFixtures([
+            LocalAccountFixture::class,
+            ActivityFixture::class,
+        ]);
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->adminController = new AdminController();
+        $this->login();
     }
 
     /**
@@ -40,7 +45,17 @@ class AdminControllerTest extends WebTestCase
 
     public function testIndexAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        $this->client->request('GET', '/admin/');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('main h2', 'Overzicht');
+    }
+
+    public function testIndexActionNotAdmin(): void
+    {
+        $this->logout();
+        $this->login(['ROLE_AUTHOR']);
+        $this->client->request('GET', '/admin/');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('main h2', 'Overzicht');
     }
 }

@@ -199,6 +199,8 @@
                                 <td> <strike>{{ registration.person.canonical ?? 'Onbekend' }} </strike> </td>
                                 <td> <strike> {{ registration.option.name }}   </strike> </td> 
                                 <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
+                                <td></td>
+                                <td></td>
                                 <td><a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a></td>
                             </tr>
                         {% endfor %}
@@ -215,9 +217,9 @@
                                 </td>
                                 <td>{{ registration.comment }}</td>
                                 <td>
-                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
-                                    |
                                     <a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a>
+                                    |
+                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
                                     |
                                     <a href="{{ path('admin_activity_registration_edit', { 'id': registration.id }) }}">Bewerken</a>
                                 </td>

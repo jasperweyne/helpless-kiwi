@@ -20,10 +20,11 @@
             <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('medium', 'short') }}</span>
         {% endif %}
         <span>{{ activity.location.address }}</span>
+        {% if activity.author %}
+            <span>{{ activity.author.name }}</span>
+        {% endif %}
         {% set prices = activity.options|sort((a, b)=>a.price<=>b.price)|map(p => '%01.2f'|format(p.price / 100)) %}
-        {% if prices|length == 0 %}
-            <span>Prijs onbekend</span>
-        {% else %}
+        {% if prices|length > 0 %}
             <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span>
         {% endif %}
         <span>{{ registrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|format_datetime('medium', 'none') }}</span>

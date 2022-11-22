@@ -9,6 +9,7 @@ use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use App\EventSubscriber\MailNotificationSubscriber;
 use App\Mail\MailService;
+use App\Entity\Security\LocalAccount;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment;
@@ -57,7 +58,15 @@ final class MailNotificationSubscriberTest extends KernelTestCase
         $this->mailer = $this->createMock(MailService::class);
         $this->calendar = $this->createMock(ICalProvider::class);
         $this->security = $this->createMock(Security::class);
-        $this->mailNotificationSubscriber = new MailNotificationSubscriber($this->template, $this->mailer, $this->calendar, $this->security);
+        $user = $this->createMock(LocalAccount::class);
+        $this->security->method('getUser')->will($this::returnValue($user));
+
+        $this->mailNotificationSubscriber = new MailNotificationSubscriber(
+            $this->template,
+            $this->mailer,
+            $this->calendar,
+            $this->security
+        );
     }
 
     /**

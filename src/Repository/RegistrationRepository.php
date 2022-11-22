@@ -230,7 +230,7 @@ class RegistrationRepository extends ServiceEntityRepository
             ->setParameter('activity', $activity)
             ->getQuery()
             ->getSingleScalarResult()
-            ;
+        ;
     }
 
     // /**

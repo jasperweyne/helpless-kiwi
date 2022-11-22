@@ -64,7 +64,10 @@ class AuthWebTestCase extends WebTestCase
         unset($this->client);
     }
 
-    protected function login(bool $admin = true): void
+    /**
+     * @param string[] $roles
+     */
+    protected function login($roles = ['ROLE_ADMIN']): void
     {
         /** @var EntityManagerInterface */
         $em = self::getContainer()->get(EntityManagerInterface::class);
@@ -80,21 +83,9 @@ class AuthWebTestCase extends WebTestCase
 
         $user = new LocalAccount();
         $user->setEmail(LocalAccountFixture::USERNAME);
-        $roles = ['ROLE_USER'];
+        $user->setRoles($roles);
 
-        if ($admin) {
-            $roles[] = 'ROLE_ADMIN';
-        } else {
-            $group = new Group();
-            $group->setActive(true);
-            $group->setRelationable(true);
-
-            $rel = new Relation();
-            $rel->setGroup($group);
-            $user->addRelation($rel);
-        }
-
-        $token = new PostAuthenticationGuardToken($user, $firewallName, $roles);
+        $token = new PostAuthenticationGuardToken($user, $firewallName, $user->getRoles());
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 
