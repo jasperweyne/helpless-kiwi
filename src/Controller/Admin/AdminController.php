@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * Activity controller.
@@ -23,13 +24,15 @@ class AdminController extends AbstractController
      */
     #[MenuItem(title: "Overzicht", menu: "admin", activeCriteria: "admin_index", order: -1)]
     #[Route("/", name: "index", methods: ["GET"])]
-    public function indexAction(ActivityRepository $activitiesRepo, GroupRepository $groupsRepo): Response
+    public function indexAction(
+        ActivityRepository $activitiesRepo,
+        GroupRepository $groupsRepo,
+        #[CurrentUser] LocalAccount $user
+    ): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $activities = $activitiesRepo->findBy([], ['start' => 'DESC']);
         } else {
-            $user = $this->getUser();
-            assert($user instanceof LocalAccount);
             $groups = $groupsRepo->findSubGroupsForPerson($user);
             $activities = $activitiesRepo->findAuthor($groups);
         }
