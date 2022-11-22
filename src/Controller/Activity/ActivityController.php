@@ -128,10 +128,13 @@ class ActivityController extends AbstractController
                 );
             }
 
+            $user = $this->getUser();
+            assert($user instanceof LocalAccount);
+
             // currently only a single registration per person is allowed, this check enforces that
             $registrations = $this->em->getRepository(Registration::class)->count([
                 'activity' => $activity,
-                'person' => $this->getUser(),
+                'person' => $user,
                 'deletedate' => null,
             ]);
             if ($registrations > 0) {
@@ -149,9 +152,6 @@ class ActivityController extends AbstractController
                 'deletedate' => null,
             ]);
             $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($this->em->getRepository(Registration::class)->findReserve($activity)) > 0);
-
-            $user = $this->getUser();
-            assert($user instanceof LocalAccount);
 
             $registration = new Registration();
             $registration
