@@ -165,7 +165,7 @@ class Activity
     private $present;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      */
     #[ORM\Column(type: "datetime", nullable: true, options: ["default" => "1970-01-01 00:00:00"])]
     #[GQL\Field(type: "DateTimeScalar")]

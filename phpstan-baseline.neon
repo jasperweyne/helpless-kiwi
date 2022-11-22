@@ -511,26 +511,6 @@ parameters:
 			path: src/Security/PasswordResetService.php
 
 		-
-			message: "#^Property App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:\\$path \\(string\\) does not accept string\\|null\\.$#"
-			count: 1
-			path: src/Template/Annotation/MenuItem.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, Symfony\\\\Component\\\\Routing\\\\Annotation\\\\Route\\|null given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<string, array\\<App\\\\Template\\\\Annotation\\\\MenuItem\\>\\> given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, Symfony\\\\Component\\\\Routing\\\\Annotation\\\\Route\\|null given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
 			message: "#^Only booleans are allowed in a ternary operator condition, string given\\.$#"
 			count: 1
 			path: src/Template/AnnotationMenuExtension.php

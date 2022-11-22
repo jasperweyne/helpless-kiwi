@@ -15,7 +15,8 @@ class MenuItem
         private ?string $activeCriteria = null,
         private ?int $order = null,
         private ?string $path = null
-    ) { }
+    ) {
+    }
 
     public function getTitle(): string
     {

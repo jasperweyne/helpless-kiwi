@@ -58,7 +58,7 @@ class AnnotationMenuExtension implements MenuExtensionInterface
      */
     public function getMenuItems(string $menu = ''): array
     {
-        if (!$this->menuItems) {
+        if (count($this->menuItems) === 0) {
             $this->discoverMenuItems();
         }
 
