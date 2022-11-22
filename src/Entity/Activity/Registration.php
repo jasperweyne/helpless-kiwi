@@ -106,7 +106,7 @@ class Registration
      *
      * @var ?ExternalRegistrant
      */
-    private $external;
+    private $externalPerson;
 
     /**
      * Get id.
@@ -140,18 +140,18 @@ class Registration
 
     public function getPerson(): ?ContactInterface
     {
-        return $this->person ?? $this->external;
+        return $this->person ?? $this->externalPerson;
     }
 
     public function setPerson(?ContactInterface $person): self
     {
         $this->person = null;
-        $this->external = null;
+        $this->externalPerson = null;
 
         if ($person instanceof LocalAccount) {
             $this->person = $person;
         } elseif ($person instanceof ExternalRegistrant) {
-            $this->external = $person;
+            $this->externalPerson = $person;
         }
 
         return $this;
