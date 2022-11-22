@@ -57,32 +57,36 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
     public function persistRegistrationAdded(RegistrationAddedEvent $event): void
     {
-        $this->em->persist($event->getRegistration());
+        $registration = $event->getRegistration();
+
+        $this->em->persist($registration);
         $this->em->flush();
 
         $name = '';
-        $registrant = $event->getRegistration()->getPerson();
+        $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
         if ($registrant->getName() !== $this->user->getName()) {
             $name = ' van ' . $registrant->getName();
         }
-        $location = $event->getRegistration()->isReserve() ? ' op de reservelijst!' : ' gelukt!';
+        $location = $registration->isReserve() ? ' op de reservelijst!' : ' gelukt!';
 
         $this->flash->add('success', 'Aanmelding' . $name  . $location);
     }
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void
     {
-        if ($event->getRegistration()->getPerson() instanceof ExternalRegistrant) {
-            $this->em->remove($event->getRegistration());
+        $registration = $event->getRegistration();
+
+        if ($registration->getPerson() instanceof ExternalRegistrant) {
+            $this->em->remove($registration);
         } else {
-            $event->getRegistration()->setDeleteDate(new \DateTime('now'));
+            $registration->setDeleteDate(new \DateTime('now'));
         }
 
         $this->em->flush();
 
         $name = '';
-        $registrant = $event->getRegistration()->getPerson();
+        $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
         if ($registrant->getName() !== $this->user->getName()) {
             $name = ' van ' . $registrant->getName();
