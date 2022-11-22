@@ -53,7 +53,7 @@ class ActivityController extends AbstractController
     public function indexAction(#[CurrentUser] ?LocalAccount $user): Response
     {
         $groups = [];
-        if ($user) {
+        if ($user !== null) {
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
 
@@ -178,7 +178,7 @@ class ActivityController extends AbstractController
         $reserve = $this->em->getRepository(Registration::class)->findReserve($activity);
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
-        if ($user) {
+        if ($user !== null) {
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
         $targetoptions = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);

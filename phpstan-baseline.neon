@@ -61,11 +61,6 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Activity/ActivityController.php
-
-		-
 			message: "#^Parameter \\#1 \\$activity of method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createRegisterForm\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Activity/ActivityController.php
@@ -73,16 +68,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$activity of method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createUnregisterForm\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
 			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount\\|null, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
-			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
 		-

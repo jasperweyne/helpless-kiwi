@@ -28,8 +28,7 @@ class AdminController extends AbstractController
         ActivityRepository $activitiesRepo,
         GroupRepository $groupsRepo,
         #[CurrentUser] LocalAccount $user
-    ): Response
-    {
+    ): Response {
         if ($this->isGranted('ROLE_ADMIN')) {
             $activities = $activitiesRepo->findBy([], ['start' => 'DESC']);
         } else {
