@@ -12,11 +12,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
  * @GQL\Type
  * @GQL\Description("A registered user who can log in and register for activities.")
+ * @UniqueEntity("email")
  */
 class LocalAccount implements UserInterface, EquatableInterface
 {

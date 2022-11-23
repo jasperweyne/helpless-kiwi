@@ -66,17 +66,11 @@ class SecurityController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $repository = $em->getRepository(LocalAccount::class);
 
-            $email = $form["email"]->getData();
-            $sameMail = $repository->findBy(['email' => $email]);
+            return $this->render('admin/security/new.html.twig', [
+                'account' => $account,
+                'form' => $form->createView(),
+            ]);
 
-            if (count($sameMail) != 0) {
-                $this->addFlash('error', 'E-mail bestaat al');
-
-                return $this->render('admin/security/new.html.twig', [
-                    'account' => $account,
-                    'form' => $form->createView(),
-                ]);
-            }
             $token = $passwordReset->generatePasswordRequestToken($account);
             $account->setPasswordRequestedAt(null);
 

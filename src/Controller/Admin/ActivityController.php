@@ -105,15 +105,13 @@ class ActivityController extends AbstractController
     {
         $activity = new Activity();
         $price = new PriceOption();
-        $activity->AddOption($price);
-
+        $activity->addOption($price);
+        $price->setDetails([]);
+        $price->setConfirmationMsg('');
         $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $price
-                ->setDetails([])
-                ->setConfirmationMsg('');
             $this->em->persist($activity);
             $this->em->persist($activity->getLocation());
             $this->em->persist($price);
