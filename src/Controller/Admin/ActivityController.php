@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * Activity controller.
@@ -65,11 +64,13 @@ class ActivityController extends AbstractController
      */
     #[MenuItem(title: "Activiteiten", menu: "admin", activeCriteria: "admin_activity_")]
     #[Route("/", name: "index", methods: ["GET"])]
-    public function indexAction(#[CurrentUser] LocalAccount $user): Response
+    public function indexAction(): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $activities = $this->activitiesRepo->findBy([], ['start' => 'DESC']);
         } else {
+            /** @var LocalAccount */
+            $user = $this->getUser();
             $groups = $this->groupsRepo->findSubGroupsForPerson($user);
             $activities = $this->activitiesRepo->findAuthor($groups);
         }

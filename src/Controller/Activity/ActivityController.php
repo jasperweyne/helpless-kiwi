@@ -7,7 +7,6 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
-use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use App\Template\Attribute\MenuItem;
@@ -19,7 +18,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -50,10 +48,10 @@ class ActivityController extends AbstractController
     #[MenuItem(title: "Terug naar frontend", menu: "admin-profile", class: "mobile")]
     #[MenuItem(title: "Activiteiten")]
     #[Route("/", name: "index", methods: ["GET"])]
-    public function indexAction(#[CurrentUser] ?LocalAccount $user): Response
+    public function indexAction(): Response
     {
         $groups = [];
-        if ($user !== null) {
+        if ($user = $this->getUser()) {
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
 
@@ -107,8 +105,7 @@ class ActivityController extends AbstractController
     #[Route("/activity/{id}/register", name: "register", methods: ["POST"])]
     public function registerAction(
         Request $request,
-        Activity $activity,
-        #[CurrentUser] ?LocalAccount $user
+        Activity $activity
     ): Response {
         $form = $this->createRegisterForm($activity);
 
@@ -127,7 +124,7 @@ class ActivityController extends AbstractController
             // currently only a single registration per person is allowed, this check enforces that
             $registrations = $this->em->getRepository(Registration::class)->count([
                 'activity' => $activity,
-                'person' => $user,
+                'person' => $this->getUser(),
                 'deletedate' => null,
             ]);
             if ($registrations > 0) {
@@ -150,7 +147,7 @@ class ActivityController extends AbstractController
             $registration
                 ->setActivity($activity)
                 ->setOption($option)
-                ->setPerson($user)
+                ->setPerson($this->getUser())
                 ->setReservePosition($reserve ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
             ;
 
@@ -168,7 +165,7 @@ class ActivityController extends AbstractController
      * Finds and displays a activity entity.
      */
     #[Route("/activity/{id}", name: "show", methods: ["GET"])]
-    public function showAction(Activity $activity, #[CurrentUser] ?LocalAccount $user): Response
+    public function showAction(Activity $activity): Response
     {
         $regs = $this->em->getRepository(Registration::class)->findBy([
             'activity' => $activity,
@@ -178,7 +175,7 @@ class ActivityController extends AbstractController
         $reserve = $this->em->getRepository(Registration::class)->findReserve($activity);
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
-        if ($user !== null) {
+        if ($user = $this->getUser()) {
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
         $targetoptions = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
@@ -190,10 +187,10 @@ class ActivityController extends AbstractController
             ];
         }
         $unregister = null;
-        if (null !== $user) {
+        if (null !== $this->getUser()) {
             $registration = $this->em->getRepository(Registration::class)->findOneBy([
                 'activity' => $activity,
-                'person' => $user,
+                'person' => $this->getUser(),
                 'deletedate' => null,
             ]);
             if (null !== $registration) {

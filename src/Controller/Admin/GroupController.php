@@ -15,7 +15,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * Group category controller.
@@ -66,12 +65,11 @@ class GroupController extends AbstractController
      */
     #[MenuItem(title: "Groepen", menu: "admin")]
     #[Route("/{id?}", name: "show", methods: ["GET"])]
-    public function showAction(
-        Request $request,
-        ?Group $group,
-        GroupRepository $groupRepo,
-        #[CurrentUser] LocalAccount $user
-    ): Response {
+    public function showAction(Request $request, ?Group $group, GroupRepository $groupRepo): Response
+    {
+        /** @var LocalAccount */
+        $user = $this->getUser();
+
         if (null === $group) {
             $this->denyAccessUnlessGranted('any_group');
 
