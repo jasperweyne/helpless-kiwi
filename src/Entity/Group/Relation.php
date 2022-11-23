@@ -8,68 +8,60 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
-/**
- * @ORM\Entity
- * @GQL\Type
- * @GQL\Description("A representation of membership status for a user in a group.")
- */
+#[ORM\Entity]
+#[GQL\Type]
+#[GQL\Description("A representation of membership status for a user in a group.")]
 class Relation
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     *
      * @var ?string
      */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue(strategy: "UUID")]
+    #[ORM\Column(type: "guid")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @GQL\Field(type="String")
-     * @GQL\Description("A textual description of membership status of a user in a group.")
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[GQL\Field(type: "String")]
+    #[GQL\Description("A textual description of membership status of a user in a group.")]
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group", inversedBy="relations")
-     * @ORM\JoinColumn(nullable=false)
-     * @GQL\Field(type="Group!")
-     * @GQL\Description("The group the user is a member of.")
-     *
      * @var Group
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group", inversedBy: "relations")]
+    #[ORM\JoinColumn(nullable: false)]
+    #[GQL\Field(type: "Group!")]
+    #[GQL\Description("The group the user is a member of.")]
     private $group;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount", inversedBy="relations")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     * @GQL\Field(type="LocalAccount")
-     * @GQL\Description("The user who is a member of a group.")
-     * @GQL\Access("isGranted('ROLE_ADMIN')")
-     *
      * @var ?LocalAccount
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount", inversedBy: "relations")]
+    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
+    #[GQL\Field(type: "LocalAccount")]
+    #[GQL\Description("The user who is a member of a group.")]
+    #[GQL\Access("isGranted('ROLE_ADMIN')")]
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Relation", inversedBy="children")
-     * @GQL\Field(type="Relation")
-     * @GQL\Description("The parent relation object, in case of multiple overlapping relations.")
-     *
      * @var ?Relation
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Relation", inversedBy: "children")]
+    #[GQL\Field(type: "Relation")]
+    #[GQL\Description("The parent relation object, in case of multiple overlapping relations.")]
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Group\Relation", mappedBy="parent")
-     * @GQL\Field(type="[Relation]")
-     * @GQL\Description("The children relation objects, in case of multiple overlapping relations.")
-     *
      * @var Collection<int, Relation>
      */
+    #[ORM\OneToMany(targetEntity: "App\Entity\Group\Relation", mappedBy: "parent")]
+    #[GQL\Field(type: "[Relation]")]
+    #[GQL\Description("The children relation objects, in case of multiple overlapping relations.")]
     private $children;
 
     public function __construct()

@@ -16,9 +16,8 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 /**
  * Password controller.
- *
- * @Route("/password", name="password_")
  */
+#[Route("/password", name: "password_")]
 class PasswordController extends AbstractController
 {
     public function __construct(
@@ -30,9 +29,8 @@ class PasswordController extends AbstractController
 
     /**
      * Reset password.
-     *
-     * @Route("/reset/{id}", name="reset", methods={"GET", "POST"})
      */
+    #[Route("/reset/{id}", name: "reset", methods: ["GET", "POST"])]
     public function resetAction(LocalAccount $auth, Request $request): Response
     {
         if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
@@ -53,9 +51,8 @@ class PasswordController extends AbstractController
 
     /**
      * Register new password for account.
-     *
-     * @Route("/register/{id}", name="register", methods={"GET", "POST"})
      */
+    #[Route("/register/{id}", name: "register", methods: ["GET", "POST"])]
     public function registerAction(LocalAccount $auth, Request $request): Response
     {
         if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
@@ -77,9 +74,8 @@ class PasswordController extends AbstractController
 
     /**
      * Request new password mail.
-     *
-     * @Route("/request", name="request", methods={"GET", "POST"})
      */
+    #[Route("/request", name: "request", methods: ["GET", "POST"])]
     public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer): Response
     {
         $form = $this->createForm('App\Form\Security\PasswordRequestType', []);
