@@ -137,7 +137,7 @@ class GroupController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/[id]/delete", name: "delete")]
+    #[Route("/{id}/delete", name: "delete")]
     public function deleteAction(Request $request, Group $group): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
@@ -234,7 +234,7 @@ class GroupController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/relation/delete/[id]", name: "relation_delete")]
+    #[Route("/relation/delete/{id}", name: "relation_delete")]
     public function relationDeleteAction(Request $request, Relation $relation): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $relation->getGroup());

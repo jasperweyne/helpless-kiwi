@@ -7,6 +7,7 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use App\Template\Attribute\MenuItem;
@@ -51,7 +52,8 @@ class ActivityController extends AbstractController
     public function indexAction(): Response
     {
         $groups = [];
-        if ($user = $this->getUser()) {
+        if (null !== $user = $this->getUser()) {
+            assert($user instanceof LocalAccount);
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
 
@@ -121,10 +123,13 @@ class ActivityController extends AbstractController
                 );
             }
 
+            $user = $this->getUser();
+            assert($user instanceof LocalAccount);
+
             // currently only a single registration per person is allowed, this check enforces that
             $registrations = $this->em->getRepository(Registration::class)->count([
                 'activity' => $activity,
-                'person' => $this->getUser(),
+                'person' => $user,
                 'deletedate' => null,
             ]);
             if ($registrations > 0) {
@@ -147,7 +152,7 @@ class ActivityController extends AbstractController
             $registration
                 ->setActivity($activity)
                 ->setOption($option)
-                ->setPerson($this->getUser())
+                ->setPerson($user)
                 ->setReservePosition($reserve ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
             ;
 
@@ -175,7 +180,8 @@ class ActivityController extends AbstractController
         $reserve = $this->em->getRepository(Registration::class)->findReserve($activity);
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
-        if ($user = $this->getUser()) {
+        if (null !== $user = $this->getUser()) {
+            assert($user instanceof LocalAccount);
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
         $targetoptions = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);

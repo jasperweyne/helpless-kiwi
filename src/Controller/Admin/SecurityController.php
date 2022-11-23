@@ -118,7 +118,7 @@ class SecurityController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/[id]/delete", name: "delete")]
+    #[Route("/{id}/delete", name: "delete")]
     public function deleteAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createDeleteForm($account);

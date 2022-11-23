@@ -109,7 +109,7 @@ class RegistrationController extends AbstractController
     /**
      * Remove someones registration from an activity.
      */
-    #[Route("/delete/[id]", name: "delete")]
+    #[Route("/delete/{id}", name: "delete")]
     public function deleteAction(
         Request $request,
         Registration $registration

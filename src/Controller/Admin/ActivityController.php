@@ -197,7 +197,7 @@ class ActivityController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/[id]/delete", name: "delete")]
+    #[Route("/{id}/delete", name: "delete")]
     public function deleteAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -293,7 +293,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to set participent presence.
      */
-    #[Route("/[id]/present", name: "present")]
+    #[Route("/{id}/present", name: "present")]
     public function presentEditAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -339,7 +339,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to reset amount participent present.
      */
-    #[Route("/[id]/resetamountpresent", name: "reset_amount_present")]
+    #[Route("/{id}/resetamountpresent", name: "reset_amount_present")]
     public function resetAmountPresent(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
