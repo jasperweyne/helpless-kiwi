@@ -43,8 +43,8 @@ services:
       alias: welp_ical.factory
 
 
-    App\Template\AnnotationMenuExtension:
-        class: App\Template\AnnotationMenuExtension
+    App\Template\AttributeMenuExtension:
+        class: App\Template\AttributeMenuExtension
         arguments: ["App\\Controller", "src/Controller", "%kernel.project_dir%"]
 
     App\Log\Doctrine\EntityEventListener:

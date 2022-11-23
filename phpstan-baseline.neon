@@ -498,12 +498,12 @@ parameters:
 		-
 			message: "#^Only booleans are allowed in a ternary operator condition, string given\\.$#"
 			count: 1
-			path: src/Template/AnnotationMenuExtension.php
+			path: src/Template/AttributeMenuExtension.php
 
 		-
 			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
-			path: src/Template/AnnotationMenuExtension.php
+			path: src/Template/AttributeMenuExtension.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"

@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @phpstan-import-type MenuItemArray from MenuExtensionInterface
  */
-class AnnotationMenuExtension implements MenuExtensionInterface
+class AttributeMenuExtension implements MenuExtensionInterface
 {
     /**
      * @var string
