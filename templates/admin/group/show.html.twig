@@ -41,13 +41,14 @@
 
 {% block body_content %}
     {% if not group or group.subgroupable %}
-        {% if group %}
-            <input type="radio" name="tabs" id="subgroups" checked>
-            <label for="subgroups" class="tab active">
-                <span>Subgroepen</span> 
-            </label>
-        {% endif %}
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Subgroepen','tab_name': 'subgroups','tab_default': true} %}
+            {% block tab_picker %}
+                {# only enabled tab picker if group is set #}
+                {% if group %}
+                    {{ parent() }}
+                {% endif %}
+            {% endblock %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -84,15 +85,13 @@
                     </table>
                 </div>
             </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
     {% if group %}
         {% if group.relationable %}
-            <input type="radio" name="tabs" id="groupsmembers" {{ group.subgroupable ? '' : 'checked' }}>
-            <label for="groupsmembers" class="tab {{ group.subgroupable ? '' : 'active' }}">
-                <span>Groepsleden</span>
-            </label>
-            <div class="panel">
+            {% embed 'components/tab.html.twig' with {'tab_label': 'Groepsleden','tab_name': 'groupsmembers','tab_default': not group.subgroupable} %}
+                {% block tab %}
                 <div class="card">
                     <div class="table">
                         <table>
@@ -136,13 +135,11 @@
                         </table>
                     </div>
                 </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         {% endif %}
-        <input type="radio" name="tabs" id="details" {{ group.relationable or group.subgroupable ? '' : 'checked' }}>
-        <label for="details" class="tab {{ group.relationable or group.subgroupable ? '' : 'active' }}">
-            <span>Details</span>
-        </label>
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Details','tab_default': not (group.relationable or group.subgroupable)} %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -200,6 +197,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 {% endblock %}

@@ -12,11 +12,8 @@
 
 {% block body_wrap %}
     <div class="tabs">
-        <input type="radio" name="tabs" id="details" checked>
-        <label for="details" class="tab active">
-            <span>Details</span>
-        </label>
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Details', 'tab_default': true} %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -173,13 +170,11 @@
                     </table>
                 </div>
             </div>
-        </div>      
+            {% endblock %}
+        {% endembed %}
 
-        <input type="radio" name="tabs" id="participants">
-        <label for="participants" class="tab">
-            <span>Deelnemers</span>
-        </label>
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Deelnemers', 'tab_name': 'participants'} %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -244,13 +239,11 @@
                     </table>
                 </div>
             </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
-        <input type="radio" name="tabs" id="reserve">
-        <label for="reserve" class="tab">
-            <span>Reservelijst</span>
-        </label>
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Reservelijst', 'tab_name': 'reserve'} %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -287,7 +280,7 @@
                     </table>
                 </div>
             </div>
-        </div>
-        <input type="radio" name="tabs" id="aanwezig">
+            {% endblock %}
+        {% endembed %}
     </div>
 {% endblock %}
