@@ -90,22 +90,13 @@ class GroupRepositoryTest extends KernelTestCase
         unset($this->registry);
     }
 
-    public function testFindAllFor(): void
-    {
-        $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        $groups = $this->em->getRepository(Group::class)->findAllFor($registration);
-
-        self::assertTrue(count($groups) > 0);
-    }
-
     public function testFindSubGroupsFor(): void
     {
         $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        $group = $this->em->getRepository(Group::class)->findAllFor($registration)[0];
+        $group = $registration->getRelations()[0];
+        assert($group !== null);
 
-        $allgroups = $this->em
-            ->getRepository(Group::class)
-            ->findSubGroupsFor($group);
+        $allgroups = $this->groupRepository->findSubGroupsFor($group);
 
         foreach ($allgroups as $parent) {
             // keep iterating over parents until $group is found
@@ -124,11 +115,10 @@ class GroupRepositoryTest extends KernelTestCase
 
     public function testFindSubGroupsForPerson(): void
     {
-        $repo = $this->em->getRepository(Group::class);
         $registration = $this->em->getRepository(LocalAccount::class)->findAll()[0];
 
-        $allgroups = $repo->findSubGroupsForPerson($registration);
-        $parents = $repo->findAllFor($registration);
+        $allgroups = $this->groupRepository->findSubGroupsForPerson($registration);
+        $parents = $registration->getRelations()->toArray();
 
         foreach ($allgroups as $parent) {
             // keep iterating over parents until $group is found

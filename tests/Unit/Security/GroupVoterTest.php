@@ -3,7 +3,6 @@
 namespace Tests\Unit\Security;
 
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use App\Security\GroupVoter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,16 +29,7 @@ class GroupVoterTest extends KernelTestCase
         /** @var LocalAccount&MockObject $user */
         $user = $this->createMock(LocalAccount::class);
         $user->method('getRoles')->willReturn($roles);
-
-        $rels = [];
-        foreach ($groups as $group) {
-            /** @var Relation&MockObject */
-            $rel = $this->createMock(Relation::class);
-            $rel->method('getGroup')->willReturn($group);
-            $rels[] = $rel;
-        }
-
-        $user->method('getRelations')->willReturn(new ArrayCollection($rels));
+        $user->method('getRelations')->willReturn(new ArrayCollection($groups));
 
         return $user;
     }

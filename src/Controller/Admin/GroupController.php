@@ -3,13 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
 use App\Repository\GroupRepository;
 use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,7 +92,7 @@ class GroupController extends AbstractController
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $db = $groupRepo->findBy(['parent' => null]);
                 } else {
-                    $db = $groupRepo->findAllFor($user);
+                    $db = $user->getRelations();
                 }
             }
 
@@ -166,18 +166,18 @@ class GroupController extends AbstractController
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
 
-        $relation = new Relation();
-        $relation->setGroup($group);
-
-        $form = $this->createForm('App\Form\Group\RelationType', $relation);
-
+        $form = $this->createForm('App\Form\Group\RelationType');
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($relation);
+            $account = $form->get('person')->getData();
+            assert($account instanceof LocalAccount);
+
+            $group->addRelation($account);
+
             $this->em->flush();
 
-            $name = $relation->getPerson()->getCanonical();
+            $name = $account->getCanonical();
             $this->addFlash('success', $name.' toegevoegd!');
 
             return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
@@ -190,67 +190,28 @@ class GroupController extends AbstractController
     }
 
     /**
-     * Displays a form to generate a new relation to a group entity.
-     */
-    #[Route("/relation/add/{id}", name: "relation_add", methods: ["GET", "POST"])]
-    public function relationAddAction(Request $request, Relation $parent): Response
-    {
-        $this->denyAccessUnlessGranted('edit_group', $parent->getGroup());
-
-        $relation = new Relation();
-
-        $form = $this->createForm('App\Form\Group\RelationAddType', $relation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($relation->getAllRelations()->exists(function ($x, $group) use ($relation) {
-                return $group->getId() === $relation->getGroup()->getId();
-            })) {
-                $this->addFlash('error', $relation->getGroup()->getName().' al in deze relatie!');
-
-                return $this->render('admin/group/relation/add.html.twig', [
-                    'relation' => $parent,
-                    'form' => $form->createView(),
-                ]);
-            }
-
-            $root = $parent->getRoot();
-            $relation->setParent($root);
-
-            $this->em->persist($relation);
-            $this->em->flush();
-
-            $this->addFlash('success', $relation->getGroup()->getName().' toegevoegd!');
-
-            return $this->redirectToRoute('admin_group_show', ['id' => $parent->getGroup()->getId()]);
-        }
-
-        return $this->render('admin/group/relation/add.html.twig', [
-            'relation' => $parent,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/relation/delete/{id}", name: "relation_delete")]
-    public function relationDeleteAction(Request $request, Relation $relation): Response
+    #[Route("/relation/delete/{id}/{account_id}", name: "relation_delete")]
+    #[Entity('account', expr: 'repository.find(account_id)')]
+    public function relationDeleteAction(Request $request, Group $relation, LocalAccount $account): Response
     {
-        $this->denyAccessUnlessGranted('edit_group', $relation->getGroup());
+        $this->denyAccessUnlessGranted('edit_group', $relation);
 
-        $form = $this->createRelationDeleteForm($relation);
+        $form = $this->createRelationDeleteForm($relation, $account);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->remove($relation);
+            $relation->removeRelation($account);
+
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $relation->getGroup()->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['id' => $relation->getId()]);
         }
 
         return $this->render('admin/group/relation/delete.html.twig', [
-            'relation' => $relation,
+            'group' => $relation,
+            'account' => $account,
             'form' => $form->createView(),
         ]);
     }
@@ -274,10 +235,10 @@ class GroupController extends AbstractController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createRelationDeleteForm(Relation $group): FormInterface
+    private function createRelationDeleteForm(Group $group, LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_group_relation_delete', ['id' => $group->getId()]))
+            ->setAction($this->generateUrl('admin_group_relation_delete', ['id' => $group->getId(), 'account_id' => $account->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

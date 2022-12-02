@@ -3,9 +3,10 @@
 namespace Tests\Unit\Entity\Group;
 
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -199,26 +200,16 @@ class GroupTest extends KernelTestCase
         $user = new LocalAccount();
         $group = new Group();
         $group2 = new Group();
-        $relation = new Relation();
-        $relation2 = new Relation();
 
         $this->group->setParent($group);
         $group->setParent($group2);
 
-        $relation->setGroup($group);
-        $relation->setPerson($user);
-
-        $relation2->setGroup($group2);
-        $relation2->setPerson($user);
-
-        $user->addRelation($relation);
-        $user->addRelation($relation2);
-        $group->addRelation($relation);
-        $group2->addRelation($relation2);
+        $user->addRelation($group);
+        $user->addRelation($group2);
 
         $expected = new ArrayCollection();
-        $expected->add($relation);
-        $expected->add($relation2);
+        $expected->add($group);
+        $expected->add($group2);
 
         //Assert
         self::assertCount(count($expected), $this->group->getAllRelationFor($user));
@@ -226,14 +217,31 @@ class GroupTest extends KernelTestCase
 
     public function testAddRelation(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        /** @var MockObject&LocalAccount */
+        $expected = $this->createMock(LocalAccount::class);
+        $expected->expects(self::once())->method('addRelation')->with($this->group);
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('relations');
+        $property->setAccessible(true);
+        $collection = $property->getValue($this->group);
+        self::assertInstanceOf(Collection::class, $collection);
+        $this->group->addRelation($expected);
+        self::assertContains($expected, $collection);
     }
 
     public function testRemoveRelation(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        /** @var MockObject&LocalAccount */
+        $expected = $this->createMock(LocalAccount::class);
+        $expected->expects(self::once())->method('removeRelation')->with($this->group);
+        $property = (new ReflectionClass(Group::class))
+            ->getProperty('relations');
+        $property->setAccessible(true);
+        $collection = $property->getValue($this->group);
+        self::assertInstanceOf(Collection::class, $collection);
+        $collection->add($expected);
+        $this->group->removeRelation($expected);
+        self::assertNotContains($expected, $collection);
     }
 
     public function testGetChildren(): void

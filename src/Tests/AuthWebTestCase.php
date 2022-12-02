@@ -3,8 +3,6 @@
 namespace App\Tests;
 
 use App\Entity\Security\LocalAccount;
-use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;

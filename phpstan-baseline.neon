@@ -96,21 +96,6 @@ parameters:
 			path: src/Controller/Admin/EventController.php
 
 		-
-			message: "#^Cannot call method getCanonical\\(\\) on App\\\\Entity\\\\Security\\\\LocalAccount\\|null\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Group\\\\Group\\|null\\.$#"
-			count: 3
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on App\\\\Entity\\\\Group\\\\Group\\|null\\.$#"
-			count: 2
-			path: src/Controller/Admin/GroupController.php
-
-		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:createDeleteForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
 			count: 1
 			path: src/Controller/Admin/GroupController.php
@@ -217,11 +202,6 @@ parameters:
 
 		-
 			message: "#^Only booleans are allowed in an if condition, App\\\\Entity\\\\Security\\\\LocalAccount\\|null given\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
-			message: "#^Parameter \\#1 \\$groups of method App\\\\Entity\\\\Activity\\\\Activity\\:\\:isVisible\\(\\) expects array\\<App\\\\Entity\\\\Group\\\\Group\\>, array\\<int, App\\\\Entity\\\\Group\\\\Group\\|null\\> given\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
 

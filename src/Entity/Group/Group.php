@@ -82,10 +82,10 @@ class Group
     private $subgroupable;
 
     /**
-     * @var Collection<int, Relation>
+     * @var Collection<int, LocalAccount>
      */
-    #[ORM\OneToMany(targetEntity: "App\Entity\Group\Relation", mappedBy: "group", orphanRemoval: true)]
-    #[GQL\Field(type: "[Relation]")]
+    #[ORM\ManyToMany(targetEntity: LocalAccount::class, mappedBy: 'relations')]
+    #[GQL\Field(type: "[LocalAccount]")]
     #[GQL\Description("The member users of this group.")]
     private $relations;
 
@@ -220,27 +220,27 @@ class Group
     }
 
     /**
-     * @return Collection<int, Relation>
+     * @return Collection<int, LocalAccount>
      */
     public function getRelations(): Collection
     {
         return $this->relations;
     }
 
-    public function addRelation(Relation $relation): self
+    public function addRelation(LocalAccount $relation): self
     {
         if (!$this->relations->contains($relation)) {
-            $this->relations[] = $relation;
-            $relation->setGroup($this);
+            $this->relations->add($relation);
+            $relation->addRelation($this);
         }
 
         return $this;
     }
 
-    public function removeRelation(Relation $relation): self
+    public function removeRelation(LocalAccount $relation): self
     {
-        if ($this->relations->contains($relation)) {
-            $this->relations->removeElement($relation);
+        if ($this->relations->removeElement($relation)) {
+            $relation->removeRelation($this);
         }
 
         return $this;
@@ -251,22 +251,16 @@ class Group
      * groups for the provided user. Relations are ordered based on the group
      * hierarchy, from the root parent group down to the current group.
      *
-     * @return Collection<int, Relation>
+     * @return Collection<int, Group>
      */
     public function getAllRelationFor(LocalAccount $user): Collection
     {
         // if a parent group is present, retrieve those relations first
         $relationList = null !== $this->parent ? $this->parent->getAllRelationFor($user) : new ArrayCollection();
 
-        // get relations for this group
-        $groupRelations = $user->getRelations()->filter(function (Relation $relation) {
-            return $relation->getGroup() === $this;
-        });
-
         // add relations to the list (assumption is made of at most one relation per user)
-        $rel = $groupRelations->first();
-        if (false !== $rel) {
-            $relationList->add($rel);
+        if ($user->getRelations()->exists(fn ($_, Group $relation) => $relation === $this)) {
+            $relationList->add($this);
         }
 
         return $relationList;
