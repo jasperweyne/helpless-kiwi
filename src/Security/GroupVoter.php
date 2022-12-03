@@ -67,7 +67,7 @@ class GroupVoter extends Voter
 
         // find all relations in the hierarchy, and check if one of the (parent)
         // groups is an active group
-        return $group->getAllRelationFor($user)->exists(fn ($_, Group $current) => $current->isActive());
+        return $group->getAllRelationFor($user)->exists(fn ($_, Group $current) => true === $current->isActive());
     }
 
     private function editGroup(?Group $group, LocalAccount $user): bool
@@ -80,12 +80,12 @@ class GroupVoter extends Voter
         // find all relations in the hierarchy, and check if one of the parent
         // groups is an active group (not this group itself, only parent group
         // members can edit group settings)
-        return $group->getAllRelationFor($user)->exists(fn ($_, Group $current) => $current->isActive() && $current !== $group);
+        return $group->getAllRelationFor($user)->exists(fn ($_, Group $current) => true === $current->isActive() && $current !== $group);
     }
 
     private function anyGroup(LocalAccount $user): bool
     {
         // if in one of the (active) groups
-        return $user->getRelations()->exists(fn ($_, Group $relation) => $relation->isActive());
+        return $user->getRelations()->exists(fn ($_, Group $relation) => true === $relation->isActive());
     }
 }
