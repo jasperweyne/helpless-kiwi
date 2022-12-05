@@ -2,6 +2,7 @@
 
 namespace App\Entity\Activity;
 
+use App\Entity\Gallery\Photo;
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
 use App\Entity\Location\Location;
@@ -10,10 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[GQL\Type]
@@ -131,22 +129,11 @@ class Activity
     private $deadline;
 
     /**
-     * @var File
+     * @var ?Photo
      */
-    #[Vich\UploadableField(mapping: "activities", fileNameProperty: "image.name", size: "image.size", mimeType: "image.mimeType", originalName: "image.originalName", dimensions: "image.dimensions")]
-    private $imageFile;
-
-    /**
-     * @var EmbeddedFile
-     */
-    #[ORM\Embedded(class: "Vich\UploaderBundle\Entity\File")]
-    private $image;
-
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(type: "datetime")]
-    private $imageUpdatedAt;
+    #[ORM\ManyToOne(targetEntity: Photo::class, inversedBy: 'activities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $photo = null;
 
     /**
      * @var ?int
@@ -422,55 +409,14 @@ class Activity
         return $this;
     }
 
-    /**
-     * @param File|UploadedFile $imageFile
-     */
-    public function setImageFile(File $imageFile = null): self
+    public function getPhoto(): ?Photo
     {
-        $this->imageFile = $imageFile;
-
-        if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->imageUpdatedAt = new \DateTimeImmutable();
-        }
-
-        return $this;
+        return $this->photo;
     }
 
-    public function getImageFile(): ?File
+    public function setPhoto(?Photo $photo): self
     {
-        return $this->imageFile;
-    }
-
-    public function setImage(EmbeddedFile $image): self
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getImage(): ?EmbeddedFile
-    {
-        return $this->image;
-    }
-
-    /**
-     * Get imageUpdatedAt.
-     *
-     * @return \DateTime
-     */
-    public function getImageUpdatedAt(): ?\DateTime
-    {
-        return $this->imageUpdatedAt;
-    }
-
-    /**
-     * Set id.
-     */
-    public function setImageUpdatedAt(\DateTime $imageUpdatedAt): self
-    {
-        $this->imageUpdatedAt = $imageUpdatedAt;
+        $this->photo = $photo;
 
         return $this;
     }
@@ -479,7 +425,6 @@ class Activity
     {
         $this->registrations = new ArrayCollection();
         $this->options = new ArrayCollection();
-        $this->image = new EmbeddedFile();
         $this->visibleAfter = new \DateTime();
     }
 
