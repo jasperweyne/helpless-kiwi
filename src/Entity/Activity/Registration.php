@@ -91,10 +91,9 @@ class Registration
     private $comment;
 
     /**
-     * @ORM\Embedded(class="ExternalRegistrant")
-     *
      * @var ?ExternalRegistrant
      */
+    #[ORM\Embedded(class: ExternalRegistrant::class)]
     private $externalPerson;
 
     /**

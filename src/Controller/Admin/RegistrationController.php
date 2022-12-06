@@ -42,9 +42,8 @@ class RegistrationController extends AbstractController
 
     /**
      * Add someones registration from an activity.
-     *
-     * @Route("/new/{id}/external", name="new_external", methods={"GET", "POST"})
      */
+    #[Route("/new/{id}/external", name: "new_external", methods: ["GET", "POST"])]
     public function newExternalAction(
         Request $request,
         Activity $activity

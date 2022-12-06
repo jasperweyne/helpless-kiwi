@@ -6,32 +6,26 @@ use App\Entity\Security\ContactInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
-/**
- * @ORM\Embeddable
- * @GQL\Type
- * @GQL\Description("A registrant for an activity.")
- */
+#[ORM\Embeddable]
+#[GQL\Type]
+#[GQL\Description("A registrant for an activity.")]
 class ExternalRegistrant implements ContactInterface
 {
     /**
-     * @ORM\Column(type="string", length=180, nullable=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", length: 180, nullable: true)]
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=180, nullable=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", length: 180, nullable: true)]
     private $name;
 
-    /**
-     * @GQL\Field(type="String")
-     * @GQL\Description("The e-mail address of the registrant.")
-     * @GQL\Access("hasRole('ROLE_ADMIN')")
-     */
+    #[GQL\Field(type: "String")]
+    #[GQL\Description("The e-mail address of the registrant.")]
+    #[GQL\Access("hasRole('ROLE_ADMIN')")]
     public function getEmail(): ?string
     {
         return $this->email;
@@ -44,11 +38,9 @@ class ExternalRegistrant implements ContactInterface
         return $this;
     }
 
-    /**
-     * @GQL\Field(type="String")
-     * @GQL\Description("The full name of the registrant.")
-     * @GQL\Access("hasRole('ROLE_ADMIN')")
-     */
+    #[GQL\Field(type: "String")]
+    #[GQL\Description("The full name of the registrant.")]
+    #[GQL\Access("hasRole('ROLE_ADMIN')")]
     public function getName(): ?string
     {
         return $this->name;
