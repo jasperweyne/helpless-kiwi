@@ -25,7 +25,10 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     private $em;
 
-    private $controller = '/admin/group/';
+    /**
+     * @var string
+     */
+    private $controller = "/admin/activity/register";
 
     /**
      * {@inheritdoc}
@@ -55,6 +58,26 @@ class RegistrationControllerTest extends AuthWebTestCase
         unset($this->em);
     }
 
+    public function testNewExternalActionGet(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+
+        // Act
+        $this->client->request('GET', $this->controller . "/new/{$id}/external");
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorExists("form");
+        self::assertSelectorExists("#registration");
+        self::assertPageTitleContains("Nieuwe aanmelding voor");
+        self::assertSelectorTextContains("#registration_person > div:nth-child(1) > label", "Name");
+        self::assertSelectorTextContains("#registration_person > div:nth-child(2) > label", "Email");
+        self::assertSelectorTextContains("#registration > div:nth-child(2) > label", "Optie");
+        self::assertSelectorTextContains("#registration > div:nth-child(3) > label", "Comment");
+    }
+
     public function testNewActionGet(): void
     {
         // Arrange
@@ -62,7 +85,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/new/{$id}");
+        $this->client->request('GET', $this->controller . "/new/{$id}");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -79,7 +102,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/new/{$id}");
+        $this->client->request('GET', $this->controller . "/new/{$id}");
         $this->client->submitForm('Toevoegen');
 
         // Assert
@@ -95,7 +118,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Arrange
         $registration = $this->em->getRepository(Registration::class)->findAll()[0];
         $id = $registration->getId();
-        $crawler = $this->client->request('GET', "/admin/activity/register/edit/{$id}");
+        $crawler = $this->client->request('GET', $this->controller . "/edit/{$id}");
         $comment = 'This is a test comment';
 
         // Act
@@ -118,7 +141,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $registration->getId();
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/delete/{$id}");
+        $this->client->request('GET', $this->controller . "/delete/{$id}");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -135,7 +158,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         self::assertEquals(null, $registration->getDeleteDate());
 
         // Act
-        $crawler = $this->client->request('GET', "/admin/activity/register/delete/{$id}");
+        $crawler = $this->client->request('GET', $this->controller . "/delete/{$id}");
         $form = $crawler->selectButton('Ja, meld af')->form();
         $this->client->submit($form);
 
@@ -153,7 +176,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/reserve/new/{$id}");
+        $this->client->request('GET', $this->controller . "/reserve/new/{$id}");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -170,7 +193,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/reserve/new/{$id}");
+        $this->client->request('GET', $this->controller . "/reserve/new/{$id}");
         $this->client->submitForm('Toevoegen');
 
         // Assert
@@ -189,7 +212,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $secondReserveId = $reserves[1]->getId();
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/reserve/move/{$secondReserveId}/up");
+        $this->client->request('GET', $this->controller . "/reserve/move/{$secondReserveId}/up");
 
         // Assert
         $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
@@ -206,7 +229,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $firstReserveId = $reserves[0]->getId();
 
         // Act
-        $this->client->request('GET', "/admin/activity/register/reserve/move/{$firstReserveId}/down");
+        $this->client->request('GET', $this->controller . "/reserve/move/{$firstReserveId}/down");
 
         // Assert
         $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
@@ -236,7 +259,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         //act
         $this->logout();
-        $this->login(false);
+        $this->login([]);
         $this->client->request('GET', $url);
 
         //assert
@@ -248,7 +271,6 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     public function testNullActivityNotAdmin(string $url): void
     {
-
         //arrange
         /** @var Registration $registration */
         $registration = $this->em->getRepository(Registration::class)->findOneBy(['activity' => null]);
@@ -259,7 +281,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         //act
         $this->logout();
-        $this->login(false);
+        $this->login([]);
         $this->client->request('GET', $url);
 
         //assert
@@ -272,11 +294,11 @@ class RegistrationControllerTest extends AuthWebTestCase
     public function noAccessProvider()
     {
         return [
-            ['/admin/activity/register/edit/id'],
-            ['/admin/activity/register/delete/id'],
-            ['/admin/activity/register/reserve/new/id'],
-            ['/admin/activity/register/reserve/move/rid/up'],
-            ['/admin/activity/register/reserve/move/rid/down'],
+            [$this->controller . '/edit/id'],
+            [$this->controller . '/delete/id'],
+            [$this->controller . '/reserve/new/id'],
+            [$this->controller . '/reserve/move/rid/up'],
+            [$this->controller . '/reserve/move/rid/down'],
         ];
     }
 }

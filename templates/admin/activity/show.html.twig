@@ -206,7 +206,7 @@
                         {% endfor %}
                         {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
                             <tr>
-                                <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
+                                <td>{{ registration.person.canonical ?? 'Onbekend' }}{% if registration.external %} <i>(extern)</i>{% endif %}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td>
@@ -239,6 +239,9 @@
                                     <a href="mailto:?bcc={{ registrations|map(r => r.person.email)|join(',') }}" target="_blank">Deelnemers mailen</a>
                                     {% endif %}
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><a href="{{ path('admin_activity_registration_new_external', { 'id': activity.id }) }}">Externe aanmelding toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>

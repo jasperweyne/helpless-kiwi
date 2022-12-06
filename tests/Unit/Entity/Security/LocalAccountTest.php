@@ -4,7 +4,6 @@ namespace Tests\Unit\Entity\Security;
 
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -167,8 +166,6 @@ class LocalAccountTest extends KernelTestCase
     {
         $group = new Group();
         $group->setActive(true);
-        $relation = new Relation();
-        $relation->setGroup($group);
 
         $expected = ['ROLE_USER'];
         $local = new ReflectionClass(LocalAccount::class);
@@ -177,7 +174,7 @@ class LocalAccountTest extends KernelTestCase
         $roleProperty->setAccessible(true);
         $roleProperty->setValue($this->localAccount, $expected);
 
-        $relations = new ArrayCollection([$relation]);
+        $relations = new ArrayCollection([$group]);
         $relationProperty = $local
             ->getProperty('relations');
         $relationProperty->setAccessible(true);
@@ -451,9 +448,8 @@ class LocalAccountTest extends KernelTestCase
 
     public function testAddRelation(): void
     {
-        /** @var MockObject&Relation */
-        $expected = $this->createMock(Relation::class);
-        $expected->expects(self::once())->method('setPerson')->with($this->localAccount);
+        /** @var MockObject&Group */
+        $expected = $this->createMock(Group::class);
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
@@ -463,10 +459,8 @@ class LocalAccountTest extends KernelTestCase
 
     public function testRemoveRelation(): void
     {
-        /** @var MockObject&Relation */
-        $expected = $this->createMock(Relation::class);
-        $expected->method('getPerson')->willReturn($this->localAccount);
-        $expected->expects(self::once())->method('setPerson')->with(null);
+        /** @var MockObject&Group */
+        $expected = $this->createMock(Group::class);
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
@@ -479,12 +473,10 @@ class LocalAccountTest extends KernelTestCase
     {
         $group = new Group();
         $group->setActive(true);
-        $relation = new Relation();
-        $relation->setGroup($group);
 
         $local = new ReflectionClass(LocalAccount::class);
 
-        $relations = new ArrayCollection([$relation]);
+        $relations = new ArrayCollection([$group]);
         $relationProperty = $local
             ->getProperty('relations');
         $relationProperty->setAccessible(true);

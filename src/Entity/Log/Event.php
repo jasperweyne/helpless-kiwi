@@ -7,69 +7,56 @@ use App\Log\AbstractEvent;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(
- *   name="log",
- *   indexes={
- *     @ORM\Index(name="search_idx", columns={"object_id", "object_type"}),
- *     @ORM\Index(name="order_idx",  columns={"time"}),
- *     @ORM\Index(name="discr_idx",  columns={"discr"})
- *   }
- * )
- */
+#[ORM\Entity]
+#[ORM\Table(name: "log")]
+#[ORM\Index(name: "search_idx", columns: ["object_id", "object_type"])]
+#[ORM\Index(name: "order_idx", columns: ["time"])]
+#[ORM\Index(name: "discr_idx", columns: ["discr"])]
 class Event
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     *
      * @var ?string
      */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue(strategy: "UUID")]
+    #[ORM\Column(type: "guid")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
-     *
      * @var string
      */
+    #[ORM\Column(type: "string", length: 100)]
     private $discr;
 
     /**
-     * @ORM\Column(type="datetime")
-     *
      * @var DateTimeInterface
      */
+    #[ORM\Column(type: "datetime")]
     private $time;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", nullable: true)]
     private $objectId;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", nullable: true)]
     private $objectType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     *
      * @var ?LocalAccount
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
+    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
     private $person;
 
     /**
-     * @ORM\Column(type="text")
-     *
      * @var string
      */
+    #[ORM\Column(type: "text")]
     private $meta;
 
     public function getId(): ?string

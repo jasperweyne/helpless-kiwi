@@ -4,9 +4,9 @@ overblog_graphql:
             query: Query
         mappings:
             types:
-                -   type: annotation
+                -   type: attribute
                     dir: "%kernel.project_dir%/src/Entity"
                     suffix: ~
-                -   type: annotation
+                -   type: attribute
                     dir: "%kernel.project_dir%/src/GraphQL"
                     suffix: ~

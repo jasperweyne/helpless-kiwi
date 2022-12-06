@@ -1,7 +1,7 @@
 
 <h2>{{ title }}</h2>
 <p>Hallo {{ person.givenName ?? person.name ?? '' }},<br />
-{% if person.id != by.id %}
+{% if person.id is not defined or person.id != by.id %}
 	Je bent aangemeld voor {{ activity.name }}
 {% else %}
 	Je hebt je aangemeld voor {{ activity.name }}
@@ -12,7 +12,7 @@ Je wordt verwacht op {{ activity.start|date('d-m-Y') }} om {{ activity.start|dat
 {% else %}
 	De activiteit zal eindigen op {{ activity.end|date('d-m-Y') }} rond {{ activity.end|date('H:i') }}
 {% endif %}
-{% if person.id != by.id %}
+{% if person.id is not defined or person.id != by.id %}
 	Je bent aangemeld door {{ by.canonical }}. Klopt dit niet? Neem dan contact met deze persoon op.<br />
 {% endif %}
 Afmelden is mogelijk tot {{ activity.deadline|date('d-m-Y') }}.<br />

@@ -69,7 +69,7 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testIndexActionNotAdmin(): void
     {
         $this->logout();
-        $this->login(false);
+        $this->login([]);
         $this->client->request('GET', $this->controllerEndpoint.'/');
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
