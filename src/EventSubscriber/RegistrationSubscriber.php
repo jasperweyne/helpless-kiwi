@@ -2,6 +2,8 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Activity\ExternalRegistrant;
+use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
@@ -55,29 +57,38 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
     public function persistRegistrationAdded(RegistrationAddedEvent $event): void
     {
-        $this->em->persist($event->getRegistration());
+        $registration = $event->getRegistration();
+
+        $this->em->persist($registration);
         $this->em->flush();
 
         $name = '';
-        $registrant = $event->getRegistration()->getPerson();
-        assert($registrant instanceof LocalAccount);
-        if ($registrant->getId() !== $this->user->getId()) {
+        $registrant = $registration->getPerson();
+        assert($registrant instanceof ContactInterface);
+        if ($registrant->getName() !== $this->user->getName()) {
             $name = ' van ' . $registrant->getName();
         }
-        $location = $event->getRegistration()->isReserve() ? ' op de reservelijst!' : ' gelukt!';
+        $location = $registration->isReserve() ? ' op de reservelijst!' : ' gelukt!';
 
         $this->flash->add('success', 'Aanmelding' . $name  . $location);
     }
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void
     {
-        $event->getRegistration()->setDeleteDate(new \DateTime('now'));
+        $registration = $event->getRegistration();
+
+        if ($registration->getPerson() instanceof ExternalRegistrant) {
+            $this->em->remove($registration);
+        } else {
+            $registration->setDeleteDate(new \DateTime('now'));
+        }
+
         $this->em->flush();
 
         $name = '';
-        $registrant = $event->getRegistration()->getPerson();
-        assert($registrant instanceof LocalAccount);
-        if ($registrant->getId() !== $this->user->getId()) {
+        $registrant = $registration->getPerson();
+        assert($registrant instanceof ContactInterface);
+        if ($registrant->getName() !== $this->user->getName()) {
             $name = ' van ' . $registrant->getName();
         }
         $this->flash->add('success', 'Afmelding' . $name  .' gelukt!');

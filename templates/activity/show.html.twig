@@ -79,15 +79,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in registrations|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
-                            <tr>
-                                <td>{{ registration }}</td>
-                            </tr>
+                        {% if registrations|length > 0 %}
+                            {% for registration in registrations|filter(a => not a.external)|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
+                                <tr>
+                                    <td>{{ registration }}</td>
+                                </tr>
+                            {% endfor %}
+                            {% set externalCount = registrations|filter(a => a.external)|length %}
+                            {% if externalCount > 0 %}
+                                <tr>
+                                    <td><i>{{ externalCount }} externe{{ externalCount == 1 ? '' : 'n' }}</i></td>
+                                </tr>
+                            {% endif %}
                         {% else %}
                             <tr>
                                 <td>Geen aanmeldingen.</td>
                             </tr>
-                        {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
             </div>

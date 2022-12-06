@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity]
 #[GQL\Type]
 #[GQL\Description("A registered user who can log in and register for activities.")]
-class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
+class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface
 {
     /**
      * @var ?string
