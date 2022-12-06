@@ -69,8 +69,13 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorExists("form");
         self::assertSelectorExists("#registration");
         self::assertPageTitleContains("Nieuwe aanmelding voor");
+        self::assertSelectorTextContains("#registration_person > div:nth-child(1) > label", "Name");
+        self::assertSelectorTextContains("#registration_person > div:nth-child(2) > label", "Email");
+        self::assertSelectorTextContains("#registration > div:nth-child(2) > label", "Optie");
+        self::assertSelectorTextContains("#registration > div:nth-child(3) > label", "Comment");
     }
 
     public function testNewActionGet(): void
