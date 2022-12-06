@@ -4,7 +4,6 @@ namespace App\Entity\Security;
 
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -100,11 +99,13 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     private $registrations;
 
     /**
-     * @var Collection<int, Relation>
+     * @var Collection<int, Group>
      */
-    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "person")]
-    #[GQL\Field(type: "[Relation]")]
-    #[GQL\Description("All group membership relations for the user.")]
+    #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'relations')]
+    #[ORM\JoinTable('kiwi_relation')]
+    #[ORM\JoinColumn('person_id')]
+    #[GQL\Field(type: "[Group]")]
+    #[GQL\Description("All group memberships for the user.")]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $relations;
 
@@ -376,31 +377,25 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     }
 
     /**
-     * @return Collection<int, Relation>
+     * @return Collection<int, Group>
      */
-    public function getRelations()
+    public function getRelations(): Collection
     {
         return $this->relations;
     }
 
-    public function addRelation(Relation $relation): self
+    public function addRelation(Group $relation): self
     {
         if (!$this->relations->contains($relation)) {
-            $this->relations[] = $relation;
-            $relation->setPerson($this);
+            $this->relations->add($relation);
         }
 
         return $this;
     }
 
-    public function removeRelation(Relation $relation): self
+    public function removeRelation(Group $relation): self
     {
-        if ($this->relations->removeElement($relation)) {
-            // set the owning side to null (unless already changed)
-            if ($relation->getPerson() === $this) {
-                $relation->setPerson(null);
-            }
-        }
+        $this->relations->removeElement($relation);
 
         return $this;
     }
@@ -410,13 +405,6 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      */
     public function getActiveGroups(): array
     {
-        $groups = [];
-        foreach ($this->getRelations() as $relation) {
-            if (null !== $relation->getGroup() && true === $relation->getGroup()->isActive()) {
-                $groups[] = $relation->getGroup();
-            }
-        }
-
-        return $groups;
+        return $this->getRelations()->filter(fn (Group $group) => $group->isActive() ?? false)->toArray();
     }
 }

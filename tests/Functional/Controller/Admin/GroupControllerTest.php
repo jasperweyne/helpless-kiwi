@@ -4,6 +4,7 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Group\Group;
 use App\Entity\Group\Relation;
+use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Group\GroupFixture;
 use App\Tests\Database\Group\RelationFixture;
@@ -133,41 +134,24 @@ class GroupControllerTest extends AuthWebTestCase
         self::assertContains($newGroup, $allGroups);
     }
 
-    public function testRelationAddAction(): void
-    {
-        // Arrange
-        $relation = $this->em->getRepository(Relation::class)->findAll()[0];
-        $id = $relation->getId();
-
-        // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/add/{$id}");
-        $form = $crawler->selectButton('Toevoegen')->form();
-        $form['relation_add[_token]'] = 'Penningmeester';
-        $crawler = $this->client->submit($form);
-        $allRelations = $this->em->getRepository(Relation::class)->findAll();
-        $newGroupId = explode('add/', $crawler->getUri() ?? '')[1];
-        $newRelation = $this->em->getRepository(Relation::class)->find($newGroupId);
-
-        // Assert
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertContains($newRelation, $allRelations);
-    }
-
     public function testRelationDeleteAction(): void
     {
         // Arrange
-        $relation = $this->em->getRepository(Relation::class)->findAll()[0];
-        $id = $relation->getId();
+        $user = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $group = $user->getRelations()[0];
+        assert($group !== null);
+        $id = $group->getId();
+        $account_id = $user->getId();
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/delete/{$id}");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/delete/{$id}/{$account_id}");
         $form = $crawler->selectButton('Ja, verwijder')->form();
         $crawler = $this->client->submit($form);
 
-        $allRelations = $this->em->getRepository(Relation::class)->findAll();
+        $group = $this->em->getRepository(Group::class)->find($id);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertNotContains($relation, $allRelations);
+        self::assertNotContains($group, $user->getRelations());
     }
 }

@@ -54,7 +54,7 @@ class ActivityController extends AbstractController
         $groups = [];
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);
-            $groups = $this->em->getRepository(Group::class)->findAllFor($user);
+            $groups = $user->getRelations()->toArray();
         }
 
         $activities = $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup($groups);
@@ -182,7 +182,7 @@ class ActivityController extends AbstractController
         $groups = [];
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);
-            $groups = $this->em->getRepository(Group::class)->findAllFor($user);
+            $groups = $user->getRelations()->toArray();
         }
         $targetoptions = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
         $forms = [];

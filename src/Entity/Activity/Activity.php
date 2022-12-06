@@ -3,7 +3,6 @@
 namespace App\Entity\Activity;
 
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Entity\Location\Location;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -557,9 +556,7 @@ class Activity
         // gather the currently applicable groups
         $groups = [];
         if ($user) {
-            $groups = $user->getRelations()->map(function (Relation $relation) {
-                return $relation->getGroup();
-            })->toArray();
+            $groups = $user->getRelations()->toArray();
         }
 
         return $this->isVisible($groups);

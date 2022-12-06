@@ -38,7 +38,7 @@ class Query
     {
         $groups = [];
         if ($loggedIn && $user = $this->user()) {
-            $groups = $this->em->getRepository(Group::class)->findAllFor($user);
+            $groups = $user->getRelations()->toArray();
         }
 
         return $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup($groups);
