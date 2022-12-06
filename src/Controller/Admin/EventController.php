@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Log\Event;
 use App\Log\EventService;
-use App\Template\Annotation\MenuItem;
+use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,9 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Event controller.
- *
- * @Route("/admin/event", name="admin_event_")
  */
+#[Route("/admin/event", name: "admin_event_")]
 class EventController extends AbstractController
 {
     /**
@@ -31,10 +30,9 @@ class EventController extends AbstractController
 
     /**
      * Lists all events.
-     *
-     * @MenuItem(title="Gebeurtenislog", menu="admin", role="ROLE_ADMIN")
-     * @Route("/", name="index", methods={"GET"})
      */
+    #[MenuItem(title: "Gebeurtenislog", menu: "admin", role: "ROLE_ADMIN")]
+    #[Route("/", name: "index", methods: ["GET"])]
     public function indexAction(Request $request, EntityManagerInterface $em): Response
     {
         $qb = $em->createQueryBuilder()

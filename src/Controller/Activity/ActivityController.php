@@ -10,7 +10,7 @@ use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
-use App\Template\Annotation\MenuItem;
+use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -23,9 +23,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Activity controller.
- *
- * @Route("/", name="activity_")
  */
+#[Route("/", name: "activity_")]
 class ActivityController extends AbstractController
 {
     /**
@@ -46,15 +45,15 @@ class ActivityController extends AbstractController
 
     /**
      * Lists all activities.
-     *
-     * @MenuItem(title="Terug naar frontend", menu="admin-profile", class="mobile")
-     * @MenuItem(title="Activiteiten")
-     * @Route("/", name="index", methods={"GET"})
      */
+    #[MenuItem(title: "Terug naar frontend", menu: "admin-profile", class: "mobile")]
+    #[MenuItem(title: "Activiteiten")]
+    #[Route("/", name: "index", methods: ["GET"])]
     public function indexAction(): Response
     {
         $groups = [];
-        if ($user = $this->getUser()) {
+        if (null !== $user = $this->getUser()) {
+            assert($user instanceof LocalAccount);
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
 
@@ -67,9 +66,8 @@ class ActivityController extends AbstractController
 
     /**
      * Displays a form to edit an existing activity entity.
-     *
-     * @Route("/activity/{id}/unregister", name="unregister", methods={"POST"})
      */
+    #[Route("/activity/{id}/unregister", name: "unregister", methods: ["POST"])]
     public function unregisterAction(
         Request $request,
         Activity $activity
@@ -94,9 +92,7 @@ class ActivityController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/ical", methods={"GET"})
-     */
+    #[Route("/ical", methods: ["GET"])]
     public function callIcal(
         ICalProvider $iCalProvider
     ): Response {
@@ -107,9 +103,8 @@ class ActivityController extends AbstractController
 
     /**
      * Displays a form to register to an activity.
-     *
-     * @Route("/activity/{id}/register", name="register", methods={"POST"})
      */
+    #[Route("/activity/{id}/register", name: "register", methods: ["POST"])]
     public function registerAction(
         Request $request,
         Activity $activity
@@ -173,9 +168,8 @@ class ActivityController extends AbstractController
 
     /**
      * Finds and displays a activity entity.
-     *
-     * @Route("/activity/{id}", name="show", methods={"GET"})
      */
+    #[Route("/activity/{id}", name: "show", methods: ["GET"])]
     public function showAction(Activity $activity): Response
     {
         $regs = $this->em->getRepository(Registration::class)->findBy([
@@ -186,7 +180,8 @@ class ActivityController extends AbstractController
         $reserve = $this->em->getRepository(Registration::class)->findReserve($activity);
         $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
-        if ($user = $this->getUser()) {
+        if (null !== $user = $this->getUser()) {
+            assert($user instanceof LocalAccount);
             $groups = $this->em->getRepository(Group::class)->findAllFor($user);
         }
         $targetoptions = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);

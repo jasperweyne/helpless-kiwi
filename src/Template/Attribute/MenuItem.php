@@ -1,51 +1,22 @@
 <?php
 
-namespace App\Template\Annotation;
+namespace App\Template\Attribute;
 
-use Doctrine\Common\Annotations\Annotation;
+use Attribute;
 
-/**
- * @Annotation
- * @Target("METHOD")
- */
+#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class MenuItem
 {
-    /**
-     * @Required
-     *
-     * @var string
-     */
-    public $title;
-
-    /**
-     * @var string
-     */
-    public $menu;
-
-    /**
-     * @var string
-     */
-    public $role;
-
-    /**
-     * @var string
-     */
-    public $class;
-
-    /**
-     * @var string
-     */
-    public $activeCriteria;
-
-    /**
-     * @var int
-     */
-    public $order;
-
-    /**
-     * @var string
-     */
-    private $path;
+    public function __construct(
+        private string $title,
+        private ?string $menu = null,
+        private ?string $role = null,
+        private ?string $class = null,
+        private ?string $activeCriteria = null,
+        private ?int $order = null,
+        private ?string $path = null
+    ) {
+    }
 
     public function getTitle(): string
     {

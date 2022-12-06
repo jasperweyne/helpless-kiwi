@@ -61,11 +61,6 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Activity/ActivityController.php
-
-		-
 			message: "#^Parameter \\#1 \\$activity of method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createRegisterForm\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Activity/ActivityController.php
@@ -73,11 +68,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$activity of method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createUnregisterForm\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
 			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
-			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
 		-
@@ -501,34 +491,14 @@ parameters:
 			path: src/Security/PasswordResetService.php
 
 		-
-			message: "#^Property App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:\\$path \\(string\\) does not accept string\\|null\\.$#"
-			count: 1
-			path: src/Template/Annotation/MenuItem.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, Symfony\\\\Component\\\\Routing\\\\Annotation\\\\Route\\|null given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<string, array\\<App\\\\Template\\\\Annotation\\\\MenuItem\\>\\> given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, Symfony\\\\Component\\\\Routing\\\\Annotation\\\\Route\\|null given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
 			message: "#^Only booleans are allowed in a ternary operator condition, string given\\.$#"
 			count: 1
-			path: src/Template/AnnotationMenuExtension.php
+			path: src/Template/AttributeMenuExtension.php
 
 		-
 			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
-			path: src/Template/AnnotationMenuExtension.php
+			path: src/Template/AttributeMenuExtension.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"

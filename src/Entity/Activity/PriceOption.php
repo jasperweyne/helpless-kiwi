@@ -9,82 +9,72 @@ use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\OptionRepository")
- * @GQL\Type
- * @GQL\Description("A registration option for an activity.")
- */
+#[ORM\Entity(repositoryClass: "App\Repository\OptionRepository")]
+#[GQL\Type]
+#[GQL\Description("A registration option for an activity.")]
 class PriceOption
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     *
      * @var ?string
      */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue(strategy: "UUID")]
+    #[ORM\Column(type: "guid")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100, name="title")
-     * @Assert\NotBlank
-     * @GQL\Field(type="String!")
-     * @GQL\Description("The name of the registration option.")
-     *
      * @var string
      */
+    #[ORM\Column(type: "string", length: 100, name: "title")]
+    #[Assert\NotBlank]
+    #[GQL\Field(type: "String!")]
+    #[GQL\Description("The name of the registration option.")]
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="options")
-     * @ORM\JoinColumn(name="activity", referencedColumnName="id")
-     * @GQL\Field(type="Activity!")
-     * @GQL\Description("The activity associated with this registration option.")
-     *
      * @var ?Activity
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\Activity", inversedBy: "options")]
+    #[ORM\JoinColumn(name: "activity", referencedColumnName: "id")]
+    #[GQL\Field(type: "Activity!")]
+    #[GQL\Description("The activity associated with this registration option.")]
     private $activity;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group\Group")
-     * @ORM\JoinColumn(name="target", referencedColumnName="id", nullable=true)
-     * @GQL\Field(type="Group")
-     * @GQL\Description("The target group of users that can register for this registration option.")
-     *
      * @var ?Group
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
+    #[ORM\JoinColumn(name: "target", referencedColumnName: "id", nullable: true)]
+    #[GQL\Field(type: "Group")]
+    #[GQL\Description("The target group of users that can register for this registration option.")]
     private $target;
 
     /**
-     * @ORM\Column(type="integer")
-     * @GQL\Field(type="Int")
-     * @GQL\Description("The price of this option, stored in euro-cents.")
-     *
      * @var int
      */
+    #[ORM\Column(type: "integer")]
+    #[GQL\Field(type: "Int")]
+    #[GQL\Description("The price of this option, stored in euro-cents.")]
     private $price;
 
     /**
-     * @ORM\Column(type="json")
-     *
      * @var array<string, string>
      */
+    #[ORM\Column(type: "json")]
     private $details;
 
     /**
-     * @ORM\Column(type="string")
-     *
      * @var string
      */
+    #[ORM\Column(type: "string")]
     private $confirmationMsg;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Activity\Registration", mappedBy="option")
-     * @GQL\Field(type="[Registration]")
-     * @GQL\Description("The list of registrations for this price option.")
-     *
      * @var Collection<int, Registration>
      */
+    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: "option")]
+    #[GQL\Field(type: "[Registration]")]
+    #[GQL\Description("The list of registrations for this price option.")]
     private $registrations;
 
     public function __construct()

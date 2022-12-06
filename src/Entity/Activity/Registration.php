@@ -10,95 +10,84 @@ use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @GQL\Type
- * @GQL\Description("A representation of a registration from a user for an activity.")
- * @ORM\Entity(repositoryClass="App\Repository\RegistrationRepository")
- */
+#[GQL\Type]
+#[GQL\Description("A representation of a registration from a user for an activity.")]
+#[ORM\Entity(repositoryClass: "App\Repository\RegistrationRepository")]
 class Registration
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     *
      * @var ?string
      */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue(strategy: "UUID")]
+    #[ORM\Column(type: "guid")]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\PriceOption", inversedBy="registrations")
-     * @ORM\JoinColumn(nullable=false)
-     * @GQL\Field(type="PriceOption!")
-     * @GQL\Description("The specific registration option of the activity this registration points to.")
-     * @Assert\NotBlank
-     *
      * @var PriceOption
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\PriceOption", inversedBy: "registrations")]
+    #[ORM\JoinColumn(nullable: false)]
+    #[GQL\Field(type: "PriceOption!")]
+    #[GQL\Description("The specific registration option of the activity this registration points to.")]
+    #[Assert\NotBlank]
     private $option;
 
     /**
-     * @ORM\ManyToOne(targetEntity=LocalAccount::class, inversedBy="registrations")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     * @GQL\Field(type="LocalAccount")
-     * @GQL\Description("The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.")
-     * @GQL\Access("isGranted('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")
-     *
      * @var ?LocalAccount
      */
+    #[ORM\ManyToOne(targetEntity: LocalAccount::class, inversedBy: "registrations")]
+    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
+    #[GQL\Field(type: "LocalAccount")]
+    #[GQL\Description("The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.")]
+    #[GQL\Access("isGranted('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")]
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Activity\Activity", inversedBy="registrations")
-     * @ORM\JoinColumn(name="activity", referencedColumnName="id")
-     * @GQL\Field(type="Activity!")
-     * @GQL\Description("The activity for which the user registered.")
-     *
      * @var ?Activity
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\Activity", inversedBy: "registrations")]
+    #[ORM\JoinColumn(name: "activity", referencedColumnName: "id")]
+    #[GQL\Field(type: "Activity!")]
+    #[GQL\Description("The activity for which the user registered.")]
     private $activity;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @GQL\Field(type="String")
-     * @GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[GQL\Field(type: "String")]
+    #[GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")]
     private $reserve_position;
 
     /**
-     * @ORM\Column(name="newdate", type="datetime", nullable=false)
-     * @GQL\Field(name="created", type="DateTimeScalar!", resolve="@=value.getNewDate()")
-     * @GQL\Description("The date and time the user registered for the activity.")
-     *
      * @var DateTime
      */
+    #[ORM\Column(name: "newdate", type: "datetime", nullable: false)]
+    #[GQL\Field(name: "created", type: "DateTimeScalar!", resolve: "@=value.getNewDate()")]
+    #[GQL\Description("The date and time the user registered for the activity.")]
     private $newdate;
 
     /**
-     * @ORM\Column(name="deletedate", type="datetime", nullable=true)
-     * @GQL\Field(name="deleted", type="DateTimeScalar", resolve="@=value.getDeleteDate()")
-     * @GQL\Description("The date and time the user deleted their registration for the activity.")
-     *
      * @var ?DateTime
      */
+    #[ORM\Column(name: "deletedate", type: "datetime", nullable: true)]
+    #[GQL\Field(name: "deleted", type: "DateTimeScalar", resolve: "@=value.getDeleteDate()")]
+    #[GQL\Description("The date and time the user deleted their registration for the activity.")]
     private $deletedate;
 
     /**
-     * @ORM\Column(name="present", type="boolean", nullable=true)
-     * @GQL\Field(type="Boolean")
-     * @GQL\Description("Whether the user was present during the activity.")
-     *
      * @var ?bool
      */
+    #[ORM\Column(name: "present", type: "boolean", nullable: true)]
+    #[GQL\Field(type: "Boolean")]
+    #[GQL\Description("Whether the user was present during the activity.")]
     private $present;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     *
      * @var ?string
      */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $comment;
 
     /**
