@@ -21,7 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class RegistrationTest extends KernelTestCase
 {
     /**
-     * @var registration
+     * @var Registration
      */
     protected $registration;
 

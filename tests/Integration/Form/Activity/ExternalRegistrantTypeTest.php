@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ExternalRegistrantType.
@@ -102,7 +103,8 @@ class ExternalRegistrantTypeTest extends KernelTestCase
 
     public function testConfigureOptions(): void
     {
-        $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")
+        /** @var MockObject&OptionsResolver */
+        $resolver = $this->getMockBuilder(OptionsResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
         $resolver->expects($this::exactly(1))->method('setDefaults');
