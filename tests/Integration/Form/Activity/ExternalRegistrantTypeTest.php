@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,7 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ExternalRegistrantTypeTest extends KernelTestCase
 {
     /**
-     * @var DatabaseToolCollection
+     * @var AbstractDatabaseTool
      */
     protected $databaseTool;
 
