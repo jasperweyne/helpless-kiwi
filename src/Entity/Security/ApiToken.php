@@ -20,8 +20,8 @@ class ApiToken
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
         private readonly \DateTimeImmutable $expiresAt,
     ) {
-        // generate secure 64 bit token (encoded as 128-chars hexadecimal string)
-        $this->token = bin2hex(random_bytes(64));
+        // generate secure 512 bit token (encoded as 88-chars base64-encoded string)
+        $this->token = base64_encode(random_bytes(512 / 8));
     }
 
     public function isValid(\DateTimeInterface $at = new \DateTime('now')): bool
