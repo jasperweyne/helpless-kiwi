@@ -35,8 +35,9 @@ class Mutation
     public function login(string $username, string $password, ?string $clientSecret): ?string
     {
         // Validate that the provided client secret exists, if provided
+        $clientRepository = $this->em->getRepository(TrustedClient::class);
         $client = null;
-        if (null !== $clientSecret && null === $client = $this->em->getRepository(TrustedClient::class)->find($clientSecret)) {
+        if (null !== $clientSecret && null === $client = $clientRepository->findOneBy(['secret' => $clientSecret])) {
             throw new AuthenticationException('Unknown client', Response::HTTP_FORBIDDEN);
         }
 
