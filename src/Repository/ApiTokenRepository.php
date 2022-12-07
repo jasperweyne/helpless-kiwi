@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Security\ApiToken;
 use App\Entity\Security\LocalAccount;
+use App\Entity\Security\TrustedClient;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,11 +25,12 @@ class ApiTokenRepository extends ServiceEntityRepository
 
     public function generate(
         LocalAccount $account,
+        TrustedClient $client,
         \DateTimeImmutable $expiresAt = new \DateTimeImmutable('+5 minutes')
     ): string {
         $em = $this->getEntityManager();
 
-        $em->persist($apiToken = new ApiToken($account, $expiresAt));
+        $em->persist($apiToken = new ApiToken($account, $client, $expiresAt));
         $em->flush();
 
         return $apiToken->token;
