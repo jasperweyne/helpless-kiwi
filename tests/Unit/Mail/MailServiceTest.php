@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Mail;
 
+use App\Entity\Activity\ExternalRegistrant;
 use App\Entity\Security\LocalAccount;
 use App\Mail\MailService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -83,6 +84,20 @@ class MailServiceTest extends KernelTestCase
     public function testMessage(): void
     {
         $recipient = new LocalAccount();
+        $recipient
+            ->setEmail('john.doe@foo.bar')
+            ->setName('John Doe')
+        ;
+
+        $this->em->expects(self::atLeastOnce())->method('persist');
+        $this->em->expects(self::once())->method('flush');
+        $this->mailer->expects(self::once())->method('send');
+        $this->mailService->message($recipient, '', '');
+    }
+
+    public function testMessageExternal(): void
+    {
+        $recipient = new ExternalRegistrant();
         $recipient
             ->setEmail('john.doe@foo.bar')
             ->setName('John Doe')

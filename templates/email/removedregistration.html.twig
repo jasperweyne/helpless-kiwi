@@ -1,6 +1,6 @@
 <h2>{{ title }}</h2>
 <p>Hallo {{ person.givenName ?? person.name ?? '' }},<br />
-{% if person.id == by.id %}
+{% if person.id is defined and person.id == by.id %}
 Helaas, je hebt je afgemeld voor {{ activity.name }}. Bedankt voor je afmelding.<br />
 {% else %}
 Helaas, je bent afgemeld voor {{ activity.name }} door {{ by.canonical }}. Klopt dit niet? Neem dan contact met deze persoon op.<br />

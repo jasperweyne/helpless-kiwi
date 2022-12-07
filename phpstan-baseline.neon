@@ -61,11 +61,6 @@ parameters:
 			path: src/Controller/Activity/ActivityController.php
 
 		-
-			message: "#^Only booleans are allowed in an if condition, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Activity/ActivityController.php
-
-		-
 			message: "#^Parameter \\#1 \\$activity of method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createRegisterForm\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
 			count: 1
 			path: src/Controller/Activity/ActivityController.php
@@ -73,16 +68,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$activity of method App\\\\Controller\\\\Activity\\\\ActivityController\\:\\:createUnregisterForm\\(\\) expects App\\\\Entity\\\\Activity\\\\Activity, App\\\\Entity\\\\Activity\\\\Activity\\|null given\\.$#"
 			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Entity\\\\Activity\\\\Registration\\:\\:setPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount\\|null, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
-			count: 1
-			path: src/Controller/Activity/ActivityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$person of method App\\\\Repository\\\\GroupRepository\\:\\:findAllFor\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount, Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
-			count: 2
 			path: src/Controller/Activity/ActivityController.php
 
 		-
@@ -109,21 +94,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$array of function current expects array\\|object, mixed given\\.$#"
 			count: 1
 			path: src/Controller/Admin/EventController.php
-
-		-
-			message: "#^Cannot call method getCanonical\\(\\) on App\\\\Entity\\\\Security\\\\LocalAccount\\|null\\.$#"
-			count: 1
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on App\\\\Entity\\\\Group\\\\Group\\|null\\.$#"
-			count: 3
-			path: src/Controller/Admin/GroupController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on App\\\\Entity\\\\Group\\\\Group\\|null\\.$#"
-			count: 2
-			path: src/Controller/Admin/GroupController.php
 
 		-
 			message: "#^Method App\\\\Controller\\\\Admin\\\\GroupController\\:\\:createDeleteForm\\(\\) should return Symfony\\\\Component\\\\Form\\\\Form but returns Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
@@ -236,11 +206,6 @@ parameters:
 			path: src/Entity/Activity/Activity.php
 
 		-
-			message: "#^Parameter \\#1 \\$groups of method App\\\\Entity\\\\Activity\\\\Activity\\:\\:isVisible\\(\\) expects array\\<App\\\\Entity\\\\Group\\\\Group\\>, array\\<int, App\\\\Entity\\\\Group\\\\Group\\|null\\> given\\.$#"
-			count: 1
-			path: src/Entity/Activity/Activity.php
-
-		-
 			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$imageFile \\(Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\File\\) does not accept Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\File\\|null\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
@@ -284,11 +249,6 @@ parameters:
 			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
 			count: 2
 			path: src/Entity/Security/LocalAccount.php
-
-		-
-			message: "#^Casting to array something that's already array\\.$#"
-			count: 2
-			path: src/EventListener/DoctrineTablePrefixListener.php
 
 		-
 			message: "#^Offset 'joinTable' does not exist on array\\{cache\\?\\: array, cascade\\: array\\<string\\>, declared\\?\\: class\\-string, fetch\\: mixed, fieldName\\: string, id\\?\\: bool, inherited\\?\\: class\\-string, indexBy\\?\\: string, \\.\\.\\.\\}\\.$#"
@@ -511,34 +471,14 @@ parameters:
 			path: src/Security/PasswordResetService.php
 
 		-
-			message: "#^Property App\\\\Template\\\\Annotation\\\\MenuItem\\:\\:\\$path \\(string\\) does not accept string\\|null\\.$#"
-			count: 1
-			path: src/Template/Annotation/MenuItem.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, Symfony\\\\Component\\\\Routing\\\\Annotation\\\\Route\\|null given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<string, array\\<App\\\\Template\\\\Annotation\\\\MenuItem\\>\\> given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, Symfony\\\\Component\\\\Routing\\\\Annotation\\\\Route\\|null given\\.$#"
-			count: 1
-			path: src/Template/AnnotationMenuExtension.php
-
-		-
 			message: "#^Only booleans are allowed in a ternary operator condition, string given\\.$#"
 			count: 1
-			path: src/Template/AnnotationMenuExtension.php
+			path: src/Template/AttributeMenuExtension.php
 
 		-
 			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
-			path: src/Template/AnnotationMenuExtension.php
+			path: src/Template/AttributeMenuExtension.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"
@@ -688,16 +628,6 @@ parameters:
 		-
 			message: "#^Cannot call method getRegistrations\\(\\) on App\\\\Entity\\\\Activity\\\\Activity\\|null\\.$#"
 			count: 2
-			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\RegistrationControllerTest\\:\\:\\$controller has no type specified\\.$#"
-			count: 1
-			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Controller\\\\Admin\\\\RegistrationControllerTest\\:\\:\\$controller is never read, only written\\.$#"
-			count: 1
 			path: tests/Functional/Controller/Admin/RegistrationControllerTest.php
 
 		-

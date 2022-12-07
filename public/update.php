@@ -192,7 +192,7 @@ class IntegrationTool
 
             include_once $this->getAutoloaderPath();
 
-            (new Dotenv())->bootEnv(__DIR__ . '/../.env');
+            (new Dotenv())->bootEnv($this->getRootPath() . DIRECTORY_SEPARATOR . '.env');
 
             $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
             $this->application = new Application($kernel);
@@ -1857,12 +1857,12 @@ class UserInterface
                     </div>
                     <div class="panel-body">
                         <?php if ($error) {
-            echo '<p class="alert alert-warning">'.$error.' </p> <br>';
-        } ?>
+                            echo '<p class="alert alert-warning">'.$error.' </p> <br>';
+                        } ?>
 <?php
-//endregion HTML_HEADER
-//region HTML_FORMS
-echo $step;
+        //endregion HTML_HEADER
+        //region HTML_FORMS
+        echo $step;
         //endregion HTML_FORMS
 //region HTML_FOOTER?>
                         </div>
@@ -1875,7 +1875,7 @@ echo $step;
 <?php
 
 //endregion HTML_FOOTER
-        exit;
+                exit;
     }
 }
 
