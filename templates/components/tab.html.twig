@@ -1,0 +1,52 @@
+{# 
+Tab component
+=============
+
+Build a list of mobile-friendly tabs in admin.
+
+Styling rules: assets/style/components/admin/_tabs.scss
+
+Variables:
+- 'tab_label' string, required
+- 'tab_name' string, optional
+- 'tab_default', bool, optional
+
+Example usage:
+```
+<div class="tabs">
+    {% embed 'component/tab.html.twig' with {'tab_label': 'Tab1', 'tab_default': true} %}
+        {% block tab %}
+            <h1>Tab 1</h1>
+        {% endblock %}
+    {% endembed %}
+    {% embed 'component/tab.html.twig' with {'tab_label': 'Tab2'} %}
+        {% block tab %}
+            <h1>Tab 2</h1>
+        {% endblock %}
+    {% endembed %}
+    {% embed 'component/tab.html.twig' with {'tab_label': 'Tab #', 'tab_name': 'tab3'} %}
+        {% block tab %}
+            <h1>Tab #</h1>
+        {% endblock %}
+    {% endembed %}
+</div>
+```
+#}
+
+{% if tab_name is not defined %}
+    {% set tab_name = tab_label|lower %}
+{% endif %}
+{% if tab_default is not defined %}
+    {% set tab_default = false %}
+{% endif %}
+
+{% block tab_picker %}
+    <input type="radio" name="tabs" id="{{ tab_name }}" {{ tab_default ? 'checked' : ''}}>
+    <label for="{{ tab_name }}" class="tab {{ tab_default ? 'active' : ''}}">
+        <span>{{ tab_label }}</span>
+    </label>
+{% endblock %}
+<div class="panel">
+    {% block tab %}
+    {% endblock %}
+</div>

@@ -4,82 +4,165 @@
     {% set page_title = 'Account van ' ~ account.canonical %}
 {% endif %}
 
-{% block body %}
-    <div class="table">
-    <table>
-        <tbody>
-            <tr>
-            <tr>
-                <th>Voornaam</th>
-                <td>{{ account.givenName }}</td>
-            </tr>
-            <tr>
-                <th>Achternaam</th>
-                <td>{{ account.familyName }}</td>
-            </tr>
-            <tr>
-                <th>E-mail</th>
-                <td><a href="mailto:{{ account.email }}" target="_blank">{{ account.email }}</a></td>
-            </tr>
-            <tr>
-                <th>{{ oidc ? 'Lokale login' : 'Geactiveerd' }}</th>
-                <td>{{ account.password ? 'Ja' : 'Nee' }}</td>
-            </tr>
-            {% if oidc %}
-                <tr>
-                    <th>Externe login</th>
-                    <td>{{ account.oidc ? 'Ja' : 'Nee' }}</td>
-                </tr>
-            {% endif %}
-            <tr>
-                <th>Rollen</th>
-                <td>
-                    <ul>
-                        {% for role in account.roles %}
-                            <li>{{ role }}</li>
-                        {% endfor %}
-                    </ul>
-                    <span><a href="{{ path('admin_security_roles', { 'id': account.id }) }}">Rollen bewerken</a></span>
-                </td>
-            </tr>
-            <tr>
-                <th>Gemaakt op</th>
-                <td>
-                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Gemaakt door</th>
-                <td>
-                    {{ createdAt.person.canonical ?? '' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Aanpassingen</th>
-                <td>
+{% block body_wrap %}
+    <div class="tabs">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Details', 'tab_default': true} %}
+            {% block tab %}
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <tbody>
+                            <tr>
+                            <tr>
+                                <th>Voornaam</th>
+                                <td>{{ account.givenName }}</td>
+                            </tr>
+                            <tr>
+                                <th>Achternaam</th>
+                                <td>{{ account.familyName }}</td>
+                            </tr>
+                            <tr>
+                                <th>E-mail</th>
+                                <td><a href="mailto:{{ account.email }}" target="_blank">{{ account.email }}</a></td>
+                            </tr>
+                            <tr>
+                                <th>{{ oidc ? 'Lokale login' : 'Geactiveerd' }}</th>
+                                <td>{{ account.password ? 'Ja' : 'Nee' }}</td>
+                            </tr>
+                            {% if oidc %}
+                                <tr>
+                                    <th>Externe login</th>
+                                    <td>{{ account.oidc ? 'Ja' : 'Nee' }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Rollen</th>
+                                <td>
+                                    <ul>
+                                        {% for role in account.roles %}
+                                            <li>{{ role }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <span><a href="{{ path('admin_security_roles', { 'id': account.id }) }}">Rollen bewerken</a></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Gemaakt op</th>
+                                <td>
+                                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Gemaakt door</th>
+                                <td>
+                                    {{ createdAt.person.canonical ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Aanpassingen</th>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Door</th>
+                                                <th>Tijdstip</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for modif in modifs %}
+                                            <tr>
+                                                <td>{{ modif.person.canonical ?? '' }}</td>
+                                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>Geen aanpassingen.</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endblock %}
+        {% endembed %}
+
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Aanmeldingen', 'tab_name': 'registrations'} %}
+            {% block tab %}
+            <div class="card">
+                <div class="table">
                     <table>
                         <thead>
                             <tr>
-                                <th>Door</th>
-                                <th>Tijdstip</th>
+                                <th>Aanmelding</th>
+                                <th>Optie</th>
+                                <th>Laatst bewerkt</th>
+                                <th>Aanwezigheid</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for modif in modifs %}
+                        {% for registration in account.registrations|sort((a, b) => b.newdate <=> a.newdate) %}
                             <tr>
-                                <td>{{ modif.person.canonical ?? '' }}</td>
-                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                                <td>
+                                    <a href="{{ path("admin_activity_show", { 'id': registration.activity.id }) }}">{{ registration.activity.name }}</a>
+                                    {% if registration.reserve %} (reservelijst) {% endif %}
+                                    {% if registration.deletedate %} (afgemeld) {% endif %}
+                                </td>
+                                <td>{{ registration.option.name }}</td>
+                                <td>{{ (registration.deletedate ?? registration.newdate)|date('Y-m-d H:i:s')  }} </td>
+                                <td>
+                                {% if registration.present is null %}Onbekend
+                                {% elseif registration.present == true %}Aanwezig
+                                {% else %}Afwezig
+                                {% endif %}
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td>Geen aanpassingen.</td>
+                                <td>Geen aanmeldingen.</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </div>
+            </div>
+            {% endblock %}
+        {% endembed %}
+        
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Groepen', 'tab_name': 'groups'} %}
+            {% block tab %}
+            <div class="card">
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Groep</th>
+                                <th>Aanvullende groepen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for relation in account.relations %}
+                            <tr>
+                                <td><a href="{{ path("admin_group_show", { 'id': relation.group.id }) }}">{{ relation.group.name }}</a></td>
+                                <td>
+                                    {% for r in relation.root.allRelations.toArray|filter(a => a.group != relation.group) %}
+                                        <a href="{{ path('admin_group_show', { 'id': r.group.id }) }}">{{ r.group.name }}</a>{{ loop.last ? '' : ', ' }}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen groepen.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endblock %}
+        {% endembed %}
     </div>
 {% endblock %}
