@@ -36,13 +36,16 @@ class ApiTokenRepository extends ServiceEntityRepository
         return $apiToken->token;
     }
 
-    public function cleanup(): void
+    /**
+     * Cleanup expired tokens and return the number of cleaned up tokens.
+     */
+    public function cleanup(): int
     {
-        $this->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->delete()
             ->where('t.expiresAt < CURRENT_TIMESTAMP()')
             ->getQuery()
-            ->getResult()
+            ->execute()
         ;
     }
 }

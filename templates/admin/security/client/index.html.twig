@@ -1,0 +1,46 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'API clients' %}
+    
+    {% block top %}
+        {% embed 'admin/listview.html.twig' %}
+            {% set resultcount = clients|length %}
+
+            {% block buttons %}
+                <a href="{{ path("admin_security_client_new") }} ">Toevoegen</a>
+                <a href="{{ path("admin_security_client_clear") }} ">Tokens opruimen</a>
+            {% endblock %}
+        {% endembed %}
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Aantal tokens</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for client in clients %}
+                <tr>
+                    <td>{{ client.id }}</td>
+                    <td>{{ client.tokens|filter(t => t.valid)|length }} geldige tokens, {{ client.tokens|length }} totaal</td>
+                    <td>
+                        <a href="{{ path("admin_security_client_token", { 'id': client.id }) }}">Token genereren</a> | 
+                        <a href="{{ path("admin_security_client_delete", { 'id': client.id }) }}">Verwijderen</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen API clients.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
