@@ -11,3 +11,9 @@ overblog_graphql:
                 -   type: attribute
                     dir: "%kernel.project_dir%/src/GraphQL"
                     suffix: ~
+
+overblog_graphiql:
+    javascript_libraries:
+        graphiql: "latest"
+        react: "latest"
+        fetch: "latest"
