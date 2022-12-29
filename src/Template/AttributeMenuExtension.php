@@ -84,6 +84,9 @@ class AttributeMenuExtension implements MenuExtensionInterface
             if (null !== $item->getOrder()) {
                 $arr['order'] = $item->getOrder();
             }
+            if (null !== $item->getSub()) {
+                $arr['sub'] = $item->getSub();
+            }
             $mapped[] = $arr;
         }
 

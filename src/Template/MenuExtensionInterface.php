@@ -5,14 +5,14 @@ namespace App\Template;
 /**
  * @phpstan-type MenuItemArray array{
  *  title: string,
- *  path?: string|array{0: ?string, 1: array{id: ?string}},
+ *  path?: string|array{0: ?string, 1: array<string, string>},
  *  role?: string,
  *  class?: string,
  *  activeCriteria?: string,
  *  order?: int,
  *  sub?: array{
  *    title: string,
- *    path: array{0: ?string, 1: array{id: ?string}}
+ *    path: string|array{0: ?string, 1: array<string, string>}
  *  }[]
  * }
  */

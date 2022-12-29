@@ -14,7 +14,8 @@ class MenuItem
         private ?string $class = null,
         private ?string $activeCriteria = null,
         private ?int $order = null,
-        private ?string $path = null
+        private ?string $path = null,
+        private ?array $sub = null
     ) {
     }
 
@@ -58,5 +59,10 @@ class MenuItem
         $this->path = $path;
 
         return $this;
+    }
+
+    public function getSub(): ?array
+    {
+        return $this->sub;
     }
 }
