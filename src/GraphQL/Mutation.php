@@ -2,6 +2,7 @@
 
 namespace App\GraphQL;
 
+use App\Entity\Security\ApiToken;
 use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Repository\ApiTokenRepository;
@@ -55,5 +56,31 @@ class Mutation
 
         // Generate an API token for trusted applications
         return $client !== null ? $this->apiTokenRepository->generate($user, $client) : null;
+    }
+
+    #[GQL\Field(type: "Null")]
+    #[GQL\Description("Invalidate the current session. Optionally revoke an API token when the tokenString is provided")]
+    public function logout(?string $tokenString): void
+    {
+        if (null !== $tokenString) {
+            // Check if the token exists
+            if (null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
+                throw new AuthenticationException('Unknown token', Response::HTTP_FORBIDDEN);
+            }
+            assert($token instanceof ApiToken);
+
+            // Validate that the current user is authorized (provided through session or HTTP header)
+            $currentUser = $this->tokenStorage->getToken()->getUser();
+            if ($token->account !== $currentUser && !in_array('ROLE_ADMIN', $currentUser->getRoles())) {
+                throw new AuthenticationException('Not authorized to invalidate user', Response::HTTP_UNAUTHORIZED);
+            }
+
+            // Remove the token
+            $this->em->remove($token);
+            $this->em->flush();
+        }
+
+        // Unset the cookie, invalidating the current session (intended for same-origin use)
+        $this->tokenStorage->setToken(null);
     }
 }
