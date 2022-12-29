@@ -12,7 +12,7 @@ class TrustedClient
     /**
      * @var Collection<int, ApiToken>
      */
-    #[ORM\OneToMany(targetEntity: ApiToken::class, mappedBy: 'client')]
+    #[ORM\OneToMany(targetEntity: ApiToken::class, mappedBy: 'client', cascade: ['remove'])]
     public readonly Collection $tokens;
 
     public function __construct(

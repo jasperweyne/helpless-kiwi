@@ -17,7 +17,7 @@ class ApiToken
         #[ORM\ManyToOne(fetch: 'EAGER')]
         #[ORM\JoinColumn(nullable: false)]
         public readonly LocalAccount $account,
-        #[ORM\ManyToOne(inversedBy: 'tokens', cascade: ['remove'])]
+        #[ORM\ManyToOne(inversedBy: 'tokens')]
         #[ORM\JoinColumn(nullable: false)]
         public readonly TrustedClient $client,
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
