@@ -40,77 +40,9 @@ class MenuItemTest extends KernelTestCase
         unset($this->menuItem);
     }
 
-    public function testGetTitle(): void
+    public function testToMenuItemArray(): void
     {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('title');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getTitle());
-    }
-
-    public function testGetMenu(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('menu');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getMenu());
-    }
-
-    public function testGetRole(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('role');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getRole());
-    }
-
-    public function testGetClass(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('class');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getClass());
-    }
-
-    public function testGetActiveCriteria(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('activeCriteria');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getActiveCriteria());
-    }
-
-    public function testGetOrder(): void
-    {
-        $expected = 42;
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('order');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getOrder());
-    }
-
-    public function testGetPath(): void
-    {
-        $expected = null;
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('path');
-        $property->setAccessible(true);
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getPath());
-    }
-
-    public function testSetPath(): void
-    {
-        $expected = null;
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('path');
-        $property->setAccessible(true);
-        $this->menuItem->setPath($expected);
-        self::assertSame($expected, $property->getValue($this->menuItem));
+        /* @todo This test is incomplete. */
+        self::markTestIncomplete();
     }
 }
