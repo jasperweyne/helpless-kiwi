@@ -2,6 +2,7 @@
 
 namespace Tests\Functional\GraphQL;
 
+use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Activity\ActivityFixture;
 use App\Tests\Database\Activity\PriceOptionFixture;
@@ -76,9 +77,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user(), 'api');
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -121,9 +121,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user(), 'api');
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -163,9 +162,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user(), 'api');
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -206,9 +204,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user(), 'api');
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -249,9 +246,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user(), 'api');
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
