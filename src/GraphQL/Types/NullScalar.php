@@ -8,6 +8,8 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 class NullScalar
 {
     /**
+     * @param mixed $value
+     *
      * @return string
      */
     public static function serialize($value)

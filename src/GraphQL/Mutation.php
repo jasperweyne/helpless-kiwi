@@ -67,11 +67,11 @@ class Mutation
             if (null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
                 throw new AuthenticationException('Unknown token', Response::HTTP_FORBIDDEN);
             }
-            assert($token instanceof ApiToken);
 
             // Validate that the current user is authorized (provided through session or HTTP header)
-            $currentUser = $this->tokenStorage->getToken()->getUser();
-            if ($token->account !== $currentUser && !in_array('ROLE_ADMIN', $currentUser->getRoles())) {
+            $sessionToken = $this->tokenStorage->getToken();
+            $currentUser = $sessionToken !== null ? $sessionToken->getUser() : null;
+            if ($token->account !== $currentUser && $currentUser !== null && !in_array('ROLE_ADMIN', $currentUser->getRoles(), true)) {
                 throw new AuthenticationException('Not authorized to invalidate user', Response::HTTP_UNAUTHORIZED);
             }
 

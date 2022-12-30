@@ -51,6 +51,7 @@ class TrustedClientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $id = $form->get('id')->getData();
             $secret = base64_encode(random_bytes(1024 / 8));
+            assert(is_string($id));
 
             $this->em->persist(new TrustedClient($id, $secret));
             $this->em->flush();
@@ -89,6 +90,7 @@ class TrustedClientController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+            assert(is_array($data));
             assert($data['account'] instanceof LocalAccount);
             assert($data['expiresAt'] instanceof \DateTime);
 
@@ -131,20 +133,6 @@ class TrustedClientController extends AbstractController
      * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createDeleteForm(TrustedClient $client): FormInterface
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_security_client_delete', ['id' => $client->id]))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
-
-    /**
-     * Creates a form to check out all checked in users.
-     *
-     * @return \Symfony\Component\Form\FormInterface The form
-     */
-    private function createTokenForm(TrustedClient $client): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_security_client_delete', ['id' => $client->id]))

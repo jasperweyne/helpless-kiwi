@@ -7,6 +7,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class MenuItem
 {
+    /**
+     * @param ?array{
+     *   title: string,
+     *   path: string|array{0: ?string, 1: array<string, string>}
+     * }[] $sub
+     */
     public function __construct(
         private string $title,
         private ?string $menu = null,
@@ -61,6 +67,12 @@ class MenuItem
         return $this;
     }
 
+    /**
+     * @return ?array{
+     *   title: string,
+     *   path: string|array{0: ?string, 1: array<string, string>}
+     * }[]
+     */
     public function getSub(): ?array
     {
         return $this->sub;

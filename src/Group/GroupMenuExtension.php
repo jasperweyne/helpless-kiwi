@@ -25,7 +25,7 @@ class GroupMenuExtension implements MenuExtensionInterface
     private $tokenStorage;
 
     /**
-     * @var array{title: string, path: array{0: ?string, 1: array{id: ?string}}}[]
+     * @var array{title: string, path: array{0: ?string, 1: array<string, string>}}[]
      */
     private $menuItems;
 
@@ -80,7 +80,7 @@ class GroupMenuExtension implements MenuExtensionInterface
                 $this->menuItems[] = [
                     'title' => $group->getName(),
                     'path' => ['admin_activity_group', [
-                        'id' => $group->getId(),
+                        'id' => $group->getId() ?? '',
                     ]],
                 ];
             }
