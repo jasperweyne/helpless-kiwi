@@ -47,15 +47,11 @@
                                 <td>{{ activity.target.name ?? '' }}{% if not activity.target %}<i>Iedereen</i>{% endif %}</td>
                             </tr>
                             <tr>
-                                <th>{% if activity.present is null %}
-                                Hoeveelheid aanwezigen
-                                {% else %} Hoeveelheid aanwezigen{% endif %}</th>
+                                <th>Hoeveelheid aanwezigen</th>
                                 {% if activity.present is null %}
                                 <td><i>{{present}}</i> (Automatisch gegenereerd)</td>
-                                <td><a href="{{ path('admin_activity_amount_present', { 'id': activity.id }) }}"> set </a></td>
                                 {% else %}
                                 <td>{{activity.present}}</td>
-                                <td> <a href="{{ path('admin_activity_reset_amount_present', { 'id': activity.id }) }}">Herstel</a></td>
                                 {% endif %}
                             </tr>
                             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
@@ -227,7 +223,12 @@
                             <tr>
                                 <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
                                 <td></td><td></td>
-                                <td><a href="{{ path('admin_activity_present', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                <td>
+                                    {% if registrations|length == 0 or activity.present is not null %}
+                                    <a href="{{ path('admin_activity_present_set', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                    {% else %}
+                                    <a href="{{ path('admin_activity_present_edit', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                    {% endif %}
                                 <td></td>
                                 <td>
                                     {% if registrations|length > 0 %}

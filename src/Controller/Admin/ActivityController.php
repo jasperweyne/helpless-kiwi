@@ -293,7 +293,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to set participent presence.
      */
-    #[Route("/{id}/present", name: "present")]
+    #[Route("/{id}/present/edit", name: "present_edit")]
     public function presentEditAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -306,7 +306,7 @@ class ActivityController extends AbstractController
             $this->addFlash('success', 'Aanwezigheid aangepast');
         }
 
-        return $this->render('admin/activity/present.html.twig', [
+        return $this->render('admin/activity/present/edit.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);
@@ -315,8 +315,8 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to set amount participent present.
      */
-    #[Route("/{id}/setamountpresent", name: "amount_present", methods: ["GET", "POST"])]
-    public function setAmountPresent(Request $request, Activity $activity): Response
+    #[Route("/{id}/present/set", name: "present_set", methods: ["GET", "POST"])]
+    public function presentSetAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -330,7 +330,7 @@ class ActivityController extends AbstractController
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
 
-        return $this->render('admin/activity/amountpresent.html.twig', [
+        return $this->render('admin/activity/present/set.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);
@@ -339,8 +339,8 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to reset amount participent present.
      */
-    #[Route("/{id}/resetamountpresent", name: "reset_amount_present")]
-    public function resetAmountPresent(Request $request, Activity $activity): Response
+    #[Route("/{id}/present/reset", name: "present_reset")]
+    public function presentResetAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -355,7 +355,7 @@ class ActivityController extends AbstractController
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
         }
 
-        return $this->render('admin/activity/presentcount.html.twig', [
+        return $this->render('admin/activity/present/reset.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);
