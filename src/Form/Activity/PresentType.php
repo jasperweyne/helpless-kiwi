@@ -20,7 +20,9 @@ class PresentType extends AbstractType
             if (!$registration instanceof Registration) {
                 return;
             }
-            if (null != $registration->getDeleteDate()) {
+
+            // Deregistrations and reserve list entries don't have a presence
+            if (null != $registration->getDeleteDate() || null != $registration->getReservePosition()) {
                 return;
             }
 
