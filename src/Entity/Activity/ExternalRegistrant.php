@@ -57,4 +57,9 @@ class ExternalRegistrant implements ContactInterface
     {
         return $this->name ?? $this->email ?? 'Unknown registrant';
     }
+
+    public function __toString()
+    {
+        return $this->getCanonical();
+    }
 }
