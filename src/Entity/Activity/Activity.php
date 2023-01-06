@@ -341,7 +341,9 @@ class Activity
         $reserve = $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isReserve() && !$reg->isDeleted());
 
         // Don't retain original indices
-        return new ArrayCollection($reserve->getValues());
+        $array = $reserve->getValues();
+        \usort($array, fn (Registration $a, Registration $b) => $a->getReservePosition() <=> $b->getReservePosition());
+        return new ArrayCollection($array);
     }
 
     public function addReserveRegistration(Registration $registration): self

@@ -260,7 +260,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in activity.reserveRegistrations|sort((a, b) => a.reservePosition <=> b.reservePosition) %}
+                        {% for registration in activity.reserveRegistrations %}
                             <tr>
                                 <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
                                 <td>{{ registration.option.name }}</td>
