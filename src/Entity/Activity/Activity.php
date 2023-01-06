@@ -296,7 +296,10 @@ class Activity
      */
     public function getCurrentRegistrations(): Collection
     {
-        return $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && !$reg->isDeleted());
+        $current = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && !$reg->isDeleted());
+
+        // Don't retain original indices
+        return new ArrayCollection($current->getValues());
     }
 
     public function addCurrentRegistration(Registration $registration): self
@@ -314,7 +317,10 @@ class Activity
      */
     public function getDeregistrations(): Collection
     {
-        return $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && $reg->isDeleted());
+        $deregs = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && $reg->isDeleted());
+
+        // Don't retain original indices
+        return new ArrayCollection($deregs->getValues());
     }
 
     public function addDeregistration(Registration $registration): self
@@ -332,7 +338,10 @@ class Activity
      */
     public function getReserveRegistrations(): Collection
     {
-        return $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isReserve() && !$reg->isDeleted());
+        $reserve = $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isReserve() && !$reg->isDeleted());
+
+        // Don't retain original indices
+        return new ArrayCollection($reserve->getValues());
     }
 
     public function addReserveRegistration(Registration $registration): self

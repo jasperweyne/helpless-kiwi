@@ -254,10 +254,10 @@ class ActivityControllerTest extends AuthWebTestCase
         $id = $activities[0]->getId();
 
         //Act
-        $crawler = $this->client->request('GET', "/admin/activity/{$id}/present");
+        $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/edit");
         $form = $crawler->selectButton('Opslaan')->form();
         /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
-        $form['activity_edit_present[registrations][0][present]']->setValue('2');
+        $form['activity_edit_present[currentRegistrations][0][present]']->setValue('2');
         /** @var \Symfony\Component\DomCrawler\Form $form */
         $this->client->submit($form);
 
@@ -266,7 +266,7 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testSetAmountPresent(): void
+    public function testPresentSetAction(): void
     {
         //Arange
         $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
@@ -274,7 +274,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $present = $activitie->getPresent();
 
         //Act
-        $crawler = $this->client->request('GET', "/admin/activity/{$id}/setamountpresent");
+        $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/set/");
         $form = $crawler->selectButton('Opslaan')->form();
         $form['activity_set_present_amount[present]'] = '1000';
         $this->client->submit($form);
@@ -289,14 +289,14 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertTrue($newActivity->getPresent() != $present);
     }
 
-    public function testResetAmountPresent(): void
+    public function testPresentResetAction(): void
     {
         //Arange
         $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
         $id = $activitie->getId();
 
         //Act
-        $crawler = $this->client->request('GET', "/admin/activity/{$id}/resetamountpresent");
+        $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/reset/");
         $form = $crawler->selectButton('Opslaan')->form();
         $this->client->submit($form);
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
