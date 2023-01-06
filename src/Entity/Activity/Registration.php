@@ -219,6 +219,11 @@ class Registration
         return $this;
     }
 
+    public function isDeleted(): bool
+    {
+        return !\is_null($this->getDeleteDate());
+    }
+
     public function getPresent(): ?bool
     {
         return $this->present;

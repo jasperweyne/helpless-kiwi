@@ -13,11 +13,11 @@
                 <th>Aanwezigheid</th>
             </thead>
             <tbody>
-                {% for registration in form.registrations %}
+                {% for registration in form.currentRegistrations %}
                     {% if registration.count != 0 %}
                         <tr>
-                            <td>{{ form_label(registration.present) }}</td>
-                            <td>{{ form_widget(registration.present) }}</td>
+                            <td>{{ form_label(registration) }}</td>
+                            <td>{{ form_widget(registration) }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}

@@ -292,6 +292,60 @@ class Activity
     }
 
     /**
+     * @return Collection<int, Registration>
+     */
+    public function getCurrentRegistrations(): Collection
+    {
+        return $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && !$reg->isDeleted());
+    }
+
+    public function addCurrentRegistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeCurrentRegistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getDeregistrations(): Collection
+    {
+        return $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && $reg->isDeleted());
+    }
+
+    public function addDeregistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeDeregistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getReserveRegistrations(): Collection
+    {
+        return $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isReserve() && !$reg->isDeleted());
+    }
+
+    public function addReserveRegistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeReserveRegistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
+    /**
      * Get author.
      */
     public function getAuthor(): ?Group
