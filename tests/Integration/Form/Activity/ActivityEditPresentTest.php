@@ -68,18 +68,28 @@ class ActivityEditPresentTest extends KernelTestCase
 
         $formData = [
             'currentRegistrations' => [
-                ['present' => 1],
-                ['present' => 2],
+                ['present' => 1], // sets $rCurrent2 to false
+                ['present' => 2], // sets $rCurrent1 to true
             ],
         ];
 
         /** @var FormFactoryInterface */
         $formfactory = self::getContainer()->get('form.factory');
         $form = $formfactory->create(ActivityEditPresent::class, $type, ['csrf_protection' => false]);
+        $view = $form->createView();
+        $registrationView = $view['currentRegistrations'];
 
         $form->submit($formData);
         self::assertTrue($form->isSynchronized());
         self::assertTrue($form->isSubmitted());
         self::assertTrue($form->isValid(), $form->getErrors());
+        self::assertNotNull($registrationView);
+        self::assertEquals($registrationView->count(), 2);
+        self::assertNotNull($registrationView[0]);
+        self::assertNotNull($registrationView[1]);
+        self::assertEquals('a', $registrationView[0]->vars['label']);
+        self::assertEquals('b', $registrationView[1]->vars['label']);
+        self::assertTrue($rCurrent1->getPresent());
+        self::assertFalse($rCurrent2->getPresent());
     }
 }
