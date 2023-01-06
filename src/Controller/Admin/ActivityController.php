@@ -131,20 +131,13 @@ class ActivityController extends AbstractController
 
         /** @var RegistrationRepository */
         $repository = $this->em->getRepository(Registration::class);
-
-        $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
         $deregs = $repository->findDeregistrations($activity);
-        $reserve = $repository->findReserve($activity);
-        $present = $repository->countPresent($activity);
 
         return $this->render('admin/activity/show.html.twig', [
             'createdAt' => $createdAt,
             'modifs' => $modifs,
             'activity' => $activity,
-            'registrations' => $regs,
             'deregistrations' => $deregs,
-            'reserve' => $reserve,
-            'present' => $present,
         ]);
     }
 

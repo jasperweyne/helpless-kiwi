@@ -532,6 +532,12 @@ class ActivityTest extends KernelTestCase
         self::assertSame($expected, $property->getValue($this->activity));
     }
 
+    public function testAtCapacity(): void
+    {
+        /* @todo This test is incomplete. */
+        self::markTestIncomplete();
+    }
+
     public function testGetPresent(): void
     {
         $property = (new ReflectionClass(Activity::class))

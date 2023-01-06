@@ -172,16 +172,4 @@ class RegistrationRepositoryTest extends KernelTestCase
         /* @todo This test is incomplete. */
         self::markTestIncomplete();
     }
-
-    public function testFindReserve(): void
-    {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
-    }
-
-    public function testCountPresent(): void
-    {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
-    }
 }

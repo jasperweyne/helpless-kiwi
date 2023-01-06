@@ -562,6 +562,15 @@ class Activity
         return $this;
     }
 
+    /**
+     * Returns whether the activity is at/over capacity
+     * If so, new registrations should be placed in the reserve list
+     */
+    public function atCapacity(): bool
+    {
+        return $this->hasCapacity() && ($this->getCurrentRegistrations()->count() >= $this->getCapacity() || $this->getReserveRegistrations()->count() > 0);
+    }
+
     public function getPresent(): ?int
     {
         return $this->present;
