@@ -143,9 +143,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for relation in account.relations %}
+                        {% for group in account.relations %}
                             <tr>
-                                <td><a href="{{ path("admin_group_show", { 'id': relation.group.id }) }}">{{ relation.group.name }}</a></td>
+                                <td><a href="{{ path("admin_group_show", { 'id': group.id }) }}">{{ group.name }}</a></td>
                             </tr>
                         {% else %}
                             <tr>
