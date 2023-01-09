@@ -70,7 +70,7 @@ jobs:
     - name: Cleanup build
       if: github.ref == 'refs/heads/master'
       run: |
-        rm kiwi/{,.[!.],..?}* 2> /dev/null || true
+        rm kiwi/{,.[!.],..?}* !("kiwi/composer.json") 2> /dev/null || true
         rm -rf kiwi/.git
         rm -rf kiwi/.github
         rm -rf kiwi/.hooks
