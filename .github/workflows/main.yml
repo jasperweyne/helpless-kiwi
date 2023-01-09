@@ -88,7 +88,7 @@ jobs:
         return array (
             'APP_DEBUG' => '0',
             'APP_ENV' => 'prod',
-            'APP_SECRET' => '6badc0fca270ab84a00a67226f9e2554',
+            'APP_SECRET' => '6fake_app_secrit_dont_look4',
             'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
             'DATABASE_URL' => 'mysql://db_user:db_pass@127.0.0.1:3306/db',
             'MAILER_URL' => 'null://null',
