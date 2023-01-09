@@ -75,7 +75,7 @@ class ActivityEditType extends AbstractType
                 'placeholder' => 'Iedereen',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
-                        ->andWhere('t.register = TRUE');
+                        ->andWhere('t.register = 1');
                 },
                 'choice_label' => function ($ref) {
                     return $ref->getName();

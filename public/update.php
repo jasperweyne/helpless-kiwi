@@ -464,7 +464,7 @@ class DatabaseTool
     public function migrateDb()
     {
         $output = '';
-        $result = $this->integration->runCommand('doctrine:migrations:migrate -n --allow-no-migration', $output);
+        $result = $this->integration->runCommand('doctrine:migrations:migrate -n --allow-no-migration --all-or-nothing', $output);
 
         if (0 !== $result) {
             throw new \Exception($output);

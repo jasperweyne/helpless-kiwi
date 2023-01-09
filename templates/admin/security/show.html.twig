@@ -140,18 +140,12 @@
                         <thead>
                             <tr>
                                 <th>Groep</th>
-                                <th>Aanvullende groepen</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for relation in account.relations %}
                             <tr>
                                 <td><a href="{{ path("admin_group_show", { 'id': relation.group.id }) }}">{{ relation.group.name }}</a></td>
-                                <td>
-                                    {% for r in relation.root.allRelations.toArray|filter(a => a.group != relation.group) %}
-                                        <a href="{{ path('admin_group_show', { 'id': r.group.id }) }}">{{ r.group.name }}</a>{{ loop.last ? '' : ', ' }}
-                                    {% endfor %}
-                                </td>
                             </tr>
                         {% else %}
                             <tr>
