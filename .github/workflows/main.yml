@@ -91,7 +91,7 @@ jobs:
             'APP_SECRET' => '6badc0fca270ab84a00a67226f9e2554',
             'USERPROVIDER_KEY' => 'ThisIsNotSoSecret',
             'DATABASE_URL' => 'mysql://db_user:db_pass@127.0.0.1:3306/db',
-            'MAILER_URL' => 'null://localhost',
+            'MAILER_URL' => 'null://null',
             'DEFAULT_FROM' => 'foo@bar.com',
         );
         EOL
