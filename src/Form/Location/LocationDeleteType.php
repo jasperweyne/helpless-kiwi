@@ -31,7 +31,7 @@ class LocationDeleteType extends AbstractType
                         ->where('l != :self')
                         ->orderBy('l.address', 'ASC')
                         ->setParameter('self', $location)
-                        ;
+                    ;
                 },
                 'attr' => ['data-select' => 'true'],
                 'constraints' => [
