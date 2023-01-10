@@ -7,61 +7,52 @@ use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Mail
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     *
      * @var ?string
      */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue(strategy: "UUID")]
+    #[ORM\Column(type: "guid")]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     *
      * @var ?LocalAccount
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
+    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
     private $person;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Mail\Recipient", mappedBy="mail")
-     *
      * @var Collection<int,Recipient>
      */
+    #[ORM\OneToMany(targetEntity: "App\Entity\Mail\Recipient", mappedBy: "mail")]
     private $recipients;
 
     /**
-     * @ORM\Column(type="string")
-     *
      * @var string
      */
+    #[ORM\Column(type: "string")]
     private $title;
 
     /**
-     * @ORM\Column(type="text")
-     *
      * @var string
      */
+    #[ORM\Column(type: "text")]
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     *
      * @var string
      */
+    #[ORM\Column(type: "string", length: 255)]
     private $sender;
 
     /**
-     * @ORM\Column(type="datetime")
-     *
      * @var DateTime
      */
+    #[ORM\Column(type: "datetime")]
     private $sentAt;
 
     public function getId(): ?string

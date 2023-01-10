@@ -7,6 +7,25 @@
     <h2>{{ page_title }}</h2>
 </div>
 <div class="container row">
-    <span>Ga naar <a href="{{ path('admin_activity_index') }}">activiteiten</a>.</span>
+    {% if activities|length > 0 %}
+        <div class="cardholder">
+            <div class="grid-x">
+                <div class="cell">
+                    {% for activity in activities %}
+                        <a href="{{ path("admin_activity_show", { 'id': activity.id }) }}" class="admin activity">
+                            {% if activity.image.name %}
+                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="bw">
+                            {% endif %}
+                            <div class="container">
+                                <h2>{{ activity.name }}</h2>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <span>Voeg een <a href="{{ path('admin_activity_new') }}">nieuwe activiteit</a> toe.</span>
+    {% endif %}
 </div>
 {% endblock %}

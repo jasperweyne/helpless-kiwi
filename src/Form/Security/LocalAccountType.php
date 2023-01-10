@@ -15,7 +15,7 @@ class LocalAccountType extends AbstractType
         $builder
             ->add('name')
             ->add('email', EmailType::class)
-            ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

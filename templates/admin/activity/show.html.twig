@@ -12,11 +12,8 @@
 
 {% block body_wrap %}
     <div class="tabs">
-        <input type="radio" name="tabs" id="details" checked>
-        <label for="details" class="tab active">
-            <span>Details</span>
-        </label>
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Details', 'tab_default': true} %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -177,13 +174,11 @@
                     </table>
                 </div>
             </div>
-        </div>      
+            {% endblock %}
+        {% endembed %}
 
-        <input type="radio" name="tabs" id="participants">
-        <label for="participants" class="tab">
-            <span>Deelnemers</span>
-        </label>
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Deelnemers', 'tab_name': 'participants'} %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -203,12 +198,14 @@
                                 <td> <strike>{{ registration.person.canonical ?? 'Onbekend' }} </strike> </td>
                                 <td> <strike> {{ registration.option.name }}   </strike> </td> 
                                 <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
+                                <td></td>
+                                <td></td>
                                 <td><a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a></td>
                             </tr>
                         {% endfor %}
                         {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
                             <tr>
-                                <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
+                                <td>{{ registration.person.canonical ?? 'Onbekend' }}{% if registration.external %} <i>(extern)</i>{% endif %}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td>
@@ -219,9 +216,9 @@
                                 </td>
                                 <td>{{ registration.comment }}</td>
                                 <td>
-                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
-                                    |
                                     <a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a>
+                                    |
+                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
                                     |
                                     <a href="{{ path('admin_activity_registration_edit', { 'id': registration.id }) }}">Bewerken</a>
                                 </td>
@@ -242,17 +239,18 @@
                                     {% endif %}
                                 </td>
                             </tr>
+                            <tr>
+                                <td><a href="{{ path('admin_activity_registration_new_external', { 'id': activity.id }) }}">Externe aanmelding toevoegen</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
-        <input type="radio" name="tabs" id="reserve">
-        <label for="reserve" class="tab">
-            <span>Reservelijst</span>
-        </label>
-        <div class="panel">
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Reservelijst', 'tab_name': 'reserve'} %}
+            {% block tab %}
             <div class="card">
                 <div class="table">
                     <table>
@@ -289,7 +287,7 @@
                     </table>
                 </div>
             </div>
-        </div>
-        <input type="radio" name="tabs" id="aanwezig">
+            {% endblock %}
+        {% endembed %}
     </div>
 {% endblock %}

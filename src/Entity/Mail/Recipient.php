@@ -5,34 +5,29 @@ namespace App\Entity\Mail;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Recipient
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     *
      * @var ?string
      */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue(strategy: "UUID")]
+    #[ORM\Column(type: "guid")]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Security\LocalAccount")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
-     *
      * @var ?LocalAccount
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
+    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Mail\Mail", inversedBy="recipients")
-     * @ORM\JoinColumn(name="mail", referencedColumnName="id")
-     *
      * @var ?Mail
      */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Mail\Mail", inversedBy: "recipients")]
+    #[ORM\JoinColumn(name: "mail", referencedColumnName: "id")]
     private $mail;
 
     public function getId(): ?string

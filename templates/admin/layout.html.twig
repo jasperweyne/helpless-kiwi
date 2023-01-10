@@ -74,8 +74,12 @@
 {% block footer %}
     <footer class="bottom">
         <ul class="bottom-legal">
-            <li>Helpless Kiwi 0.0.1</li>
-            {% if app.environment == 'dev' %}<li>Development mode</li>{% endif %}
+            <li>Helpless Kiwi</li>
+            {% if app.environment == 'dev' %}
+                <li>Development mode</li>
+            {% elseif version != '' %}
+                <li>Version {{ version }}</li>
+            {% endif %}
             <li>Maintained by Studio Weyne</li>
             <li>Licensed under Apache version 2.0</li>
             <li>Built with &hearts; and Symfony</li>

@@ -6,7 +6,6 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Entity\Location\Location;
 use App\Entity\Security\LocalAccount;
 use DateTime;
@@ -472,8 +471,7 @@ class ActivityTest extends KernelTestCase
     {
         // todo: update dependencies, as phpunit 7.5 doesn't support mocks when strict
         $group = new Group();
-        $relation = (new Relation())->setGroup($group);
-        $value = (new LocalAccount())->addRelation($relation);
+        $value = (new LocalAccount())->addRelation($group);
 
         $target = (new ReflectionClass(Activity::class))
             ->getProperty('target');

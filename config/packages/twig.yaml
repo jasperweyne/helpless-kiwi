@@ -1,7 +1,8 @@
 #Editted
 parameters:
     env(ORG_NAME): 'Kiwi'
-    env(PROFILE_URL): ''    
+    env(PROFILE_URL): ''
+    env(INSTALLED_VERSION): ''
 
 twig:
     default_path: '%kernel.project_dir%/templates'
@@ -10,6 +11,7 @@ twig:
         org: '%env(ORG_NAME)%'
         oidc: '%env(OIDC_ADDRESS)%'
         profile_url: '%env(PROFILE_URL)%'
+        version: '%env(INSTALLED_VERSION)%'
 
 when@test:
     twig:
