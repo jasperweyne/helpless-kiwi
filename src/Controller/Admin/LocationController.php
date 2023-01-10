@@ -20,8 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Location controller.
  *
- * @Route("/admin/location", name="admin_location_")
+ * @
  */
+#[Route('/admin/location', name: 'admin_location_')]
 class LocationController extends AbstractController
 {
     public function __construct(
@@ -32,10 +33,9 @@ class LocationController extends AbstractController
 
     /**
      * Lists all location entities.
-     *
-     * @MenuItem(title="Locaties", menu="admin", activeCriteria="admin_location_")
-     * @Route("/", name="index", methods={"GET", "POST"})
      */
+    #[MenuItem(title: 'Locaties', menu: 'admin', activeCriteria: 'admin_location_')]
+    #[Route('/', name: 'index', methods: ['GET', 'POST'])]
     public function indexAction(): Response
     {
         $locations = $this->em->getRepository(Location::class)->findBy([], ['address' => 'ASC']);
@@ -47,9 +47,8 @@ class LocationController extends AbstractController
 
     /**
      * Creates a new location.
-     *
-     * @Route("/new", name="new", methods={"GET", "POST"})
      */
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(Request $request): Response
     {
         $location = new Location();
@@ -72,9 +71,8 @@ class LocationController extends AbstractController
 
     /**
      * Finds and displays an auth entity.
-     *
-     * @Route("/{id}", name="show", methods={"GET"})
      */
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function showAction(Location $location): Response
     {
         $createdAt = $this->events->findOneBy($location, EntityNewEvent::class);
@@ -89,9 +87,8 @@ class LocationController extends AbstractController
 
     /**
      * Displays a form to edit an existing activity entity.
-     *
-     * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, Location $location): Response
     {
         $form = $this->createForm(LocationType::class, $location);
@@ -111,9 +108,8 @@ class LocationController extends AbstractController
 
     /**
      * Deletes a location entity.
-     *
-     * @Route("/{id}/delete", name="delete")
      */
+    #[Route('/{id}/delete', name: 'delete')]
     public function deleteAction(Request $request, Location $location): Response
     {
         $replace = new LocationDeleteData();

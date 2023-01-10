@@ -30,12 +30,11 @@ class Location
     private $address;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Activity\Activity", mappedBy="location")
-     * @GQL\Field(type="[Activity]")
-     * @GQL\Description("The activities that have taken place at this location.")
-     *
      * @var Collection<int, Activity>
      */
+    #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'location')]
+    #[GQL\Field(type: '[Activity]')]
+    #[GQL\Description('The activities that have taken place at this location.')]
     private $activities;
 
     public function __construct()
