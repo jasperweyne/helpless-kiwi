@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Security\LocalAccount;
+use App\Form\Security\Import\ImportAccountsFlow;
+use App\Form\Security\Import\ImportedAccounts;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
@@ -44,6 +46,50 @@ class SecurityController extends AbstractController
 
         return $this->render('admin/security/index.html.twig', [
             'accounts' => $accounts,
+        ]);
+    }
+
+    /**
+     * Import multiple accounts, overriding the current list of accoutns.
+     */
+    #[Route("/import", name: "import", methods: ["GET", "POST"])]
+    public function importAction(ImportAccountsFlow $flow): Response
+    {
+        $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
+        $formData = new ImportedAccounts($accounts);
+
+        $flow->bind($formData);
+        $form = $flow->createForm();
+
+        if ($flow->isValid($form)) {
+            $flow->saveCurrentStepData($form);
+
+            if ($flow->nextStep()) {
+                // form for the next step
+                $form = $flow->createForm();
+            } else {
+                // flow finished
+                foreach ($formData->getAdded() as $added) {
+                    $this->em->persist($added);
+                }
+                foreach ($formData->getRemoved() as $removed) {
+                    $this->em->remove($removed);
+                }
+
+                $this->em->flush();
+
+                $flow->reset(); // remove step data from the session
+
+                $this->addFlash('success', 'Accounts succesvol geimporteerd');
+
+                return $this->redirectToRoute('admin_security_index');
+            }
+        }
+
+        return $this->render('admin/security/import.html.twig', [
+            'form' => $form->createView(),
+            'flow' => $flow,
+            'data' => $formData,
         ]);
     }
 
