@@ -11,7 +11,7 @@
             
             {% if flow.getCurrentStepLabel() == 'confirmation' %}
                 <div>
-                    Bij deze import zullen {{ data.added.count }} accounts toegevoegd worden, en zullen {{ data.removed.count }} accounts verwijderd worden. Deze actie is onherstelbaar, wil je doorgaan?
+                    Bij deze import zullen {{ data.additions.count }} accounts toegevoegd worden, en zullen {{ data.removals.count }} accounts verwijderd worden. Deze actie is onherstelbaar, wil je doorgaan?
                 </div>
             {% endif %}
 

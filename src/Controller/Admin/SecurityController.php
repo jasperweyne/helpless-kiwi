@@ -69,14 +69,7 @@ class SecurityController extends AbstractController
                 $form = $flow->createForm();
             } else {
                 // flow finished
-                foreach ($formData->getAdded() as $added) {
-                    $this->em->persist($added);
-                }
-                foreach ($formData->getRemoved() as $removed) {
-                    $this->em->remove($removed);
-                }
-
-                $this->em->flush();
+                $formData->executeImport($this->em);
 
                 $flow->reset(); // remove step data from the session
 

@@ -5,6 +5,7 @@ namespace App\Form\Security\Import;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -12,13 +13,17 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class ImportedAccounts
 {
     /** @var ?Collection<int, LocalAccount> */
-    private $added;
+    private $additions;
 
     /** @var ?Collection<int, LocalAccount> */
-    private $removed;
+    private $removals;
 
     /** @var ?Collection<int, LocalAccount> */
-    private $updated;
+    private $updates;
+
+    public bool $willAdd = true;
+
+    public bool $willRemove = false;
 
     public function __construct(
         /** @var LocalAccount[] */
@@ -27,43 +32,62 @@ class ImportedAccounts
     ) {
     }
 
-    /**
-     * @return Collection<int, LocalAccount>
-     */
-    public function getAdded(): Collection
+    public function executeImport(EntityManagerInterface $em, bool $flush = true): void
     {
-        if ($this->added === null) {
-            $this->parseFile();
+        // Schedule database additions
+        foreach ($this->willAdd ? $this->getAdditions() : [] as $add) {
+            $em->persist($add);
         }
 
-        assert($this->added !== null);
-        return $this->added;
+        // Schedule database removals
+        foreach ($this->willRemove ? $this->getRemovals() : [] as $remove) {
+            $em->remove($remove);
+        }
+
+        // Updates are scheduled automatically
+        // Possibly flush scheduled changes to database
+        if ($flush) {
+            $em->flush();
+        }
     }
 
     /**
      * @return Collection<int, LocalAccount>
      */
-    public function getRemoved(): Collection
+    public function getAdditions(): Collection
     {
-        if ($this->removed === null) {
+        if ($this->additions === null) {
             $this->parseFile();
         }
 
-        assert($this->removed !== null);
-        return $this->removed;
+        assert($this->additions !== null);
+        return $this->additions;
     }
 
     /**
      * @return Collection<int, LocalAccount>
      */
-    public function getUpdated(): Collection
+    public function getRemovals(): Collection
     {
-        if ($this->updated === null) {
+        if ($this->removals === null) {
             $this->parseFile();
         }
 
-        assert($this->updated !== null);
-        return $this->updated;
+        assert($this->removals !== null);
+        return $this->removals;
+    }
+
+    /**
+     * @return Collection<int, LocalAccount>
+     */
+    public function getUpdates(): Collection
+    {
+        if ($this->updates === null) {
+            $this->parseFile();
+        }
+
+        assert($this->updates !== null);
+        return $this->updates;
     }
 
     /**
@@ -99,9 +123,9 @@ class ImportedAccounts
 
         // Reset modification arrays
         // It is assumed that all current data is deleted, unless it's present in the CSV
-        $this->added = new ArrayCollection();
-        $this->updated = new ArrayCollection();
-        $this->removed = new ArrayCollection($this->currentAccounts); // copy
+        $this->additions = new ArrayCollection();
+        $this->updates = new ArrayCollection();
+        $this->removals = new ArrayCollection($this->currentAccounts); // copy
 
         // Iterate over rows
         while (is_array($row = $handle->fgetcsv())) {
@@ -111,8 +135,8 @@ class ImportedAccounts
             }
 
             // Find object for current row
-            $key = array_key_first($this->removed->filter(fn (LocalAccount $r) => $findByIdentifier($r, $row))->toArray());
-            $object = $key === null ? new LocalAccount() : $this->removed[$key];
+            $key = array_key_first($this->removals->filter(fn (LocalAccount $r) => $findByIdentifier($r, $row))->toArray());
+            $object = $key === null ? new LocalAccount() : $this->removals[$key];
             assert($object !== null);
 
             // Update contents of object
@@ -134,10 +158,10 @@ class ImportedAccounts
 
             // Update the collections
             if ($key === null) {
-                $this->added->add($object);
+                $this->additions->add($object);
             } else {
-                $this->removed->remove($key);
-                $this->updated->add($object);
+                $this->removals->remove($key);
+                $this->updates->add($object);
             }
         }
     }
@@ -145,7 +169,7 @@ class ImportedAccounts
     #[Assert\Callback]
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        if ($this->added === null) {
+        if ($this->additions === null) {
             try {
                 $this->parseFile();
             } catch (\Exception $e) {

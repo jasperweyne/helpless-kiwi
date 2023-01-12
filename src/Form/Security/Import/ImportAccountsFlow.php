@@ -19,10 +19,11 @@ class ImportAccountsFlow extends FormFlow
         return [
             [
                 'label' => 'upload',
-                'form_type' => ImportAccountsType::class,
+                'form_type' => UploadCsvType::class,
             ],
             [
                 'label' => 'confirmation',
+                'form_type' => ConfirmationType::class,
             ],
         ];
     }
