@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Group;
 
-use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use App\Group\GroupMenuExtension;
 use App\Tests\Database\Group\GroupFixture;
@@ -66,17 +65,16 @@ class GroupMenuExtensionTest extends KernelTestCase
         ]);
 
         // get user
-        $relation = $em->getRepository(Relation::class)->findAll()[0];
-        $user = $relation->getPerson();
-        assert($user !== null);
-        $this->user = $user;
+        $users = $em->getRepository(LocalAccount::class)->findAll();
+        assert(isset($users[0]));
+        $this->user = $users[0];
 
         // build token storage
         $token = new PostAuthenticationGuardToken($this->user, 'main', ['ROLE_USER']);
         $tokenStorage = self::getContainer()->get(TokenStorageInterface::class);
         $tokenStorage->setToken($token);
 
-        $this->groupMenuExtension = new GroupMenuExtension($em, $tokenStorage);
+        $this->groupMenuExtension = new GroupMenuExtension($tokenStorage);
     }
 
     /**

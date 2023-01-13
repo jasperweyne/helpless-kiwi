@@ -57,45 +57,31 @@ class ActivityEditType extends AbstractType
             ->add('location', LocationType::class, [
                 'label' => 'Locatie',
                 'help' => '  ',
-            ]);
-        if ($this->isAdmin) {
-            $builder->add('author', EntityType::class, [
+            ])
+            ->add('author', EntityType::class, [
                 'label' => 'Georganiseerd door',
+                'class' => 'App\Entity\Group\Group',
+                'required' => !$this->isAdmin,
+                'choices' => $this->groups,
+                'choice_label' => function ($ref) {
+                    return $ref->getName();
+                },
+                'help' => 'De groep die de activiteit organiseert.',
+            ])
+            ->add('target', EntityType::class, [
+                'label' => 'Activiteit voor',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
-                'placeholder' => 'Geen groep',
-                'choices' => $this->groups,
+                'placeholder' => 'Iedereen',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('t')
+                        ->andWhere('t.register = 1');
+                },
                 'choice_label' => function ($ref) {
                     return $ref->getName();
                 },
-                'help' => 'De groep die de activiteit organiseert.',
-            ]);
-        } elseif (1 != count($this->groups)) {
-            $builder->add('author', EntityType::class, [
-                'label' => 'Georganiseerd door',
-                'class' => 'App\Entity\Group\Group',
-                'required' => true,
-                'choices' => $this->groups,
-                'choice_label' => function ($ref) {
-                    return $ref->getName();
-                },
-                'help' => 'De groep die de activiteit organiseert.',
-            ]);
-        }
-        $builder->add('target', EntityType::class, [
-            'label' => 'Activiteit voor',
-            'class' => 'App\Entity\Group\Group',
-            'required' => false,
-            'placeholder' => 'Iedereen',
-            'query_builder' => function (EntityRepository $er) {
-                return $er->createQueryBuilder('t')
-                    ->andWhere('t.register = TRUE');
-            },
-            'choice_label' => function ($ref) {
-                return $ref->getName();
-            },
-            'help' => 'De activiteit kan exclusief voor een bepaalde groep worden georganiseerd.',
-        ])
+                'help' => 'De activiteit kan exclusief voor een bepaalde groep worden georganiseerd.',
+            ])
             ->add('visibleAfter', DateTimeType::class, [
                 'date_widget' => 'single_text',
                 'time_widget' => 'single_text',

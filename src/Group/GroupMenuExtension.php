@@ -4,9 +4,7 @@ namespace App\Group;
 
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
-use App\Repository\GroupRepository;
 use App\Template\MenuExtensionInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -14,11 +12,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class GroupMenuExtension implements MenuExtensionInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
     /**
      * @var TokenStorageInterface
      */
@@ -32,9 +25,8 @@ class GroupMenuExtension implements MenuExtensionInterface
     /**
      * GroupMenuExtension constructor.
      */
-    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
-        $this->em = $em;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -66,13 +58,8 @@ class GroupMenuExtension implements MenuExtensionInterface
     {
         $this->menuItems = [];
 
-        if (null != $this->getUser()) {
-            /** @var GroupRepository */
-            $groupRepo = $this->em->getRepository(Group::class);
-            $groups = $groupRepo->findAllFor($this->getUser());
-
-            /** @var Group $group */
-            foreach ($groups as $group) {
+        if (null !== $user = $this->getUser()) {
+            foreach ($user->getRelations() as $group) {
                 if (true !== $group->isActive() || null === $group->getName()) {
                     continue;
                 }
