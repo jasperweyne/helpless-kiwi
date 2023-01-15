@@ -6,13 +6,11 @@ use App\Entity\Security\ApiToken;
 use App\Entity\Security\TrustedClient;
 use App\Repository\ApiTokenRepository;
 use App\Security\Authenticator\InternalCredentialsAuthenticator;
-use App\Security\LocalUserProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
@@ -27,9 +25,7 @@ class Mutation
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private LocalUserProvider $userProvider,
         private ApiTokenRepository $apiTokenRepository,
-        private UserPasswordHasherInterface $userPasswordHasher,
         private TokenStorageInterface $tokenStorage,
         private EventDispatcherInterface $dispatcher,
         private InternalCredentialsAuthenticator $authenticator,
