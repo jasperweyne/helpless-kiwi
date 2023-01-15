@@ -18,9 +18,9 @@ class TrustedClient
     public function __construct(
         #[ORM\Id]
         #[ORM\Column(length: 255)]
-        public readonly string $id,
+        public string $id,
         #[ORM\Column(length: 255)]
-        public readonly string $secret
+        public string $secret
     ) {
         $this->tokens = new ArrayCollection();
     }
