@@ -3,17 +3,20 @@
 namespace App\GraphQL;
 
 use App\Entity\Security\ApiToken;
-use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Repository\ApiTokenRepository;
+use App\Security\Authenticator\InternalCredentialsAuthenticator;
 use App\Security\LocalUserProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Http\Event\CheckPassportEvent;
 
 /**
  * This classes houses all of the create update and delete functions.
@@ -28,12 +31,15 @@ class Mutation
         private ApiTokenRepository $apiTokenRepository,
         private UserPasswordHasherInterface $userPasswordHasher,
         private TokenStorageInterface $tokenStorage,
+        private EventDispatcherInterface $dispatcher,
+        private InternalCredentialsAuthenticator $authenticator,
+        private RequestStack $requestStack,
     ) {
     }
 
      #[GQL\Field(type: "String")]
-     #[GQL\Description("Authenticate current session using username and password. Optionally generate an API token when the tokenClientSecret is provided")]
-    public function login(string $username, string $password, ?string $clientSecret): ?string
+     #[GQL\Description("Generate an API token based on user credentials")]
+    public function login(string $username, string $password, string $clientSecret): string
     {
         // Validate that the provided client secret exists, if provided
         $clientRepository = $this->em->getRepository(TrustedClient::class);
@@ -42,45 +48,44 @@ class Mutation
             throw new AuthenticationException('Unknown client', Response::HTTP_FORBIDDEN);
         }
 
-        // Load user (throws if not found)
-        $user = $this->userProvider->loadUserByIdentifier($username);
-        assert($user instanceof LocalAccount);
+        // Store credentials in request
+        $request = $this->requestStack->getCurrentRequest();
+        InternalCredentialsAuthenticator::provideCredentials($request, $username, $password);
 
-        // Validate password
-        if (!$this->userPasswordHasher->isPasswordValid($user, $password)) {
-            throw new AuthenticationException('Invalid credentials', Response::HTTP_FORBIDDEN);
+        // Validate credentials
+        $passport = $this->authenticator->authenticate($request);
+        $this->dispatcher->dispatch(new CheckPassportEvent($this->authenticator, $passport));
+        foreach ($passport->getBadges() as $badge) {
+            if (!$badge->isResolved()) {
+                throw new BadCredentialsException('Not all security badges were resolved');
+            }
         }
 
-        // Set the cookie (intended for same-origin use)
-        $this->tokenStorage->setToken(new UsernamePasswordToken($user, 'api', $user->getRoles()));
-
-        // Generate an API token for trusted applications
-        return $client !== null ? $this->apiTokenRepository->generate($user, $client) : null;
+        // Generate and return a new API token
+        return $this->apiTokenRepository->generate($passport->getUser(), $client);
     }
 
     #[GQL\Field(type: "Null")]
-    #[GQL\Description("Invalidate the current session. Optionally revoke an API token when the tokenString is provided")]
-    public function logout(?string $tokenString): void
+    #[GQL\Description("Revoke an API token")]
+    public function logout(string $tokenString): void
     {
-        if (null !== $tokenString) {
-            // Check if the token exists
-            if (null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
-                throw new AuthenticationException('Unknown token', Response::HTTP_FORBIDDEN);
-            }
-
-            // Validate that the current user is authorized (provided through session or HTTP header)
-            $sessionToken = $this->tokenStorage->getToken();
-            $currentUser = $sessionToken !== null ? $sessionToken->getUser() : null;
-            if ($token->account !== $currentUser && $currentUser !== null && !in_array('ROLE_ADMIN', $currentUser->getRoles(), true)) {
-                throw new AuthenticationException('Not authorized to invalidate user', Response::HTTP_UNAUTHORIZED);
-            }
-
-            // Remove the token
-            $this->em->remove($token);
-            $this->em->flush();
+        // Check if currently a user is authenticated
+        if (!($sessionToken = $this->tokenStorage->getToken()) || !($currentUser = $sessionToken->getUser())) {
+            throw new AuthenticationException('Not authorized to revoke tokens', Response::HTTP_UNAUTHORIZED);
         }
 
-        // Unset the cookie, invalidating the current session (intended for same-origin use)
-        $this->tokenStorage->setToken(null);
+        // Check if the token exists
+        if (null === $tokenString || null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
+            throw new AuthenticationException('Unknown token', Response::HTTP_NOT_FOUND);
+        }
+
+        // Validate that the current user is authorized (provided through session or HTTP header)
+        if ($token->account !== $currentUser && !in_array('ROLE_ADMIN', $currentUser ? $currentUser->getRoles() : [], true)) {
+            throw new AuthenticationException('Not authorized to invalidate user', Response::HTTP_FORBIDDEN);
+        }
+
+        // Remove the token
+        $this->em->remove($token);
+        $this->em->flush();
     }
 }

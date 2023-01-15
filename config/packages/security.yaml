@@ -23,15 +23,13 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        api:
-            pattern: ^/api/
-            provider: app_user_provider
-            custom_authenticators:
-                - App\Security\AccessTokenAuthenticator
         main:
             lazy: true
             oidc: ~
             provider: app_user_provider
+            custom_authenticators:
+                - App\Security\Authenticator\ApiTokenAuthenticator
+                - App\Security\Authenticator\OidcTokenAuthenticator
             form_login:
                 login_path: app_login
                 check_path: app_login
