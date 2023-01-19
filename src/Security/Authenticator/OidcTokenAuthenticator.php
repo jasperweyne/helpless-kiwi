@@ -34,7 +34,7 @@ class OidcTokenAuthenticator extends AbstractBearerTokenAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return parent::supports($request)
+        return parent::supports($request) === true
             && str_starts_with($request->getRequestUri(), '/api/')
             && isset($_ENV['OIDC_ADDRESS']);
     }

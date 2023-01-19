@@ -22,7 +22,7 @@ class ApiTokenAuthenticator extends AbstractBearerTokenAuthenticator
 
     public function supports(Request $request): ?bool
     {
-        return parent::supports($request) && str_starts_with($request->getRequestUri(), '/api/');
+        return parent::supports($request) === true && str_starts_with($request->getRequestUri(), '/api/');
     }
 
     protected function authenticateBearerToken(Request $request, string $bearerToken): Passport

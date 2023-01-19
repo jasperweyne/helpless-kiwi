@@ -43,6 +43,7 @@ class InternalCredentialsAuthenticator extends AbstractAuthenticator
         // Extract credentials from request attributes
         $username = $request->attributes->get(self::USER);
         $password = $request->attributes->get(self::PASS);
+        assert(is_string($username) && is_string($password));
 
         // Cleanup credentials
         $request->attributes->remove(self::USER);

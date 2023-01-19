@@ -3,6 +3,7 @@
 namespace App\GraphQL;
 
 use App\Entity\Security\ApiToken;
+use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Repository\ApiTokenRepository;
 use App\Security\Authenticator\InternalCredentialsAuthenticator;
@@ -40,12 +41,13 @@ class Mutation
         // Validate that the provided client secret exists, if provided
         $clientRepository = $this->em->getRepository(TrustedClient::class);
         $client = null;
-        if (null !== $clientSecret && null === $client = $clientRepository->findOneBy(['secret' => $clientSecret])) {
+        if (null === $client = $clientRepository->findOneBy(['secret' => $clientSecret])) {
             throw new AuthenticationException('Unknown client', Response::HTTP_FORBIDDEN);
         }
 
         // Store credentials in request
         $request = $this->requestStack->getCurrentRequest();
+        assert($request !== null);
         InternalCredentialsAuthenticator::provideCredentials($request, $username, $password);
 
         // Validate credentials
@@ -58,7 +60,9 @@ class Mutation
         }
 
         // Generate and return a new API token
-        return $this->apiTokenRepository->generate($passport->getUser(), $client);
+        $user = $passport->getUser();
+        assert($user instanceof LocalAccount);
+        return $this->apiTokenRepository->generate($user, $client);
     }
 
     #[GQL\Field(type: "Null")]
@@ -66,17 +70,17 @@ class Mutation
     public function logout(string $tokenString): void
     {
         // Check if currently a user is authenticated
-        if (!($sessionToken = $this->tokenStorage->getToken()) || !($currentUser = $sessionToken->getUser())) {
+        if (null === ($sessionToken = $this->tokenStorage->getToken()) || null === ($currentUser = $sessionToken->getUser())) {
             throw new AuthenticationException('Not authorized to revoke tokens', Response::HTTP_UNAUTHORIZED);
         }
 
         // Check if the token exists
-        if (null === $tokenString || null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
+        if (null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
             throw new AuthenticationException('Unknown token', Response::HTTP_NOT_FOUND);
         }
 
         // Validate that the current user is authorized (provided through session or HTTP header)
-        if ($token->account !== $currentUser && !in_array('ROLE_ADMIN', $currentUser ? $currentUser->getRoles() : [], true)) {
+        if ($token->account !== $currentUser && !in_array('ROLE_ADMIN', $currentUser->getRoles(), true)) {
             throw new AuthenticationException('Not authorized to invalidate user', Response::HTTP_FORBIDDEN);
         }
 
