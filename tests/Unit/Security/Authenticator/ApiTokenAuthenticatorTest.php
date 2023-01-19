@@ -104,7 +104,6 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
 
     public function testSupports(): void
     {
-        /** @var Request $request */
         $request = $this->createMock(Request::class);
         $headers = $this->createMock(HeaderBag::class);
         $valueMap = [
