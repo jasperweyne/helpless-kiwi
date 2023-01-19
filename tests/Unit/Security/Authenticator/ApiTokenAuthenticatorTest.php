@@ -25,19 +25,21 @@ use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 
 
-use App\Security\AccessTokenAuthenticator;
+use App\Security\Authenticator\ApiTokenAuthenticator;
 use App\Security\LocalUserProvider;
 
 use App\Repository\ApiTokenRepository;
+use Symfony\Component\HttpFoundation\ServerBag;
+use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
 
 /**
- * Class AccessTokenAuthenticatorTest.
+ * Class ApiTokenAuthenticatorTest.
  *
- * @covers \App\Security\AccessTokenAuthenticator
+ * @covers \App\Security\Authenticator\ApiTokenAuthenticator
  */
-class AccessTokenAuthenticatorTest extends KernelTestCase
+class ApiTokenAuthenticatorTest extends KernelTestCase
 {
-    protected AccessTokenAuthenticator $auth;
+    protected ApiTokenAuthenticator $auth;
 
     protected OidcClientInterface $mockOidcClient;
     protected LocalUserProvider $mockUserProvider;
@@ -82,9 +84,7 @@ class AccessTokenAuthenticatorTest extends KernelTestCase
         $this->mockTokenRepo->method('find')->willReturnMap($tokenMap);
 
         // Authenticator
-        $this->auth = new AccessTokenAuthenticator(
-            $this->mockOidcClient,
-            $this->mockUserProvider,
+        $this->auth = new ApiTokenAuthenticator(
             $this->mockTokenRepo
         );
     }
@@ -104,6 +104,7 @@ class AccessTokenAuthenticatorTest extends KernelTestCase
 
     public function testSupports(): void
     {
+        /** @var Request $request */
         $request = $this->createMock(Request::class);
         $headers = $this->createMock(HeaderBag::class);
         $valueMap = [
@@ -111,6 +112,7 @@ class AccessTokenAuthenticatorTest extends KernelTestCase
         ];
         $headers->method('has')->willReturnMap($valueMap);
         $request->headers = $headers;
+        $request->method('getRequestUri')->willReturn('/api/');
 
         self::assertTrue($this->auth->supports($request));
     }
@@ -127,8 +129,7 @@ class AccessTokenAuthenticatorTest extends KernelTestCase
 
         //Unvalid native token
         $request = $this->mockRequestWithAuthHeader('Bearer '.$this->unvalidToken->token);
-        self::expectException(CustomUserMessageAuthenticationException::class);
-        $this->expectExceptionMessage('Expired access token provided');
+        self::expectException(CredentialsExpiredException::class);
         $this->auth->authenticate($request);
     }
 
