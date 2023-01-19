@@ -77,7 +77,7 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->client->loginUser($this->user(), 'api');
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
 
         // Assert
@@ -121,7 +121,7 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->client->loginUser($this->user(), 'api');
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
 
         // Assert
@@ -162,7 +162,7 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->client->loginUser($this->user(), 'api');
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
 
         // Assert
@@ -204,7 +204,7 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->client->loginUser($this->user(), 'api');
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
 
         // Assert
@@ -246,7 +246,7 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->client->loginUser($this->user(), 'api');
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
 
         // Assert
