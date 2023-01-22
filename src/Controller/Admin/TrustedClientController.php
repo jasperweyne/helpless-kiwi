@@ -118,6 +118,8 @@ class TrustedClientController extends AbstractController
             $this->em->remove($client);
             $this->em->flush();
 
+            $this->addFlash('success', "Client {$client->id} en {$client->tokens->count()} bijbehorende tokens verwijderd");
+
             return $this->redirectToRoute('admin_security_client_index');
         }
 

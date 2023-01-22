@@ -2,9 +2,12 @@
 
 namespace Tests\Functional\Controller\Admin;
 
+use App\Entity\Security\ApiToken;
+use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
+use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Field\FormField;
 
@@ -34,6 +37,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
 
         $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
+            TrustedClientFixture::class,
         ]);
 
         $this->login();
@@ -94,19 +98,91 @@ class TrustedClientControllerTest extends AuthWebTestCase
 
     public function testClearAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange
+        $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
+        $account = $this->user(LocalAccountFixture::USERNAME);
+        assert($account instanceof LocalAccount && $client !== null);
+        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
+        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('-1 minutes')));
+        $this->em->flush();
+        $originalCount = $this->em->getRepository(ApiToken::class)->count([]);
+
+        // Act
+        $this->client->request('GET', $this->controllerEndpoint . "/clear");
+
+        // Assert
+        $newCount = $this->em->getRepository(ApiToken::class)->count([]);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorExists('.messages .flash-success');
+        self::assertEquals(-1, $newCount - $originalCount, "ApiToken count didn't correctly change.");
     }
 
-    public function testTokenAction(): void
+    public function testTokenActionGet(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        $id = TrustedClientFixture::ID;
+        $this->client->request('GET', $this->controllerEndpoint . "/$id/token");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testDeleteAction(): void
+    /**
+     *  @depends testTokenActionGet
+     */
+    public function testTokenActionPost(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange
+        $originalCount = $this->em->getRepository(ApiToken::class)->count([]);
+        $user = $this->user(LocalAccountFixture::USERNAME);
+        assert($user instanceof LocalAccount);
+        $id = TrustedClientFixture::ID;
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/$id/token");
+        $form = $crawler->selectButton('Toevoegen')->form();
+        ($field = $form['generate_token[account]']) instanceof FormField && $field->setValue($user->getId());
+        ($field = $form['generate_token[expiresAt][date]']) instanceof FormField && $field->setValue('2013-03-15');
+        ($field = $form['generate_token[expiresAt][time]']) instanceof FormField && $field->setValue('23:59');
+        $this->client->submit($form);
+
+        // Assert
+        $newCount = $this->em->getRepository(ApiToken::class)->count([]);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorExists('.messages .flash-success');
+        self::assertEquals(1, $newCount - $originalCount, "ApiToken count didn't correctly change after POST request.");
+    }
+
+    public function testDeleteActionGet(): void
+    {
+        $id = TrustedClientFixture::ID;
+        $this->client->request('GET', $this->controllerEndpoint . "/$id/delete");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     *  @depends testDeleteActionGet
+     */
+    public function testDeleteActionPost(): void
+    {
+        // Arrange
+        $account = $this->user(LocalAccountFixture::USERNAME);
+        assert($account instanceof LocalAccount);
+        $id = 'deleter';
+        $this->em->persist($client = new TrustedClient($id, 'secret'));
+        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
+        $this->em->flush();
+        $originalCountClient = $this->em->getRepository(TrustedClient::class)->count([]);
+        $originalCountToken = $this->em->getRepository(ApiToken::class)->count([]);
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/$id/delete");
+        $form = $crawler->selectButton('Ja, verwijder')->form();
+        $this->client->submit($form);
+
+        // Assert
+        $newCountClient = $this->em->getRepository(TrustedClient::class)->count([]);
+        $newCountToken = $this->em->getRepository(ApiToken::class)->count([]);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorExists('.messages .flash-success');
+        self::assertEquals(-1, $newCountClient - $originalCountClient, "TrustedClient count didn't correctly change after POST request.");
+        self::assertEquals(-1, $newCountToken - $originalCountToken, "ApiToken count didn't correctly change after POST request.");
     }
 }
