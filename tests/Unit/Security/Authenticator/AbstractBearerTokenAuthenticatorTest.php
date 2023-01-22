@@ -4,7 +4,6 @@ namespace Tests\Unit\Security\Authenticator;
 
 use App\Security\Authenticator\AbstractBearerTokenAuthenticator;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -46,12 +45,7 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
     public function testSupports(): void
     {
         // Arrange
-        $request = $this->createMock(Request::class);
-        $headers = $this->createMock(HeaderBag::class);
-        $headers->method('has')->willReturnMap([
-            ['Authorization', true]
-        ]);
-        $request->headers = $headers;
+        $request = $this->mockRequestWithAuthHeader("Bearer 1234");
 
         // Act
         $result = $this->authenticator->supports($request);
@@ -64,7 +58,7 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
     {
         // Arrange
         $token = '1234';
-        $request = self::mockRequestWithAuthHeader($this, "Bearer $token");
+        $request = $this->mockRequestWithAuthHeader("Bearer $token");
         $passport = $this->createMock(Passport::class);
 
         $this->authenticator
@@ -83,7 +77,7 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
 
     public function testAuthenticateWithInvalidToken(): void
     {
-        $request = self::mockRequestWithAuthHeader($this, "Bearer 123 abcdefg");
+        $request = $this->mockRequestWithAuthHeader('Bearer 123 abcdefg');
 
         self::expectException(AuthenticationException::class);
 
@@ -93,18 +87,6 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
         ;
 
         $this->authenticator->authenticate($request);
-    }
-
-    public static function mockRequestWithAuthHeader(TestCase $by, string $header): Request
-    {
-        $request = $by->createMock(Request::class);
-        $headers = $by->createMock(HeaderBag::class);
-        $valueMap = [
-            ['Authorization', null, $header]
-        ];
-        $headers->method('get')->willReturnMap($valueMap);
-        $request->headers = $headers;
-        return $request;
     }
 
     public function testOnAuthenticationSuccess(): void
@@ -127,5 +109,12 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
     {
         /* @todo This test is incomplete. */
         self::markTestIncomplete();
+    }
+
+    private function mockRequestWithAuthHeader(string $header): Request
+    {
+        $request = $this->createMock(Request::class);
+        $request->headers = new HeaderBag(['Authorization' => $header]);
+        return $request;
     }
 }
