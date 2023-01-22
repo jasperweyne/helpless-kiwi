@@ -119,8 +119,50 @@ class MutationTest extends AuthWebTestCase
 
     public function testLogout(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Arrange
+        $user = $this->user(LocalAccountFixture::USERNAME);
+        assert($user instanceof LocalAccount);
+        $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
+        $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
+        $tokenString = $token->token;
+
+        $query = <<<GRAPHQL
+        mutation {
+            logout(tokenString: "$tokenString")
+        }
+        GRAPHQL;
+
+        // Act
+        $this->client->loginUser($user);
+        $data = QueryTest::graphqlQuery($this->client, $query);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertArrayNotHasKey('errors', $data);
+        self::assertNull($this->em->getRepository(ApiToken::class)->find($tokenString));
+    }
+
+    public function testLogoutUnknown(): void
+    {
+        // Arrange
+        $user = $this->user(LocalAccountFixture::USERNAME);
+        assert($user instanceof LocalAccount);
+
+        $query = <<<GRAPHQL
+        mutation {
+            logout(tokenString: "unknownToken")
+        }
+        GRAPHQL;
+
+        // Act
+        $this->client->loginUser($user);
+        $data = QueryTest::graphqlQuery($this->client, $query);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertArrayHasKey('errors', $data);
+        self::assertCount(1, $data['errors']);
+        self::assertSame('Unknown token', $data['errors'][0]['message']);
     }
 
     public function testLogoutUnauthorized(): void
@@ -145,5 +187,6 @@ class MutationTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayHasKey('errors', $data);
         self::assertCount(1, $data['errors']);
+        self::assertStringStartsWith('Not authorized', $data['errors'][0]['message']);
     }
 }
