@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 #[AsCommand(
     name: 'token:client:create',
@@ -17,8 +18,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CreateTrustedClientCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $em)
-    {
+    public function __construct(
+        private EntityManagerInterface $em,
+        private PasswordHasherFactoryInterface $factory,
+    ) {
         parent::__construct();
     }
 
@@ -42,7 +45,8 @@ class CreateTrustedClientCommand extends Command
 
         // Build the trusted client
         $secret = base64_encode(random_bytes(1024 / 8));
-        $client = new TrustedClient($name, $secret);
+        $hashed = $this->factory->getPasswordHasher(TrustedClient::class)->hash($secret);
+        $client = new TrustedClient($name, $hashed);
 
         // Flush to database
         $this->em->persist($client);

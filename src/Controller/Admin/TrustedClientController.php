@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -41,7 +42,7 @@ class TrustedClientController extends AbstractController
      * Creates a new activity entity.
      */
     #[Route("/new", name: "new", methods: ["GET", "POST"])]
-    public function newAction(Request $request): Response
+    public function newAction(Request $request, PasswordHasherFactoryInterface $factory): Response
     {
         $form = $this->createFormBuilder()
             ->add('id')
@@ -51,9 +52,10 @@ class TrustedClientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $id = $form->get('id')->getData();
             $secret = base64_encode(random_bytes(1024 / 8));
+            $hashed = $factory->getPasswordHasher(TrustedClient::class)->hash($secret);
             assert(is_string($id));
 
-            $this->em->persist(new TrustedClient($id, $secret));
+            $this->em->persist(new TrustedClient($id, $hashed));
             $this->em->flush();
 
             $this->addFlash('success', "Client '$id' gecreeerd met secret '$secret'");

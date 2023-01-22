@@ -9,6 +9,8 @@ use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
 use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 /**
  * Class MutationTest.
@@ -19,12 +21,17 @@ class MutationTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
+    protected PasswordHasherInterface $hasher;
+
     /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
+
+        $factory = self::getContainer()->get(PasswordHasherFactoryInterface::class);
+        $this->hasher = $factory->getPasswordHasher(TrustedClient::class);
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->databaseTool->loadFixtures([
@@ -48,11 +55,12 @@ class MutationTest extends AuthWebTestCase
         // Arrange
         $user = LocalAccountFixture::USERNAME;
         $pass = 'root';
+        $id = TrustedClientFixture::ID;
         $secret = TrustedClientFixture::SECRET;
 
         $query = <<<GRAPHQL
         mutation {
-            login(username: "$user", password: "$pass", clientSecret: "$secret")
+            login(username: "$user", password: "$pass", clientId: "$id", clientSecret: "$secret")
         }
         GRAPHQL;
 
@@ -66,7 +74,7 @@ class MutationTest extends AuthWebTestCase
         self::assertNotNull($token = $this->em->getRepository(ApiToken::class)->find($data['data']['login']));
         self::assertTrue($token->isValid(new \DateTime('+4 minutes')));
         self::assertSame($user, $token->account->getUserIdentifier());
-        self::assertSame($secret, $token->client->secret);
+        self::assertSame($id, $token->client->id);
     }
 
     public function testLoginInvalidClient(): void
@@ -74,11 +82,12 @@ class MutationTest extends AuthWebTestCase
         // Arrange
         $user = LocalAccountFixture::USERNAME;
         $pass = 'root';
+        $id = TrustedClientFixture::ID;
         $secret = 'unknown';
 
         $query = <<<GRAPHQL
         mutation {
-            login(username: "$user", password: "$pass", clientSecret: "$secret")
+            login(username: "$user", password: "$pass", clientId: "$id", clientSecret: "$secret")
         }
         GRAPHQL;
 
@@ -98,11 +107,12 @@ class MutationTest extends AuthWebTestCase
         // Arrange
         $user = LocalAccountFixture::USERNAME;
         $pass = 'wrong';
+        $id = TrustedClientFixture::ID;
         $secret = TrustedClientFixture::SECRET;
 
         $query = <<<GRAPHQL
         mutation {
-            login(username: "$user", password: "$pass", clientSecret: "$secret")
+            login(username: "$user", password: "$pass", clientId: "$id", clientSecret: "$secret")
         }
         GRAPHQL;
 
@@ -121,8 +131,8 @@ class MutationTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->user(LocalAccountFixture::USERNAME);
-        assert($user instanceof LocalAccount);
         $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
+        assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;
 
@@ -169,8 +179,8 @@ class MutationTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->user(LocalAccountFixture::USERNAME);
-        assert($user instanceof LocalAccount);
         $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
+        assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;
 

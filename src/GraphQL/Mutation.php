@@ -13,6 +13,7 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Event\CheckPassportEvent;
@@ -31,17 +32,18 @@ class Mutation
         private EventDispatcherInterface $dispatcher,
         private InternalCredentialsAuthenticator $authenticator,
         private RequestStack $requestStack,
+        private PasswordHasherFactoryInterface $factory,
     ) {
     }
 
      #[GQL\Field(type: "String")]
      #[GQL\Description("Generate an API token based on user credentials")]
-    public function login(string $username, string $password, string $clientSecret): string
+    public function login(string $clientId, string $clientSecret, string $username, string $password): string
     {
         // Validate that the provided client secret exists, if provided
         $clientRepository = $this->em->getRepository(TrustedClient::class);
-        $client = null;
-        if (null === $client = $clientRepository->findOneBy(['secret' => $clientSecret])) {
+        $hasher = $this->factory->getPasswordHasher(TrustedClient::class);
+        if (null === ($client = $clientRepository->find($clientId)) || !$hasher->verify($client->secret, $clientSecret)) {
             throw new UserError('Unknown client', Response::HTTP_FORBIDDEN);
         }
 
