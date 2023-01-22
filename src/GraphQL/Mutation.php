@@ -8,12 +8,12 @@ use App\Entity\Security\TrustedClient;
 use App\Repository\ApiTokenRepository;
 use App\Security\Authenticator\InternalCredentialsAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
+use GraphQL\Error\UserError;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Event\CheckPassportEvent;
 
@@ -42,7 +42,7 @@ class Mutation
         $clientRepository = $this->em->getRepository(TrustedClient::class);
         $client = null;
         if (null === $client = $clientRepository->findOneBy(['secret' => $clientSecret])) {
-            throw new AuthenticationException('Unknown client', Response::HTTP_FORBIDDEN);
+            throw new UserError('Unknown client', Response::HTTP_FORBIDDEN);
         }
 
         // Store credentials in request
@@ -51,12 +51,16 @@ class Mutation
         InternalCredentialsAuthenticator::provideCredentials($request, $username, $password);
 
         // Validate credentials
-        $passport = $this->authenticator->authenticate($request);
-        $this->dispatcher->dispatch(new CheckPassportEvent($this->authenticator, $passport));
-        foreach ($passport->getBadges() as $badge) {
-            if (!$badge->isResolved()) {
-                throw new BadCredentialsException('Not all security badges were resolved');
+        try {
+            $passport = $this->authenticator->authenticate($request);
+            $this->dispatcher->dispatch(new CheckPassportEvent($this->authenticator, $passport));
+            foreach ($passport->getBadges() as $badge) {
+                if (!$badge->isResolved()) {
+                    throw new BadCredentialsException('Not all security badges were resolved');
+                }
             }
+        } catch (BadCredentialsException $_) {
+            throw new UserError('Invalid credentials');
         }
 
         // Generate and return a new API token
@@ -71,17 +75,17 @@ class Mutation
     {
         // Check if currently a user is authenticated
         if (null === ($sessionToken = $this->tokenStorage->getToken()) || null === ($currentUser = $sessionToken->getUser())) {
-            throw new AuthenticationException('Not authorized to revoke tokens', Response::HTTP_UNAUTHORIZED);
+            throw new UserError('Not authorized to revoke tokens', Response::HTTP_UNAUTHORIZED);
         }
 
         // Check if the token exists
         if (null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
-            throw new AuthenticationException('Unknown token', Response::HTTP_NOT_FOUND);
+            throw new UserError('Unknown token', Response::HTTP_NOT_FOUND);
         }
 
         // Validate that the current user is authorized (provided through session or HTTP header)
         if ($token->account !== $currentUser && !in_array('ROLE_ADMIN', $currentUser->getRoles(), true)) {
-            throw new AuthenticationException('Not authorized to invalidate user', Response::HTTP_FORBIDDEN);
+            throw new UserError('Not authorized to invalidate user', Response::HTTP_FORBIDDEN);
         }
 
         // Remove the token
