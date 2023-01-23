@@ -104,22 +104,14 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
 
     public function testSupports(): void
     {
-        $request = $this->createMock(Request::class);
-        $headers = $this->createMock(HeaderBag::class);
-        $valueMap = [
-            ['Authorization', true]
-        ];
-        $headers->method('has')->willReturnMap($valueMap);
-        $request->headers = $headers;
-        $request->method('getRequestUri')->willReturn('/api/');
-
+        $request = $this->mockRequest('1234');
         self::assertTrue($this->auth->supports($request));
     }
 
     public function testAuthenticate(): void
     {
         //Valid native token
-        $request = $this->mockRequestWithAuthHeader('Bearer '.$this->validToken->token);
+        $request = $this->mockRequest($this->validToken->token);
         $passport = $this->auth->authenticate($request);
         $badge = $passport->getBadge(UserBadge::class);
         self::assertNotNull($badge);
@@ -127,20 +119,19 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
         self::assertSame($badge->getUserIdentifier(), $this->user->getUserIdentifier());
 
         //Unvalid native token
-        $request = $this->mockRequestWithAuthHeader('Bearer '.$this->unvalidToken->token);
+        $request = $this->mockRequest($this->unvalidToken->token);
         self::expectException(CredentialsExpiredException::class);
         $this->auth->authenticate($request);
     }
 
-    public function mockRequestWithAuthHeader(String $header): Request
+    private function mockRequest(string $token): MockObject&Request
     {
+        /** @var MockObject&Request $request */
         $request = $this->createMock(Request::class);
-        $headers = $this->createMock(HeaderBag::class);
-        $valueMap = [
-            ['Authorization', null, $header]
-        ];
-        $headers->method('get')->willReturnMap($valueMap);
-        $request->headers = $headers;
+        $request->method('getRequestUri')->willReturn('/api/');
+        $request->headers = new HeaderBag([
+            'Authorization' => "Bearer $token",
+        ]);
         return $request;
     }
 
