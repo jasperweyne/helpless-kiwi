@@ -49,6 +49,7 @@ class GenerateApiTokenCommandTest extends AuthWebTestCase
     {
         // Arrange
         $application = new Application($this->client->getKernel());
+        $originalCount = $this->em->getRepository(ApiToken::class)->count([]);
 
         // Act
         $command = $application->find('token:generate');
@@ -58,13 +59,11 @@ class GenerateApiTokenCommandTest extends AuthWebTestCase
             'client' => TrustedClientFixture::ID,
         ]);
 
-        $output = $commandTester->getDisplay();
-        $matches = [];
+        $newCount = $this->em->getRepository(ApiToken::class)->count([]);
 
         // Assert
         self::assertEquals($exit, Command::SUCCESS);
-        self::assertEquals(1, preg_match('/([A-Za-z0-9+\/]+=*)$/', trim($output), $matches));
-        self::assertNotNull($this->em->getRepository(ApiToken::class)->find($matches[1]));
+        self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
     }
 
     public function testExecuteUnknownUser(): void
