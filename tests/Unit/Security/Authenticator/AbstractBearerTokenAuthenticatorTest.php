@@ -54,6 +54,20 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
         self::assertTrue($result);
     }
 
+    public function testSupportsOther(): void
+    {
+        // Arrange
+        $credentials = base64_encode('user:pass');
+        $request = $this->mockRequestWithAuthHeader("Basic $credentials");
+
+        // Act
+        $result = $this->authenticator->supports($request);
+
+        // Assert
+        self::assertFalse($result);
+    }
+
+
     public function testAuthenticate(): void
     {
         // Arrange
@@ -73,20 +87,6 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
 
         // Assert
         self::assertSame($passport, $result);
-    }
-
-    public function testAuthenticateWithInvalidToken(): void
-    {
-        $request = $this->mockRequestWithAuthHeader('Bearer 123 abcdefg');
-
-        self::expectException(AuthenticationException::class);
-
-        $this->authenticator
-            ->expects(self::never())
-            ->method('authenticateBearerToken')
-        ;
-
-        $this->authenticator->authenticate($request);
     }
 
     public function testOnAuthenticationSuccess(): void

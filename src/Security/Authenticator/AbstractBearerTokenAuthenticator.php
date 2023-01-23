@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
@@ -24,21 +23,15 @@ abstract class AbstractBearerTokenAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return $request->headers->has('Authorization');
+        return $request->headers->has('Authorization') && null !== $this->extractBearerToken($request);
     }
 
     abstract protected function authenticateBearerToken(Request $request, string $bearerToken): Passport;
 
     public function authenticate(Request $request): Passport
     {
-        $matches = [];
-        if (1 !== preg_match('/^Bearer ([A-Za-z0-9-_\.\~\+\/]+=*)$/', $request->headers->get('Authorization') ?? '', $matches)) {
-            // The token header was empty, authentication fails with HTTP Status
-            // Code 401 "Unauthorized"
-            throw new CustomUserMessageAuthenticationException('No bearer token provided');
-        }
-        list(, $token) = $matches;
-
+        $token = $this->extractBearerToken($request);
+        assert(is_string($token));
         return $this->authenticateBearerToken($request, $token);
     }
 
@@ -62,5 +55,13 @@ abstract class AbstractBearerTokenAuthenticator extends AbstractAuthenticator
         ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+    }
+
+    private function extractBearerToken(Request $request): ?string
+    {
+        $authorization = $request->headers->get('Authorization') ?? '';
+        $matches = [];
+        $result = preg_match('/^Bearer ([A-Za-z0-9-_\.\~\+\/]+=*)$/', $authorization, $matches);
+        return $result === 1 ? $matches[1] : null;
     }
 }
