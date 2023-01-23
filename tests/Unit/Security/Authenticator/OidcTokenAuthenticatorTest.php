@@ -7,12 +7,12 @@ use App\Security\LocalUserProvider;
 use Drenso\OidcBundle\Model\OidcUserData;
 use Drenso\OidcBundle\OidcClientInterface;
 use Drenso\OidcBundle\Security\Token\OidcToken;
+use Drenso\OidcBundle\Security\UserProvider\OidcUserProviderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
@@ -25,7 +25,7 @@ class OidcTokenAuthenticatorTest extends KernelTestCase
 {
     protected OidcTokenAuthenticator $authenticator;
     protected MockObject&OidcClientInterface $oidcClient;
-    protected MockObject&UserProviderInterface $userProvider;
+    protected MockObject&OidcUserProviderInterface $userProvider;
 
     /**
      * {@inheritdoc}
