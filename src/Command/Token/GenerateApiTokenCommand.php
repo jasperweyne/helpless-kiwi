@@ -43,7 +43,7 @@ class GenerateApiTokenCommand extends Command
         $expiresAt = $input->getArgument('expires_at');
 
         // Get client and validate its existence
-        if (null === $user = $this->em->getRepository(LocalAccount::class)->find($username)) {
+        if (null === $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $username])) {
             $io->error("A user with username '{$username}' doesn't exist.");
             return Command::FAILURE;
         }
