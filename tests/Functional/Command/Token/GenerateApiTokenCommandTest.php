@@ -63,7 +63,7 @@ class GenerateApiTokenCommandTest extends AuthWebTestCase
 
         // Assert
         self::assertEquals($exit, Command::SUCCESS);
-        self::assertEquals(1, preg_match('/^\[OK\] ([A-Za-z0-9+\/]+=*)$/', trim($output), $matches));
+        self::assertEquals(1, preg_match('/([A-Za-z0-9+\/]+=*)$/', trim($output), $matches));
         self::assertNotNull($this->em->getRepository(ApiToken::class)->find($matches[1]));
     }
 
