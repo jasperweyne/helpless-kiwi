@@ -153,6 +153,7 @@ class Activity
     #[ORM\Column(type: "integer", nullable: true)]
     #[GQL\Field(type: "Int")]
     #[GQL\Description("The maximum number of users that can be registered for this activity.")]
+    #[Assert\PositiveOrZero]
     private $capacity;
 
     /**
@@ -161,6 +162,7 @@ class Activity
     #[ORM\Column(type: "integer", nullable: true)]
     #[GQL\Field(type: "Int")]
     #[GQL\Description("A stored number of users that were present at this activity.")]
+    #[Assert\PositiveOrZero]
     private $present;
 
     /**
