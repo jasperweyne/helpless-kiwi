@@ -67,12 +67,12 @@ class ActivityController extends AbstractController
     public function indexAction(): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = $this->activitiesRepo->findBy([], ['start' => 'DESC']);
+            $activities = $this->activitiesRepo->findBy([], ['start' => 'ASC']);
         } else {
             /** @var LocalAccount */
             $user = $this->getUser();
             $groups = $this->groupsRepo->findSubGroupsForPerson($user);
-            $activities = $this->activitiesRepo->findAuthor($groups);
+            $activities = array_reverse($this->activitiesRepo->findAuthor($groups));
         }
 
         return $this->render('admin/activity/index.html.twig', [
