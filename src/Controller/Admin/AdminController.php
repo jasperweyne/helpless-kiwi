@@ -34,11 +34,12 @@ class AdminController extends AbstractController
             $activities = $activitiesRepo->findAuthor($groups);
         }
 
-        // Only retain current and future activities
-        $activities = (new ArrayCollection($activities))->filter(fn (Activity $activity) => $activity->getEnd() > new \DateTime("now"));
+        // Filter activities to be shown from current to future, filtering out past events
+        $reversed = array_reverse($activities);
+        $future = (new ArrayCollection($reversed))->filter(fn (Activity $activity) => $activity->getEnd() > new \DateTime("now"));
 
         return $this->render('admin/index.html.twig', [
-            'activities' => $activities,
+            'activities' => $future,
         ]);
     }
 }
