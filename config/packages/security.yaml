@@ -25,7 +25,8 @@ security:
             security: false
         main:
             lazy: true
-            oidc: ~
+            oidc:
+                enable_remember_me: true
             provider: app_user_provider
             form_login:
                 login_path: app_login
