@@ -65,7 +65,7 @@ class Event
     }
 
     /**
-     * @return ?class-string<AbstractEvent>
+     * @return ?string
      */
     public function getDiscr(): ?string
     {
@@ -131,7 +131,7 @@ class Event
     }
 
     /**
-     * @return ?class-string<object>
+     * @return ?string
      */
     public function getObjectType(): ?string
     {

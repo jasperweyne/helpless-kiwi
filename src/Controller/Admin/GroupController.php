@@ -44,7 +44,7 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($group);
 
-            if ($parent) {
+            if ($parent !== null) {
                 $parent->addChild($group);
                 $this->em->persist($parent);
             }
@@ -219,7 +219,7 @@ class GroupController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createDeleteForm(Group $group): FormInterface
     {
@@ -233,7 +233,7 @@ class GroupController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createRelationDeleteForm(Group $group, LocalAccount $account): FormInterface
     {

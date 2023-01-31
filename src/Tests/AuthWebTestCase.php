@@ -70,7 +70,7 @@ class AuthWebTestCase extends WebTestCase
         /** @var EntityManagerInterface */
         $em = self::getContainer()->get(EntityManagerInterface::class);
         $users = $em->getRepository(LocalAccount::class)->findAll();
-        if (empty($users)) {
+        if (count($users) === 0) {
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 

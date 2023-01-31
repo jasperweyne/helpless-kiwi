@@ -329,9 +329,10 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
 
     public function getCanonical(): string
     {
+        assert(is_string($this->getId()));
         $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
 
-        return $this->getName() ?: $this->getEmail() ?: $pseudo;
+        return $this->getName() ?? $this->getEmail() ?? $pseudo;
     }
 
     public function __toString()

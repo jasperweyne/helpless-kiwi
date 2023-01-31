@@ -35,7 +35,9 @@ class MailController extends AbstractController
     #[Route("/{id}", name: "show", methods: ["GET"])]
     public function showAction(Mail $mail): Response
     {
+        assert(is_string($mail->getContent()));
         $content = json_decode($mail->getContent(), true);
+        assert(is_array($content));
 
         return $this->render('admin/mail/show.html.twig', [
             'mail' => $mail,

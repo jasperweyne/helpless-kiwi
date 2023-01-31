@@ -12,8 +12,6 @@ class EntityNewEvent extends AbstractEvent
      */
     private $fields;
 
-    private $type;
-
     /**
      * @param mixed $fields
      */
@@ -34,6 +32,7 @@ class EntityNewEvent extends AbstractEvent
 
     public function getTitle(): string
     {
+        assert(is_string($this->getEntityType()));
         return 'Updated '.ClassNameService::fqcnToName($this->getEntityType());
     }
 }

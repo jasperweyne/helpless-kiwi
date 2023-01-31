@@ -4,7 +4,6 @@ namespace Tests\Unit\Log\Doctrine;
 
 use App\Log\Doctrine\EntityEventListener;
 use App\Log\EventService;
-use App\Reflection\ReflectionService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -14,44 +13,29 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class EntityEventListenerTest extends KernelTestCase
 {
-    /**
-     * @var EntityEventListener
-     */
+    /** @var EntityEventListener */
     protected $entityEventListener;
 
-    /**
-     * @var EventService
-     */
+    /** @var EventService */
     protected $eventService;
 
-    /**
-     * @var ReflectionService
-     */
-    protected $reflService;
-
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
         self::bootKernel();
 
         $this->eventService = self::getContainer()->get(EventService::class);
-        $this->reflService = self::getContainer()->get(ReflectionService::class);
-        $this->entityEventListener = new EntityEventListener($this->eventService, $this->reflService);
+        $this->entityEventListener = new EntityEventListener($this->eventService);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
 
         unset($this->entityEventListener);
         unset($this->eventService);
-        unset($this->reflService);
     }
 
     public function testOnFlush(): void

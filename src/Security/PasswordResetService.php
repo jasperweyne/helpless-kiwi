@@ -17,7 +17,9 @@ class PasswordResetService
     public function isPasswordRequestTokenValid(LocalAccount $auth, string $token): bool
     {
         $encoder = $this->passwordHasher->getPasswordHasher($auth);
-        $valid = $encoder->verify($auth->getPasswordRequestToken(), $token);
+        $passwordToken = $auth->getPasswordRequestToken();
+        assert($passwordToken !== null);
+        $valid = $encoder->verify($passwordToken, $token);
 
         $interval = new \DateTime('24:00');
         $nonExpired = $auth->isPasswordRequestNonExpired($interval->getTimestamp());

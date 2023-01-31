@@ -7,8 +7,6 @@ use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
-use App\Form\Activity\RegistrationExternalType;
-use App\Form\Activity\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -267,6 +265,7 @@ class RegistrationController extends AbstractController
         $person = $registration->getPerson();
         $this->addFlash('success', ($person !== null ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
+        assert($registration->getActivity() !== null);
         return $this->redirectToRoute('admin_activity_show', [
             'id' => $registration->getActivity()->getId()
         ]);

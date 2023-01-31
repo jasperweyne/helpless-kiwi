@@ -4,6 +4,7 @@ namespace Tests\Unit\Entity\Log;
 
 use App\Entity\Log\Event;
 use App\Entity\Security\LocalAccount;
+use App\Log\AbstractEvent;
 use DateTime;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -59,11 +60,13 @@ class EventTest extends KernelTestCase
             ->getProperty('discr');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
+        self::assertNotNull($this->event->getDiscr());
         self::assertSame($expected, $this->event->getDiscr());
     }
 
     public function testSetDiscr(): void
     {
+        /** @var class-string<AbstractEvent> $expected*/
         $expected = '42';
         $property = (new ReflectionClass(Event::class))
             ->getProperty('discr');
@@ -166,6 +169,7 @@ class EventTest extends KernelTestCase
 
     public function testSetObjectType(): void
     {
+        /** @var class-string<object> $expected */
         $expected = '42';
         $property = (new ReflectionClass(Event::class))
             ->getProperty('objectType');

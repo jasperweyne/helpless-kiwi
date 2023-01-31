@@ -37,8 +37,9 @@ class Query
     public function current(bool $loggedIn = false): array
     {
         $groups = [];
-        if ($loggedIn && $user = $this->user()) {
-            $groups = $user->getRelations()->toArray();
+        if ($loggedIn) {
+            assert($this->user() !== null);
+            $groups = $this->user()->getRelations()->toArray();
         }
 
         return $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup($groups);
@@ -79,6 +80,7 @@ class Query
             return null;
         }
 
+        assert($user instanceof LocalAccount);
         return $user;
     }
 

@@ -3,6 +3,7 @@
 namespace App\Log;
 
 use App\Entity\Log\Event as EventEntity;
+use App\Entity\Security\LocalAccount;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -39,9 +40,10 @@ class EventService
         $this->refl = $refl;
     }
 
-    public function log(AbstractEvent $event)
+    public function log(AbstractEvent $event): void
     {
         $entity = $this->hydrate($event);
+        assert($entity !== null);
 
         $this->em->persist($entity);
         $this->em->flush();
@@ -64,12 +66,12 @@ class EventService
         }
 
         $entity = new EventEntity();
+        assert($this->person instanceof LocalAccount);
         $entity
             ->setTime(new \DateTime())
             ->setDiscr(get_class($event))
             ->setPerson($this->person)
-            ->setMeta(serialize($meta))
-        ;
+            ->setMeta(serialize($meta));
 
         $object = $event->getEntity();
         if (null !== $object) {
@@ -81,8 +83,7 @@ class EventService
 
             $entity
                 ->setObjectId($this->getIdentifier($object)) // todo: assumes id is string without assertion, fix this
-                ->setObjectType($this->getClassName($object))
-            ;
+                ->setObjectType($this->getClassName($object));
         }
 
         return $entity;
@@ -99,9 +100,11 @@ class EventService
         $em = $this->em;
 
         $objectClosure = function () use ($em, $objectType, $objectId) {
+            assert($objectType !== null);
             return $em->find($objectType, $objectId);
         };
 
+        assert(is_string($entity->getMeta()));
         /** @var array<string, mixed> */
         $fields = unserialize($entity->getMeta());
         $fields['time'] = $entity->getTime();
@@ -109,13 +112,15 @@ class EventService
         $fields['entityCb'] = $objectClosure;
         $fields['entityType'] = $objectType;
 
+        assert($entity->getDiscr() !== null);
         $class = class_exists($entity->getDiscr()) ? $entity->getDiscr() : AbstractEvent::class;
 
+        /** @var AbstractEvent */
         return $this->refl->instantiate($class, $fields);
     }
 
     /**
-     * @param object $entities
+     * @param array<EventEntity> $entities
      *
      * @return (?AbstractEvent)[]
      */
@@ -184,6 +189,7 @@ class EventService
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
         $refl = $this->refl->getAccessibleProperty($className, $identifier);
 
+        assert($refl !== null);
         return $refl->getValue($entity);
     }
 

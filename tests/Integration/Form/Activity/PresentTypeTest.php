@@ -39,7 +39,7 @@ class PresentTypeTest extends KernelTestCase
         unset($this->presentType);
     }
 
-    public function testBindValidData()
+    public function testBindValidData(): void
     {
         $type = new Registration();
         $formData = [
@@ -59,7 +59,7 @@ class PresentTypeTest extends KernelTestCase
         $formbuildermock = $this->getMockBuilder("Symfony\Component\Form\Test\FormBuilderInterface")
             ->disableOriginalConstructor()
             ->getMock();
-        $formbuildermock->expects($this->exactly(1))->method('addEventListener');
+        $formbuildermock->expects($this::exactly(1))->method('addEventListener');
         $this->presentType->buildForm($formbuildermock, []);
     }
 
@@ -68,7 +68,7 @@ class PresentTypeTest extends KernelTestCase
         $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")
             ->disableOriginalConstructor()
             ->getMock();
-        $resolver->expects($this->exactly(1))->method('setDefaults');
+        $resolver->expects($this::exactly(1))->method('setDefaults');
         $this->presentType->configureOptions($resolver);
     }
 }

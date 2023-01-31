@@ -7,6 +7,7 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -208,8 +209,11 @@ class PriceOptionTest extends KernelTestCase
         $property = (new ReflectionClass(PriceOption::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
+
+        $collection = $property->getValue($this->priceOption);
+        self::assertInstanceOf(Collection::class, $collection);
         $this->priceOption->addRegistration($expected);
-        self::assertSame($expected, $property->getValue($this->priceOption)[0]);
+        self::assertContains($expected, $collection);
     }
 
     public function testRemoveRegistration(): void

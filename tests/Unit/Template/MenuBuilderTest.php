@@ -31,7 +31,7 @@ class MenuBuilderTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->extensions = null;
+        $this->extensions = [];
         $this->menuBuilder = new MenuBuilder($this->extensions);
     }
 

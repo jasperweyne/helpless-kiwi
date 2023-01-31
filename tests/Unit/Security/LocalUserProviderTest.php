@@ -70,7 +70,7 @@ class LocalUserProviderTest extends KernelTestCase
         $token = new OidcUserData(['sub' => '123']);
 
         // Arrange stubs
-        /** @var ServiceEntityRepository&MockObject */
+        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
         $repo = $this->createMock(ServiceEntityRepository::class);
         $repo->method('findOneBy')->willReturn(null);
         $this->em->method('getRepository')->willReturn($repo);
@@ -90,7 +90,7 @@ class LocalUserProviderTest extends KernelTestCase
         $token = new OidcUserData(['sub' => '123', 'email' => 'foo@bar.com']);
 
         // Arrange stubs
-        /** @var ServiceEntityRepository&MockObject */
+        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
         $repo = $this->createMock(ServiceEntityRepository::class);
         $repo->method('findOneBy')->willReturn($account);
         $this->em->method('getRepository')->willReturn($repo);

@@ -20,6 +20,9 @@ class MailControllerTest extends AuthWebTestCase
      */
     protected $em;
 
+    /**
+     * @var String
+     */
     private $controllerEndpoint = '/admin/mail';
 
     /**
@@ -67,6 +70,7 @@ class MailControllerTest extends AuthWebTestCase
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertIsString($title);
         self::assertSelectorTextContains('span', $title);
     }
 }

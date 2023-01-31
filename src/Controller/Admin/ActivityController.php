@@ -97,7 +97,7 @@ class ActivityController extends AbstractController
      * Creates a new activity entity.
      */
     #[Route("/new", name: "new", methods: ["GET", "POST"])]
-    public function newAction(Request $request, GroupRepository $groupRepo): Response
+    public function newAction(Request $request): Response
     {
         $activity = new Activity();
 
@@ -105,8 +105,10 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $location = $activity->getLocation();
+            assert($location !== null);
             $this->em->persist($activity);
-            $this->em->persist($activity->getLocation());
+            $this->em->persist($location);
             $this->em->flush();
 
             return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
@@ -152,7 +154,7 @@ class ActivityController extends AbstractController
      * Displays a form to edit an existing activity entity.
      */
     #[Route("/{id}/edit", name: "edit", methods: ["GET", "POST"])]
-    public function editAction(Request $request, Activity $activity, GroupRepository $groupRepo): Response
+    public function editAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -281,6 +283,8 @@ class ActivityController extends AbstractController
             }
             $this->em->flush();
 
+            assert($price->getActivity() !== null);
+            assert($price->getActivity()->getId() !== null);
             return $this->redirectToRoute('admin_activity_show', ['id' => $price->getActivity()->getId()]);
         }
 
@@ -364,7 +368,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createDeleteForm(Activity $activity): FormInterface
     {

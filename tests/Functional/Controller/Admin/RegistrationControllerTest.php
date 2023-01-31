@@ -107,6 +107,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         // Assert
         $activity = $this->em->getRepository(Activity::class)->find($id);
+        self::assertNotNull($activity);
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'gelukt');
@@ -128,6 +129,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         // Assert
         $currentcomment = $this->em->getRepository(Registration::class)->find($id);
+        self::assertNotNull($currentcomment);
         $newcomment = $currentcomment->getComment();
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -166,6 +168,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $registration = $this->em->getRepository(Registration::class)->find($id);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'gelukt');
+        self::assertNotNull($registration);
         self::assertNotNull($registration->getDeleteDate());
     }
 
@@ -198,6 +201,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         // Assert
         $activity = $this->em->getRepository(Activity::class)->find($id);
+        self::assertNotNull($activity);
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");

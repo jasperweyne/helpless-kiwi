@@ -273,10 +273,12 @@ GRAPHQL;
             'variables' => $variables,
             'operationName' => $operation,
         ]);
+        self::assertIsString($request);
 
         // perform request
         $client->request('POST', '/api/graphql/', [], [], $params, $request);
 
-        return json_decode($client->getResponse()->getContent(), true);
+        self::assertIsString($client->getResponse()->getContent());
+        return (array) json_decode($client->getResponse()->getContent(), true);
     }
 }

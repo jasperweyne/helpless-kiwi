@@ -6,7 +6,6 @@ use App\Calendar\ICalProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
@@ -76,8 +75,9 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var array{registration_single: string} $data */
             $data = $form->getData();
-            $registration = $this->em->getRepository(Registration::class)->find($data['registration_single'] ?? '');
+            $registration = $this->em->getRepository(Registration::class)->find($data['registration_single']);
 
             if ($registration !== null) {
                 $event = new RegistrationRemovedEvent($registration);
@@ -98,7 +98,7 @@ class ActivityController extends AbstractController
     ): Response {
         $publicActivities = $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup([]); // Only return activities without target audience
 
-        return new Response($iCalProvider->IcalFeed($publicActivities));
+        return new Response($iCalProvider->icalFeed($publicActivities));
     }
 
     /**
@@ -113,8 +113,9 @@ class ActivityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var array{single_option: string} $data */
             $data = $form->getData();
-            $option = $this->em->getRepository(PriceOption::class)->find($data['single_option'] ?? null);
+            $option = $this->em->getRepository(PriceOption::class)->find($data['single_option']);
             if ($option === null) {
                 $this->addFlash('error', 'Probleem met aanmelding.');
                 return $this->redirectToRoute(
@@ -215,6 +216,7 @@ class ActivityController extends AbstractController
 
     public function singleUnregistrationForm(Registration $registration): FormInterface
     {
+        assert($registration->getActivity() !== null);
         $form = $this->createUnregisterForm($registration->getActivity());
         $form->get('registration_single')->setData($registration->getId());
 
@@ -223,6 +225,7 @@ class ActivityController extends AbstractController
 
     public function singleRegistrationForm(PriceOption $option, bool $reserve): FormInterface
     {
+        assert($option->getActivity() !== null);
         $form = $this->createRegisterForm($option->getActivity(), $reserve);
         $form->get('single_option')->setData($option->getId());
 

@@ -53,35 +53,39 @@ class ICalProvider
     private function createCalendar(): Calendar
     {
         $calendar = new Calendar();
-        $calendar
-            ->setProductIdentifier('-//Helpless Kiwi//'.($_ENV['ORG_NAME'] ?? 'kiwi').' v1.0//NL')
-            ->addTimeZone(new TimeZone(date_default_timezone_get()))
-        ;
-
-        return $calendar;
+        return $calendar
+            ->setProductIdentifier('-//Helpless Kiwi//' . ($_ENV['ORG_NAME'] ?? 'kiwi') . ' v1.0//NL')
+            ->addTimeZone(new TimeZone(date_default_timezone_get()));
     }
 
     private function createEvent(Activity $activity): Event
     {
+        assert($activity->getLocation() !== null);
+        assert($activity->getLocation()->getAddress() !== null);
         $location = new Location($activity->getLocation()->getAddress());
 
         $organiser = new Organizer(
             new EmailAddress($_ENV['DEFAULT_FROM']),
-            ($activity->getAuthor() ? $activity->getAuthor()->getName().' - ' : '').($_ENV['ORG_NAME'] ?? 'kiwi')
+            ($activity->getAuthor() !== null ? $activity->getAuthor()->getName() . ' - ' : '') . ($_ENV['ORG_NAME'] ?? 'kiwi')
         );
 
-        $timespan = new TimeSpan(new DateTime($activity->getStart(), false), new DateTime($activity->getEnd(), false));
+        assert($activity->getStart() !== null);
+        assert($activity->getEnd() !== null);
+        $timespan = new TimeSpan(
+            new DateTime($activity->getStart(), false),
+            new DateTime($activity->getEnd(), false)
+        );
 
+        assert($activity->getId() !== null);
         $event = new Event(new UniqueIdentifier($activity->getId()));
-        $event
+
+        assert($activity->getName() !== null);
+        return $event
             ->setStatus(EventStatus::CONFIRMED())
             ->setOccurrence($timespan)
             ->setSummary($activity->getName())
-            ->setDescription($activity->getDescription())
+            ->setDescription($activity->getDescription() ?? '')
             ->setLocation($location)
-            ->setOrganizer($organiser)
-        ;
-
-        return $event;
+            ->setOrganizer($organiser);
     }
 }

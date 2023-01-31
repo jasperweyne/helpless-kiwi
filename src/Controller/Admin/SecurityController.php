@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
      */
     #[MenuItem(title: "Accounts", menu: "admin", activeCriteria: "admin_security_", role: "ROLE_ADMIN")]
     #[Route("/", name: "index", methods: ["GET", "POST"])]
-    public function indexAction(Request $request): Response
+    public function indexAction(): Response
     {
         $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
 
@@ -150,7 +150,7 @@ class SecurityController extends AbstractController
             $data = (array) $form->getData();
 
             $roles = [];
-            if ($data['admin']) {
+            if ($data['admin'] === true) {
                 $roles[] = 'ROLE_ADMIN';
             }
 
@@ -173,7 +173,7 @@ class SecurityController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createDeleteForm(LocalAccount $account): FormInterface
     {
@@ -190,7 +190,7 @@ class SecurityController extends AbstractController
             ->setAction($this->generateUrl('admin_security_roles', ['id' => $account->getId()]))
             ->add('admin', CheckboxType::class, [
                 'required' => false,
-                'attr' => in_array('ROLE_ADMIN', $account->getRoles()) ? ['checked' => 'checked'] : [],
+                'attr' => in_array('ROLE_ADMIN', $account->getRoles(), true) ? ['checked' => 'checked'] : [],
             ])
             ->getForm()
         ;

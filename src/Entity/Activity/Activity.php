@@ -431,7 +431,7 @@ class Activity
         if (null !== $imageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->imageUpdatedAt = new \DateTimeImmutable();
+            $this->imageUpdatedAt = new \DateTime();
         }
 
         return $this;
@@ -538,12 +538,12 @@ class Activity
      */
     public function isVisible(array $groups = []): bool
     {
-        $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups);
+        $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups, true);
 
         return
             $this->getEnd() > new \DateTime() &&
             $in_groups &&
-            $this->getVisibleAfter() &&
+            $this->getVisibleAfter() !== null &&
             $this->getVisibleAfter() < new \DateTime()
         ;
     }
@@ -555,7 +555,7 @@ class Activity
     {
         // gather the currently applicable groups
         $groups = [];
-        if ($user) {
+        if ($user !== null) {
             $groups = $user->getRelations()->toArray();
         }
 

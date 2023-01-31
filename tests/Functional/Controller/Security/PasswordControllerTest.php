@@ -3,6 +3,7 @@
 namespace Tests\Functional\Controller\Security;
 
 use App\Controller\Security\PasswordController;
+use App\Entity\Security\LocalAccount;
 use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
 use App\Tests\AuthWebTestCase;
@@ -19,6 +20,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class PasswordControllerTest extends AuthWebTestCase
 {
     /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
+
+    /**
      * @var PasswordController
      */
     protected $passwordController;
@@ -32,6 +38,11 @@ class PasswordControllerTest extends AuthWebTestCase
      * @var PasswordResetService
      */
     protected $passwordReset;
+
+    /**
+     * @var LocalUserProvider
+     */
+    protected $userProvider;
 
     /**
      * {@inheritdoc}
@@ -73,6 +84,7 @@ class PasswordControllerTest extends AuthWebTestCase
     {
         // Act
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
         $crawler = $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode($token));
@@ -96,6 +108,7 @@ class PasswordControllerTest extends AuthWebTestCase
     {
         // Act
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
         $this->client->request('GET', '/password/reset/'.$auth->getId().'?token='.urlencode('invalid-token'));
@@ -110,6 +123,7 @@ class PasswordControllerTest extends AuthWebTestCase
     {
         // Act
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
         $crawler = $this->client->request('GET', '/password/register/'.$auth->getId().'?token='.urlencode($token));
@@ -133,6 +147,7 @@ class PasswordControllerTest extends AuthWebTestCase
     {
         // Act
         $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
         $this->client->request('GET', '/password/register/'.$auth->getId().'?token='.urlencode('invalid-token'));

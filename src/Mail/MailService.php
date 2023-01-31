@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
+use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -11,6 +12,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class MailService
 {
@@ -42,7 +44,10 @@ class MailService
         $this->params = $params;
     }
 
-    public function message($to, string $title, string $body, array $attachments = [])
+    /**
+     * @param array<Attachment> $attachments
+     */
+    public function message(?ContactInterface $to, string $title, string $body, array $attachments = []): void
     {
         if (is_null($to)) {
             return;
@@ -62,10 +67,10 @@ class MailService
                 continue;
             }
 
-            if ('' == trim($person->getName() ?? $person->getUsername() ?? '')) {
+            if ('' == trim($person->getName() ?? $person->getEmail())) {
                 $addresses[] = new Address($person->getEmail());
             } else {
-                $addresses[] = new Address($person->getEmail(), $person->getName() ?? $person->getUsername());
+                $addresses[] = new Address($person->getEmail(), $person->getName() ?? $person->getEmail());
             }
         }
 
@@ -83,11 +88,12 @@ class MailService
         ]);
 
         foreach ($attachments as $attachment) {
-            assert($attachment instanceof Attachment);
             $message->attach($attachment->body, $attachment->filename, $attachment->mimetype);
         }
 
         $msgEntity = new Mail();
+        assert($content !== false);
+        assert($this->getUser() instanceof LocalAccount);
         $msgEntity
             ->setSender($from)
             ->setPerson($this->getUser())
@@ -116,7 +122,7 @@ class MailService
     }
 
     /**
-     * @return UserInterface|\Stringable|null
+     * @return UserInterface|null
      */
     private function getUser()
     {
