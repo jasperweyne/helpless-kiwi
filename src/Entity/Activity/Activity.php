@@ -172,6 +172,12 @@ class Activity
     private $visibleAfter;
 
     /**
+     * @var ?\Boolean
+     */
+    #[ORM\Column(type: "boolean", nullable: true)]
+    private $save;
+
+    /**
      * Get id.
      */
     public function getId(): ?string
@@ -409,6 +415,24 @@ class Activity
         return $this;
     }
 
+    /**
+     * Set Save
+     */
+    public function setSave(bool $save): self
+    {
+        $this->save = $save;
+
+        return $this;
+    }
+
+    /**
+     * Get Save
+     */
+    public function getSave(): ?bool
+    {
+        return $this->save;
+    }
+
     public function getLocation(): ?Location
     {
         return $this->location;
@@ -560,5 +584,18 @@ class Activity
         }
 
         return $this->isVisible($groups);
+    }
+
+    /**
+     *
+     */
+    public function __clone()
+    {
+        $this->id = null;
+        $this->location = clone $this->location;
+        $this->save = false;
+        foreach ($this->options as $option) {
+            $clone_option = clone $option;
+        }
     }
 }

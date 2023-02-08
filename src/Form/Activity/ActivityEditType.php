@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class ActivityEditType extends AbstractType
 {
@@ -129,6 +130,11 @@ class ActivityEditType extends AbstractType
                     'Paars' => 'purple',
                     'Roze' => 'pink',
                 ],
+            ])
+            ->add('save', CheckboxType::class, [
+                'label' => 'Sjabloon',
+                'help' => 'Met het aanvinken van deze box wordt deze activiteit opgeslagen als sjabloon.',
+                'required' => false,
             ])
         ;
     }

@@ -8,6 +8,7 @@
             {% set resultcount = activities|length %}
             
             {% block buttons %}
+                <a href="{{ path("admin_activity_alltemplates") }} ">Nieuw van sjabloon &nbsp;</a>   
                 <a href="{{ path("admin_activity_new") }} ">Nieuw</a>
             {% endblock %}
         {% endembed %}

@@ -20,6 +20,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Location\Location;
 
 /**
  * Activity controller.
@@ -89,6 +90,19 @@ class ActivityController extends AbstractController
         $activities = $this->activitiesRepo->findAuthor($this->groupsRepo->findSubGroupsFor($group));
 
         return $this->render('admin/activity/index.html.twig', [
+            'activities' => $activities,
+        ]);
+    }
+
+    /**
+     * Lists all activities which are saved as template.
+     */
+    #[Route("/alltemplates}", name: "alltemplates", methods: ["GET"])]
+    public function alltemplatesAction(): Response
+    {
+        $activities = $this->activitiesRepo->findBy(['save' => 1]);
+
+        return $this->render('admin/activity/activitytemplates.html.twig', [
             'activities' => $activities,
         ]);
     }
@@ -166,6 +180,35 @@ class ActivityController extends AbstractController
         }
 
         return $this->render('admin/activity/edit.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to create an activity from a template.
+     */
+    #[Route("/{id}/template", name: "template", methods: ["GET", "POST"])]
+    public function templateAction(Request $request, Activity $template_activity, GroupRepository $groupRepo): Response
+    {
+        $activity = clone $template_activity;
+
+        $form = $this->createForm('App\Form\Activity\ActivityTemplate', $activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($activity);
+            $this->em->persist($activity->getLocation());
+            foreach ($activity->getOptions() as $option) {
+                $option->setActivity($activity);
+                $this->em->persist($option);
+            }
+            $this->em->flush();
+
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+        }
+
+        return $this->render('admin/activity/new.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);

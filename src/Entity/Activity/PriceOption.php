@@ -225,4 +225,10 @@ class PriceOption
 
         return $this;
     }
+
+    public function __clone()
+    {
+        $this->id = null;
+        $this->activity = null;
+    }
 }
