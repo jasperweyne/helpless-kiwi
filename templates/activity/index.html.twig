@@ -10,9 +10,9 @@
                 {% for activity in activities %}
                     <div class="cell">
                         <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="activity {{ activity.color ?? '' }}">
-                            {% if activity.image.name %}
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="filter">
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="over">
+                            {% if activity.photo.image.name %}
+                                <img src="{{ vich_uploader_asset(activity.photo, 'imageFile') }}" alt="{{ activity.photo.image.name }}" class="filter">
+                                <img src="{{ vich_uploader_asset(activity.photo, 'imageFile') }}" alt="{{ activity.photo.image.name }}" class="over">
                             {% endif %}
                             <div class="container">
                                 <h2>{{ activity.name }}</h2>

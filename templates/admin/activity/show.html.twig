@@ -99,7 +99,7 @@
                             </tr>
                             <tr>
                                 <th>Afbeelding</th>
-                                <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
+                                <td>{% if activity.photo.image.name %}<img src="{{ vich_uploader_asset(activity.photo, 'imageFile') }}" alt="{{ activity.photo.image.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
                             </tr>
                             <tr>
                                 <th>Kleur</th>

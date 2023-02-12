@@ -13,8 +13,8 @@
                 <div class="cell">
                     {% for activity in activities %}
                         <a href="{{ path("admin_activity_show", { 'id': activity.id }) }}" class="admin activity">
-                            {% if activity.image.name %}
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="bw">
+                            {% if activity.photo.image.name %}
+                                <img src="{{ vich_uploader_asset(activity.photo, 'imageFile') }}" alt="{{ activity.photo.image.name }}" class="bw">
                             {% endif %}
                             <div class="container">
                                 <h2>{{ activity.name }}</h2>
