@@ -208,14 +208,16 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
-        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $reserves = $activity->getReserveRegistrations();
+        self::assertNotNull($reserves[1]);
         $secondReserveId = $reserves[1]->getId();
 
         // Act
         $this->client->request('GET', $this->controller . "/reserve/move/{$secondReserveId}/up");
 
         // Assert
-        $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $updatedReserves = $activity->getReserveRegistrations();
+        self::assertNotNull($updatedReserves[0]);
         $updatedFirstReserveId = $updatedReserves[0]->getId();
         self::assertEquals($updatedFirstReserveId, $secondReserveId);
         self::assertSelectorTextContains('.container', 'naar boven verplaatst!');
@@ -225,14 +227,16 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
-        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $reserves = $activity->getReserveRegistrations();
+        self::assertNotNull($reserves[0]);
         $firstReserveId = $reserves[0]->getId();
 
         // Act
         $this->client->request('GET', $this->controller . "/reserve/move/{$firstReserveId}/down");
 
         // Assert
-        $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $updatedReserves = $activity->getReserveRegistrations();
+        self::assertNotNull($updatedReserves[1]);
         $updatedRegistrationId = $updatedReserves[1]->getId();
         self::assertEquals($updatedRegistrationId, $firstReserveId);
         self::assertSelectorTextContains('.container', 'naar beneden verplaatst!');
@@ -251,7 +255,8 @@ class RegistrationControllerTest extends AuthWebTestCase
         $registration = $activity->getRegistrations()[0];
         $id = $registration->getId();
 
-        $reserve = $this->em->getRepository(Registration::class)->findReserve($activity)[0];
+        $reserve = $activity->getReserveRegistrations()[0];
+        self::assertNotNull($reserve);
         $reserveId = $reserve->getId();
 
         $url = str_replace('id', strval($id), $url);

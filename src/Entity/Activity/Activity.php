@@ -153,6 +153,7 @@ class Activity
     #[ORM\Column(type: "integer", nullable: true)]
     #[GQL\Field(type: "Int")]
     #[GQL\Description("The maximum number of users that can be registered for this activity.")]
+    #[Assert\PositiveOrZero]
     private $capacity;
 
     /**
@@ -161,6 +162,7 @@ class Activity
     #[ORM\Column(type: "integer", nullable: true)]
     #[GQL\Field(type: "Int")]
     #[GQL\Description("A stored number of users that were present at this activity.")]
+    #[Assert\PositiveOrZero]
     private $present;
 
     /**
@@ -289,6 +291,71 @@ class Activity
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getCurrentRegistrations(): Collection
+    {
+        $current = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && !$reg->isDeleted());
+
+        // Don't retain original indices
+        return new ArrayCollection($current->getValues());
+    }
+
+    public function addCurrentRegistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeCurrentRegistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getDeregistrations(): Collection
+    {
+        $deregs = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && $reg->isDeleted());
+
+        // Don't retain original indices
+        return new ArrayCollection($deregs->getValues());
+    }
+
+    public function addDeregistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeDeregistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getReserveRegistrations(): Collection
+    {
+        $reserve = $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isReserve() && !$reg->isDeleted());
+
+        // Don't retain original indices
+        $array = $reserve->getValues();
+        \usort($array, fn (Registration $a, Registration $b) => $a->getReservePosition() <=> $b->getReservePosition());
+        return new ArrayCollection($array);
+    }
+
+    public function addReserveRegistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeReserveRegistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
     }
 
     /**
@@ -497,6 +564,15 @@ class Activity
         $this->capacity = $capacity;
 
         return $this;
+    }
+
+    /**
+     * Returns whether the activity is at/over capacity
+     * If so, new registrations should be placed in the reserve list
+     */
+    public function atCapacity(): bool
+    {
+        return $this->hasCapacity() && ($this->getCurrentRegistrations()->count() >= $this->getCapacity() || $this->getReserveRegistrations()->count() > 0);
     }
 
     public function getPresent(): ?int
