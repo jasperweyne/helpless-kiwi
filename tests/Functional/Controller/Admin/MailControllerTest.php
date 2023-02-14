@@ -15,15 +15,9 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class MailControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
+    protected EntityManagerInterface $em;
 
-    /**
-     * @var String
-     */
-    private $controllerEndpoint = '/admin/mail';
+    private String $controllerEndpoint = '/admin/mail';
 
     /**
      * {@inheritdoc}

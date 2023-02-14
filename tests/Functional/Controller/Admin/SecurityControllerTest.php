@@ -16,20 +16,11 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class SecurityControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var SecurityController
-     */
-    protected $securityController;
+    protected SecurityController $securityController;
 
-    /**
-     * @var EventService
-     */
-    protected $events;
+    protected EventService $events;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
+    protected EntityManagerInterface $em;
 
     /**
      * {@inheritdoc}
@@ -81,8 +72,6 @@ class SecurityControllerTest extends AuthWebTestCase
             'local_account[name]' => 'John',
             'local_account[email]' => 'john@doe.eyes',
         ]);
-        //$form['local_account[name]'] = 'John';
-        //$form['local_account[email]'] = 'john@doe.eyes';
         $crawler = $this->client->submit($form);
 
         // Assert

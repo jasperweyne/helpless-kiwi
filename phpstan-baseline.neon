@@ -32,7 +32,7 @@ parameters:
 
 		-
 			message: "#^Offset 'joinTable' does not exist on array\\{cache\\?\\: array, cascade\\: array\\<string\\>, declared\\?\\: class\\-string, fetch\\: mixed, fieldName\\: string, id\\?\\: bool, inherited\\?\\: class\\-string, indexBy\\?\\: string, \\.\\.\\.\\}\\.$#"
-			count: 2
+			count: 1
 			path: src/EventListener/DoctrineTablePrefixListener.php
 
 		-

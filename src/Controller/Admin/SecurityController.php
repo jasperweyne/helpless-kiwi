@@ -67,7 +67,7 @@ class SecurityController extends AbstractController
                 'token' => $token,
             ]);
 
-            $mailer->message($account, 'Jouw account', $body);
+            $mailer->message([$account], 'Jouw account', $body);
 
             return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
         }

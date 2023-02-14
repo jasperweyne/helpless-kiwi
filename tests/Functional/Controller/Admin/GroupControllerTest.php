@@ -17,11 +17,9 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class GroupControllerTest extends AuthWebTestCase
 {
-    /** @var EntityManagerInterface */
-    protected $em;
+    protected EntityManagerInterface $em;
 
-    /** @var String */
-    private $controllerEndpoint = '/admin/group';
+    private String $controllerEndpoint = '/admin/group';
 
     /** {@inheritdoc} */
     protected function setUp(): void

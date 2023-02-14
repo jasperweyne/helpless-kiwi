@@ -79,8 +79,10 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
         $confirmation = $event->getRegistration()->getPerson() === $this->user ? 'bevestiging' : 'bericht';
         $title = "Aanmeld$confirmation ".$activity->getName();
+        $organizer = $event->getRegistration()->getPerson();
+        assert($organizer !== null);
         $this->mailer->message(
-            $event->getRegistration()->getPerson(),
+            [$organizer],
             $title,
             $this->template->render('email/newregistration.html.twig', [
                 'person' => $event->getRegistration()->getPerson(),
@@ -104,8 +106,10 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
         $confirmation = $event->getRegistration()->getPerson() === $this->user ? 'bevestiging' : 'bericht';
         $title = "Afmeld$confirmation ".$activity->getName();
+        $organizer = $event->getRegistration()->getPerson();
+        assert($organizer !== null);
         $this->mailer->message(
-            $event->getRegistration()->getPerson(),
+            [$organizer],
             $title,
             $this->template->render('email/removedregistration.html.twig', [
                 'person' => $event->getRegistration()->getPerson(),

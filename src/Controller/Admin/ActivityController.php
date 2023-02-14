@@ -237,8 +237,7 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $price
                 ->setDetails([])
-                ->setConfirmationMsg('')
-            ;
+                ->setConfirmationMsg('');
 
             $this->em->persist($price);
             $this->em->flush();
@@ -283,9 +282,9 @@ class ActivityController extends AbstractController
             }
             $this->em->flush();
 
-            assert($price->getActivity() !== null);
-            assert($price->getActivity()->getId() !== null);
-            return $this->redirectToRoute('admin_activity_show', ['id' => $price->getActivity()->getId()]);
+            $activityId = $price->getActivity()?->getId();
+            assert($activityId !== null);
+            return $this->redirectToRoute('admin_activity_show', ['id' => $activityId]);
         }
 
         return $this->render('admin/activity/price/edit.html.twig', [
@@ -375,7 +374,6 @@ class ActivityController extends AbstractController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_delete', ['id' => $activity->getId()]))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

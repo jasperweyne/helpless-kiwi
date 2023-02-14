@@ -35,8 +35,9 @@ class PasswordController extends AbstractController
     #[Route("/reset/{id}", name: "reset", methods: ["GET", "POST"])]
     public function resetAction(LocalAccount $auth, Request $request): Response
     {
-        assert(is_string($request->query->get('token')));
-        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
+        $token = $request->query->get('token');
+        assert(is_string($token));
+        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $token)) {
             $this->handleInvalidToken($auth);
         }
 
@@ -58,8 +59,9 @@ class PasswordController extends AbstractController
     #[Route("/register/{id}", name: "register", methods: ["GET", "POST"])]
     public function registerAction(LocalAccount $auth, Request $request): Response
     {
-        assert(is_string($request->query->get('token')));
-        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
+        $token = $request->query->get('token');
+        assert(is_string($token));
+        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $token)) {
             $this->handleInvalidToken($auth);
         }
 
@@ -113,11 +115,11 @@ class PasswordController extends AbstractController
                     'token' => urlencode($token),
                 ]);
 
-                $mailer->message($localAccount, 'Wachtwoord vergeten', $body);
-            } catch (UserNotFoundException $_) {
+                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
+            } catch (UserNotFoundException) {
                 $body = $this->renderView('email/unknownemail.html.twig');
 
-                $mailer->message($localAccount, 'Wachtwoord vergeten', $body);
+                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
             }
 
             $this->addFlash('success', 'Er is een mail met instructies gestuurd naar '.$mail);

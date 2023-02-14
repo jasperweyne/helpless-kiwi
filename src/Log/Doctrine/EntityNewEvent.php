@@ -32,7 +32,8 @@ class EntityNewEvent extends AbstractEvent
 
     public function getTitle(): string
     {
-        assert(is_string($this->getEntityType()));
-        return 'Updated '.ClassNameService::fqcnToName($this->getEntityType());
+        $entityType = $this->getEntityType();
+        assert(is_string($entityType));
+        return 'Updated '.ClassNameService::fqcnToName($entityType);
     }
 }

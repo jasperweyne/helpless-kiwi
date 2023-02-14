@@ -13,11 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class EntityEventListenerTest extends KernelTestCase
 {
-    /** @var EntityEventListener */
-    protected $entityEventListener;
+    protected EntityEventListener $entityEventListener;
 
-    /** @var EventService */
-    protected $eventService;
+    protected EventService $eventService;
 
     /** {@inheritdoc} */
     protected function setUp(): void

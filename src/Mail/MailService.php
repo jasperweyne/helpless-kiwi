@@ -36,8 +36,12 @@ class MailService
      */
     private $params;
 
-    public function __construct(MailerInterface $mailer, EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ParameterBagInterface $params)
-    {
+    public function __construct(
+        MailerInterface $mailer,
+        EntityManagerInterface $em,
+        TokenStorageInterface $tokenStorage,
+        ParameterBagInterface $params
+    ) {
         $this->mailer = $mailer;
         $this->em = $em;
         $this->tokenStorage = $tokenStorage;
@@ -45,19 +49,13 @@ class MailService
     }
 
     /**
+     * @param array<ContactInterface> $to
      * @param array<Attachment> $attachments
      */
-    public function message(?ContactInterface $to, string $title, string $body, array $attachments = []): void
+    public function message(
+        array $to, string $title, string $body, array $attachments = []): void
     {
-        if (is_null($to)) {
-            return;
-        }
-
-        if (!is_iterable($to)) {
-            $to = [$to];
-        }
-
-        $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')).' - '.$title;
+        $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')) . ' - ' . $title;
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
 
@@ -79,8 +77,7 @@ class MailService
             ->from($from)
             ->to(...$addresses)
             ->html($body)
-            ->text($body_plain)
-        ;
+            ->text($body_plain);
 
         $content = json_encode([
             'html' => $body,
@@ -99,8 +96,7 @@ class MailService
             ->setPerson($this->getUser())
             ->setTitle($title)
             ->setContent($content)
-            ->setSentAt(new \DateTime())
-        ;
+            ->setSentAt(new \DateTime());
         $this->em->persist($msgEntity);
 
         foreach ($to as $person) {
@@ -110,8 +106,7 @@ class MailService
             $recipient = new Recipient();
             $recipient
                 ->setPerson($person)
-                ->setMail($msgEntity)
-            ;
+                ->setMail($msgEntity);
 
             $this->em->persist($recipient);
         }

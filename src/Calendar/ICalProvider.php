@@ -29,7 +29,7 @@ class ICalProvider
         foreach ($activities as $activity) {
             try {
                 $calendar->addEvent($this->createEvent($activity));
-            } catch (\Error $_) {
+            } catch (\Error) {
                 continue;
             }
         }
@@ -60,9 +60,9 @@ class ICalProvider
 
     private function createEvent(Activity $activity): Event
     {
-        assert($activity->getLocation() !== null);
-        assert($activity->getLocation()->getAddress() !== null);
-        $location = new Location($activity->getLocation()->getAddress());
+        $address = $activity->getLocation()?->getAddress();
+        assert($address !== null);
+        $location = new Location($address);
 
         $organiser = new Organizer(
             new EmailAddress($_ENV['DEFAULT_FROM']),
@@ -76,14 +76,16 @@ class ICalProvider
             new DateTime($activity->getEnd(), false)
         );
 
-        assert($activity->getId() !== null);
-        $event = new Event(new UniqueIdentifier($activity->getId()));
+        $activityId = $activity->getId();
+        assert($activityId !== null);
+        $event = new Event(new UniqueIdentifier($activityId));
 
-        assert($activity->getName() !== null);
+        $activityName = $activity->getName();
+        assert($activityName !== null);
         return $event
             ->setStatus(EventStatus::CONFIRMED())
             ->setOccurrence($timespan)
-            ->setSummary($activity->getName())
+            ->setSummary($activityName)
             ->setDescription($activity->getDescription() ?? '')
             ->setLocation($location)
             ->setOrganizer($organiser);

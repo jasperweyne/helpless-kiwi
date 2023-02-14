@@ -216,8 +216,9 @@ class ActivityController extends AbstractController
 
     public function singleUnregistrationForm(Registration $registration): FormInterface
     {
-        assert($registration->getActivity() !== null);
-        $form = $this->createUnregisterForm($registration->getActivity());
+        $activity = $registration->getActivity();
+        assert($activity !== null);
+        $form = $this->createUnregisterForm($activity);
         $form->get('registration_single')->setData($registration->getId());
 
         return $form;
@@ -225,8 +226,9 @@ class ActivityController extends AbstractController
 
     public function singleRegistrationForm(PriceOption $option, bool $reserve): FormInterface
     {
-        assert($option->getActivity() !== null);
-        $form = $this->createRegisterForm($option->getActivity(), $reserve);
+        $activity = $option->getActivity();
+        assert($activity !== null);
+        $form = $this->createRegisterForm($activity, $reserve);
         $form->get('single_option')->setData($option->getId());
 
         return $form;

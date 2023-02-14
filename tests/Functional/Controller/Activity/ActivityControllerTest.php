@@ -20,8 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class ActivityControllerTest extends AuthWebTestCase
 {
-    /** @var EntityManagerInterface */
-    protected $em;
+    protected EntityManagerInterface $em;
 
     /**
      * {@inheritdoc}
