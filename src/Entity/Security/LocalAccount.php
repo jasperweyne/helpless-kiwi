@@ -228,12 +228,12 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return in_array('ROLE_ADMIN', $this->getRoles(), true);
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 

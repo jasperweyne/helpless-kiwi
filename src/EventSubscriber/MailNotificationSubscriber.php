@@ -110,8 +110,8 @@ class MailNotificationSubscriber implements EventSubscriberInterface
     public function notifyCreateAccount(CreateAccountsEvent $event): void
     {
         foreach ($event->accounts as $account) {
-            // don't notify oidc-registered accounts
-            if (null !== $account->getOidc()) {
+            // don't notify accounts that can already login
+            if (null !== $account->getOidc() || null !== $account->getPassword()) {
                 continue;
             }
 

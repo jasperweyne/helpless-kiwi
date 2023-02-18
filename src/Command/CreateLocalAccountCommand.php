@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Security\LocalAccount;
+use App\Event\Security\CreateAccountsEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,28 +11,19 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CreateLocalAccountCommand extends Command
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private $userpasswordHasher;
-
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:create-account';
 
-    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $userpasswordHasher)
-    {
-        $this->em = $em;
-        $this->userpasswordHasher = $userpasswordHasher;
-
+    public function __construct(
+        private EntityManagerInterface $em,
+        private UserPasswordHasherInterface $userpasswordHasher,
+        private EventDispatcherInterface $dispatcher,
+    ) {
         parent::__construct();
     }
 
@@ -103,14 +95,17 @@ class CreateLocalAccountCommand extends Command
         $account = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]) ?? new LocalAccount();
         $hashedPass = $this->userpasswordHasher->hashPassword($account, $pass);
         $account
-            // Persons
             ->setName($name)
             ->setEmail($email)
             ->setPassword($hashedPass)
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : []);
 
-        $this->em->persist($account);
-        $this->em->flush();
+        // Create or update the account
+        if ($create) {
+            $this->dispatcher->dispatch(new CreateAccountsEvent([$account]));
+        } else {
+            $this->em->flush();
+        }
 
         $output->writeln($account->getCanonical().' login registered!');
 
