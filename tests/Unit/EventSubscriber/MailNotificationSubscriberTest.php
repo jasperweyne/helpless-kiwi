@@ -10,6 +10,7 @@ use App\Event\RegistrationRemovedEvent;
 use App\EventSubscriber\MailNotificationSubscriber;
 use App\Mail\MailService;
 use App\Entity\Security\LocalAccount;
+use App\Security\PasswordResetService;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment;
@@ -43,6 +44,11 @@ final class MailNotificationSubscriberTest extends KernelTestCase
     private $calendar;
 
     /**
+     * @var PasswordResetService&MockObject
+     */
+    private $passwordReset;
+
+    /**
      * @var Security&MockObject
      */
     private $security;
@@ -58,6 +64,7 @@ final class MailNotificationSubscriberTest extends KernelTestCase
         $this->mailer = $this->createMock(MailService::class);
         $this->calendar = $this->createMock(ICalProvider::class);
         $this->security = $this->createMock(Security::class);
+        $this->passwordReset = $this->createMock(PasswordResetService::class);
         $user = $this->createMock(LocalAccount::class);
         $this->security->method('getUser')->will($this::returnValue($user));
 
@@ -65,6 +72,7 @@ final class MailNotificationSubscriberTest extends KernelTestCase
             $this->template,
             $this->mailer,
             $this->calendar,
+            $this->passwordReset,
             $this->security
         );
     }
@@ -80,6 +88,7 @@ final class MailNotificationSubscriberTest extends KernelTestCase
         unset($this->template);
         unset($this->mailer);
         unset($this->calendar);
+        unset($this->passwordReset);
         unset($this->security);
     }
 
