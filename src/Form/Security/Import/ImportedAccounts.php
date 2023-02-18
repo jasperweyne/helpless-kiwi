@@ -3,9 +3,12 @@
 namespace App\Form\Security\Import;
 
 use App\Entity\Security\LocalAccount;
+use App\Event\Security\CreateAccountsEvent;
+use App\Event\Security\RemoveAccountsEvent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -32,23 +35,23 @@ class ImportedAccounts
     ) {
     }
 
-    public function executeImport(EntityManagerInterface $em, bool $flush = true): void
+    public function executeImport(EventDispatcherInterface $dispatcher, EntityManagerInterface $em): void
     {
-        // Schedule database additions
-        foreach ($this->willAdd ? $this->getAdditions() : [] as $add) {
-            $em->persist($add);
+        // Create accounts from additions
+        if ($this->willAdd) {
+            $accounts = $this->getAdditions()->toArray();
+            $dispatcher->dispatch(new CreateAccountsEvent($accounts));
         }
 
-        // Schedule database removals
-        foreach ($this->willRemove ? $this->getRemovals() : [] as $remove) {
-            $em->remove($remove);
+        // Delete accounts from removals
+        if ($this->willRemove) {
+            $accounts = $this->getRemovals()->toArray();
+            $dispatcher->dispatch(new RemoveAccountsEvent($accounts));
         }
 
-        // Updates are scheduled automatically
+        // Updates are scheduled by doctrine automatically
         // Possibly flush scheduled changes to database
-        if ($flush) {
-            $em->flush();
-        }
+        $em->flush();
     }
 
     /**
