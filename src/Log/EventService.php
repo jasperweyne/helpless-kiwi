@@ -43,7 +43,9 @@ class EventService
     public function log(AbstractEvent $event): void
     {
         $entity = $this->hydrate($event);
-        assert($entity !== null);
+        assert(null !== $entity); // hydrate can return null, that's unwanted.
+        // this only happens if you pass it null as an argument.
+        // should be rewritten in a nicer fashion.
 
         $this->em->persist($entity);
         $this->em->flush();
@@ -76,7 +78,10 @@ class EventService
         $object = $event->getEntity();
         if (null !== $object) {
             if (!is_string($this->getIdentifier($object))) {
-                @trigger_error('Entities with identifiers that are not of type string, are not supported yet.', E_USER_WARNING);
+                @trigger_error(
+                    'Entities with identifiers that are not of type string, are not supported yet.',
+                    E_USER_WARNING
+                );
 
                 return null;
             }
@@ -100,7 +105,7 @@ class EventService
         $em = $this->em;
 
         $objectClosure = function () use ($em, $objectType, $objectId) {
-            assert($objectType !== null);
+            /** @var class-string $objectType */
             return $em->find($objectType, $objectId);
         };
 
@@ -112,7 +117,7 @@ class EventService
         $fields['entityCb'] = $objectClosure;
         $fields['entityType'] = $objectType;
 
-        assert($entity->getDiscr() !== null);
+        assert(null !== $entity->getDiscr());
         $class = class_exists($entity->getDiscr()) ? $entity->getDiscr() : AbstractEvent::class;
 
         /** @var AbstractEvent */
@@ -180,22 +185,22 @@ class EventService
         return $this->populate($found);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getIdentifier(object $entity)
+    public function getIdentifier(object $entity): mixed
     {
         $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
         $refl = $this->refl->getAccessibleProperty($className, $identifier);
 
-        assert($refl !== null);
+        assert($refl instanceof \ReflectionProperty);
+
         return $refl->getValue($entity);
     }
 
     /**
      * @template T of object
+     *
      * @phpstan-param T $entity
+     *
      * @phpstan-return class-string<T>
      */
     public function getClassName(object $entity): string

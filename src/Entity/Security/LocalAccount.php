@@ -161,7 +161,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      */
     public function getName(): ?string
     {
-        $name = \trim($this->getGivenName().' '.$this->getFamilyName());
+        $name = \trim($this->getGivenName() . ' ' . $this->getFamilyName());
 
         return '' != $name ? $name : null;
     }
@@ -330,7 +330,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     public function getCanonical(): string
     {
         assert(is_string($this->getId()));
-        if(null !== $name = $this->getName()){
+        if (null !== $name = $this->getName()) {
             return $name;
         } elseif (null !== $mail = $this->getEmail()) {
             return $mail;

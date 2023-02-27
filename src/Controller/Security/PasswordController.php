@@ -146,8 +146,11 @@ class PasswordController extends AbstractController
     /**
      * Handle a valid auth token.
      */
-    private function handleValidToken(FormInterface $form, LocalAccount $auth, string $message): RedirectResponse
-    {
+    private function handleValidToken(
+        FormInterface $form,
+        LocalAccount $auth,
+        string $message
+    ): RedirectResponse {
         /** @var array{password: string} $data */
         $data = $form->getData();
         $pass = $data['password'];

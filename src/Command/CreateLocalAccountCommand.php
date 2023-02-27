@@ -96,8 +96,8 @@ class CreateLocalAccountCommand extends Command
     {
         $email = $input->getArgument('email');
         $name = $input->getArgument('name');
-        assert(is_string($name));
         $pass = $input->getArgument('pass');
+        assert(is_string($name));
         assert(is_string($pass));
 
         $account = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]) ?? new LocalAccount();

@@ -81,16 +81,6 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
-			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\) expects class\\-string\\<object\\>, string given\\.$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
-			message: "#^Unable to resolve the template type T in call to method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:find\\(\\)$#"
-			count: 1
-			path: src/Log/EventService.php
-
-		-
 			message: "#^Only booleans are allowed in an if condition, int\\|false given\\.$#"
 			count: 1
 			path: src/Reflection/ClassNameService.php

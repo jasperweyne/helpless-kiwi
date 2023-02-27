@@ -53,8 +53,11 @@ class MailService
      * @param array<Attachment> $attachments
      */
     public function message(
-        array $to, string $title, string $body, array $attachments = []): void
-    {
+        array $to,
+        string $title,
+        string $body,
+        array $attachments = []
+    ): void {
         $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')) . ' - ' . $title;
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
@@ -64,12 +67,7 @@ class MailService
             if (is_null($person->getEmail())) {
                 continue;
             }
-
-            if ('' == trim($person->getName() ?? $person->getEmail())) {
-                $addresses[] = new Address($person->getEmail());
-            } else {
-                $addresses[] = new Address($person->getEmail(), $person->getName() ?? $person->getEmail());
-            }
+            $addresses[] = new Address($person->getEmail(), $person->getName() ?? '');
         }
 
         $message = (new Email())

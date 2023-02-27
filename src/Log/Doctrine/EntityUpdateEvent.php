@@ -73,7 +73,9 @@ class EntityUpdateEvent extends AbstractEvent
 
     public function getTitle(): string
     {
-        assert(is_string($this->getEntityType()));
-        return 'Updated '.ClassNameService::fqcnToName($this->getEntityType());
+        if (!is_string($this->getEntityType())) {
+            throw new \Exception();
+        }
+        return 'Updated ' . ClassNameService::fqcnToName($this->getEntityType());
     }
 }

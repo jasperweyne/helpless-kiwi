@@ -19,7 +19,7 @@ class GroupControllerTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
-    private String $controllerEndpoint = '/admin/group';
+    private string $controllerEndpoint = '/admin/group';
 
     /** {@inheritdoc} */
     protected function setUp(): void
@@ -50,7 +50,7 @@ class GroupControllerTest extends AuthWebTestCase
         $newName = 'Bestuur Wispeltuur';
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . '/new');
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/new');
         $form = $crawler->selectButton('Toevoegen')->form();
         $form['group[name]'] = $newName;
         $crawler = $this->client->submit($form);
@@ -65,7 +65,7 @@ class GroupControllerTest extends AuthWebTestCase
 
     public function testShowAction(): void
     {
-        $this->client->request('GET', $this->controllerEndpoint . '/');
+        $this->client->request('GET', $this->controllerEndpoint.'/');
         self::assertSelectorTextContains('span', 'Groepen');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
@@ -78,7 +78,7 @@ class GroupControllerTest extends AuthWebTestCase
         $newName = 'Bestuur Wispeltuur';
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/{$id}/edit");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/edit");
         $form = $crawler->selectButton('Opslaan')->form();
         $form['group[name]'] = $newName;
         $crawler = $this->client->submit($form);
@@ -96,7 +96,7 @@ class GroupControllerTest extends AuthWebTestCase
         $id = $group->getId();
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/{$id}/delete");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/delete");
         $form = $crawler->selectButton('Ja, verwijder')->form();
         $crawler = $this->client->submit($form);
 
@@ -114,7 +114,7 @@ class GroupControllerTest extends AuthWebTestCase
         $id = $group->getId();
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/relation/new/{$id}");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/new/{$id}");
         $form = $crawler->selectButton('Toevoegen')->form();
         $crawler = $this->client->submit($form);
         $allGroups = $this->em->getRepository(Group::class)->findAll();
@@ -131,12 +131,12 @@ class GroupControllerTest extends AuthWebTestCase
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findAll()[0];
         $group = $user->getRelations()[0];
-        assert($group !== null);
+        assert(null !== $group);
         $id = $group->getId();
         $account_id = $user->getId();
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/relation/delete/{$id}/{$account_id}");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/relation/delete/{$id}/{$account_id}");
         $form = $crawler->selectButton('Ja, verwijder')->form();
         $crawler = $this->client->submit($form);
 
