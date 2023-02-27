@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 /**
  * Password controller.
  */
-#[Route("/password", name: "password_")]
+#[Route('/password', name: 'password_')]
 class PasswordController extends AbstractController
 {
     public function __construct(
@@ -32,12 +32,13 @@ class PasswordController extends AbstractController
     /**
      * Reset password.
      */
-    #[Route("/reset/{id}", name: "reset", methods: ["GET", "POST"])]
+    #[Route('/reset/{id}', name: 'reset', methods: ['GET', 'POST'])]
     public function resetAction(LocalAccount $auth, Request $request): Response
     {
-        $token = $request->query->get('token');
-        assert(is_string($token));
-        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $token)) {
+        if (!$this->passwordReset->isPasswordRequestTokenValid(
+            $auth,
+            $request->query->getAlnum('token')
+        )) {
             $this->handleInvalidToken($auth);
         }
 
@@ -56,7 +57,7 @@ class PasswordController extends AbstractController
     /**
      * Register new password for account.
      */
-    #[Route("/register/{id}", name: "register", methods: ["GET", "POST"])]
+    #[Route('/register/{id}', name: 'register', methods: ['GET', 'POST'])]
     public function registerAction(LocalAccount $auth, Request $request): Response
     {
         $token = $request->query->get('token');
@@ -81,7 +82,7 @@ class PasswordController extends AbstractController
     /**
      * Request new password mail.
      */
-    #[Route("/request", name: "request", methods: ["GET", "POST"])]
+    #[Route('/request', name: 'request', methods: ['GET', 'POST'])]
     public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer): Response
     {
         $form = $this->createForm('App\Form\Security\PasswordRequestType', []);
@@ -98,8 +99,7 @@ class PasswordController extends AbstractController
                 $localAccount
                     ->setGivenName('')
                     ->setFamilyName('')
-                    ->setEmail($mail)
-                ;
+                    ->setEmail($mail);
 
                 $this->em->persist($localAccount);
                 $this->em->flush();
