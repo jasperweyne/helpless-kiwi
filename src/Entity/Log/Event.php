@@ -23,7 +23,7 @@ class Event
     private $id;
 
     /**
-     * @var string
+     * @var class-string<AbstractEvent>
      */
     #[ORM\Column(type: "string", length: 100)]
     private $discr;
@@ -65,7 +65,7 @@ class Event
     }
 
     /**
-     * @return ?string
+     * @return ?class-string<AbstractEvent>
      */
     public function getDiscr(): ?string
     {
