@@ -2,7 +2,6 @@
 
 namespace Tests\Functional\GraphQL;
 
-use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Activity\ActivityFixture;
 use App\Tests\Database\Activity\PriceOptionFixture;

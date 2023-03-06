@@ -2,35 +2,19 @@
 
 namespace Tests\Unit\Security\Authenticator;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Security\Core\Authentication\Token\NullToken;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-
-use Symfony\Component\Security\Http\Authenticator\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\HeaderBag;
-
-use Drenso\OidcBundle\OidcClientInterface;
-use Drenso\OidcBundle\Security\Token\OidcToken;
-
 use App\Entity\Security\ApiToken;
-use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
-
-
+use App\Repository\ApiTokenRepository;
 use App\Security\Authenticator\ApiTokenAuthenticator;
 use App\Security\LocalUserProvider;
-
-use App\Repository\ApiTokenRepository;
-use Symfony\Component\HttpFoundation\ServerBag;
+use Drenso\OidcBundle\OidcClientInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\HeaderBag;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 
 /**
  * Class ApiTokenAuthenticatorTest.
@@ -133,15 +117,5 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
             'Authorization' => "Bearer $token",
         ]);
         return $request;
-    }
-
-    public function testOnAuthenticationSuccess(): void
-    {
-        // Todo
-    }
-
-    public function testOnAuthenticationFailure(): void
-    {
-        // Todo
     }
 }

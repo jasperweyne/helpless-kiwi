@@ -61,7 +61,7 @@ class Mutation
                     throw new BadCredentialsException('Not all security badges were resolved');
                 }
             }
-        } catch (BadCredentialsException $_) {
+        } catch (BadCredentialsException) {
             throw new UserError('Invalid credentials');
         }
 

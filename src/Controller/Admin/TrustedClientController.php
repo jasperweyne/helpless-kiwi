@@ -29,7 +29,7 @@ class TrustedClientController extends AbstractController
      * Lists all local account entities.
      */
     #[Route("/", name: "index", methods: ["GET"])]
-    public function indexAction(Request $request): Response
+    public function indexAction(): Response
     {
         $clients = $this->em->getRepository(TrustedClient::class)->findAll();
 

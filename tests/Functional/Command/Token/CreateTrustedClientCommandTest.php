@@ -17,8 +17,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class CreateTrustedClientCommandTest extends AuthWebTestCase
 {
-    /** @var EntityManagerInterface */
-    protected $em;
+    protected EntityManagerInterface $em;
 
     /**
      * {@inheritdoc}
