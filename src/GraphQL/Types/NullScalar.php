@@ -4,7 +4,7 @@ namespace App\GraphQL\Types;
 
 use Overblog\GraphQLBundle\Annotation as GQL;
 
-#[GQL\Scalar(name: "Null")]
+#[GQL\Scalar(name: 'Null')]
 class NullScalar
 {
     /**
@@ -14,7 +14,7 @@ class NullScalar
      */
     public static function serialize($value)
     {
-        return "";
+        return '';
     }
 
     /**
@@ -34,6 +34,6 @@ class NullScalar
      */
     public static function parseLiteral($valueNode)
     {
-        return "";
+        return '';
     }
 }

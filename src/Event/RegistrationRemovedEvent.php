@@ -18,7 +18,6 @@ class RegistrationRemovedEvent extends Event
      */
     protected $registration;
 
-
     public function __construct(Registration $registration)
     {
         $this->registration = $registration;

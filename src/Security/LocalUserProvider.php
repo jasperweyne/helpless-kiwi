@@ -70,7 +70,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         $repository = $this->em->getRepository(LocalAccount::class);
         $user = $repository->findOneBy(['oidc' => $userIdentifier]);
 
-        if ($user === null) {
+        if (null === $user) {
             throw new OidcUserNotFoundException("$userIdentifier is unknown");
         }
 

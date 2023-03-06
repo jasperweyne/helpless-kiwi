@@ -112,7 +112,7 @@ class CreateLocalAccountCommand extends Command
         $this->em->persist($account);
         $this->em->flush();
 
-        $output->writeln($account->getCanonical() . ' login registered!');
+        $output->writeln($account->getCanonical().' login registered!');
 
         return 0;
     }

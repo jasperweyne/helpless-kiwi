@@ -18,7 +18,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * Activity controller.
  */
-#[Route("/admin/activity/register", name: "admin_activity_registration_")]
+#[Route('/admin/activity/register', name: 'admin_activity_registration_')]
 class RegistrationController extends AbstractController
 {
     /**
@@ -37,11 +37,10 @@ class RegistrationController extends AbstractController
         $this->em = $em;
     }
 
-
     /**
      * Add someones registration from an activity.
      */
-    #[Route("/new/{id}/external", name: "new_external", methods: ["GET", "POST"])]
+    #[Route('/new/{id}/external', name: 'new_external', methods: ['GET', 'POST'])]
     public function newExternalAction(
         Request $request,
         Activity $activity
@@ -52,7 +51,7 @@ class RegistrationController extends AbstractController
     /**
      * Add someones registration from an activity.
      */
-    #[Route("/new/{id}", name: "new", methods: ["GET", "POST"])]
+    #[Route('/new/{id}', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(
         Request $request,
         Activity $activity,
@@ -73,7 +72,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationAddedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId()
+                'id' => $activity->getId(),
             ]);
         }
 
@@ -86,7 +85,7 @@ class RegistrationController extends AbstractController
     /**
      * Edit someones registration from an activity from admin.
      */
-    #[Route("/edit/{id}", name: "edit", methods: ["GET", "POST"])]
+    #[Route('/edit/{id}', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(
         Request $request,
         Registration $registration
@@ -98,13 +97,13 @@ class RegistrationController extends AbstractController
         }
 
         $activity = $registration->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $form = $this->createForm('App\Form\Activity\RegistrationEditType', $registration, [
             'allowed_options' => $activity->getOptions(),
         ]);
 
-        //Check if the form is submitted and valid from Admin
+        // Check if the form is submitted and valid from Admin
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
@@ -115,7 +114,7 @@ class RegistrationController extends AbstractController
             ]);
         }
 
-        //Render the Admin Page edit registration page with correct form
+        // Render the Admin Page edit registration page with correct form
         return $this->render('admin/activity/registration/edit.html.twig', [
             'registration' => $registration,
             'form' => $form->createView(),
@@ -125,7 +124,7 @@ class RegistrationController extends AbstractController
     /**
      * Remove someones registration from an activity.
      */
-    #[Route("/delete/{id}", name: "delete")]
+    #[Route('/delete/{id}', name: 'delete')]
     public function deleteAction(
         Request $request,
         Registration $registration
@@ -137,7 +136,7 @@ class RegistrationController extends AbstractController
         }
 
         $activity = $registration->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $form = $this->createRegistrationDeleteForm($registration);
         $form->handleRequest($request);
@@ -146,7 +145,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationRemovedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId()
+                'id' => $activity->getId(),
             ]);
         }
 
@@ -159,7 +158,7 @@ class RegistrationController extends AbstractController
     /**
      * Add someone in any acitity reserve list.
      */
-    #[Route("/reserve/new/{id}", name: "reserve_new", methods: ["GET", "POST"])]
+    #[Route('/reserve/new/{id}', name: 'reserve_new', methods: ['GET', 'POST'])]
     public function reserveNewAction(
         Request $request,
         Activity $activity
@@ -181,7 +180,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationAddedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId()
+                'id' => $activity->getId(),
             ]);
         } else {
             return $this->render('admin/activity/registration/new.html.twig', [
@@ -195,7 +194,7 @@ class RegistrationController extends AbstractController
     /**
      * Promote someone in any acitity reserve list.
      */
-    #[Route("/reserve/move/{id}/up", name: "reserve_move_up", methods: ["GET", "POST"])]
+    #[Route('/reserve/move/{id}/up', name: 'reserve_move_up', methods: ['GET', 'POST'])]
     public function reserveMoveUpAction(
         Registration $registration
     ): Response {
@@ -206,13 +205,14 @@ class RegistrationController extends AbstractController
         }
 
         $activity = $registration->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $position = $registration->getReservePosition();
-        if ($position === null) {
+        if (null === $position) {
             $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
+
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId()
+                'id' => $activity->getId(),
             ]);
         }
 
@@ -224,17 +224,17 @@ class RegistrationController extends AbstractController
         $this->em->flush();
 
         $person = $registration->getPerson();
-        $this->addFlash('success', ($person !== null ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
+        $this->addFlash('success', (null !== $person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', [
-            'id' => $activity->getId()
+            'id' => $activity->getId(),
         ]);
     }
 
     /**
      * Demote someone in any acitity reserve list.
      */
-    #[Route("/reserve/move/{id}/down", name: "reserve_move_down", methods: ["GET", "POST"])]
+    #[Route('/reserve/move/{id}/down', name: 'reserve_move_down', methods: ['GET', 'POST'])]
     public function reserveMoveDownAction(
         Registration $registration
     ): Response {
@@ -245,13 +245,14 @@ class RegistrationController extends AbstractController
         }
 
         $activity = $registration->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $position = $registration->getReservePosition();
-        if ($position === null) {
+        if (null === $position) {
             $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
+
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId()
+                'id' => $activity->getId(),
             ]);
         }
 
@@ -263,13 +264,12 @@ class RegistrationController extends AbstractController
         $this->em->flush();
 
         $person = $registration->getPerson();
-        $this->addFlash('success', ($person !== null ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
+        $this->addFlash('success', (null !== $person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', [
-            'id' => $activity->getId()
+            'id' => $activity->getId(),
         ]);
     }
-
 
     /**
      * Creates a form to check out all checked in users.

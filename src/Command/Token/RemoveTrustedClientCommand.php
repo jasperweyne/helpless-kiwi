@@ -38,6 +38,7 @@ class RemoveTrustedClientCommand extends Command
         // Get client and validate its existence
         if (null === $client = $this->em->getRepository(TrustedClient::class)->find($name)) {
             $io->error("A client named '{$name}' doesn't exist.");
+
             return Command::FAILURE;
         }
 
@@ -46,6 +47,7 @@ class RemoveTrustedClientCommand extends Command
         $this->em->flush();
 
         $io->success("Client '{$name}' removed.");
+
         return Command::SUCCESS;
     }
 }

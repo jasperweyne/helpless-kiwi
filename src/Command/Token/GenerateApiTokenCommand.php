@@ -45,12 +45,14 @@ class GenerateApiTokenCommand extends Command
         // Get client and validate its existence
         if (null === $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $username])) {
             $io->error("A user with username '{$username}' doesn't exist.");
+
             return Command::FAILURE;
         }
 
         // Get client and validate its existence
         if (null === $client = $this->em->getRepository(TrustedClient::class)->find($clientId)) {
             $io->error("A client named '{$clientId}' doesn't exist.");
+
             return Command::FAILURE;
         }
 

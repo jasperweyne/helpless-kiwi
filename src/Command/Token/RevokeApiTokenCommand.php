@@ -38,6 +38,7 @@ class RevokeApiTokenCommand extends Command
         // Get client and validate its existence
         if (null === $token = $this->em->getRepository(ApiToken::class)->find($tokenString)) {
             $io->error("The provided token doesn't exist.");
+
             return Command::FAILURE;
         }
 

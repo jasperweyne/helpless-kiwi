@@ -50,7 +50,7 @@ class MailService
 
     /**
      * @param array<ContactInterface> $to
-     * @param array<Attachment> $attachments
+     * @param array<Attachment>       $attachments
      */
     public function message(
         array $to,
@@ -58,7 +58,7 @@ class MailService
         string $body,
         array $attachments = []
     ): void {
-        $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')) . ' - ' . $title;
+        $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')).' - '.$title;
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
 
@@ -87,7 +87,7 @@ class MailService
         }
 
         $msgEntity = new Mail();
-        assert($content !== false);
+        assert(false !== $content);
         assert($this->getUser() instanceof LocalAccount);
         $msgEntity
             ->setSender($from)

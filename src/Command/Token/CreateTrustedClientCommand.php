@@ -40,6 +40,7 @@ class CreateTrustedClientCommand extends Command
         // Check for duplicates
         if (null !== $this->em->getRepository(TrustedClient::class)->find($name)) {
             $io->error("A client named '{$name}' already exists, remove it first or choose a different name.");
+
             return Command::FAILURE;
         }
 
@@ -54,6 +55,7 @@ class CreateTrustedClientCommand extends Command
 
         $io->writeln("Secret: {$secret}");
         $io->success("Client '{$name}' generated!");
+
         return Command::SUCCESS;
     }
 }

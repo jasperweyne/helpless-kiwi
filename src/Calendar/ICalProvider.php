@@ -35,6 +35,7 @@ class ICalProvider
         }
 
         $factory = new CalendarFactory();
+
         return strval($factory->createCalendar($calendar));
     }
 
@@ -47,41 +48,44 @@ class ICalProvider
         $calendar->addEvent($this->createEvent($activity));
 
         $factory = new CalendarFactory();
+
         return strval($factory->createCalendar($calendar));
     }
 
     private function createCalendar(): Calendar
     {
         $calendar = new Calendar();
+
         return $calendar
-            ->setProductIdentifier('-//Helpless Kiwi//' . ($_ENV['ORG_NAME'] ?? 'kiwi') . ' v1.0//NL')
+            ->setProductIdentifier('-//Helpless Kiwi//'.($_ENV['ORG_NAME'] ?? 'kiwi').' v1.0//NL')
             ->addTimeZone(new TimeZone(date_default_timezone_get()));
     }
 
     private function createEvent(Activity $activity): Event
     {
         $address = $activity->getLocation()?->getAddress();
-        assert($address !== null);
+        assert(null !== $address);
         $location = new Location($address);
 
         $organiser = new Organizer(
             new EmailAddress($_ENV['DEFAULT_FROM']),
-            ($activity->getAuthor() !== null ? $activity->getAuthor()->getName() . ' - ' : '') . ($_ENV['ORG_NAME'] ?? 'kiwi')
+            (null !== $activity->getAuthor() ? $activity->getAuthor()->getName().' - ' : '').($_ENV['ORG_NAME'] ?? 'kiwi')
         );
 
-        assert($activity->getStart() !== null);
-        assert($activity->getEnd() !== null);
+        assert(null !== $activity->getStart());
+        assert(null !== $activity->getEnd());
         $timespan = new TimeSpan(
             new DateTime($activity->getStart(), false),
             new DateTime($activity->getEnd(), false)
         );
 
         $activityId = $activity->getId();
-        assert($activityId !== null);
+        assert(null !== $activityId);
         $event = new Event(new UniqueIdentifier($activityId));
 
         $activityName = $activity->getName();
-        assert($activityName !== null);
+        assert(null !== $activityName);
+
         return $event
             ->setStatus(EventStatus::CONFIRMED())
             ->setOccurrence($timespan)

@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Security controller.
  */
-#[Route("/admin/security/client", name: "admin_security_client_", priority: 10)]
+#[Route('/admin/security/client', name: 'admin_security_client_', priority: 10)]
 class TrustedClientController extends AbstractController
 {
     public function __construct(
@@ -28,7 +28,7 @@ class TrustedClientController extends AbstractController
     /**
      * Lists all local account entities.
      */
-    #[Route("/", name: "index", methods: ["GET"])]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function indexAction(): Response
     {
         $clients = $this->em->getRepository(TrustedClient::class)->findAll();
@@ -41,7 +41,7 @@ class TrustedClientController extends AbstractController
     /**
      * Creates a new activity entity.
      */
-    #[Route("/new", name: "new", methods: ["GET", "POST"])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, PasswordHasherFactoryInterface $factory): Response
     {
         $form = $this->createFormBuilder()
@@ -71,7 +71,7 @@ class TrustedClientController extends AbstractController
     /**
      * Creates a new activity entity.
      */
-    #[Route("/clear", name: "clear", methods: ["GET"])]
+    #[Route('/clear', name: 'clear', methods: ['GET'])]
     public function clearAction(ApiTokenRepository $repository): Response
     {
         $amount = $repository->cleanup();
@@ -84,7 +84,7 @@ class TrustedClientController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/{id}/token", name: "token")]
+    #[Route('/{id}/token', name: 'token')]
     public function tokenAction(Request $request, TrustedClient $client, ApiTokenRepository $repository): Response
     {
         $form = $this->createForm(GenerateTokenType::class);
@@ -107,10 +107,11 @@ class TrustedClientController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/{id}/delete", name: "delete")]
+    #[Route('/{id}/delete', name: 'delete')]
     public function deleteAction(Request $request, TrustedClient $client): Response
     {
         $form = $this->createDeleteForm($client);

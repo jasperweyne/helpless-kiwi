@@ -34,6 +34,7 @@ class EntityNewEvent extends AbstractEvent
     {
         $entityType = $this->getEntityType();
         assert(is_string($entityType));
+
         return 'Updated '.ClassNameService::fqcnToName($entityType);
     }
 }

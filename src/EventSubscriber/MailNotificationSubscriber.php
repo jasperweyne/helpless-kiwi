@@ -69,7 +69,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         }
 
         $activity = $event->getRegistration()->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $ics = new Attachment(
             $this->calendar->icalSingle($activity),
@@ -80,7 +80,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $confirmation = $event->getRegistration()->getPerson() === $this->user ? 'bevestiging' : 'bericht';
         $title = "Aanmeld$confirmation ".$activity->getName();
         $participant = $event->getRegistration()->getPerson();
-        assert($participant !== null);
+        assert(null !== $participant);
         $this->mailer->message(
             [$participant],
             $title,
@@ -102,12 +102,12 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         }
 
         $activity = $event->getRegistration()->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $confirmation = $event->getRegistration()->getPerson() === $this->user ? 'bevestiging' : 'bericht';
         $title = "Afmeld$confirmation ".$activity->getName();
         $participant = $event->getRegistration()->getPerson();
-        assert($participant !== null);
+        assert(null !== $participant);
         $this->mailer->message(
             [$participant],
             $title,

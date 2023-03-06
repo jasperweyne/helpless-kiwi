@@ -16,7 +16,7 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[GQL\Type]
-#[GQL\Description("Information on a physical activity that users can register themselves to.")]
+#[GQL\Description('Information on a physical activity that users can register themselves to.')]
 #[ORM\Entity(repositoryClass: "App\Repository\ActivityRepository")]
 #[Vich\Uploadable]
 class Activity
@@ -25,51 +25,51 @@ class Activity
      * @var ?string
      */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: 'guid')]
     private $id;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "string", length: 100, name: "title")]
+    #[ORM\Column(type: 'string', length: 100, name: 'title')]
     #[Assert\NotBlank]
-    #[GQL\Field(type: "String!")]
-    #[GQL\Description("The name of the activity.")]
+    #[GQL\Field(type: 'String!')]
+    #[GQL\Description('The name of the activity.')]
     private $name;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "text")]
+    #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
-    #[GQL\Field(type: "String!")]
-    #[GQL\Description("A textual description of the activity.")]
+    #[GQL\Field(type: 'String!')]
+    #[GQL\Description('A textual description of the activity.')]
     private $description;
 
     /**
      * @var Collection<int, PriceOption>
      */
-    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\PriceOption", mappedBy: "activity")]
-    #[GQL\Field(type: "[PriceOption]")]
-    #[GQL\Description("The available registration options for the activity.")]
+    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\PriceOption", mappedBy: 'activity')]
+    #[GQL\Field(type: '[PriceOption]')]
+    #[GQL\Description('The available registration options for the activity.')]
     private $options;
 
     /**
      * @var Collection<int, Registration>
      */
-    #[GQL\Field(type: "[Registration]")]
-    #[GQL\Description("All registrations stored for this activity, regardless of option.")]
-    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: "activity")]
+    #[GQL\Field(type: '[Registration]')]
+    #[GQL\Description('All registrations stored for this activity, regardless of option.')]
+    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
     private $registrations;
 
     /**
      * @var ?Location
      */
     #[ORM\OneToOne(targetEntity: "App\Entity\Location\Location")]
-    #[ORM\JoinColumn(name: "location", referencedColumnName: "id")]
-    #[GQL\Field(type: "Location!")]
-    #[GQL\Description("The (physical) location of the activity.")]
+    #[ORM\JoinColumn(name: 'location', referencedColumnName: 'id')]
+    #[GQL\Field(type: 'Location!')]
+    #[GQL\Description('The (physical) location of the activity.')]
     #[Assert\NotBlank]
     private $location;
 
@@ -77,62 +77,62 @@ class Activity
      * @var ?Group
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
-    #[ORM\JoinColumn(name: "primairy_author", referencedColumnName: "id", nullable: true)]
-    #[GQL\Field(type: "Group")]
-    #[GQL\Description("The group that authored this activity.")]
+    #[ORM\JoinColumn(name: 'primairy_author', referencedColumnName: 'id', nullable: true)]
+    #[GQL\Field(type: 'Group')]
+    #[GQL\Description('The group that authored this activity.')]
     private $author;
 
     /**
      * @var ?Group
      */
-    #[GQL\Field(type: "Group")]
-    #[GQL\Description("The group of all users that can see and register to this activity.")]
+    #[GQL\Field(type: 'Group')]
+    #[GQL\Description('The group of all users that can see and register to this activity.')]
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
-    #[ORM\JoinColumn(name: "target", referencedColumnName: "id", nullable: true)]
+    #[ORM\JoinColumn(name: 'target', referencedColumnName: 'id', nullable: true)]
     private $target;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "string")]
-    #[GQL\Field(type: "String!")]
-    #[GQL\Description("The color associated with this activity, stored for presentation purposes.")]
+    #[ORM\Column(type: 'string')]
+    #[GQL\Field(type: 'String!')]
+    #[GQL\Description('The color associated with this activity, stored for presentation purposes.')]
     #[Assert\NotBlank]
     private $color;
 
     /**
      * @var \DateTime
      */
-    #[ORM\Column(type: "datetime")]
-    #[GQL\Field(type: "DateTimeScalar!")]
-    #[GQL\Description("The date and time the activity starts.")]
+    #[ORM\Column(type: 'datetime')]
+    #[GQL\Field(type: 'DateTimeScalar!')]
+    #[GQL\Description('The date and time the activity starts.')]
     #[Assert\NotBlank]
     private $start;
 
     /**
      * @var \DateTime
      */
-    #[ORM\Column(type: "datetime")]
-    #[GQL\Field(type: "DateTimeScalar!")]
-    #[GQL\Description("The date and time the activity ends.")]
+    #[ORM\Column(type: 'datetime')]
+    #[GQL\Field(type: 'DateTimeScalar!')]
+    #[GQL\Description('The date and time the activity ends.')]
     #[Assert\NotBlank]
-    #[Assert\Expression("value >= this.getStart()", message: "Een activiteit kan niet eindigen voor de start.")]
+    #[Assert\Expression('value >= this.getStart()', message: 'Een activiteit kan niet eindigen voor de start.')]
     private $end;
 
     /**
      * @var \DateTime
      */
-    #[ORM\Column(type: "datetime")]
-    #[GQL\Field(type: "DateTimeScalar!")]
-    #[GQL\Description("The final date and time users may (de)register for this activity.")]
+    #[ORM\Column(type: 'datetime')]
+    #[GQL\Field(type: 'DateTimeScalar!')]
+    #[GQL\Description('The final date and time users may (de)register for this activity.')]
     #[Assert\NotBlank]
-    #[Assert\Expression("value <= this.getStart()", message: "Aanmelddeadline kan niet na de start van de activiteit vallen.")]
+    #[Assert\Expression('value <= this.getStart()', message: 'Aanmelddeadline kan niet na de start van de activiteit vallen.')]
     private $deadline;
 
     /**
      * @var File
      */
-    #[Vich\UploadableField(mapping: "activities", fileNameProperty: "image.name", size: "image.size", mimeType: "image.mimeType", originalName: "image.originalName", dimensions: "image.dimensions")]
+    #[Vich\UploadableField(mapping: 'activities', fileNameProperty: 'image.name', size: 'image.size', mimeType: 'image.mimeType', originalName: 'image.originalName', dimensions: 'image.dimensions')]
     private $imageFile;
 
     /**
@@ -144,33 +144,33 @@ class Activity
     /**
      * @var \DateTime
      */
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: 'datetime')]
     private $imageUpdatedAt;
 
     /**
      * @var ?int
      */
-    #[ORM\Column(type: "integer", nullable: true)]
-    #[GQL\Field(type: "Int")]
-    #[GQL\Description("The maximum number of users that can be registered for this activity.")]
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[GQL\Field(type: 'Int')]
+    #[GQL\Description('The maximum number of users that can be registered for this activity.')]
     #[Assert\PositiveOrZero]
     private $capacity;
 
     /**
      * @var ?int
      */
-    #[ORM\Column(type: "integer", nullable: true)]
-    #[GQL\Field(type: "Int")]
-    #[GQL\Description("A stored number of users that were present at this activity.")]
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[GQL\Field(type: 'Int')]
+    #[GQL\Description('A stored number of users that were present at this activity.')]
     #[Assert\PositiveOrZero]
     private $present;
 
     /**
      * @var ?\DateTime
      */
-    #[ORM\Column(type: "datetime", nullable: true, options: ["default" => "1970-01-01 00:00:00"])]
-    #[GQL\Field(type: "DateTimeScalar")]
-    #[GQL\Description("The time after which the activity will be publicized.")]
+    #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => '1970-01-01 00:00:00'])]
+    #[GQL\Field(type: 'DateTimeScalar')]
+    #[GQL\Description('The time after which the activity will be publicized.')]
     private $visibleAfter;
 
     /**
@@ -345,6 +345,7 @@ class Activity
         // Don't retain original indices
         $array = $reserve->getValues();
         \usort($array, fn (Registration $a, Registration $b) => $a->getReservePosition() <=> $b->getReservePosition());
+
         return new ArrayCollection($array);
     }
 
@@ -568,7 +569,7 @@ class Activity
 
     /**
      * Returns whether the activity is at/over capacity
-     * If so, new registrations should be placed in the reserve list
+     * If so, new registrations should be placed in the reserve list.
      */
     public function atCapacity(): bool
     {
@@ -619,7 +620,7 @@ class Activity
         return
             $this->getEnd() > new \DateTime() &&
             $in_groups &&
-            $this->getVisibleAfter() !== null &&
+            null !== $this->getVisibleAfter() &&
             $this->getVisibleAfter() < new \DateTime()
         ;
     }
@@ -631,7 +632,7 @@ class Activity
     {
         // gather the currently applicable groups
         $groups = [];
-        if ($user !== null) {
+        if (null !== $user) {
             $groups = $user->getRelations()->toArray();
         }
 

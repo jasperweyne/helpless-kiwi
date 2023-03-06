@@ -10,9 +10,9 @@ use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
@@ -23,7 +23,6 @@ class AuthWebTestCase extends WebTestCase
      * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
      */
     protected $client;
-
 
     /**
      * @var AbstractDatabaseTool
@@ -64,7 +63,7 @@ class AuthWebTestCase extends WebTestCase
     }
 
     /**
-     * Retrieve or instantiate a user
+     * Retrieve or instantiate a user.
      *
      * @param string[]|string $roles The roles of the instantiated user, or the email of the user in database
      */
@@ -77,7 +76,7 @@ class AuthWebTestCase extends WebTestCase
             $em = self::getContainer()->get(EntityManagerInterface::class);
             $user = $em->getRepository(LocalAccount::class)->findOneBy(['email' => $username]);
 
-            if ($user === null) {
+            if (null === $user) {
                 throw new \InvalidArgumentException("User with email '$username' was not found in the test database.");
             }
 
@@ -101,7 +100,7 @@ class AuthWebTestCase extends WebTestCase
         /** @var EntityManagerInterface */
         $em = self::getContainer()->get(EntityManagerInterface::class);
         $users = $em->getRepository(LocalAccount::class)->findAll();
-        if (count($users) === 0) {
+        if (0 === count($users)) {
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 
