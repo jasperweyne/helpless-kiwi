@@ -23,7 +23,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * Activity controller.
  */
-#[Route("/", name: "activity_")]
+#[Route('/', name: 'activity_')]
 class ActivityController extends AbstractController
 {
     /**
@@ -45,9 +45,9 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities.
      */
-    #[MenuItem(title: "Terug naar frontend", menu: "admin-profile", class: "mobile")]
-    #[MenuItem(title: "Activiteiten")]
-    #[Route("/", name: "index", methods: ["GET"])]
+    #[MenuItem(title: 'Terug naar frontend', menu: 'admin-profile', class: 'mobile')]
+    #[MenuItem(title: 'Activiteiten')]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function indexAction(): Response
     {
         $groups = [];
@@ -66,7 +66,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      */
-    #[Route("/activity/{id}/unregister", name: "unregister", methods: ["POST"])]
+    #[Route('/activity/{id}/unregister', name: 'unregister', methods: ['POST'])]
     public function unregisterAction(
         Request $request,
         Activity $activity
@@ -79,20 +79,21 @@ class ActivityController extends AbstractController
             $data = $form->getData();
             $registration = $this->em->getRepository(Registration::class)->find($data['registration_single']);
 
-            if ($registration !== null) {
+            if (null !== $registration) {
                 $event = new RegistrationRemovedEvent($registration);
                 $this->events->dispatch($event);
             } else {
                 $this->addFlash('error', 'Probleem tijdens afmelden');
             }
         }
+
         return $this->redirectToRoute(
             'activity_show',
             ['id' => $activity->getId()]
         );
     }
 
-    #[Route("/ical", methods: ["GET"])]
+    #[Route('/ical', methods: ['GET'])]
     public function callIcal(
         ICalProvider $iCalProvider
     ): Response {
@@ -104,7 +105,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to register to an activity.
      */
-    #[Route("/activity/{id}/register", name: "register", methods: ["POST"])]
+    #[Route('/activity/{id}/register', name: 'register', methods: ['POST'])]
     public function registerAction(
         Request $request,
         Activity $activity
@@ -116,8 +117,9 @@ class ActivityController extends AbstractController
             /** @var array{single_option: string} $data */
             $data = $form->getData();
             $option = $this->em->getRepository(PriceOption::class)->find($data['single_option']);
-            if ($option === null) {
+            if (null === $option) {
                 $this->addFlash('error', 'Probleem met aanmelding.');
+
                 return $this->redirectToRoute(
                     'activity_show',
                     ['id' => $activity->getId()]
@@ -135,6 +137,7 @@ class ActivityController extends AbstractController
             ]);
             if ($registrations > 0) {
                 $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
+
                 return $this->redirectToRoute(
                     'activity_show',
                     ['id' => $activity->getId()]
@@ -162,7 +165,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route("/activity/{id}", name: "show", methods: ["GET"])]
+    #[Route('/activity/{id}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
         $groups = [];
@@ -200,7 +203,7 @@ class ActivityController extends AbstractController
     public function singleUnregistrationForm(Registration $registration): FormInterface
     {
         $activity = $registration->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
         $form = $this->createUnregisterForm($activity);
         $form->get('registration_single')->setData($registration->getId());
 
@@ -210,7 +213,7 @@ class ActivityController extends AbstractController
     public function singleRegistrationForm(PriceOption $option, bool $reserve): FormInterface
     {
         $activity = $option->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
         $form = $this->createRegisterForm($activity, $reserve);
         $form->get('single_option')->setData($option->getId());
 

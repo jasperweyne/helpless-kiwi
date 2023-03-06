@@ -3,16 +3,16 @@
 namespace App\Security\Authenticator;
 
 use App\Security\LocalUserProvider;
+use Drenso\OidcBundle\Exception\OidcException;
 use Drenso\OidcBundle\Model\OidcTokens;
 use Drenso\OidcBundle\OidcClientInterface;
+use Drenso\OidcBundle\Security\Exception\OidcAuthenticationException;
 use Drenso\OidcBundle\Security\Token\OidcToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-use Drenso\OidcBundle\Exception\OidcException;
-use Drenso\OidcBundle\Security\Exception\OidcAuthenticationException;
 
 /**
  * This class authenticates OAuth2 access tokens for the currently configured OIDC client.
@@ -34,7 +34,7 @@ class OidcTokenAuthenticator extends AbstractBearerTokenAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return parent::supports($request) === true
+        return true === parent::supports($request)
             && str_starts_with($request->getRequestUri(), '/api/')
             && isset($_ENV['OIDC_ADDRESS']);
     }

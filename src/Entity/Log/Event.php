@@ -4,59 +4,58 @@ namespace App\Entity\Log;
 
 use App\Entity\Security\LocalAccount;
 use App\Log\AbstractEvent;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: "log")]
-#[ORM\Index(name: "search_idx", columns: ["object_id", "object_type"])]
-#[ORM\Index(name: "order_idx", columns: ["time"])]
-#[ORM\Index(name: "discr_idx", columns: ["discr"])]
+#[ORM\Table(name: 'log')]
+#[ORM\Index(name: 'search_idx', columns: ['object_id', 'object_type'])]
+#[ORM\Index(name: 'order_idx', columns: ['time'])]
+#[ORM\Index(name: 'discr_idx', columns: ['discr'])]
 class Event
 {
     /**
      * @var ?string
      */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: 'guid')]
     private $id;
 
     /**
      * @var ?class-string<AbstractEvent>
      */
-    #[ORM\Column(type: "string", length: 100)]
+    #[ORM\Column(type: 'string', length: 100)]
     private $discr;
 
     /**
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
      */
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: 'datetime')]
     private $time;
 
     /**
      * @var ?string
      */
-    #[ORM\Column(type: "string", nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private $objectId;
 
     /**
      * @var ?class-string<object>
      */
-    #[ORM\Column(type: "string", nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private $objectType;
 
     /**
      * @var ?LocalAccount
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
     private $person;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "text")]
+    #[ORM\Column(type: 'text')]
     private $meta;
 
     public function getId(): ?string
@@ -82,12 +81,12 @@ class Event
         return $this;
     }
 
-    public function getTime(): ?DateTimeInterface
+    public function getTime(): ?\DateTimeInterface
     {
         return $this->time;
     }
 
-    public function setTime(DateTimeInterface $time): self
+    public function setTime(\DateTimeInterface $time): self
     {
         $this->time = $time;
 

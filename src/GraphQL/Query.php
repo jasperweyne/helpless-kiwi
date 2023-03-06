@@ -10,7 +10,7 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[GQL\Type]
-#[GQL\Description("The root of all query operations.")]
+#[GQL\Description('The root of all query operations.')]
 class Query
 {
     /**
@@ -32,8 +32,8 @@ class Query
     /**
      * @return Activity[]
      */
-    #[GQL\Field(type: "[Activity]")]
-    #[GQL\Description("All currently visible activities.")]
+    #[GQL\Field(type: '[Activity]')]
+    #[GQL\Description('All currently visible activities.')]
     public function current(bool $loggedIn = false): array
     {
         $groups = [];
@@ -47,9 +47,9 @@ class Query
     /**
      * @return Activity[]
      */
-    #[GQL\Field(type: "[Activity]")]
-    #[GQL\Description("All activities stored in the database.")]
-    #[GQL\Access("isAuthenticated()")]
+    #[GQL\Field(type: '[Activity]')]
+    #[GQL\Description('All activities stored in the database.')]
+    #[GQL\Access('isAuthenticated()')]
     public function activities(): array
     {
         return $this->em->getRepository(Activity::class)->findAll();
@@ -58,16 +58,16 @@ class Query
     /**
      * @return Group[]
      */
-    #[GQL\Field(type: "[Group]")]
-    #[GQL\Description("All groups stored in the database.")]
-    #[GQL\Access("isAuthenticated()")]
+    #[GQL\Field(type: '[Group]')]
+    #[GQL\Description('All groups stored in the database.')]
+    #[GQL\Access('isAuthenticated()')]
     public function groups(): array
     {
         return $this->em->getRepository(Group::class)->findAll();
     }
 
-    #[GQL\Field(type: "LocalAccount")]
-    #[GQL\Description("The currently authenticated user.")]
+    #[GQL\Field(type: 'LocalAccount')]
+    #[GQL\Description('The currently authenticated user.')]
     public function user(): ?LocalAccount
     {
         if (null === $token = $this->tokenStorage->getToken()) {
@@ -80,14 +80,15 @@ class Query
         }
 
         assert($user instanceof LocalAccount);
+
         return $user;
     }
 
     /**
      * @return LocalAccount[]
      */
-    #[GQL\Field(type: "[LocalAccount]")]
-    #[GQL\Description("All users stored in the database.")]
+    #[GQL\Field(type: '[LocalAccount]')]
+    #[GQL\Description('All users stored in the database.')]
     #[GQL\Access("isGranted('ROLE_ADMIN')")]
     public function users()
     {

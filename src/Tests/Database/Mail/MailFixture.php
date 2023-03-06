@@ -3,7 +3,6 @@
 namespace App\Tests\Database\Mail;
 
 use App\Entity\Mail\Mail;
-use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -19,7 +18,7 @@ class MailFixture extends Fixture
         ]);
         $mail->setContent($content);
         $mail->setSender('SenderPerson');
-        $mail->setSentAt(new DateTime());
+        $mail->setSentAt(new \DateTime());
 
         $manager->persist($mail);
         $manager->flush();

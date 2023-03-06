@@ -7,8 +7,8 @@ use App\Entity\Activity\Registration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActivityEditPresent extends AbstractType
@@ -27,7 +27,7 @@ class ActivityEditPresent extends AbstractType
     {
         // Get registrations field
         $registrationView = $view['currentRegistrations'];
-        assert($registrationView !== null);
+        assert(null !== $registrationView);
 
         // Assign person as label
         foreach ($registrationView->children as $childView) {

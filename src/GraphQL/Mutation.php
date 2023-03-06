@@ -22,7 +22,7 @@ use Symfony\Component\Security\Http\Event\CheckPassportEvent;
  * This classes houses all of the create update and delete functions.
  */
 #[GQL\Type]
-#[GQL\Description("The root of all mutation operations.")]
+#[GQL\Description('The root of all mutation operations.')]
 class Mutation
 {
     public function __construct(
@@ -36,8 +36,8 @@ class Mutation
     ) {
     }
 
-     #[GQL\Field(type: "String")]
-     #[GQL\Description("Generate an API token based on user credentials")]
+     #[GQL\Field(type: 'String')]
+     #[GQL\Description('Generate an API token based on user credentials')]
     public function login(string $clientId, string $clientSecret, string $username, string $password): string
     {
         // Validate that the provided client secret exists, if provided
@@ -49,7 +49,7 @@ class Mutation
 
         // Store credentials in request
         $request = $this->requestStack->getCurrentRequest();
-        assert($request !== null);
+        assert(null !== $request);
         InternalCredentialsAuthenticator::provideCredentials($request, $username, $password);
 
         // Validate credentials
@@ -68,11 +68,12 @@ class Mutation
         // Generate and return a new API token
         $user = $passport->getUser();
         assert($user instanceof LocalAccount);
+
         return $this->apiTokenRepository->generate($user, $client);
     }
 
-    #[GQL\Field(type: "Null")]
-    #[GQL\Description("Revoke an API token")]
+    #[GQL\Field(type: 'Null')]
+    #[GQL\Description('Revoke an API token')]
     public function logout(string $tokenString): void
     {
         // Check if currently a user is authenticated

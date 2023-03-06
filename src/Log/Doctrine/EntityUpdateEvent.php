@@ -76,6 +76,7 @@ class EntityUpdateEvent extends AbstractEvent
         if (!is_string($this->getEntityType())) {
             throw new \Exception();
         }
-        return 'Updated ' . ClassNameService::fqcnToName($this->getEntityType());
+
+        return 'Updated '.ClassNameService::fqcnToName($this->getEntityType());
     }
 }

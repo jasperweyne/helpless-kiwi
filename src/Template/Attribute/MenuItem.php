@@ -7,7 +7,7 @@ use Attribute;
 /**
  * @phpstan-import-type MenuItemArray from \App\Template\MenuExtensionInterface
  */
-#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class MenuItem
 {
     /**
@@ -55,6 +55,7 @@ class MenuItem
                 ];
             }
         }
+
         return $arr;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Group;
 
-use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Template\MenuExtensionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

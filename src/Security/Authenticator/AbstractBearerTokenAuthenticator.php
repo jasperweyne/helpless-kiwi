@@ -32,6 +32,7 @@ abstract class AbstractBearerTokenAuthenticator extends AbstractAuthenticator
     {
         $token = $this->extractBearerToken($request);
         assert(is_string($token));
+
         return $this->authenticateBearerToken($request, $token);
     }
 
@@ -62,6 +63,7 @@ abstract class AbstractBearerTokenAuthenticator extends AbstractAuthenticator
         $authorization = $request->headers->get('Authorization') ?? '';
         $matches = [];
         $result = preg_match('/^Bearer ([A-Za-z0-9-_\.\~\+\/]+=*)$/', $authorization, $matches);
-        return $result === 1 ? $matches[1] : null;
+
+        return 1 === $result ? $matches[1] : null;
     }
 }
