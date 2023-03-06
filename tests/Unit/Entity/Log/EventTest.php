@@ -66,8 +66,7 @@ class EventTest extends KernelTestCase
 
     public function testSetDiscr(): void
     {
-        /** @var class-string<AbstractEvent> $expected*/
-        $expected = '42';
+        $expected = AbstractEvent::class;
         $property = (new ReflectionClass(Event::class))
             ->getProperty('discr');
         $property->setAccessible(true);

@@ -104,8 +104,8 @@ class EventService
         $objectId = $entity->getObjectId();
         $em = $this->em;
 
+        assert(null !== $objectType);
         $objectClosure = function () use ($em, $objectType, $objectId) {
-            /** @var class-string $objectType */
             return $em->find($objectType, $objectId);
         };
 

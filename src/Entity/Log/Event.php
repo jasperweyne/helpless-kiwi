@@ -23,7 +23,7 @@ class Event
     private $id;
 
     /**
-     * @var class-string<AbstractEvent>
+     * @var ?class-string<AbstractEvent>
      */
     #[ORM\Column(type: "string", length: 100)]
     private $discr;
@@ -41,7 +41,7 @@ class Event
     private $objectId;
 
     /**
-     * @var ?string
+     * @var ?class-string<object>
      */
     #[ORM\Column(type: "string", nullable: true)]
     private $objectType;
@@ -131,7 +131,7 @@ class Event
     }
 
     /**
-     * @return ?string
+     * @return ?class-string<object>
      */
     public function getObjectType(): ?string
     {
