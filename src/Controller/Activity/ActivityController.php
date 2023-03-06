@@ -141,20 +141,12 @@ class ActivityController extends AbstractController
                 );
             }
 
-            // create reserve registration if the activity is full
-            $registrations = $this->em->getRepository(Registration::class)->findBy([
-                'activity' => $activity,
-                'reserve_position' => null,
-                'deletedate' => null,
-            ]);
-            $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($this->em->getRepository(Registration::class)->findReserve($activity)) > 0);
-
             $registration = new Registration();
             $registration
                 ->setActivity($activity)
                 ->setOption($option)
                 ->setPerson($user)
-                ->setReservePosition($reserve ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
+                ->setReservePosition($activity->atCapacity() ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
             ;
 
             $event = new RegistrationAddedEvent($registration);
@@ -173,13 +165,6 @@ class ActivityController extends AbstractController
     #[Route("/activity/{id}", name: "show", methods: ["GET"])]
     public function showAction(Activity $activity): Response
     {
-        $regs = $this->em->getRepository(Registration::class)->findBy([
-            'activity' => $activity,
-            'deletedate' => null,
-            'reserve_position' => null,
-        ]);
-        $reserve = $this->em->getRepository(Registration::class)->findReserve($activity);
-        $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);
@@ -190,7 +175,7 @@ class ActivityController extends AbstractController
         foreach ($targetoptions as $option) {
             $forms[] = [
                 'data' => $option,
-                'form' => $this->singleRegistrationForm($option, $hasReserve)->createView(),
+                'form' => $this->singleRegistrationForm($option, $activity->atCapacity())->createView(),
             ];
         }
         $unregister = null;
@@ -207,10 +192,8 @@ class ActivityController extends AbstractController
 
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
-            'registrations' => $regs,
             'options' => $forms,
             'unregister' => $unregister,
-            'reserve' => $reserve,
         ]);
     }
 

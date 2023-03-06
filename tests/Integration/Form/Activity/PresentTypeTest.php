@@ -2,9 +2,11 @@
 
 namespace Tests\Integration\Form\Activity;
 
+use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Form\Activity\PresentType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Form\FormFactoryInterface;
 
 /**
  * Class PresentTypeTest.
@@ -42,16 +44,20 @@ class PresentTypeTest extends KernelTestCase
     public function testBindValidData(): void
     {
         $type = new Registration();
+        $type->setOption(new PriceOption());
+
         $formData = [
             'present' => 2,
         ];
 
+        /** @var FormFactoryInterface */
         $formfactory = self::getContainer()->get('form.factory');
-        $form = $formfactory->create(PresentType::class, $type);
+        $form = $formfactory->create(PresentType::class, $type, ['csrf_protection' => false]);
 
         $form->submit($formData);
         self::assertTrue($form->isSynchronized());
         self::assertTrue($form->isSubmitted());
+        self::assertTrue($form->isValid());
     }
 
     public function testBuildForm(): void

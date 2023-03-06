@@ -14,35 +14,23 @@ class PresentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $builder = $event->getForm();
-            $registration = $event->getData();
-            if (!$registration instanceof Registration) {
-                return;
-            }
-            if (null != $registration->getDeleteDate()) {
-                return;
-            }
-
-            $builder
-                ->add('present', ChoiceType::class, [
-                    'choices' => [
-                        'Onbekend' => null,
-                        'Aanwezig' => true,
-                        'Afwezig' => false,
-                    ],
-                    'label' => $registration->getPerson(),
-                    'required' => true,
-                    'expanded' => true,
-                ]);
-        });
+        $builder
+            ->add('present', ChoiceType::class, [
+                'choices' => [
+                    'Onbekend' => null,
+                    'Aanwezig' => true,
+                    'Afwezig' => false,
+                ],
+                'label' => false,
+                'required' => true,
+                'expanded' => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Registration::class,
-            'label' => false,
         ]);
     }
 }

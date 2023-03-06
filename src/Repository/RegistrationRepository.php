@@ -201,38 +201,6 @@ class RegistrationRepository extends ServiceEntityRepository
         ;
     }
 
-    /**
-     * @return Registration[] Returns an array of Registration objects
-     */
-    public function findReserve(Activity $activity)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.reserve_position IS NOT NULL')
-            ->andWhere('p.activity = :activity')
-            ->andWhere('p.deletedate IS NULL')
-            ->setParameter('activity', $activity)
-            ->orderBy('p.reserve_position', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return int Returns an integer
-     */
-    public function countPresent(Activity $activity)
-    {
-        return $this->createQueryBuilder('p')
-            ->select('count(p.id)')
-            ->andWhere('p.deletedate IS NULL')
-            ->andWhere('p.activity = :activity')
-            ->andWhere('p.present = TRUE')
-            ->setParameter('activity', $activity)
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-    }
-
     // /**
     //  * @return Registration[] Returns an array of Registration objects
     //  */
