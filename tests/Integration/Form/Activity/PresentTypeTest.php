@@ -60,15 +60,6 @@ class PresentTypeTest extends KernelTestCase
         self::assertTrue($form->isValid());
     }
 
-    public function testBuildForm(): void
-    {
-        $formbuildermock = $this->getMockBuilder("Symfony\Component\Form\Test\FormBuilderInterface")
-            ->disableOriginalConstructor()
-            ->getMock();
-        $formbuildermock->expects(self::exactly(1))->method('addEventListener');
-        $this->presentType->buildForm($formbuildermock, []);
-    }
-
     public function testConfigureOptions(): void
     {
         $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")

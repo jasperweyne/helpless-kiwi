@@ -102,7 +102,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      * @var Collection<int, Group>
      */
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'relations')]
-    #[ORM\JoinTable('kiwi_relation')]
+    #[ORM\JoinTable('relation')]
     #[ORM\JoinColumn('person_id')]
     #[GQL\Field(type: "[Group]")]
     #[GQL\Description("All group memberships for the user.")]
