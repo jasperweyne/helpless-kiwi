@@ -37,7 +37,7 @@ class PasswordController extends AbstractController
     {
         if (!$this->passwordReset->isPasswordRequestTokenValid(
             $auth,
-            $request->query->getAlnum('token')
+            (string) $request->query->get('token')
         )) {
             $this->handleInvalidToken($auth);
         }
