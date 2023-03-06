@@ -21,6 +21,21 @@ parameters:
 			path: src/Entity/Activity/PriceOption.php
 
 		-
+			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$discr type mapping mismatch\\: database can contain string but property expects class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null\\.$#"
+			count: 1
+			path: src/Entity/Log/Event.php
+
+		-
+			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$discr type mapping mismatch\\: property can contain class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null but database expects string\\.$#"
+			count: 1
+			path: src/Entity/Log/Event.php
+
+		-
+			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$objectType type mapping mismatch\\: database can contain string\\|null but property expects class\\-string\\<object\\>\\|null\\.$#"
+			count: 1
+			path: src/Entity/Log/Event.php
+
+		-
 			message: "#^Parameter \\#1 \\$data of class App\\\\Entity\\\\Order constructor expects array\\<int\\>, array\\<int\\<0, max\\>, float\\|int\\<\\-25, 25\\>\\> given\\.$#"
 			count: 1
 			path: src/Entity/Order.php
