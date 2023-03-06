@@ -2,10 +2,8 @@
 
 namespace Tests\Functional\Controller\Admin;
 
-use App\Controller\Admin\ActivityController;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
-use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Activity\ActivityFixture;
 use App\Tests\Database\Activity\PriceOptionFixture;

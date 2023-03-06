@@ -8,16 +8,18 @@ use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 /**
  * Password controller.
  */
-#[Route("/password", name: "password_")]
+#[Route('/password', name: 'password_')]
 class PasswordController extends AbstractController
 {
     public function __construct(
@@ -30,10 +32,13 @@ class PasswordController extends AbstractController
     /**
      * Reset password.
      */
-    #[Route("/reset/{id}", name: "reset", methods: ["GET", "POST"])]
+    #[Route('/reset/{id}', name: 'reset', methods: ['GET', 'POST'])]
     public function resetAction(LocalAccount $auth, Request $request): Response
     {
-        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
+        if (!$this->passwordReset->isPasswordRequestTokenValid(
+            $auth,
+            $request->query->getAlnum('token')
+        )) {
             $this->handleInvalidToken($auth);
         }
 
@@ -52,10 +57,12 @@ class PasswordController extends AbstractController
     /**
      * Register new password for account.
      */
-    #[Route("/register/{id}", name: "register", methods: ["GET", "POST"])]
+    #[Route('/register/{id}', name: 'register', methods: ['GET', 'POST'])]
     public function registerAction(LocalAccount $auth, Request $request): Response
     {
-        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $request->query->get('token'))) {
+        $token = $request->query->get('token');
+        assert(is_string($token));
+        if (!$this->passwordReset->isPasswordRequestTokenValid($auth, $token)) {
             $this->handleInvalidToken($auth);
         }
 
@@ -75,24 +82,24 @@ class PasswordController extends AbstractController
     /**
      * Request new password mail.
      */
-    #[Route("/request", name: "request", methods: ["GET", "POST"])]
+    #[Route('/request', name: 'request', methods: ['GET', 'POST'])]
     public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer): Response
     {
         $form = $this->createForm('App\Form\Security\PasswordRequestType', []);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var array{email: string} $data */
             $data = $form->getData();
             $mail = $data['email'];
 
             $localAccount = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $mail]);
-            if (!$localAccount) {
+            if (!$localAccount instanceof LocalAccount) {
                 $localAccount = new LocalAccount();
                 $localAccount
                     ->setGivenName('')
                     ->setFamilyName('')
-                    ->setEmail($mail)
-                ;
+                    ->setEmail($mail);
 
                 $this->em->persist($localAccount);
                 $this->em->flush();
@@ -100,6 +107,7 @@ class PasswordController extends AbstractController
 
             try {
                 $auth = $userProvider->loadUserByUsername($mail);
+                assert($auth instanceof LocalAccount);
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
 
                 $body = $this->renderView('email/resetpassword.html.twig', [
@@ -107,11 +115,11 @@ class PasswordController extends AbstractController
                     'token' => urlencode($token),
                 ]);
 
-                $mailer->message($localAccount, 'Wachtwoord vergeten', $body);
-            } catch (UsernameNotFoundException $exception) {
+                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
+            } catch (UserNotFoundException) {
                 $body = $this->renderView('email/unknownemail.html.twig');
 
-                $mailer->message($localAccount, 'Wachtwoord vergeten', $body);
+                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
             }
 
             $this->addFlash('success', 'Er is een mail met instructies gestuurd naar '.$mail);
@@ -127,7 +135,7 @@ class PasswordController extends AbstractController
     /**
      * Handle an invalid auth token.
      */
-    private function handleInvalidToken(LocalAccount $auth)
+    private function handleInvalidToken(LocalAccount $auth): RedirectResponse
     {
         $this->passwordReset->resetPasswordRequestToken($auth);
         $this->addFlash('error', 'Invalid password token.');
@@ -138,8 +146,12 @@ class PasswordController extends AbstractController
     /**
      * Handle a valid auth token.
      */
-    private function handleValidToken($form, LocalAccount $auth, string $message)
-    {
+    private function handleValidToken(
+        FormInterface $form,
+        LocalAccount $auth,
+        string $message
+    ): RedirectResponse {
+        /** @var array{password: string} $data */
         $data = $form->getData();
         $pass = $data['password'];
 

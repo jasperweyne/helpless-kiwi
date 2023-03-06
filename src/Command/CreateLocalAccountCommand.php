@@ -97,20 +97,22 @@ class CreateLocalAccountCommand extends Command
         $email = $input->getArgument('email');
         $name = $input->getArgument('name');
         $pass = $input->getArgument('pass');
+        assert(is_string($name));
+        assert(is_string($pass));
 
         $account = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]) ?? new LocalAccount();
+        $hashedPass = $this->userpasswordHasher->hashPassword($account, $pass);
         $account
             // Persons
             ->setName($name)
             ->setEmail($email)
-            ->setPassword($this->userpasswordHasher->hashPassword($account, $pass))
-            ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : [])
-        ;
+            ->setPassword($hashedPass)
+            ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : []);
 
         $this->em->persist($account);
         $this->em->flush();
 
-        $output->writeln($account->getCanonical().' login registered!');
+        $output->writeln($account->getCanonical() . ' login registered!');
 
         return 0;
     }

@@ -20,6 +20,8 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class ActivityControllerTest extends AuthWebTestCase
 {
+    protected EntityManagerInterface $em;
+
     /**
      * {@inheritdoc}
      */
@@ -51,7 +53,7 @@ class ActivityControllerTest extends AuthWebTestCase
     {
         // Arrange
         $crawler = $this->client->request('GET', '/');
-        $activities = $this->em->getRepository(Activity::class)->findAll(['hidden' => false], ['start' => 'DESC']);
+        $activities = $this->em->getRepository(Activity::class)->findAll();
 
         // Act
         $node = $crawler->filter('body > main > div.container > div.cardholder > div.grid-x')
@@ -71,6 +73,19 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testCallIcal(): void
+    {
+        $this->client->request('GET', '/ical');
+        $icalReturnPrefix = "BEGIN:VCALENDAR";
+        $icalReturnSuffix = "END:VCALENDAR\r\n";
+        $icalResponse = $this->client->getResponse();
+
+        self::assertNotFalse($icalResponse->getContent());
+        self::assertStringStartsWith($icalReturnPrefix, $icalResponse->getContent());
+        self::assertStringEndsWith($icalReturnSuffix, $icalResponse->getContent());
+        self::assertSame(200, $icalResponse->getStatusCode());
+    }
+
     public function testUnregisterAction(): void
     {
         // Arrange
@@ -78,6 +93,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
         /** @var Registration */
         $reg = $this->em->getRepository(Registration::class)->findBy(['person' => $user])[0];
+        self::assertNotNull($reg->getActivity());
         $id = $reg->getActivity()->getId();
 
         // Act
@@ -107,6 +123,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
         /** @var PriceOption */
         $option = $this->em->getRepository(PriceOption::class)->findAll()[0];
+        self::assertNotNull($option->getActivity());
         $id = $option->getActivity()->getId();
 
         // Act

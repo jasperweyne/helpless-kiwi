@@ -6,6 +6,7 @@ use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -419,7 +420,10 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('registrations');
         $property->setAccessible(true);
         $this->localAccount->addRegistration($expected);
-        self::assertContains($expected, $property->getValue($this->localAccount));
+
+        $collection = $property->getValue($this->localAccount);
+        self::assertInstanceOf(Collection::class, $collection);
+        self::assertContains($expected, $collection);
     }
 
     public function testRemoveRegistration(): void
@@ -431,9 +435,13 @@ class LocalAccountTest extends KernelTestCase
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
-        $property->getValue($this->localAccount)->add($expected);
+
+        $collection = $property->getValue($this->localAccount);
+        self::assertInstanceOf(Collection::class, $collection);
+
+        $collection->add($expected);
         $this->localAccount->removeRegistration($expected);
-        self::assertNotContains($expected, $property->getValue($this->localAccount));
+        self::assertNotContains($expected, $collection);
     }
 
     public function testGetRelations(): void
@@ -454,7 +462,9 @@ class LocalAccountTest extends KernelTestCase
             ->getProperty('relations');
         $property->setAccessible(true);
         $this->localAccount->addRelation($expected);
-        self::assertContains($expected, $property->getValue($this->localAccount));
+        $collection = $property->getValue($this->localAccount);
+        self::assertInstanceOf(Collection::class, $collection);
+        self::assertContains($expected, $collection);
     }
 
     public function testRemoveRelation(): void
@@ -464,9 +474,12 @@ class LocalAccountTest extends KernelTestCase
         $property = (new ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
-        $property->getValue($this->localAccount)->add($expected);
+        $collection = $property->getValue($this->localAccount);
+        self::assertInstanceOf(Collection::class, $collection);
+
+        $collection->add($expected);
         $this->localAccount->removeRelation($expected);
-        self::assertNotContains($expected, $property->getValue($this->localAccount));
+        self::assertNotContains($expected, $collection);
     }
 
     public function testGetActivityGroups(): void

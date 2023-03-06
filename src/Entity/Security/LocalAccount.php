@@ -102,7 +102,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      * @var Collection<int, Group>
      */
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'relations')]
-    #[ORM\JoinTable('kiwi_relation')]
+    #[ORM\JoinTable('relation')]
     #[ORM\JoinColumn('person_id')]
     #[GQL\Field(type: "[Group]")]
     #[GQL\Description("All group memberships for the user.")]
@@ -161,7 +161,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      */
     public function getName(): ?string
     {
-        $name = \trim($this->getGivenName().' '.$this->getFamilyName());
+        $name = \trim($this->getGivenName() . ' ' . $this->getFamilyName());
 
         return '' != $name ? $name : null;
     }
@@ -329,9 +329,14 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
 
     public function getCanonical(): string
     {
-        $pseudo = sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
-
-        return $this->getName() ?: $this->getEmail() ?: $pseudo;
+        assert(is_string($this->getId()));
+        if (null !== $name = $this->getName()) {
+            return $name;
+        } elseif (null !== $mail = $this->getEmail()) {
+            return $mail;
+        } else {
+            return sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
+        }
     }
 
     public function __toString()

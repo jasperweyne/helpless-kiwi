@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class DatetimeScalarTest extends KernelTestCase
 {
-    public function testSerialize()
+    public function testSerialize(): void
     {
         $expected = '2019-10-12T07:20:50+00:00';
         $value = new \DateTime($expected);
@@ -21,7 +21,7 @@ class DatetimeScalarTest extends KernelTestCase
         self::assertEquals($expected, $result);
     }
 
-    public function testParseValue()
+    public function testParseValue(): void
     {
         $value = '2019-10-12T07:20:50.52+00:00';
         $expected = new \DateTime($value);
@@ -29,7 +29,7 @@ class DatetimeScalarTest extends KernelTestCase
         self::assertEquals($expected, $result);
     }
 
-    public function testParseLiteral()
+    public function testParseLiteral(): void
     {
         $value = '2019-10-12T07:20:50.52+00:00';
         $node = new StringValueNode([]);

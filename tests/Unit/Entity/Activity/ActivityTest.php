@@ -11,6 +11,7 @@ use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\File;
@@ -126,8 +127,11 @@ class ActivityTest extends KernelTestCase
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('options');
         $property->setAccessible(true);
+
+        $collection = $property->getValue($this->activity);
+        self::assertInstanceOf(Collection::class, $collection);
         $this->activity->addOption($expected);
-        self::assertSame($expected, $property->getValue($this->activity)[0]);
+        self::assertContains($expected, $collection);
     }
 
     public function testRemoveOption(): void
@@ -159,8 +163,11 @@ class ActivityTest extends KernelTestCase
         $property = (new ReflectionClass(Activity::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
+
+        $collection = $property->getValue($this->activity);
+        self::assertInstanceOf(Collection::class, $collection);
         $this->activity->addRegistration($expected);
-        self::assertSame($expected, $property->getValue($this->activity)[0]);
+        self::assertContains($expected, $collection);
     }
 
     public function testRemoveRegistration(): void

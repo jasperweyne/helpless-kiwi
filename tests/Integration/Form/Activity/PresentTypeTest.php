@@ -41,7 +41,7 @@ class PresentTypeTest extends KernelTestCase
         unset($this->presentType);
     }
 
-    public function testBindValidData()
+    public function testBindValidData(): void
     {
         $type = new Registration();
         $type->setOption(new PriceOption());
@@ -65,7 +65,7 @@ class PresentTypeTest extends KernelTestCase
         $resolver = $this->getMockBuilder("Symfony\Component\OptionsResolver\OptionsResolver")
             ->disableOriginalConstructor()
             ->getMock();
-        $resolver->expects($this->exactly(1))->method('setDefaults');
+        $resolver->expects(self::exactly(1))->method('setDefaults');
         $this->presentType->configureOptions($resolver);
     }
 }

@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RelationTypeTest extends KernelTestCase
 {
+    protected RelationType $relationType;
+
     /**
      * {@inheritdoc}
      */

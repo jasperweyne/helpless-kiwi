@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
+use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -11,6 +12,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class MailService
 {
@@ -34,25 +36,29 @@ class MailService
      */
     private $params;
 
-    public function __construct(MailerInterface $mailer, EntityManagerInterface $em, TokenStorageInterface $tokenStorage, ParameterBagInterface $params)
-    {
+    public function __construct(
+        MailerInterface $mailer,
+        EntityManagerInterface $em,
+        TokenStorageInterface $tokenStorage,
+        ParameterBagInterface $params
+    ) {
         $this->mailer = $mailer;
         $this->em = $em;
         $this->tokenStorage = $tokenStorage;
         $this->params = $params;
     }
 
-    public function message($to, string $title, string $body, array $attachments = [])
-    {
-        if (is_null($to)) {
-            return;
-        }
-
-        if (!is_iterable($to)) {
-            $to = [$to];
-        }
-
-        $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')).' - '.$title;
+    /**
+     * @param array<ContactInterface> $to
+     * @param array<Attachment> $attachments
+     */
+    public function message(
+        array $to,
+        string $title,
+        string $body,
+        array $attachments = []
+    ): void {
+        $title = ($_ENV['ORG_NAME'] ?? $this->params->get('env(ORG_NAME)')) . ' - ' . $title;
         $from = $_ENV['DEFAULT_FROM'];
         $body_plain = html_entity_decode(strip_tags($body));
 
@@ -61,12 +67,7 @@ class MailService
             if (is_null($person->getEmail())) {
                 continue;
             }
-
-            if ('' == trim($person->getName() ?? $person->getUsername() ?? '')) {
-                $addresses[] = new Address($person->getEmail());
-            } else {
-                $addresses[] = new Address($person->getEmail(), $person->getName() ?? $person->getUsername());
-            }
+            $addresses[] = new Address($person->getEmail(), $person->getName() ?? '');
         }
 
         $message = (new Email())
@@ -74,8 +75,7 @@ class MailService
             ->from($from)
             ->to(...$addresses)
             ->html($body)
-            ->text($body_plain)
-        ;
+            ->text($body_plain);
 
         $content = json_encode([
             'html' => $body,
@@ -83,18 +83,18 @@ class MailService
         ]);
 
         foreach ($attachments as $attachment) {
-            assert($attachment instanceof Attachment);
             $message->attach($attachment->body, $attachment->filename, $attachment->mimetype);
         }
 
         $msgEntity = new Mail();
+        assert($content !== false);
+        assert($this->getUser() instanceof LocalAccount);
         $msgEntity
             ->setSender($from)
             ->setPerson($this->getUser())
             ->setTitle($title)
             ->setContent($content)
-            ->setSentAt(new \DateTime())
-        ;
+            ->setSentAt(new \DateTime());
         $this->em->persist($msgEntity);
 
         foreach ($to as $person) {
@@ -104,8 +104,7 @@ class MailService
             $recipient = new Recipient();
             $recipient
                 ->setPerson($person)
-                ->setMail($msgEntity)
-            ;
+                ->setMail($msgEntity);
 
             $this->em->persist($recipient);
         }
@@ -116,7 +115,7 @@ class MailService
     }
 
     /**
-     * @return UserInterface|\Stringable|null
+     * @return UserInterface|null
      */
     private function getUser()
     {

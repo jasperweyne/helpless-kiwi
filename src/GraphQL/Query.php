@@ -37,7 +37,7 @@ class Query
     public function current(bool $loggedIn = false): array
     {
         $groups = [];
-        if ($loggedIn && $user = $this->user()) {
+        if ($loggedIn && null !== $user = $this->user()) {
             $groups = $user->getRelations()->toArray();
         }
 
@@ -79,6 +79,7 @@ class Query
             return null;
         }
 
+        assert($user instanceof LocalAccount);
         return $user;
     }
 
