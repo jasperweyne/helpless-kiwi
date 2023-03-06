@@ -16,6 +16,7 @@ class UploadCsvType extends AbstractType
             ->add('file', FileType::class, [
                 'constraints' => [
                     new File([
+                        'maxSize' => '8M',
                         'mimeTypes' => ['text/csv'],
                         'mimeTypesMessage' => 'Please upload a .csv file',
                     ])
