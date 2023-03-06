@@ -10,7 +10,7 @@ class Kernel extends BaseKernel
     use MicroKernelTrait;
 
     /**
-     * Constant path string of the project directory
+     * Constant path string of the project directory.
      */
     private readonly string $projectDir;
 

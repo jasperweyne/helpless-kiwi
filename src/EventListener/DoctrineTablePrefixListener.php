@@ -23,14 +23,14 @@ class DoctrineTablePrefixListener
 
         if (!$classMetadata->isInheritanceTypeSingleTable() || $classMetadata->getName() === $classMetadata->rootEntityName) {
             $classMetadata->setPrimaryTable([
-                'name' => $this->prefix . $classMetadata->getTableName(),
+                'name' => $this->prefix.$classMetadata->getTableName(),
             ]);
         }
 
         foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
-            if (ClassMetadataInfo::MANY_TO_MANY == $mapping['type'] && $mapping['isOwningSide'] === true) {
+            if (ClassMetadataInfo::MANY_TO_MANY == $mapping['type'] && true === $mapping['isOwningSide']) {
                 $mappedTableName = $mapping['joinTable']['name'];
-                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = $this->prefix . $mappedTableName;
+                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = $this->prefix.$mappedTableName;
             }
         }
     }

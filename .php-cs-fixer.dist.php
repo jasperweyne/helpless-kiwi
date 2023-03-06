@@ -5,8 +5,8 @@ $finder = PhpCsFixer\Finder::create()
     ->exclude('var')
 ;
 
-return PhpCsFixer\Config::create()
-    ->setRules([
+$config = new PhpCsFixer\Config();
+return $config->setRules([
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
         'array_indentation' => true,

@@ -12,7 +12,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class LoginController extends AbstractController
 {
-    #[Route("/login", name: "app_login")]
+    #[Route('/login', name: 'app_login')]
     public function login(Request $request, AuthenticationUtils $authenticationUtils, OidcClientInterface $oidc): Response
     {
         // you can't login again while you already are, redirect
@@ -27,7 +27,7 @@ class LoginController extends AbstractController
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-        if ($error !== null) {
+        if (null !== $error) {
             $this->addFlash(
                 'error',
                 'Invalid credentials.'
@@ -43,14 +43,14 @@ class LoginController extends AbstractController
         );
     }
 
-    #[Route("/login_check", name: "app_login_check")]
+    #[Route('/login_check', name: 'app_login_check')]
     public function login_check(): Response
     {
         return $this->redirect('/');
     }
 
-    #[MenuItem(title: "Uitloggen", menu: "admin-profile", class: "mobile")]
-    #[Route("/logout", name: "app_logout", methods: ["GET"])]
+    #[MenuItem(title: 'Uitloggen', menu: 'admin-profile', class: 'mobile')]
+    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout(): Response
     {
         // controller can be blank: it will never be executed!

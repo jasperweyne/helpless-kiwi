@@ -5,13 +5,12 @@ namespace App\Entity\Activity;
 use App\Entity\Order;
 use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[GQL\Type]
-#[GQL\Description("A representation of a registration from a user for an activity.")]
+#[GQL\Description('A representation of a registration from a user for an activity.')]
 #[ORM\Entity(repositoryClass: "App\Repository\RegistrationRepository")]
 class Registration
 {
@@ -19,75 +18,75 @@ class Registration
      * @var ?string
      */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: 'guid')]
     private $id;
 
     /**
      * @var PriceOption
      */
-    #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\PriceOption", inversedBy: "registrations")]
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\PriceOption", inversedBy: 'registrations')]
     #[ORM\JoinColumn(nullable: false)]
-    #[GQL\Field(type: "PriceOption!")]
-    #[GQL\Description("The specific registration option of the activity this registration points to.")]
+    #[GQL\Field(type: 'PriceOption!')]
+    #[GQL\Description('The specific registration option of the activity this registration points to.')]
     #[Assert\NotBlank]
     private $option;
 
     /**
      * @var ?LocalAccount
      */
-    #[ORM\ManyToOne(targetEntity: LocalAccount::class, inversedBy: "registrations")]
-    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
-    #[GQL\Field(type: "LocalAccount")]
-    #[GQL\Description("The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.")]
+    #[ORM\ManyToOne(targetEntity: LocalAccount::class, inversedBy: 'registrations')]
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
+    #[GQL\Field(type: 'LocalAccount')]
+    #[GQL\Description('The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")]
     private $person;
 
     /**
      * @var ?Activity
      */
-    #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\Activity", inversedBy: "registrations")]
-    #[ORM\JoinColumn(name: "activity", referencedColumnName: "id")]
-    #[GQL\Field(type: "Activity!")]
-    #[GQL\Description("The activity for which the user registered.")]
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\Activity", inversedBy: 'registrations')]
+    #[ORM\JoinColumn(name: 'activity', referencedColumnName: 'id')]
+    #[GQL\Field(type: 'Activity!')]
+    #[GQL\Description('The activity for which the user registered.')]
     private $activity;
 
     /**
      * @var ?string
      */
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.")]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.')]
     private $reserve_position;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
-    #[ORM\Column(name: "newdate", type: "datetime", nullable: false)]
-    #[GQL\Field(name: "created", type: "DateTimeScalar!", resolve: "@=value.getNewDate()")]
-    #[GQL\Description("The date and time the user registered for the activity.")]
+    #[ORM\Column(name: 'newdate', type: 'datetime', nullable: false)]
+    #[GQL\Field(name: 'created', type: 'DateTimeScalar!', resolve: '@=value.getNewDate()')]
+    #[GQL\Description('The date and time the user registered for the activity.')]
     private $newdate;
 
     /**
-     * @var ?DateTime
+     * @var ?\DateTime
      */
-    #[ORM\Column(name: "deletedate", type: "datetime", nullable: true)]
-    #[GQL\Field(name: "deleted", type: "DateTimeScalar", resolve: "@=value.getDeleteDate()")]
-    #[GQL\Description("The date and time the user deleted their registration for the activity.")]
+    #[ORM\Column(name: 'deletedate', type: 'datetime', nullable: true)]
+    #[GQL\Field(name: 'deleted', type: 'DateTimeScalar', resolve: '@=value.getDeleteDate()')]
+    #[GQL\Description('The date and time the user deleted their registration for the activity.')]
     private $deletedate;
 
     /**
      * @var ?bool
      */
-    #[ORM\Column(name: "present", type: "boolean", nullable: true)]
-    #[GQL\Field(type: "Boolean")]
-    #[GQL\Description("Whether the user was present during the activity.")]
+    #[ORM\Column(name: 'present', type: 'boolean', nullable: true)]
+    #[GQL\Field(type: 'Boolean')]
+    #[GQL\Description('Whether the user was present during the activity.')]
     private $present;
 
     /**
      * @var ?string
      */
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $comment;
 
     /**
@@ -190,14 +189,14 @@ class Registration
     /**
      * Get date and time of registration.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getNewDate()
     {
         return $this->newdate;
     }
 
-    public function setNewDate(DateTime $date): self
+    public function setNewDate(\DateTime $date): self
     {
         $this->newdate = $date;
 
@@ -207,12 +206,12 @@ class Registration
     /**
      * Get date and time of deregistration.
      */
-    public function getDeleteDate(): ?DateTime
+    public function getDeleteDate(): ?\DateTime
     {
         return $this->deletedate;
     }
 
-    public function setDeleteDate(DateTime $date): self
+    public function setDeleteDate(\DateTime $date): self
     {
         $this->deletedate = $date;
 
@@ -246,6 +245,6 @@ class Registration
 
     public function __construct()
     {
-        $this->newdate = new DateTime('now');
+        $this->newdate = new \DateTime('now');
     }
 }

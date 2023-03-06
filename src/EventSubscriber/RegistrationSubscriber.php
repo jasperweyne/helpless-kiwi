@@ -66,11 +66,11 @@ class RegistrationSubscriber implements EventSubscriberInterface
         $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
         if ($registrant->getName() !== $this->user->getName()) {
-            $name = ' van ' . $registrant->getName();
+            $name = ' van '.$registrant->getName();
         }
         $location = $registration->isReserve() ? ' op de reservelijst!' : ' gelukt!';
 
-        $this->flash->add('success', 'Aanmelding' . $name  . $location);
+        $this->flash->add('success', 'Aanmelding'.$name.$location);
     }
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void
@@ -89,8 +89,8 @@ class RegistrationSubscriber implements EventSubscriberInterface
         $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
         if ($registrant->getName() !== $this->user->getName()) {
-            $name = ' van ' . $registrant->getName();
+            $name = ' van '.$registrant->getName();
         }
-        $this->flash->add('success', 'Afmelding' . $name  .' gelukt!');
+        $this->flash->add('success', 'Afmelding'.$name.' gelukt!');
     }
 }

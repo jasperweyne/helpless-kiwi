@@ -8,23 +8,23 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 
 #[ORM\Embeddable]
 #[GQL\Type]
-#[GQL\Description("A registrant for an activity.")]
+#[GQL\Description('A registrant for an activity.')]
 class ExternalRegistrant implements ContactInterface
 {
     /**
      * @var ?string
      */
-    #[ORM\Column(type: "string", length: 180, nullable: true)]
+    #[ORM\Column(type: 'string', length: 180, nullable: true)]
     private $email;
 
     /**
      * @var ?string
      */
-    #[ORM\Column(type: "string", length: 180, nullable: true)]
+    #[ORM\Column(type: 'string', length: 180, nullable: true)]
     private $name;
 
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("The e-mail address of the registrant.")]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('The e-mail address of the registrant.')]
     #[GQL\Access("hasRole('ROLE_ADMIN')")]
     public function getEmail(): ?string
     {
@@ -38,8 +38,8 @@ class ExternalRegistrant implements ContactInterface
         return $this;
     }
 
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("The full name of the registrant.")]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('The full name of the registrant.')]
     #[GQL\Access("hasRole('ROLE_ADMIN')")]
     public function getName(): ?string
     {

@@ -4,7 +4,6 @@ namespace App\Entity\Security;
 
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,42 +14,42 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[GQL\Type]
-#[GQL\Description("A registered user who can log in and register for activities.")]
+#[GQL\Description('A registered user who can log in and register for activities.')]
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface
 {
     /**
      * @var ?string
      */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: 'guid')]
     private $id;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "string", length: 180, unique: true)]
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("The e-mail address of the user.")]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('The e-mail address of the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $email;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "string", length: 180)]
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("The given name of the user (the first name in western cultures).")]
-    #[GQL\Access("isAuthenticated()")]
+    #[ORM\Column(type: 'string', length: 180)]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('The given name of the user (the first name in western cultures).')]
+    #[GQL\Access('isAuthenticated()')]
     private $givenName;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "string", length: 180)]
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("The family name of the user (the last name in western cultures).")]
-    #[GQL\Access("isAuthenticated()")]
+    #[ORM\Column(type: 'string', length: 180)]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('The family name of the user (the last name in western cultures).')]
+    #[GQL\Access('isAuthenticated()')]
     private $familyName;
 
     /**
@@ -58,7 +57,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      *
      * @var ?string
      */
-    #[ORM\Column(type: "string", nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private $password;
 
     /**
@@ -66,13 +65,13 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      *
      * @var ?string
      */
-    #[ORM\Column(type: "string", length: 255, nullable: true, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
     private $oidc;
 
     /**
      * @var string[]
      */
-    #[ORM\Column(type: "json")]
+    #[ORM\Column(type: 'json')]
     private $roles;
 
     /**
@@ -80,21 +79,21 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      *
      * @var ?string
      */
-    #[ORM\Column(name: "password_request_token", type: "string", nullable: true)]
+    #[ORM\Column(name: 'password_request_token', type: 'string', nullable: true)]
     protected $passwordRequestToken;
 
     /**
-     * @var ?DateTime
+     * @var ?\DateTime
      */
-    #[ORM\Column(name: "password_requested_at", type: "datetime", nullable: true)]
+    #[ORM\Column(name: 'password_requested_at', type: 'datetime', nullable: true)]
     protected $passwordRequestedAt;
 
     /**
      * @var Collection<int, Registration>
      */
-    #[ORM\OneToMany(targetEntity: Registration::class, mappedBy: "person")]
-    #[GQL\Field(type: "[Registration]")]
-    #[GQL\Description("All activity registrations for the user.")]
+    #[ORM\OneToMany(targetEntity: Registration::class, mappedBy: 'person')]
+    #[GQL\Field(type: '[Registration]')]
+    #[GQL\Description('All activity registrations for the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $registrations;
 
@@ -104,8 +103,8 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'relations')]
     #[ORM\JoinTable('relation')]
     #[ORM\JoinColumn('person_id')]
-    #[GQL\Field(type: "[Group]")]
-    #[GQL\Description("All group memberships for the user.")]
+    #[GQL\Field(type: '[Group]')]
+    #[GQL\Description('All group memberships for the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $relations;
 
@@ -161,7 +160,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      */
     public function getName(): ?string
     {
-        $name = \trim($this->getGivenName() . ' ' . $this->getFamilyName());
+        $name = \trim($this->getGivenName().' '.$this->getFamilyName());
 
         return '' != $name ? $name : null;
     }
@@ -221,9 +220,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    #[GQL\Field(type: "Boolean!")]
-    #[GQL\Description("Whether this user is an administrator.")]
-    #[GQL\Access("isAuthenticated()")]
+    #[GQL\Field(type: 'Boolean!')]
+    #[GQL\Description('Whether this user is an administrator.')]
+    #[GQL\Access('isAuthenticated()')]
     public function isAdmin(): bool
     {
         return in_array('ROLE_ADMIN', $this->getRoles(), true);
@@ -279,7 +278,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    public function setPasswordRequestedAt(DateTime $date = null): self
+    public function setPasswordRequestedAt(\DateTime $date = null): self
     {
         $this->passwordRequestedAt = $date;
 
@@ -289,7 +288,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     /**
      * Gets the timestamp that the user requested a password reset.
      *
-     * @return Datetime | null
+     * @return \Datetime|null
      */
     public function getPasswordRequestedAt()
     {
@@ -352,7 +351,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     }
 
     /**
-     * @return Collection<int, Registration> | null
+     * @return Collection<int, Registration>|null
      */
     public function getRegistrations()
     {

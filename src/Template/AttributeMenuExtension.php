@@ -58,7 +58,7 @@ class AttributeMenuExtension implements MenuExtensionInterface
      */
     public function getMenuItems(string $menu = ''): array
     {
-        if (count($this->menuItems) === 0) {
+        if (0 === count($this->menuItems)) {
             $this->discoverMenuItems();
         }
 
@@ -124,7 +124,7 @@ class AttributeMenuExtension implements MenuExtensionInterface
                     // If no path set, extract it from the Route attribute
                     if (null === $attribute->getPath()) {
                         $routes = $method->getAttributes(Route::class);
-                        if (count($routes) === 0) {
+                        if (0 === count($routes)) {
                             throw AnnotationException::semanticalError('A Symfony\Component\Routing\Annotation\Route attribute is required when using a App\Template\Attribute\MenuItem attribute');
                         }
 

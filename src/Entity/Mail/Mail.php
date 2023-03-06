@@ -3,7 +3,6 @@
 namespace App\Entity\Mail;
 
 use App\Entity\Security\LocalAccount;
-use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,45 +13,45 @@ class Mail
      * @var ?string
      */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: 'guid')]
     private $id;
 
     /**
      * @var ?LocalAccount
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
     private $person;
 
     /**
      * @var Collection<int,Recipient>
      */
-    #[ORM\OneToMany(targetEntity: "App\Entity\Mail\Recipient", mappedBy: "mail")]
+    #[ORM\OneToMany(targetEntity: "App\Entity\Mail\Recipient", mappedBy: 'mail')]
     private $recipients;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "string")]
+    #[ORM\Column(type: 'string')]
     private $title;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "text")]
+    #[ORM\Column(type: 'text')]
     private $content;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: "string", length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $sender;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: 'datetime')]
     private $sentAt;
 
     public function getId(): ?string
@@ -153,12 +152,12 @@ class Mail
         return $this;
     }
 
-    public function getSentAt(): ?DateTime
+    public function getSentAt(): ?\DateTime
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(DateTime $sentAt): self
+    public function setSentAt(\DateTime $sentAt): self
     {
         $this->sentAt = $sentAt;
 

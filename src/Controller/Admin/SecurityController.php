@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Security controller.
  */
-#[Route("/admin/security", name: "admin_security_")]
+#[Route('/admin/security', name: 'admin_security_')]
 class SecurityController extends AbstractController
 {
     public function __construct(
@@ -32,8 +32,8 @@ class SecurityController extends AbstractController
     /**
      * Lists all local account entities.
      */
-    #[MenuItem(title: "Accounts", menu: "admin", activeCriteria: "admin_security_", role: "ROLE_ADMIN")]
-    #[Route("/", name: "index", methods: ["GET", "POST"])]
+    #[MenuItem(title: 'Accounts', menu: 'admin', activeCriteria: 'admin_security_', role: 'ROLE_ADMIN')]
+    #[Route('/', name: 'index', methods: ['GET', 'POST'])]
     public function indexAction(): Response
     {
         $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
@@ -46,7 +46,7 @@ class SecurityController extends AbstractController
     /**
      * Creates a new activity entity.
      */
-    #[Route("/new", name: "new", methods: ["GET", "POST"])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, PasswordResetService $passwordReset, MailService $mailer): Response
     {
         $account = new LocalAccount();
@@ -81,7 +81,7 @@ class SecurityController extends AbstractController
     /**
      * Finds and displays an auth entity.
      */
-    #[Route("/{id}", name: "show", methods: ["GET"])]
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function showAction(LocalAccount $account): Response
     {
         $createdAt = $this->events->findOneBy($account, EntityNewEvent::class);
@@ -97,7 +97,7 @@ class SecurityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      */
-    #[Route("/{id}/edit", name: "edit", methods: ["GET", "POST"])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createForm('App\Form\Security\LocalAccountType', $account);
@@ -118,7 +118,7 @@ class SecurityController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/{id}/delete", name: "delete")]
+    #[Route('/{id}/delete', name: 'delete')]
     public function deleteAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createDeleteForm($account);
@@ -140,7 +140,7 @@ class SecurityController extends AbstractController
     /**
      * Displays a form to edit roles.
      */
-    #[Route("/{id}/roles", name: "roles", methods: ["GET", "POST"])]
+    #[Route('/{id}/roles', name: 'roles', methods: ['GET', 'POST'])]
     public function rolesAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createRoleForm($account);
@@ -150,7 +150,7 @@ class SecurityController extends AbstractController
             $data = (array) $form->getData();
 
             $roles = [];
-            if ($data['admin'] === true) {
+            if (true === $data['admin']) {
                 $roles[] = 'ROLE_ADMIN';
             }
 

@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Group category controller.
  */
-#[Route("/admin/group", name: "admin_group_")]
+#[Route('/admin/group', name: 'admin_group_')]
 class GroupController extends AbstractController
 {
     public function __construct(
@@ -31,7 +31,7 @@ class GroupController extends AbstractController
     /**
      * Creates a new group entity.
      */
-    #[Route("/new/{id?}", name: "new", methods: ["GET", "POST"])]
+    #[Route('/new/{id?}', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, ?Group $parent): Response
     {
         $this->denyAccessUnlessGranted('in_group', $parent);
@@ -44,7 +44,7 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($group);
 
-            if ($parent !== null) {
+            if (null !== $parent) {
                 $parent->addChild($group);
                 $this->em->persist($parent);
             }
@@ -63,8 +63,8 @@ class GroupController extends AbstractController
     /**
      * Lists all groups.
      */
-    #[MenuItem(title: "Groepen", menu: "admin")]
-    #[Route("/{id?}", name: "show", methods: ["GET"])]
+    #[MenuItem(title: 'Groepen', menu: 'admin')]
+    #[Route('/{id?}', name: 'show', methods: ['GET'])]
     public function showAction(Request $request, ?Group $group, GroupRepository $groupRepo): Response
     {
         /** @var LocalAccount */
@@ -114,7 +114,7 @@ class GroupController extends AbstractController
     /**
      * Displays a form to edit an existing group entity.
      */
-    #[Route("/{id}/edit", name: "edit", methods: ["GET", "POST"])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, Group $group): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
@@ -137,7 +137,7 @@ class GroupController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/{id}/delete", name: "delete")]
+    #[Route('/{id}/delete', name: 'delete')]
     public function deleteAction(Request $request, Group $group): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
@@ -161,7 +161,7 @@ class GroupController extends AbstractController
     /**
      * Displays a form to generate a new relation to a group entity.
      */
-    #[Route("/relation/new/{id}", name: "relation_new", methods: ["GET", "POST"])]
+    #[Route('/relation/new/{id}', name: 'relation_new', methods: ['GET', 'POST'])]
     public function relationNewAction(Request $request, Group $group): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
@@ -192,7 +192,7 @@ class GroupController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route("/relation/delete/{id}/{account_id}", name: "relation_delete")]
+    #[Route('/relation/delete/{id}/{account_id}', name: 'relation_delete')]
     #[Entity('account', expr: 'repository.find(account_id)')]
     public function relationDeleteAction(Request $request, Group $relation, LocalAccount $account): Response
     {

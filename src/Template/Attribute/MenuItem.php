@@ -4,7 +4,7 @@ namespace App\Template\Attribute;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class MenuItem
 {
     public function __construct(
