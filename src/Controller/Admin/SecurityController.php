@@ -9,6 +9,7 @@ use App\Log\EventService;
 use App\Mail\MailService;
 use App\Security\PasswordResetService;
 use App\Template\Attribute\MenuItem;
+use App\Template\Attribute\SubmenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -32,7 +33,10 @@ class SecurityController extends AbstractController
     /**
      * Lists all local account entities.
      */
-    #[MenuItem(title: "Accounts", menu: "admin", activeCriteria: "admin_security_", role: "ROLE_ADMIN")]
+    #[MenuItem(title: "Accounts", menu: "admin", activeCriteria: "admin_security_", role: "ROLE_ADMIN", sub: [
+        new SubmenuItem(title: 'Gebruikers', path: 'admin_security_index'),
+        new SubmenuItem(title: 'API', path: 'admin_security_client_index'),
+    ])]
     #[Route("/", name: "index", methods: ["GET", "POST"])]
     public function indexAction(Request $request): Response
     {

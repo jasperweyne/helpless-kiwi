@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
@@ -63,6 +64,36 @@ class AuthWebTestCase extends WebTestCase
     }
 
     /**
+     * Retrieve or instantiate a user
+     *
+     * @param string[]|string $roles The roles of the instantiated user, or the email of the user in database
+     */
+    protected function user($roles = ['ROLE_ADMIN']): UserInterface
+    {
+        if (is_string($roles)) {
+            $username = $roles;
+
+            /** @var EntityManagerInterface */
+            $em = self::getContainer()->get(EntityManagerInterface::class);
+            $user = $em->getRepository(LocalAccount::class)->findOneBy(['email' => $username]);
+
+            if ($user === null) {
+                throw new \InvalidArgumentException("User with email '$username' was not found in the test database.");
+            }
+
+            return $user;
+        }
+
+        $user = new LocalAccount();
+        $user
+            ->setEmail(LocalAccountFixture::USERNAME)
+            ->setRoles($roles)
+        ;
+
+        return $user;
+    }
+
+    /**
      * @param string[] $roles
      */
     protected function login($roles = ['ROLE_ADMIN']): void
@@ -79,10 +110,7 @@ class AuthWebTestCase extends WebTestCase
         $firewallName = 'main';
         $firewallContext = 'main';
 
-        $user = new LocalAccount();
-        $user->setEmail(LocalAccountFixture::USERNAME);
-        $user->setRoles($roles);
-
+        $user = $this->user($roles);
         $token = new PostAuthenticationGuardToken($user, $firewallName, $user->getRoles());
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();

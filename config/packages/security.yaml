@@ -28,6 +28,9 @@ security:
             oidc:
                 enable_remember_me: true
             provider: app_user_provider
+            custom_authenticators:
+                - App\Security\Authenticator\ApiTokenAuthenticator
+                - App\Security\Authenticator\OidcTokenAuthenticator
             form_login:
                 login_path: app_login
                 check_path: app_login

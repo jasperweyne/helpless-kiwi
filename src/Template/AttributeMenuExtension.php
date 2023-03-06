@@ -68,23 +68,7 @@ class AttributeMenuExtension implements MenuExtensionInterface
 
         $mapped = [];
         foreach ($this->menuItems[$menu] as $item) {
-            $arr = [
-                'title' => $item->getTitle(),
-                'path' => (string) $item->getPath(),
-            ];
-            if (null !== $item->getRole()) {
-                $arr['role'] = $item->getRole();
-            }
-            if (null !== $item->getClass()) {
-                $arr['class'] = $item->getClass();
-            }
-            if (null !== $item->getActiveCriteria()) {
-                $arr['activeCriteria'] = $item->getActiveCriteria();
-            }
-            if (null !== $item->getOrder()) {
-                $arr['order'] = $item->getOrder();
-            }
-            $mapped[] = $arr;
+            $mapped[] = $item->toMenuItemArray();
         }
 
         return $mapped;
@@ -122,7 +106,7 @@ class AttributeMenuExtension implements MenuExtensionInterface
                     $attribute = $reflMethod->newInstance();
 
                     // If no path set, extract it from the Route attribute
-                    if (null === $attribute->getPath()) {
+                    if (null === $attribute->path) {
                         $routes = $method->getAttributes(Route::class);
                         if (count($routes) === 0) {
                             throw AnnotationException::semanticalError('A Symfony\Component\Routing\Annotation\Route attribute is required when using a App\Template\Attribute\MenuItem attribute');
@@ -130,14 +114,15 @@ class AttributeMenuExtension implements MenuExtensionInterface
 
                         /** @var Route $route */
                         $route = reset($routes)->newInstance();
-                        $attribute->setPath($routePrefix.$route->getName());
+                        $attribute->path = $routePrefix.$route->getName();
                     }
 
                     // Add the menu item to the index
-                    if (!array_key_exists($attribute->getMenu() ?? '', $this->menuItems)) {
-                        $this->menuItems[$attribute->getMenu()] = [];
+                    $menu = $attribute->menu ?? '';
+                    if (!array_key_exists($menu, $this->menuItems)) {
+                        $this->menuItems[$menu] = [];
                     }
-                    $this->menuItems[$attribute->getMenu()][] = $attribute;
+                    $this->menuItems[$menu][] = $attribute;
                 }
             }
         }
