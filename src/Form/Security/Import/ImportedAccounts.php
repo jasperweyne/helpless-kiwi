@@ -147,13 +147,13 @@ class ImportedAccounts
                 $object->setOidc($row[$lookup['oidc']]);
             }
             if (isset($lookup['email'])) {
-                $object->setEmail($row[$lookup['email']]);
+                $object->setEmail($row[$lookup['email']] ?? '');
             }
             if (isset($lookup['given_name'])) {
-                $object->setGivenName($row[$lookup['given_name']]);
+                $object->setGivenName($row[$lookup['given_name']] ?? '');
             }
             if (isset($lookup['family_name'])) {
-                $object->setFamilyName($row[$lookup['family_name']]);
+                $object->setFamilyName($row[$lookup['family_name']] ?? '');
             }
             if (isset($lookup['admin'])) {
                 $object->setRoles(filter_var($row[$lookup['admin']], FILTER_VALIDATE_BOOLEAN) ? ['ROLE_ADMIN'] : []);
@@ -170,7 +170,7 @@ class ImportedAccounts
     }
 
     #[Assert\Callback]
-    public function validate(ExecutionContextInterface $context, $payload)
+    public function validate(ExecutionContextInterface $context, mixed $payload): void
     {
         if ($this->additions === null) {
             try {
