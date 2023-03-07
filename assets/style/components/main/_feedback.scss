@@ -42,3 +42,46 @@
         }
     }
 }
+
+.update.button.grow {
+    backdrop-filter: blur(3px);
+    border-radius: $padding + 4rem;
+    position: fixed;
+    right: 10vh;
+    bottom: 5vh;
+    width: 2.5rem;
+    height: 2.5rem;
+    // opacity: 0.5; // opacity breaks backdrop-filter, use background transparency instead
+    background-color: rgba(169, 0, 0, 0.5);
+    z-index: 9;
+
+    span {
+        font-size: 1.6rem;
+        line-height: 0.9;
+    }
+
+    .content {
+        left: auto;
+        right: 0;
+        clip-path: circle(0% at 100% 100%);
+        width: 80vw;
+        max-width: 500px;
+        border-radius: $padding + 4rem;
+        padding: math.div($padding, 2);
+        color: black;
+        opacity: 0.5;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    &:active, &:hover, &:focus {
+        border-radius: $global-radius;
+        background-color: white;
+        opacity: 1;
+        .content {
+            clip-path: circle(75%);
+            border-radius: $global-radius;
+            background-color: white;
+            opacity: 1;
+        }
+    }
+}
