@@ -47,8 +47,8 @@
     backdrop-filter: blur(3px);
     border-radius: $padding + 4rem;
     position: fixed;
-    right: 10vh;
-    bottom: 5vh;
+    right: 5vh;
+    bottom: 10vh;
     width: 2.5rem;
     height: 2.5rem;
     // opacity: 0.5; // opacity breaks backdrop-filter, use background transparency instead

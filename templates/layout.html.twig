@@ -66,15 +66,14 @@
             {% block body_root %}{% block body %}{% endblock %}{% endblock %}
         </main>
         {% block footer %}
-        {% if is_granted('ROLE_ADMIN') and updater.newestVersion > version %}
+        {% if is_granted('ROLE_ADMIN') and updater.newestVersion != version %}
             <div class="update button grow">
                 <span>!</span>
                 <div class="content">
-                    <h4>Update</h4>
+                    <h4>Er is een kiwi update beschikbaar</h4>
                     <p>
-                        huidige versie: {{ version }}.<br>
+                        huidige versie:  {{ version }}<br>
                         nieuwste versie: {{ updater.newestVersion}}.<br>
-                        Er staat een nieuwe Kiwi update klaar.<br>
                         <a href="/update.php">Klik hier om nu te updaten.</a></p> 
                 </div>
             </div>

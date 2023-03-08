@@ -2,26 +2,41 @@
 
 namespace App\Template;
 
+use Symfony\Component\HttpClient\CachingHttpClient;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpKernel\HttpCache\Store;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class UpdateChecker
 {
+    private HttpClientInterface $client;
+
+    public function __construct(
+        KernelInterface $kernel,
+        ?HttpClientInterface $httpClient = null
+    ) {
+        if ('test' === $kernel->getEnvironment()) {
+            if (null === $httpClient) {
+                throw new \InvalidArgumentException('An explicit HttpClient must be provided during testing.');
+            }
+            $this->client = $httpClient;
+        } else {
+            $this->client = new CachingHttpClient(
+                HttpClient::create(),
+                new Store("{$kernel->getCacheDir()}/releases")
+            );
+        }
+    }
+
     public function newestVersion(): string
     {
-        $url = 'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases/latest';
+        $response = $this->client->request(
+            'GET',
+            'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases/latest'
+        );
+        $responseArray = $response->toArray();
 
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERAGENT => 'helpless-kiwi',
-        ]);
-
-        $rawResponse = curl_exec($curl);
-        curl_close($curl);
-        assert(is_string($rawResponse));
-
-        $response = json_decode($rawResponse, true);
-        assert(is_array($response));
-
-        return $response['tag_name'];
+        return $responseArray['tag_name'];
     }
 }
