@@ -7,7 +7,14 @@
     <h2>{{ page_title }}</h2>
 </div>
 <div class="container row">
-    {% if activities|length > 0 %}
+    {% if updater.newestVersion > version %}
+        <h4>Kiwi is {{ date(version).diff(date(updater.newestVersion)).days }} days out of date</h4> 
+        <a href="/update.php">Klik hier om nu te updaten</a></p> 
+        <p>
+            hier release notes. goeie reden om ze met deze PR te include.
+            willen we dit ipv de "gray card" activiteiten? dat sluit wel aan met de wens om het extra merkbaar te maken.
+        </p>
+    {% elseif activities|length > 0 %}
         <div class="cardholder">
             <div class="grid-x">
                 <div class="cell">
