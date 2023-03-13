@@ -20,11 +20,12 @@ final class Version20221202230206 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DELETE FROM kiwi_relation WHERE kiwi_relation.person_id IS NULL');
         $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_62894749727ACA70');
         $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_62894749FE54D947');
+        $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_31E0BAB217BBB47');
         $this->addSql('DROP INDEX IDX_31E0BAB727ACA70 ON kiwi_relation');
         $this->addSql('ALTER TABLE kiwi_relation DROP PRIMARY KEY');
         $this->addSql('ALTER TABLE kiwi_relation DROP id, DROP parent_id, DROP description, CHANGE person_id person_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\'');
@@ -35,7 +36,7 @@ final class Version20221202230206 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_31E0BABFE54D947');
         $this->addSql('ALTER TABLE kiwi_relation DROP PRIMARY KEY');
