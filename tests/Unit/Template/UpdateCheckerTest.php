@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Template;
 
+use App\Kernel;
 use App\Template\UpdateChecker;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -53,6 +54,27 @@ class UpdateCheckerTest extends KernelTestCase
         $updateChecker = new UpdateChecker($kernel, $httpClient);
         $newestVersion = $updateChecker->newestVersion();
         self::assertEquals($expectedVersion, $newestVersion);
+    }
+
+    public function testNewestVersionCacheCreation(): void
+    {
+        $mockedKernel = $this->createMock(Kernel::class);
+        $mockedKernel->method('getEnvironment')->willReturn('special-test');
+        $mockedKernel->method('getCacheDir')->willReturn('special');
+
+        $mockResponseJson = json_encode([], JSON_THROW_ON_ERROR);
+
+        $mockResponse = new MockResponse($mockResponseJson, [
+            'http_code' => 200,
+            'response_headers' => ['Content-Type: application/json'],
+        ]);
+
+        $httpClient = new MockHttpClient($mockResponse);
+
+        $updateChecker = new UpdateChecker($mockedKernel, $httpClient);
+        $updateChecker->newestVersion();
+
+        self::assertDirectoryExists("{$mockedKernel->getCacheDir()}/releases");
     }
 
     public function testNewestVersionException(): void
