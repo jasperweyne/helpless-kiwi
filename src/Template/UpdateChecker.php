@@ -35,6 +35,9 @@ class UpdateChecker
             'GET',
             'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases/latest'
         );
+        if (403 == $response->getStatusCode()) {
+            return $_ENV['INSTALLED_VERSION'] ?? '';
+        }
         $responseArray = $response->toArray();
 
         return $responseArray['tag_name'];

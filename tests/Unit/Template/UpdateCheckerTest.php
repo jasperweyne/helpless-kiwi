@@ -36,6 +36,25 @@ class UpdateCheckerTest extends KernelTestCase
         self::assertEquals($expectedVersion, $newestVersion);
     }
 
+    public function testNewestVersionRateLimited(): void
+    {
+        $kernel = self::bootKernel();
+
+        $expectedVersion = '';
+        $mockResponseJson = json_encode([], JSON_THROW_ON_ERROR);
+
+        $mockResponse = new MockResponse($mockResponseJson, [
+            'http_code' => 403,
+            'response_headers' => ['Content-Type: application/json'],
+        ]);
+
+        $httpClient = new MockHttpClient($mockResponse);
+
+        $updateChecker = new UpdateChecker($kernel, $httpClient);
+        $newestVersion = $updateChecker->newestVersion();
+        self::assertEquals($expectedVersion, $newestVersion);
+    }
+
     public function testNewestVersionException(): void
     {
         $kernel = self::bootKernel();
