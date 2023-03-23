@@ -31,6 +31,7 @@ final class Version20221202230206 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_relation DROP id, DROP parent_id, DROP description, CHANGE person_id person_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\'');
         $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_31E0BABFE54D947 FOREIGN KEY (group_id) REFERENCES kiwi_taxonomy (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE kiwi_relation ADD PRIMARY KEY (person_id, group_id)');
+        $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_31E0BAB217BBB47 FOREIGN KEY (person_id) REFERENCES kiwi_local_account (id)');
     }
 
     public function down(Schema $schema): void
@@ -45,5 +46,6 @@ final class Version20221202230206 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_relation ADD PRIMARY KEY (id)');
         $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_62894749727ACA70 FOREIGN KEY (parent_id) REFERENCES kiwi_relation (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_62894749FE54D947 FOREIGN KEY (group_id) REFERENCES kiwi_taxonomy (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
+        $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_31E0BAB217BBB47 FOREIGN KEY (person_id) REFERENCES kiwi_local_account (id)');
     }
 }
