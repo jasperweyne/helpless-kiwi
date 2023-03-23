@@ -3,6 +3,7 @@
 namespace App\Log;
 
 use App\Entity\Log\Event as EventEntity;
+use App\Entity\Security\LocalAccount;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -67,6 +68,7 @@ class EventService
         }
 
         $entity = new EventEntity();
+        assert($this->person instanceof LocalAccount || null === $this->person);
         $entity
             ->setTime(new \DateTime())
             ->setDiscr(get_class($event))
