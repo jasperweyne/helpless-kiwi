@@ -41,6 +41,7 @@ final class Version20221202230206 extends AbstractMigration
 
         $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_31E0BABFE54D947');
         $this->addSql('ALTER TABLE kiwi_relation DROP PRIMARY KEY');
+        $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_31E0BAB217BBB47');
         $this->addSql('ALTER TABLE kiwi_relation ADD id CHAR(36) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci` COMMENT \'(DC2Type:guid)\', ADD parent_id CHAR(36) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci` COMMENT \'(DC2Type:guid)\', ADD description VARCHAR(255) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci`, CHANGE person_id person_id CHAR(36) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci` COMMENT \'(DC2Type:guid)\'');
         $this->addSql('CREATE INDEX IDX_31E0BAB727ACA70 ON kiwi_relation (parent_id)');
         $this->addSql('ALTER TABLE kiwi_relation ADD PRIMARY KEY (id)');
