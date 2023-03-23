@@ -96,6 +96,11 @@ parameters:
 			path: src/Log/EventService.php
 
 		-
+			message: "#^Parameter \\#1 \\$person of method App\\\\Entity\\\\Log\\\\Event\\:\\:setPerson\\(\\) expects App\\\\Entity\\\\Security\\\\LocalAccount\\|null, string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null given\\.$#"
+			count: 1
+			path: src/Log/EventService.php
+
+		-
 			message: "#^Only booleans are allowed in an if condition, int\\|false given\\.$#"
 			count: 1
 			path: src/Reflection/ClassNameService.php
@@ -124,6 +129,31 @@ parameters:
 			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Reflection/ReflectionService.php
+
+		-
+			message: "#^Class App\\\\Entity\\\\Event\\\\Event not found\\.$#"
+			count: 1
+			path: src/Repository/EventRepository.php
+
+		-
+			message: "#^Method App\\\\Repository\\\\EventRepository\\:\\:findEventByUser\\(\\) has invalid return type App\\\\Entity\\\\Event\\\\Event\\.$#"
+			count: 1
+			path: src/Repository/EventRepository.php
+
+		-
+			message: "#^Method App\\\\Repository\\\\EventRepository\\:\\:findEventByUser\\(\\) should return array\\<App\\\\Entity\\\\Event\\\\Event\\> but returns mixed\\.$#"
+			count: 1
+			path: src/Repository/EventRepository.php
+
+		-
+			message: "#^PHPDoc tag @extends has invalid type App\\\\Entity\\\\Event\\\\Event\\.$#"
+			count: 1
+			path: src/Repository/EventRepository.php
+
+		-
+			message: "#^QueryBuilder\\: \\[Semantical Error\\] line 0, col 14 near 'App\\\\Entity\\\\Event\\\\Event'\\: Error\\: Class 'App\\\\Entity\\\\Event\\\\Event' is not defined\\.$#"
+			count: 1
+			path: src/Repository/EventRepository.php
 
 		-
 			message: "#^Method App\\\\Repository\\\\RegistrationRepository\\:\\:findAfter\\(\\) should return App\\\\Entity\\\\Order but returns App\\\\Entity\\\\Order\\|null\\.$#"
