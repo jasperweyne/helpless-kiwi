@@ -126,16 +126,17 @@ class SecurityController extends AbstractController
     public function deleteAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createDeleteForm($account);
+        
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {        
             $this->em->remove($account);
             $this->em->flush();
 
             return $this->redirectToRoute('admin_security_index');
         }
 
-        return $this->render('admin/activity/delete.html.twig', [
+        return $this->render('admin/security/delete.html.twig', [
             'account' => $account,
             'form' => $form->createView(),
         ]);
@@ -182,7 +183,7 @@ class SecurityController extends AbstractController
     private function createDeleteForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_delete', ['id' => $account->getId()]))
+            ->setAction($this->generateUrl('admin_security_delete', ['id' => $account->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

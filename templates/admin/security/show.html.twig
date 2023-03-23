@@ -53,6 +53,12 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th>Verwijder gebruiker</th>
+                                <td>
+                                    <a href="{{ path('admin_security_delete', { 'id': account.id }) }}">Verwijder</a>
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>Gemaakt door</th>
                                 <td>
                                     {{ createdAt.person.canonical ?? '' }}
