@@ -16,16 +16,16 @@ class UpdateChecker
         KernelInterface $kernel,
         ?HttpClientInterface $httpClient = null
     ) {
-        if ('test' === $kernel->getEnvironment()) {
-            if (null === $httpClient) {
+        if (null === $httpClient) {
+            if ('test' === $kernel->getEnvironment()) {
                 throw new \InvalidArgumentException('An explicit HttpClient must be provided during testing.');
             }
-            $this->client = $httpClient;
-        } else {
             $this->client = new CachingHttpClient(
                 HttpClient::create(),
                 new Store("{$kernel->getCacheDir()}/releases")
             );
+        } else {
+            $this->client = $httpClient;
         }
     }
 
