@@ -8,6 +8,7 @@ twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
         menu: '@App\Template\MenuBuilder'
+        updater: '@App\Template\UpdateChecker'
         org: '%env(ORG_NAME)%'
         oidc: '%env(OIDC_ADDRESS)%'
         profile_url: '%env(PROFILE_URL)%'
