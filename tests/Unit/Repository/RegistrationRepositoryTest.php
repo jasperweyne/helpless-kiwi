@@ -13,7 +13,6 @@ use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
@@ -168,18 +167,6 @@ class RegistrationRepositoryTest extends KernelTestCase
     }
 
     public function testFindDeregistrations(): void
-    {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
-    }
-
-    public function testFindReserve(): void
-    {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
-    }
-
-    public function testCountPresent(): void
     {
         /* @todo This test is incomplete. */
         self::markTestIncomplete();

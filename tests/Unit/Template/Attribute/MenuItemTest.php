@@ -3,7 +3,7 @@
 namespace Tests\Unit\Template\Attribute;
 
 use App\Template\Attribute\MenuItem;
-use ReflectionClass;
+use App\Template\Attribute\SubmenuItem;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -13,104 +13,59 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class MenuItemTest extends KernelTestCase
 {
-    /**
-     * @var MenuItem
-     */
-    protected $menuItem;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp(): void
+    public function testToMenuItemArray(): void
     {
-        parent::setUp();
-        self::bootKernel();
+        // Arrange
+        $title = 'title';
+        $menuItem = new MenuItem($title);
 
-        /* @todo Correctly instantiate tested object to use it. */
-        $this->menuItem = new MenuItem('test');
+        // Act
+        $result = $menuItem->toMenuItemArray();
+
+        // Assert
+        self::assertArrayNotHasKey('role', $result);
+        self::assertArrayNotHasKey('class', $result);
+        self::assertArrayNotHasKey('activeCriteria', $result);
+        self::assertArrayNotHasKey('order', $result);
+        self::assertArrayNotHasKey('sub', $result);
+        self::assertArrayHasKey('path', $result);
+
+        self::assertSame($title, $result['title']);
+        self::assertSame('', $result['path']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown(): void
+    public function testToMenuItemArrayWithValues(): void
     {
-        parent::tearDown();
+        // Arrange
+        $title = 'title';
+        $menu = 'menu';
+        $role = 'ROLE_ADMIN';
+        $class = 'mobile';
+        $activeCriteria = 'admin_title_';
+        $order = -1;
+        $sub = [
+            new SubmenuItem('test', 'admin_title_sub'),
+        ];
+        $path = 'admin_title_index';
+        $menuItem = new MenuItem($title, $menu, $role, $class, $activeCriteria, $order, $sub, $path);
 
-        unset($this->menuItem);
-    }
+        // Act
+        $result = $menuItem->toMenuItemArray();
 
-    public function testGetTitle(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('title');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getTitle());
-    }
+        // Assert
+        self::assertArrayHasKey('role', $result);
+        self::assertArrayHasKey('class', $result);
+        self::assertArrayHasKey('activeCriteria', $result);
+        self::assertArrayHasKey('order', $result);
+        self::assertArrayHasKey('sub', $result);
+        self::assertArrayHasKey('path', $result);
 
-    public function testGetMenu(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('menu');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getMenu());
-    }
-
-    public function testGetRole(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('role');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getRole());
-    }
-
-    public function testGetClass(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('class');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getClass());
-    }
-
-    public function testGetActiveCriteria(): void
-    {
-        $expected = '42';
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('activeCriteria');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getActiveCriteria());
-    }
-
-    public function testGetOrder(): void
-    {
-        $expected = 42;
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('order');
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getOrder());
-    }
-
-    public function testGetPath(): void
-    {
-        $expected = null;
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('path');
-        $property->setAccessible(true);
-        $property->setValue($this->menuItem, $expected);
-        self::assertSame($expected, $this->menuItem->getPath());
-    }
-
-    public function testSetPath(): void
-    {
-        $expected = null;
-        $property = (new ReflectionClass(MenuItem::class))
-            ->getProperty('path');
-        $property->setAccessible(true);
-        $this->menuItem->setPath($expected);
-        self::assertSame($expected, $property->getValue($this->menuItem));
+        self::assertSame($title, $result['title']);
+        self::assertSame($role, $result['role']);
+        self::assertSame($class, $result['class']);
+        self::assertSame($activeCriteria, $result['activeCriteria']);
+        self::assertSame($order, $result['order']);
+        self::assertSame($path, $result['path']);
+        self::assertCount(count($sub), $result['sub']);
     }
 }

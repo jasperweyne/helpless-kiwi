@@ -15,12 +15,9 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class MailControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
+    protected EntityManagerInterface $em;
 
-    private $controllerEndpoint = '/admin/mail';
+    private string $controllerEndpoint = "/admin/mail";
 
     /**
      * {@inheritdoc}
@@ -67,6 +64,7 @@ class MailControllerTest extends AuthWebTestCase
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertIsString($title);
         self::assertSelectorTextContains('span', $title);
     }
 }

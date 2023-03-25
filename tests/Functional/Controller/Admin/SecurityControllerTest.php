@@ -16,15 +16,11 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class SecurityControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var SecurityController
-     */
-    protected $securityController;
+    protected SecurityController $securityController;
 
-    /**
-     * @var EventService
-     */
-    protected $events;
+    protected EventService $events;
+
+    protected EntityManagerInterface $em;
 
     /**
      * {@inheritdoc}
@@ -72,8 +68,10 @@ class SecurityControllerTest extends AuthWebTestCase
         $crawler = $this->client->request('GET', '/admin/security/new');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Toevoegen')->form();
-        $form['local_account[name]'] = 'John';
-        $form['local_account[email]'] = 'john@doe.eyes';
+        $form->setValues([
+            'local_account[name]' => 'John',
+            'local_account[email]' => 'john@doe.eyes',
+        ]);
         $crawler = $this->client->submit($form);
 
         // Assert
@@ -110,7 +108,9 @@ class SecurityControllerTest extends AuthWebTestCase
         $crawler = $this->client->request('GET', "/admin/security/{$id}/roles");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Opslaan')->form();
-        $form['form[admin]']->setValue(false);
+        $form->setValues([
+            'form[admin]' => false
+        ]);
         $this->client->submit($form);
         self::assertSelectorTextContains('.container', 'Rollen bewerkt');
         $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];

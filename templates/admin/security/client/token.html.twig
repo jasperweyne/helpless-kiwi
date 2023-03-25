@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% if page_title is not defined %}
-    {% set page_title = 'Opslaan van aanwezigen ' ~ activity.name%}
+    {% set page_title = 'Nieuwe token genereren voor ' ~ client.id %}
 {% endif %}
 
 {% block body %}
@@ -9,8 +9,8 @@
         {{ form_start(form) }}
             {{ form_widget(form) }}
             <div class="button-group">
-                <button type="submit" class="button add icon">Opslaan</button>
-                <a href="{{ path('admin_activity_show', { 'id': activity.id }) }}" class="button secondary">Terug</a>
+                <button type="submit" class="button add icon">Toevoegen</button>
+                <a href="{{ path('admin_security_client_index') }}" class="button secondary">Annuleren</a>
             </div>
         {{ form_end(form) }}
     </div>

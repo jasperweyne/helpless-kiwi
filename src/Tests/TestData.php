@@ -56,13 +56,13 @@ class TestData
     /**
      * Create a new TestData builder from an existing object.
      *
-     * @throws \UnexpectedValueException if anything apart from an array or object was provided
-     *
      * @template X of object
      *
      * @param X $object
      *
      * @return TestData<X> a testdata builder with the given object
+     *
+     * @throws \UnexpectedValueException if anything apart from an array or object was provided
      */
     public static function from($object): TestData
     {

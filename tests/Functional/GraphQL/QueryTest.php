@@ -76,9 +76,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -121,9 +120,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -163,9 +161,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -206,9 +203,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -249,9 +245,8 @@ GRAPHQL;
 GRAPHQL;
 
         // Act
-        $this->login();
+        $this->client->loginUser($this->user());
         $data = self::graphqlQuery($this->client, $query);
-        $this->logout();
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -273,10 +268,12 @@ GRAPHQL;
             'variables' => $variables,
             'operationName' => $operation,
         ]);
+        self::assertIsString($request);
 
         // perform request
         $client->request('POST', '/api/graphql/', [], [], $params, $request);
 
-        return json_decode($client->getResponse()->getContent(), true);
+        self::assertIsString($client->getResponse()->getContent());
+        return (array) json_decode($client->getResponse()->getContent(), true);
     }
 }

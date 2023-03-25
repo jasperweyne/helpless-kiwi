@@ -4,7 +4,7 @@ namespace App\GraphQL\Types;
 
 use Overblog\GraphQLBundle\Annotation as GQL;
 
-#[GQL\Scalar(name: "DateTimeScalar")]
+#[GQL\Scalar(name: 'DateTimeScalar')]
 class DatetimeScalar
 {
     /**

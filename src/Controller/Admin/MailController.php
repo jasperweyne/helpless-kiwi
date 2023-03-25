@@ -12,14 +12,14 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Mail controller.
  */
-#[Route("/admin/mail", name: "admin_mail_")]
+#[Route('/admin/mail', name: 'admin_mail_')]
 class MailController extends AbstractController
 {
     /**
      * Lists all mails.
      */
-    #[MenuItem(title: "Mails", menu: "admin", role: "ROLE_ADMIN")]
-    #[Route("/", name: "index", methods: ["GET"])]
+    #[MenuItem(title: 'Mails', menu: 'admin', role: 'ROLE_ADMIN')]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function indexAction(EntityManagerInterface $em): Response
     {
         $mails = $em->getRepository(Mail::class)->findBy([], ['sentAt' => 'DESC']);
@@ -32,10 +32,13 @@ class MailController extends AbstractController
     /**
      * Finds and displays a mail entity.
      */
-    #[Route("/{id}", name: "show", methods: ["GET"])]
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function showAction(Mail $mail): Response
     {
-        $content = json_decode($mail->getContent(), true);
+        $jsonContent = $mail->getContent();
+        assert(is_string($jsonContent));
+        $content = json_decode($jsonContent, true);
+        assert(is_array($content));
 
         return $this->render('admin/mail/show.html.twig', [
             'mail' => $mail,

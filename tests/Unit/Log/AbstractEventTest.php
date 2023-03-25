@@ -84,6 +84,7 @@ class AbstractEventTest extends KernelTestCase
             ->getProperty('entityType');
         $property->setAccessible(true);
         $property->setValue($this->abstractEvent, $expected);
+        self::assertNotNull($this->abstractEvent->getEntityType());
         self::assertSame($expected, $this->abstractEvent->getEntityType());
     }
 

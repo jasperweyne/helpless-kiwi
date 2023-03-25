@@ -4,59 +4,58 @@ namespace App\Template\Attribute;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+/**
+ * @phpstan-import-type MenuItemArray from \App\Template\MenuExtensionInterface
+ */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class MenuItem
 {
+    /**
+     * @param ?SubmenuItem[] $sub
+     */
     public function __construct(
-        private string $title,
-        private ?string $menu = null,
-        private ?string $role = null,
-        private ?string $class = null,
-        private ?string $activeCriteria = null,
-        private ?int $order = null,
-        private ?string $path = null
+        public readonly string $title,
+        public readonly ?string $menu = null,
+        public readonly ?string $role = null,
+        public readonly ?string $class = null,
+        public readonly ?string $activeCriteria = null,
+        public readonly ?int $order = null,
+        public readonly ?array $sub = null,
+        public ?string $path = null
     ) {
     }
 
-    public function getTitle(): string
+    /**
+     * @return MenuItemArray
+     */
+    public function toMenuItemArray(): array
     {
-        return $this->title;
-    }
+        $arr = [
+            'title' => $this->title,
+            'path' => (string) $this->path,
+        ];
+        if (null !== $this->role) {
+            $arr['role'] = $this->role;
+        }
+        if (null !== $this->class) {
+            $arr['class'] = $this->class;
+        }
+        if (null !== $this->activeCriteria) {
+            $arr['activeCriteria'] = $this->activeCriteria;
+        }
+        if (null !== $this->order) {
+            $arr['order'] = $this->order;
+        }
+        if (null !== $this->sub) {
+            $arr['sub'] = [];
+            foreach ($this->sub as $sub) {
+                $arr['sub'][] = [
+                    'title' => $sub->title,
+                    'path' => $sub->path ?? '',
+                ];
+            }
+        }
 
-    public function getMenu(): ?string
-    {
-        return $this->menu;
-    }
-
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function getClass(): ?string
-    {
-        return $this->class;
-    }
-
-    public function getActiveCriteria(): ?string
-    {
-        return $this->activeCriteria;
-    }
-
-    public function getOrder(): ?int
-    {
-        return $this->order;
-    }
-
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-
-    public function setPath(?string $path): self
-    {
-        $this->path = $path;
-
-        return $this;
+        return $arr;
     }
 }

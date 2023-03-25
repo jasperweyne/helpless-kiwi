@@ -28,11 +28,9 @@ class DoctrineTablePrefixListener
         }
 
         foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
-            if (ClassMetadataInfo::MANY_TO_MANY == $mapping['type'] && $mapping['isOwningSide'] === true) {
-                $joinTable = $mapping['joinTable'];
-                $mappedTableName = $joinTable['name'];
-                $mappingJoinTable = $classMetadata->associationMappings[$fieldName]['joinTable'];
-                $mappingJoinTable['name'] = $this->prefix.$mappedTableName;
+            if (ClassMetadataInfo::MANY_TO_MANY == $mapping['type'] && true === $mapping['isOwningSide']) {
+                $mappedTableName = $mapping['joinTable']['name'];
+                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = $this->prefix.$mappedTableName;
             }
         }
     }

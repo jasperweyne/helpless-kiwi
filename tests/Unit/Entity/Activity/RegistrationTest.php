@@ -238,7 +238,7 @@ class RegistrationTest extends KernelTestCase
         self::assertSame($expected, $property->getValue($this->registration));
     }
 
-    public function testGetComment()
+    public function testGetComment(): void
     {
         $expected = 'TestComment';
         $property = (new ReflectionClass(Registration::class))
@@ -248,7 +248,7 @@ class RegistrationTest extends KernelTestCase
         self::assertSame($expected, $this->registration->getComment());
     }
 
-    public function testSetComment()
+    public function testSetComment(): void
     {
         $expected = 'TestComment';
         $property = (new ReflectionClass(Registration::class))

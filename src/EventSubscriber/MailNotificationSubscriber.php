@@ -69,7 +69,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         }
 
         $activity = $event->getRegistration()->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $ics = new Attachment(
             $this->calendar->icalSingle($activity),
@@ -79,8 +79,10 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
         $confirmation = $event->getRegistration()->getPerson() === $this->user ? 'bevestiging' : 'bericht';
         $title = "Aanmeld$confirmation ".$activity->getName();
+        $participant = $event->getRegistration()->getPerson();
+        assert(null !== $participant);
         $this->mailer->message(
-            $event->getRegistration()->getPerson(),
+            [$participant],
             $title,
             $this->template->render('email/newregistration.html.twig', [
                 'person' => $event->getRegistration()->getPerson(),
@@ -100,12 +102,14 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         }
 
         $activity = $event->getRegistration()->getActivity();
-        assert($activity !== null);
+        assert(null !== $activity);
 
         $confirmation = $event->getRegistration()->getPerson() === $this->user ? 'bevestiging' : 'bericht';
         $title = "Afmeld$confirmation ".$activity->getName();
+        $participant = $event->getRegistration()->getPerson();
+        assert(null !== $participant);
         $this->mailer->message(
-            $event->getRegistration()->getPerson(),
+            [$participant],
             $title,
             $this->template->render('email/removedregistration.html.twig', [
                 'person' => $event->getRegistration()->getPerson(),

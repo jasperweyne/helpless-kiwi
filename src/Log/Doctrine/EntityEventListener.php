@@ -4,7 +4,6 @@ namespace App\Log\Doctrine;
 
 use App\Entity\Log\Event;
 use App\Log\EventService;
-use App\Reflection\ReflectionService;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
@@ -16,15 +15,9 @@ class EntityEventListener
      */
     private $eventService;
 
-    /**
-     * @var ReflectionService
-     */
-    private $reflService;
-
-    public function __construct(EventService $eventService, ReflectionService $reflService)
+    public function __construct(EventService $eventService)
     {
         $this->eventService = $eventService;
-        $this->reflService = $reflService;
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs): void

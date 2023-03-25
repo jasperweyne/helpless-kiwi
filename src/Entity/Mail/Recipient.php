@@ -12,22 +12,22 @@ class Recipient
      * @var ?string
      */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: 'guid')]
     private $id;
 
     /**
      * @var ?LocalAccount
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
     private $person;
 
     /**
      * @var ?Mail
      */
-    #[ORM\ManyToOne(targetEntity: "App\Entity\Mail\Mail", inversedBy: "recipients")]
-    #[ORM\JoinColumn(name: "mail", referencedColumnName: "id")]
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Mail\Mail", inversedBy: 'recipients')]
+    #[ORM\JoinColumn(name: 'mail', referencedColumnName: 'id')]
     private $mail;
 
     public function getId(): ?string
