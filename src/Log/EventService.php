@@ -68,7 +68,7 @@ class EventService
         }
 
         $entity = new EventEntity();
-        assert($this->person instanceof LocalAccount);
+        assert($this->person instanceof LocalAccount || null === $this->person);
         $entity
             ->setTime(new \DateTime())
             ->setDiscr(get_class($event))
