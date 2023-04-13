@@ -128,9 +128,17 @@ class SecurityController extends AbstractController
         $form = $this->createDeleteForm($account);
         
         $form->handleRequest($request);
+        $registrations = $account->getRegistrations();
+        $relations = $account->getRelations();
+        
+        foreach ($registrations as $registration) {
+            $account->removeRegistration($registration);
+        }
+        foreach ($relations as $relation) {
+            $account->removeRelation($relation);
+        }
 
-        if ($form->isSubmitted() && $form->isValid()) {        
-            $this->em->remove($account);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
 
             return $this->redirectToRoute('admin_security_index');
