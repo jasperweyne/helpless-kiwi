@@ -48,7 +48,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Creates a new activity entity.
+     * Creates a new LocalAccount.
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, PasswordResetService $passwordReset, MailService $mailer): Response
@@ -83,7 +83,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Finds and displays an auth entity.
+     * Show selected LocalAccount.
      */
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function showAction(LocalAccount $account): Response
@@ -99,7 +99,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Displays a form to edit an existing activity entity.
+     * Edit selected LocalAccount.
      */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, LocalAccount $account): Response
@@ -113,14 +113,14 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
         }
 
-        return $this->render('admin/activity/edit.html.twig', [
+        return $this->render('admin/security/edit.html.twig', [
             'account' => $account,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * Deletes a ApiKey entity.
+     * Delete selected LocalAccount.
      */
     #[Route('/{id}/delete', name: 'delete')]
     public function deleteAction(Request $request, LocalAccount $account): Response
@@ -135,14 +135,14 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('admin_security_index');
         }
 
-        return $this->render('admin/activity/delete.html.twig', [
+        return $this->render('admin/security/delete.html.twig', [
             'account' => $account,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * Displays a form to edit roles.
+     * Edit roles for selected LocalAccount.
      */
     #[Route('/{id}/roles', name: 'roles', methods: ['GET', 'POST'])]
     public function rolesAction(Request $request, LocalAccount $account): Response
@@ -175,19 +175,23 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Creates a form to check out all checked in users.
+     * Creates a form to delete an LocalAccount.
      *
      * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createDeleteForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_delete', ['id' => $account->getId()]))
+            ->setAction($this->generateUrl('admin_security_delete', ['id' => $account->getId()]))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 
+    /**
+     * Creates a form to edit a LocalAccounts roles.
+     *
+     * @return \Symfony\Component\Form\FormInterface The form
+     */
     private function createRoleForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
@@ -196,7 +200,6 @@ class SecurityController extends AbstractController
                 'required' => false,
                 'attr' => in_array('ROLE_ADMIN', $account->getRoles(), true) ? ['checked' => 'checked'] : [],
             ])
-            ->getForm()
-        ;
+            ->getForm();
     }
 }
