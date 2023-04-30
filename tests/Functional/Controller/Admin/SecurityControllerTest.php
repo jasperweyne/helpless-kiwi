@@ -22,6 +22,8 @@ class SecurityControllerTest extends AuthWebTestCase
 
     protected EntityManagerInterface $em;
 
+    protected string $endpoint = '/admin/security';
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +58,7 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testIndexAction(): void
     {
         // Act
-        $this->client->request('GET', '/admin/security/');
+        $this->client->request('GET', $this->endpoint);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -65,11 +67,12 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testNewAction(): void
     {
         // Act
-        $crawler = $this->client->request('GET', '/admin/security/new');
+        $crawler = $this->client->request('GET', $this->endpoint.'/new');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Toevoegen')->form();
         $form->setValues([
-            'local_account[name]' => 'John',
+            'local_account[givenname]' => 'John',
+            'local_account[familyname]' => 'Doe',
             'local_account[email]' => 'john@doe.eyes',
         ]);
         $crawler = $this->client->submit($form);
@@ -88,14 +91,39 @@ class SecurityControllerTest extends AuthWebTestCase
 
     public function testEditAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Setup
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $id = $localAccount->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->endpoint.'/'.$id.'/edit');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form->setValues([
+            'local_account[givenname]' => 'John',
+            'local_account[familyname]' => 'Doeeye',
+            'local_account[email]' => 'john@doe.eyes',
+        ]);
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        /** @var LocalAccount $localAccount */
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        self::assertEquals($localAccount->getFamilyName(), 'Doeeye');
     }
 
     public function testDeleteAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Setup
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $id = $localAccount->getId();
+
+        // Act
+        $this->client->request('GET', $this->endpoint.'/'.$id.'/delete');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        // TODO add deletion logic as soon as it's implemented
     }
 
     public function testRolesAction(): void
@@ -109,7 +137,7 @@ class SecurityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Opslaan')->form();
         $form->setValues([
-            'form[admin]' => false
+            'form[admin]' => false,
         ]);
         $this->client->submit($form);
         self::assertSelectorTextContains('.container', 'Rollen bewerkt');
