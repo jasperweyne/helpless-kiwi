@@ -2,11 +2,18 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Activiteit ' ~ activity.name %}
-    
+
     {% block buttons %}
-        <a href="{{ path('admin_activity_image', { 'id': activity.id }) }}">Afbeelding aanpassen</a>
-        <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Bewerken</a>
-        <a href="{{ path('admin_activity_delete', { 'id': activity.id }) }}">Verwijderen</a>
+        {% if not activity.archived %}
+             <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Activiteit bewerken</a> 
+        {% endif %}
+        {% if is_granted("ROLE_ADMIN") %}
+            {% if activity.archived %}
+                <a href="{{ path('admin_activity_activate', { 'id': activity.id }) }}">Activiteit her activeren</a>
+            {% else %}
+                 <a href="{{ path('admin_activity_archive', { 'id': activity.id }) }}">Archiveren</a>
+            {% endif %}
+        {% endif %}
     {% endblock %}
 {% endif %}
 
@@ -100,6 +107,10 @@
                             <tr>
                                 <th>Afbeelding</th>
                                 <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td> <a href="{{ path('admin_activity_image', { 'id': activity.id }) }}">Afbeelding aanpassen</a> </td>
                             </tr>
                             <tr>
                                 <th>Kleur</th>

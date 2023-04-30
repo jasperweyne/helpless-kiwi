@@ -14,6 +14,7 @@ use App\Repository\ActivityRepository;
 use App\Repository\GroupRepository;
 use App\Repository\RegistrationRepository;
 use App\Template\Attribute\MenuItem;
+use App\Template\Attribute\SubmenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -27,25 +28,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/activity', name: 'admin_activity_')]
 class ActivityController extends AbstractController
 {
-    /**
-     * @var EventService
-     */
-    private $events;
+    private EventService $events;
 
-    /**
-     * @var ActivityRepository
-     */
-    private $activitiesRepo;
+    private ActivityRepository $activitiesRepo;
 
-    /**
-     * @var GroupRepository
-     */
-    private $groupsRepo;
+    private GroupRepository $groupsRepo;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
     public function __construct(
         EventService $events,
@@ -62,20 +51,41 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities.
      */
-    #[MenuItem(title: 'Activiteiten', menu: 'admin', activeCriteria: 'admin_activity_')]
-    #[Route('/', name: 'index', methods: ['GET'])]
-    public function indexAction(): Response
+    #[MenuItem(title: 'Activiteiten', menu: 'admin', activeCriteria: 'admin_activity_', sub: [
+        new SubmenuItem(title: 'Archief', path: 'admin_activity_index', param: [
+            'cat' => 'archived',
+        ]),
+    ])]
+    #[Route('/{cat}', name: 'index', methods: ['GET'], requirements: [
+        'cat' => 'active|archived',
+    ])]
+    public function indexAction(string $cat = 'active'): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = $this->activitiesRepo->findBy([], ['start' => 'DESC']);
+            $activities = match ($cat) {
+                'active' => $this->activitiesRepo->findActive(),
+                'archived' => $this->activitiesRepo->findArchived(),
+                default => throw $this->createNotFoundException(),
+            };
         } else {
-            /** @var LocalAccount */
+            /** @var LocalAccount $user */
             $user = $this->getUser();
             $groups = $this->groupsRepo->findSubGroupsForPerson($user);
-            $activities = $this->activitiesRepo->findAuthor($groups);
+            $activities = match ($cat) {
+                'active' => $this->activitiesRepo->findAuthor($groups),
+                'archived' => $this->activitiesRepo->findAuthorArchive($groups),
+                default => throw $this->createNotFoundException(),
+            };
         }
 
+        $page_title = match ($cat) {
+            'active' => 'Activiteiten',
+            'archived' => 'Archief',
+            default => null,
+        };
+
         return $this->render('admin/activity/index.html.twig', [
+            'page_title' => $page_title,
             'activities' => $activities,
         ]);
     }
@@ -86,7 +96,9 @@ class ActivityController extends AbstractController
     #[Route('/group/{id}', name: 'group', methods: ['GET'])]
     public function groupAction(Group $group): Response
     {
-        $activities = $this->activitiesRepo->findAuthor($this->groupsRepo->findSubGroupsFor($group));
+        $activities = $this
+            ->activitiesRepo
+            ->findAuthor($this->groupsRepo->findSubGroupsFor($group));
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
@@ -111,7 +123,10 @@ class ActivityController extends AbstractController
             $this->em->persist($location);
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['id' => $activity->getId()]
+            );
         }
 
         return $this->render('admin/activity/new.html.twig', [
@@ -157,7 +172,10 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['id' => $activity->getId()]
+            );
         }
 
         return $this->render('admin/activity/edit.html.twig', [
@@ -180,7 +198,10 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['id' => $activity->getId()]
+            );
         }
 
         return $this->render('admin/activity/image.html.twig', [
@@ -190,7 +211,7 @@ class ActivityController extends AbstractController
     }
 
     /**
-     * Deletes a ApiKey entity.
+     * Deletes an activity.
      */
     #[Route('/{id}/delete', name: 'delete')]
     public function deleteAction(Request $request, Activity $activity): Response
@@ -208,6 +229,58 @@ class ActivityController extends AbstractController
         }
 
         return $this->render('admin/activity/delete.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Archives an activity.
+     */
+    #[Route('/{id}/archive', name: 'archive')]
+    public function archiveAction(Request $request, Activity $activity): Response
+    {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
+        $form = $this->createArchiveForm($activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $activity->setArchived(true);
+            $this->em->persist($activity);
+            $this->em->flush();
+
+            return $this->redirectToRoute('admin_activity_index');
+        }
+
+        return $this->render('admin/activity/archive.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Activates an activity.
+     */
+    #[Route('/{id}/activate', name: 'activate')]
+    public function activateAction(Request $request, Activity $activity): Response
+    {
+        $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
+
+        $form = $this->createActivateForm($activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $activity->setArchived(false);
+            $this->em->persist($activity);
+            $this->em->flush();
+
+            return $this->redirectToRoute('admin_activity_index', [
+                'cat' => 'archived',
+            ]);
+        }
+
+        return $this->render('admin/activity/activate.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
         ]);
@@ -235,7 +308,10 @@ class ActivityController extends AbstractController
             $this->em->persist($price);
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['id' => $activity->getId()]
+            );
         }
 
         return $this->render('admin/activity/price/new.html.twig', [
@@ -264,7 +340,12 @@ class ActivityController extends AbstractController
         $repository = $this->em->getRepository(Registration::class);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $regs = $repository->findBy(['activity' => $activity, 'deletedate' => null, 'reserve_position' => null]);
+            $regs = $repository->findBy([
+                'activity' => $activity,
+                'deletedate' => null,
+                'reserve_position' => null,
+            ]);
+
             if (count($regs) > 0 && $originalPrice < $price->getPrice()) {
                 $this->addFlash('error', 'Prijs kan niet verhoogd worden als er al deelnemers geregistreerd zijn');
 
@@ -324,7 +405,10 @@ class ActivityController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Aanwezigen genoteerd!');
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['id' => $activity->getId()]
+            );
         }
 
         return $this->render('admin/activity/present/set.html.twig', [
@@ -349,7 +433,10 @@ class ActivityController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Aanwezigen geteld!');
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activity->getId()]);
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['id' => $activity->getId()]
+            );
         }
 
         return $this->render('admin/activity/present/reset.html.twig', [
@@ -360,14 +447,34 @@ class ActivityController extends AbstractController
 
     /**
      * Creates a form to check out all checked in users.
-     *
-     * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createDeleteForm(Activity $activity): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_delete', ['id' => $activity->getId()]))
+            ->setAction($this->generateUrl('admin_activity_delete', [
+                'id' => $activity->getId(),
+            ]))
             ->setMethod('DELETE')
+            ->getForm();
+    }
+
+    private function createArchiveForm(Activity $activity): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('admin_activity_archive', [
+                'id' => $activity->getId(),
+            ]))
+            ->setMethod('UPDATE')
+            ->getForm();
+    }
+
+    private function createActivateForm(Activity $activity): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('admin_activity_activate', [
+                'id' => $activity->getId(),
+            ]))
+            ->setMethod('UPDATE')
             ->getForm();
     }
 }

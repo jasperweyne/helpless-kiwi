@@ -38,6 +38,11 @@ class Activity
     #[GQL\Description('The name of the activity.')]
     private $name;
 
+    #[ORM\Column(name: 'archived', type: 'boolean', options: ['default' => false])]
+    #[GQL\Field(type: 'Boolean!')]
+    #[GQL\Description('If this activity is archived')]
+    private bool $archived;
+
     /**
      * @var string
      */
@@ -207,6 +212,24 @@ class Activity
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get archived.
+     */
+    public function getArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    /**
+     * Set archived.
+     */
+    public function setArchived(bool $archived): self
+    {
+        $this->archived = $archived;
 
         return $this;
     }
@@ -544,6 +567,7 @@ class Activity
 
     public function __construct()
     {
+        $this->archived = false;
         $this->registrations = new ArrayCollection();
         $this->options = new ArrayCollection();
         $this->image = new EmbeddedFile();

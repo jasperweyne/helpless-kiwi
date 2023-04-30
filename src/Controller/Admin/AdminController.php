@@ -26,7 +26,7 @@ class AdminController extends AbstractController
     public function indexAction(ActivityRepository $activitiesRepo, GroupRepository $groupsRepo): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = $activitiesRepo->findBy([], ['start' => 'DESC']);
+            $activities = $activitiesRepo->findActive();
         } else {
             $user = $this->getUser();
             assert($user instanceof LocalAccount);

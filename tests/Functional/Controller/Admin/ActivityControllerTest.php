@@ -19,15 +19,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ActivityControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var string
-     */
-    private $controllerEndpoint = '/admin/activity';
+    private string $controllerEndpoint = '/admin/activity';
 
     /**
      * {@inheritdoc}
@@ -64,11 +58,26 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testIndexArchiveAction(): void
+    {
+        $this->client->request('GET', $this->controllerEndpoint.'/archived');
+        self::assertSelectorTextContains('span', 'Archief');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testIndexActionNotAdmin(): void
     {
         $this->logout();
         $this->login([]);
         $this->client->request('GET', $this->controllerEndpoint.'/');
+        self::assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testIndexArchiveActionNotAdmin(): void
+    {
+        $this->logout();
+        $this->login([]);
+        $this->client->request('GET', $this->controllerEndpoint.'/archived');
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -193,6 +202,47 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertNotContains($activity, $allActivity);
     }
 
+    public function testArchiveAction(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $archive = $this->em->getRepository(Activity::class)->findArchived();
+        $id = $activity->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/archive");
+        $form = $crawler->selectButton('Ja, archiveer')->form();
+        $crawler = $this->client->submit($form);
+
+        $newArchive = $this->em->getRepository(Activity::class)->findArchived();
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(count($newArchive), count($archive) + 1);
+    }
+
+    public function testActivateAction(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $activity->setArchived(true);
+        $this->em->persist($activity);
+        $this->em->flush();
+        $archive = $this->em->getRepository(Activity::class)->findArchived();
+        $id = $archive[0]->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/activate");
+        $form = $crawler->selectButton('Ja, activeer')->form();
+        $crawler = $this->client->submit($form);
+
+        $newArchive = $this->em->getRepository(Activity::class)->findArchived();
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(count($newArchive), count($archive) - 1);
+    }
+
     public function testPriceNewAction(): void
     {
         // Arrange
@@ -202,7 +252,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $priceAmount = 1;
         $priceOptions = count($activity->getOptions());
 
-        //Act
+        // Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/new/{$id}");
         $form = $crawler->selectButton('Toevoegen')->form();
         /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
@@ -222,7 +272,7 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testPriceEditAction(): void
     {
-        //Arrange
+        // Arrange
         /** @var Activity $activity */
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
         $priceOption = $activity->getOptions()[0];
@@ -230,7 +280,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $id = $priceOption->getId();
         $newPrice = 0;
 
-        //Act
+        // Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/price/{$id}");
         $form = $crawler->selectButton('Opslaan')->form();
         /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
@@ -247,11 +297,11 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testPresentEditAction(): void
     {
-        //Arange
+        // Arange
         $activities = $this->em->getRepository(Activity::class)->findAll();
         $id = $activities[0]->getId();
 
-        //Act
+        // Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/edit");
         $form = $crawler->selectButton('Opslaan')->form();
         /** @var \Symfony\Component\DomCrawler\Field\FormField[] $form */
@@ -259,26 +309,26 @@ class ActivityControllerTest extends AuthWebTestCase
         /** @var \Symfony\Component\DomCrawler\Form $form */
         $this->client->submit($form);
 
-        //Assert
+        // Assert
         self::assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testPresentSetAction(): void
     {
-        //Arange
+        // Arange
         $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
         $id = $activitie->getId();
         $present = $activitie->getPresent();
 
-        //Act
+        // Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/set/");
         $form = $crawler->selectButton('Opslaan')->form();
         $form['activity_set_present_amount[present]'] = '1000';
         $this->client->submit($form);
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 
-        //Assert
+        // Assert
         if (null == $newActivity) {
             self::fail();
         }
@@ -289,17 +339,17 @@ class ActivityControllerTest extends AuthWebTestCase
 
     public function testPresentResetAction(): void
     {
-        //Arange
+        // Arange
         $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
         $id = $activitie->getId();
 
-        //Act
+        // Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/reset/");
         $form = $crawler->selectButton('Opslaan')->form();
         $this->client->submit($form);
         $newActivity = $this->em->getRepository(Activity::class)->find($id);
 
-        //Assert
+        // Assert
         if (null == $newActivity) {
             self::fail();
         }
