@@ -112,6 +112,10 @@ class ActivityController extends AbstractController
     public function newAction(Request $request): Response
     {
         $activity = new Activity();
+        $price = new PriceOption();
+        $activity->addOption($price);
+        $price->setDetails([]);
+        $price->setConfirmationMsg('');
 
         $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
         $form->handleRequest($request);
@@ -121,6 +125,8 @@ class ActivityController extends AbstractController
             assert(null !== $location);
             $this->em->persist($activity);
             $this->em->persist($location);
+
+            $this->em->persist($price);
             $this->em->flush();
 
             return $this->redirectToRoute(
