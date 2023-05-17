@@ -42,7 +42,7 @@ class PriceOptionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PriceOption::class,
-            'label' => 'Price',
+            'label' => 'Prijs',
         ]);
     }
 }
