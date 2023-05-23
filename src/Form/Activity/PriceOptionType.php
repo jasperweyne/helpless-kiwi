@@ -23,7 +23,7 @@ class PriceOptionType extends AbstractType
                 'divisor' => 100,
             ])
             ->add('target', EntityType::class, [
-                'label' => 'Activiteit voor',
+                'label' => 'Doelgroep',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
                 'placeholder' => 'Iedereen',
@@ -42,6 +42,7 @@ class PriceOptionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PriceOption::class,
+            'label' => 'Prijs',
         ]);
     }
 }

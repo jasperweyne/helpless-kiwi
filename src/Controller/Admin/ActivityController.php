@@ -121,6 +121,18 @@ class ActivityController extends AbstractController
             assert(null !== $location);
             $this->em->persist($activity);
             $this->em->persist($location);
+
+            if (null !== $price = $form->get('price')->getData()) {
+                assert(is_int($price));
+                $option = new PriceOption();
+                $activity->addOption($option);
+                $option
+                    ->setName('standaard')
+                    ->setPrice($price)
+                    ->setDetails([])
+                    ->setConfirmationMsg('');
+                $this->em->persist($option);
+            }
             $this->em->flush();
 
             return $this->redirectToRoute(

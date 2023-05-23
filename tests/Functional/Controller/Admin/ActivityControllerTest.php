@@ -81,7 +81,7 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testNewAction(): void
+    public function testNewWithoutPriceAction(): void
     {
         $local_file = __DIR__.'/../../../assets/Faint.png';
         $activity_name = 'testname';
@@ -112,6 +112,50 @@ class ActivityControllerTest extends AuthWebTestCase
         $crawler = $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'Activiteit '.$activity_name);
+        $activity = $this->em->getRepository(Activity::class)
+            ->findBy(['name' => $activity_name])[0];
+        $priceOptions = $activity->getOptions();
+        self::assertCount(0, $priceOptions);
+    }
+
+    public function testNewWithPriceAction(): void
+    {
+        // Assert
+        $local_file = __DIR__.'/../../../assets/Faint.png';
+        $activity_name = 'testname';
+
+        // Act
+        $crawler = $this->client->request('GET', '/admin/activity/new');
+
+        // Act
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $form['activity_new[name]'] = $activity_name;
+        $form['activity_new[description]'] = 'added through testing';
+        $form['activity_new[location][address]'] = 'In php unittest';
+        $form['activity_new[deadline][date]'] = '2013-03-15';
+        $form['activity_new[deadline][time]'] = '23:59';
+        $form['activity_new[start][date]'] = '2013-03-15';
+        $form['activity_new[start][time]'] = '23:59';
+        $form['activity_new[end][date]'] = '2013-03-15';
+        $form['activity_new[end][time]'] = '23:59';
+        $form['activity_new[imageFile][file]'] = new UploadedFile(
+            $local_file,
+            'Faint.png',
+            'image/png',
+            null,
+            true
+        );
+        $form['activity_new[color]'] = '1';
+        $form['activity_new[price]'] = '10,00';
+
+        $crawler = $this->client->submit($form);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Activiteit '.$activity_name);
+        $activity = $this->em->getRepository(Activity::class)
+            ->findBy(['name' => $activity_name])[0];
+        $priceOption = $activity->getOptions()[0];
+        self::assertInstanceOf(PriceOption::class, $priceOption);
+        self::assertEquals($priceOption->getPrice(), '1000');
     }
 
     public function testShowAction(): void
