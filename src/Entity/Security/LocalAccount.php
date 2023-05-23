@@ -102,17 +102,11 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      */
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'relations')]
     #[ORM\JoinTable('relation')]
-    #[ORM\JoinColumn('person_id')]
+    #[ORM\JoinColumn('person_id', onDelete: 'CASCADE')]
     #[GQL\Field(type: '[Group]')]
     #[GQL\Description('All group memberships for the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private $relations;
-
-    /**
-     * @var Collection<int, ApiToken>
-     */
-    #[ORM\OneToMany(targetEntity: ApiToken::class, mappedBy: 'account', cascade: ['remove'])]
-    private Collection $tokens;
 
     /**
      * Get id.
@@ -354,7 +348,6 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
-        $this->tokens = new ArrayCollection();
     }
 
     /**
@@ -417,29 +410,5 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     public function getActiveGroups(): array
     {
         return $this->getRelations()->filter(fn (Group $group) => $group->isActive() ?? false)->toArray();
-    }
-
-    /**
-     * @return Collection<int, ApiTokem>
-     */
-    public function getTokens(): Collection
-    {
-        return $this->tokens;
-    }
-
-    public function addToken(ApiToken $token): self
-    {
-        if (!$this->tokens->contains($token)) {
-            $this->tokens->add($token);
-        }
-
-        return $this;
-    }
-
-    public function removeToken(ApiToken $token): self
-    {
-        $this->tokens->removeElement($token);
-
-        return $this;
     }
 }

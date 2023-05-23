@@ -21,7 +21,7 @@ class Mail
      * @var ?LocalAccount
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private $person;
 
     /**
