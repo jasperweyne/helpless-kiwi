@@ -69,6 +69,7 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
 
             ->with('color', ...$colors)
             ->with('author', $group)
+            ->with('archived', false)
             ->with('start', new \DateTime('second day January 2038 18:00'))
             ->with('end', new \DateTime('second day January 2038 20:00'))
             ->with('deadline', new \DateTime('first day January 2038'))

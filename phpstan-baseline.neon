@@ -252,7 +252,7 @@ parameters:
 
 		-
 			message: "#^Symfony\\\\Component\\\\DomCrawler\\\\Form does not accept Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile\\.$#"
-			count: 1
+			count: 2
 			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
 
 		-

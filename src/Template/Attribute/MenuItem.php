@@ -2,8 +2,6 @@
 
 namespace App\Template\Attribute;
 
-use Attribute;
-
 /**
  * @phpstan-import-type MenuItemArray from \App\Template\MenuExtensionInterface
  */
@@ -52,6 +50,7 @@ class MenuItem
                 $arr['sub'][] = [
                     'title' => $sub->title,
                     'path' => $sub->path ?? '',
+                    'param' => $sub->param ?? [],
                 ];
             }
         }

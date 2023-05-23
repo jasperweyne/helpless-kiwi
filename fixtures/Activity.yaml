@@ -3,8 +3,9 @@ App\Entity\Activity\Activity:
   Activity_{1..10}:
     id: <uuid()>
     name: <word()>
+    archived: false
     description: <realtext(500)>
-    color: <randomElement(['Rood','Oranje','Geel', 'Groen', 'Cyaan', 'Lichtblauw', 'Blauw', 'Paars', 'Roze'])>
+    color: <randomElement([ 'Rood', 'Oranje', 'Geel', 'Groen', 'Cyaan', 'Lichtblauw', 'Blauw', 'Paars', 'Roze' ])>
     start: <dateTimeBetween('-5 days', 'now')>
     end: <dateTimeBetween('+2 days', '+1 week')>
     deadline: <dateTimeBetween('now', '+2 days')>
