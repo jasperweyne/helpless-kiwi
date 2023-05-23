@@ -109,6 +109,12 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     private $relations;
 
     /**
+     * @var Collection<int, ApiToken>
+     */
+    #[ORM\OneToMany(targetEntity: ApiToken::class, mappedBy: 'account', cascade: ['remove'])]
+    private Collection $tokens;
+
+    /**
      * Get id.
      */
     public function getId(): ?string
@@ -348,6 +354,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
+        $this->tokens = new ArrayCollection();
     }
 
     /**
@@ -410,5 +417,29 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     public function getActiveGroups(): array
     {
         return $this->getRelations()->filter(fn (Group $group) => $group->isActive() ?? false)->toArray();
+    }
+
+    /**
+     * @return Collection<int, ApiTokem>
+     */
+    public function getTokens(): Collection
+    {
+        return $this->tokens;
+    }
+
+    public function addToken(ApiToken $token): self
+    {
+        if (!$this->tokens->contains($token)) {
+            $this->tokens->add($token);
+        }
+
+        return $this;
+    }
+
+    public function removeToken(ApiToken $token): self
+    {
+        $this->tokens->removeElement($token);
+
+        return $this;
     }
 }

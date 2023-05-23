@@ -44,7 +44,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
             ],
             CreateAccountsEvent::class => [
                 ['notifyCreateAccount', -10],
-            ]
+            ],
         ];
     }
 
@@ -121,7 +121,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
             // send an email
             $this->mailer->message(
-                $account,
+                [$account],
                 'Jouw account',
                 $this->template->render('email/newaccount.html.twig', [
                     'name' => $account->getGivenName(),
