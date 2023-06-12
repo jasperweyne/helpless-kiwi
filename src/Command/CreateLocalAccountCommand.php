@@ -101,7 +101,8 @@ class CreateLocalAccountCommand extends Command
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : []);
 
         // Create or update the account
-        if ($create) {
+        // if $account doesn't have an ID, it m
+        if ($account !== new LocalAccount()) {
             $this->dispatcher->dispatch(new CreateAccountsEvent([$account]));
         } else {
             $this->em->flush();
