@@ -59,11 +59,12 @@ class ImportedAccounts
      */
     public function getAdditions(): Collection
     {
-        if ($this->additions === null) {
+        if (null === $this->additions) {
             $this->parseFile();
         }
 
-        assert($this->additions !== null);
+        assert(null !== $this->additions);
+
         return $this->additions;
     }
 
@@ -72,11 +73,12 @@ class ImportedAccounts
      */
     public function getRemovals(): Collection
     {
-        if ($this->removals === null) {
+        if (null === $this->removals) {
             $this->parseFile();
         }
 
-        assert($this->removals !== null);
+        assert(null !== $this->removals);
+
         return $this->removals;
     }
 
@@ -85,11 +87,12 @@ class ImportedAccounts
      */
     public function getUpdates(): Collection
     {
-        if ($this->updates === null) {
+        if (null === $this->updates) {
             $this->parseFile();
         }
 
-        assert($this->updates !== null);
+        assert(null !== $this->updates);
+
         return $this->updates;
     }
 
@@ -99,7 +102,7 @@ class ImportedAccounts
     private function parseFile(): void
     {
         // Validate that file has been loaded
-        if ($this->file === null) {
+        if (null === $this->file) {
             throw new \InvalidArgumentException('No file loaded');
         }
 
@@ -121,7 +124,7 @@ class ImportedAccounts
         $findByIdentifier = match (true) {
             isset($lookup['oidc']) => (fn (LocalAccount $account, array $row) => $account->getOidc() === $row[$lookup['oidc']]),
             isset($lookup['email']) => (fn (LocalAccount $account, array $row) => $account->getEmail() === $row[$lookup['email']]),
-            default => throw new \InvalidArgumentException("Headers must contain email or oidc field"),
+            default => throw new \InvalidArgumentException('Headers must contain email or oidc field'),
         };
 
         // Reset modification arrays
@@ -139,8 +142,8 @@ class ImportedAccounts
 
             // Find object for current row
             $key = array_key_first($this->removals->filter(fn (LocalAccount $r) => $findByIdentifier($r, $row))->toArray());
-            $object = $key === null ? new LocalAccount() : $this->removals[$key];
-            assert($object !== null);
+            $object = null === $key ? new LocalAccount() : $this->removals[$key];
+            assert(null !== $object);
 
             // Update contents of object
             if (isset($lookup['oidc'])) {
@@ -160,7 +163,7 @@ class ImportedAccounts
             }
 
             // Update the collections
-            if ($key === null) {
+            if (null === $key) {
                 $this->additions->add($object);
             } else {
                 $this->removals->remove($key);
@@ -172,7 +175,7 @@ class ImportedAccounts
     #[Assert\Callback]
     public function validate(ExecutionContextInterface $context, mixed $payload): void
     {
-        if ($this->additions === null) {
+        if (null === $this->additions) {
             try {
                 $this->parseFile();
             } catch (\Exception $e) {

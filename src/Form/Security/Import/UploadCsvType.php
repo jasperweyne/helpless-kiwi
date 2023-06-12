@@ -19,7 +19,7 @@ class UploadCsvType extends AbstractType
                         'maxSize' => '8M',
                         'mimeTypes' => ['text/csv'],
                         'mimeTypesMessage' => 'Please upload a .csv file',
-                    ])
+                    ]),
                 ],
             ])
         ;

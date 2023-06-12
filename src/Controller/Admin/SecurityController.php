@@ -53,7 +53,7 @@ class SecurityController extends AbstractController
     /**
      * Import multiple accounts, overriding the current list of accoutns.
      */
-    #[Route("/import", name: "import", methods: ["GET", "POST"])]
+    #[Route('/import', name: 'import', methods: ['GET', 'POST'])]
     public function importAction(ImportAccountsFlow $flow, EventDispatcherInterface $dispatcher): Response
     {
         $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
@@ -90,7 +90,7 @@ class SecurityController extends AbstractController
     /**
      * Creates a new LocalAccount.
      */
-    #[Route("/new", name: "new", methods: ["GET", "POST"])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, EventDispatcherInterface $dispatcher): Response
     {
         $account = new LocalAccount();
@@ -150,7 +150,7 @@ class SecurityController extends AbstractController
     /**
      * Delete selected LocalAccount.
      */
-    #[Route("/{id}/delete", name: "delete")]
+    #[Route('/{id}/delete', name: 'delete')]
     public function deleteAction(Request $request, LocalAccount $account, EventDispatcherInterface $dispatcher): Response
     {
         $form = $this->createDeleteForm($account);
