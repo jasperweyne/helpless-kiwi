@@ -9,6 +9,7 @@ use App\Form\Security\Import\ImportedAccounts;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -20,9 +21,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ImportedAccountsTest extends KernelTestCase
 {
-    private EventDispatcherInterface $dispatcher;
-    private EntityManagerInterface $entityManager;
-    private array $currentAccounts;
+    private EventDispatcherInterface&MockObject $dispatcher;
+    private EntityManagerInterface&MockObject $entityManager;
+    /** @var LocalAccount[] */
+    private array $localAccounts;
     private UploadedFile $uploadedFile;
     private ImportedAccounts $importedAccounts;
 
@@ -30,9 +32,9 @@ class ImportedAccountsTest extends KernelTestCase
     {
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->currentAccounts = [new LocalAccount(), new LocalAccount()];
+        $this->localAccounts = [new LocalAccount(), new LocalAccount()];
         $this->uploadedFile = $this->createMock(UploadedFile::class);
-        $this->importedAccounts = new ImportedAccounts($this->currentAccounts, $this->uploadedFile);
+        $this->importedAccounts = new ImportedAccounts($this->localAccounts, $this->uploadedFile);
     }
 
     protected function tearDown(): void
@@ -41,7 +43,7 @@ class ImportedAccountsTest extends KernelTestCase
 
         unset($this->dispatcher);
         unset($this->entityManager);
-        unset($this->currentAccounts);
+        unset($this->localAccounts);
         unset($this->uploadedFile);
         unset($this->importedAccounts);
     }
