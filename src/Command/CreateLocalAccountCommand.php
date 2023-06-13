@@ -30,7 +30,8 @@ class CreateLocalAccountCommand extends Command
     protected function configure(): void
     {
         $this
-            // the short description shown while running "php bin/console list" ->setDescription('Creates a local account.')
+            // the short description shown while running "php bin/console list"
+            ->setDescription('Creates a local account.')
 
             // the full command description shown when running the command with
             // the "--help" option
@@ -92,7 +93,12 @@ class CreateLocalAccountCommand extends Command
         assert(is_string($name));
         assert(is_string($pass));
 
-        $account = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => $email]) ?? new LocalAccount();
+        $account = $this->em->getRepository(LocalAccount::class)->findOneBy(
+            ['email' => $email]
+        );
+        $create = null === $account;
+        $account ??= new LocalAccount();
+
         $hashedPass = $this->userpasswordHasher->hashPassword($account, $pass);
         $account
             ->setName($name)
@@ -101,8 +107,7 @@ class CreateLocalAccountCommand extends Command
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : []);
 
         // Create or update the account
-        // if $account doesn't have an ID, it m
-        if ($account !== new LocalAccount()) {
+        if ($create) {
             $this->dispatcher->dispatch(new CreateAccountsEvent([$account]));
         } else {
             $this->em->flush();
