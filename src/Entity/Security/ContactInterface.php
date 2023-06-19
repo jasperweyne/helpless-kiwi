@@ -2,9 +2,6 @@
 
 namespace App\Entity\Security;
 
-/**
- * An interface for contact details.
- */
 interface ContactInterface
 {
     public function getName(): ?string;

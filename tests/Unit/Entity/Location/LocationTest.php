@@ -3,24 +3,20 @@
 namespace Tests\Unit\Entity\Location;
 
 use App\Entity\Location\Location;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class LocationTest.
  *
  * @covers \App\Entity\Location\Location
+ *
+ * @group entities
  */
 class LocationTest extends KernelTestCase
 {
-    /**
-     * @var Location
-     */
-    protected $location;
+    protected Location $location;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,9 +26,7 @@ class LocationTest extends KernelTestCase
         $this->location = new Location();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -43,7 +37,7 @@ class LocationTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->location, $expected);
@@ -53,7 +47,7 @@ class LocationTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->location->setId($expected);
@@ -63,7 +57,7 @@ class LocationTest extends KernelTestCase
     public function testGetAddress(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('address');
         $property->setAccessible(true);
         $property->setValue($this->location, $expected);
@@ -73,7 +67,7 @@ class LocationTest extends KernelTestCase
     public function testSetAddress(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('address');
         $property->setAccessible(true);
         $this->location->setAddress($expected);

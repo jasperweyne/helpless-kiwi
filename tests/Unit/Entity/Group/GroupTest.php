@@ -7,25 +7,20 @@ use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class GroupTest.
  *
  * @covers \App\Entity\Group\Group
+ *
  * @group entities
  */
 class GroupTest extends KernelTestCase
 {
-    /**
-     * @var Group
-     */
-    protected $group;
+    protected Group $group;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,9 +29,7 @@ class GroupTest extends KernelTestCase
         $this->group = new Group();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -47,7 +40,7 @@ class GroupTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -57,7 +50,7 @@ class GroupTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->group->setId($expected);
@@ -67,7 +60,7 @@ class GroupTest extends KernelTestCase
     public function testGetName(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -77,7 +70,7 @@ class GroupTest extends KernelTestCase
     public function testSetName(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $this->group->setName($expected);
@@ -87,7 +80,7 @@ class GroupTest extends KernelTestCase
     public function testGetDescription(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('description');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -97,7 +90,7 @@ class GroupTest extends KernelTestCase
     public function testSetDescription(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('description');
         $property->setAccessible(true);
         $this->group->setDescription($expected);
@@ -107,7 +100,7 @@ class GroupTest extends KernelTestCase
     public function testGetParent(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('parent');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -117,7 +110,7 @@ class GroupTest extends KernelTestCase
     public function testSetParent(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('parent');
         $property->setAccessible(true);
         $this->group->setParent($expected);
@@ -127,7 +120,7 @@ class GroupTest extends KernelTestCase
     public function testGetReadonly(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('readonly');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -137,7 +130,7 @@ class GroupTest extends KernelTestCase
     public function testSetReadonly(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('readonly');
         $property->setAccessible(true);
         $this->group->setReadonly($expected);
@@ -147,7 +140,7 @@ class GroupTest extends KernelTestCase
     public function testGetRelationable(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('relationable');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -157,7 +150,7 @@ class GroupTest extends KernelTestCase
     public function testSetRelationable(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('relationable');
         $property->setAccessible(true);
         $this->group->setRelationable($expected);
@@ -167,7 +160,7 @@ class GroupTest extends KernelTestCase
     public function testGetSubgroupable(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('subgroupable');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -177,7 +170,7 @@ class GroupTest extends KernelTestCase
     public function testSetSubgroupable(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('subgroupable');
         $property->setAccessible(true);
         $this->group->setSubgroupable($expected);
@@ -187,7 +180,7 @@ class GroupTest extends KernelTestCase
     public function testGetRelations(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -196,7 +189,7 @@ class GroupTest extends KernelTestCase
 
     public function testGetAllRelationFor(): void
     {
-        //Assign
+        // Assign
         $user = new LocalAccount();
         $group = new Group();
         $group2 = new Group();
@@ -211,7 +204,7 @@ class GroupTest extends KernelTestCase
         $expected->add($group);
         $expected->add($group2);
 
-        //Assert
+        // Assert
         self::assertCount(count($expected), $this->group->getAllRelationFor($user));
     }
 
@@ -220,7 +213,7 @@ class GroupTest extends KernelTestCase
         /** @var MockObject&LocalAccount */
         $expected = $this->createMock(LocalAccount::class);
         $expected->expects(self::once())->method('addRelation')->with($this->group);
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $collection = $property->getValue($this->group);
@@ -234,7 +227,7 @@ class GroupTest extends KernelTestCase
         /** @var MockObject&LocalAccount */
         $expected = $this->createMock(LocalAccount::class);
         $expected->expects(self::once())->method('removeRelation')->with($this->group);
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $collection = $property->getValue($this->group);
@@ -247,7 +240,7 @@ class GroupTest extends KernelTestCase
     public function testGetChildren(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -257,7 +250,7 @@ class GroupTest extends KernelTestCase
     public function testAddChild(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('children');
         $property->setAccessible(true);
         $this->group->addChild($expected);
@@ -269,7 +262,7 @@ class GroupTest extends KernelTestCase
         $expected = new ArrayCollection();
         $group = new Group();
         $expected->add($group);
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('children');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -280,7 +273,7 @@ class GroupTest extends KernelTestCase
 
     public function testIsActiveDefaultFalse(): void
     {
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('active');
         $property->setAccessible(true);
         self::assertFalse($property->getValue($this->group));
@@ -289,7 +282,7 @@ class GroupTest extends KernelTestCase
     public function testIsActive(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('active');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -299,7 +292,7 @@ class GroupTest extends KernelTestCase
     public function testSetActive(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('active');
         $property->setAccessible(true);
         $this->group->setActive($expected);
@@ -309,7 +302,7 @@ class GroupTest extends KernelTestCase
     public function testGetRegister(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('register');
         $property->setAccessible(true);
         $property->setValue($this->group, $expected);
@@ -319,7 +312,7 @@ class GroupTest extends KernelTestCase
     public function testSetRegister(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Group::class))
+        $property = (new \ReflectionClass(Group::class))
             ->getProperty('register');
         $property->setAccessible(true);
         $this->group->setRegister($expected);

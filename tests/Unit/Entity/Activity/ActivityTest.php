@@ -24,14 +24,9 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
  */
 class ActivityTest extends KernelTestCase
 {
-    /**
-     * @var Activity
-     */
-    protected $activity;
+    protected Activity $activity;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,9 +35,7 @@ class ActivityTest extends KernelTestCase
         $this->activity = new Activity();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();

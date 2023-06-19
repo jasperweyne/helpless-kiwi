@@ -8,24 +8,20 @@ use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class PriceOptionTest.
  *
  * @covers \App\Entity\Activity\PriceOption
+ *
+ * @group entities
  */
 class PriceOptionTest extends KernelTestCase
 {
-    /**
-     * @var PriceOption
-     */
-    protected $priceOption;
+    protected PriceOption $priceOption;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,9 +30,7 @@ class PriceOptionTest extends KernelTestCase
         $this->priceOption = new PriceOption();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -47,7 +41,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -57,7 +51,7 @@ class PriceOptionTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->priceOption->setId($expected);
@@ -67,7 +61,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetName(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -77,7 +71,7 @@ class PriceOptionTest extends KernelTestCase
     public function testSetName(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $this->priceOption->setName($expected);
@@ -87,7 +81,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetTarget(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('target');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -97,7 +91,7 @@ class PriceOptionTest extends KernelTestCase
     public function testSetTarget(): void
     {
         $expected = new Group();
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('target');
         $property->setAccessible(true);
         $this->priceOption->setTarget($expected);
@@ -107,7 +101,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetPrice(): void
     {
         $expected = 42;
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('price');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -117,7 +111,7 @@ class PriceOptionTest extends KernelTestCase
     public function testSetPrice(): void
     {
         $expected = 42;
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('price');
         $property->setAccessible(true);
         $this->priceOption->setPrice($expected);
@@ -127,7 +121,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetDetails(): void
     {
         $expected = [];
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('details');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -137,7 +131,7 @@ class PriceOptionTest extends KernelTestCase
     public function testSetDetails(): void
     {
         $expected = [];
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('details');
         $property->setAccessible(true);
         $this->priceOption->setDetails($expected);
@@ -147,7 +141,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetConfirmationMsg(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('confirmationMsg');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -157,7 +151,7 @@ class PriceOptionTest extends KernelTestCase
     public function testSetConfirmationMsg(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('confirmationMsg');
         $property->setAccessible(true);
         $this->priceOption->setConfirmationMsg($expected);
@@ -167,7 +161,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetActivity(): void
     {
         $expected = new Activity();
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('activity');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -177,14 +171,14 @@ class PriceOptionTest extends KernelTestCase
     public function testSetActivity(): void
     {
         $expected = new Activity();
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('activity');
         $property->setAccessible(true);
         $this->priceOption->setActivity($expected);
         self::assertSame($expected, $property->getValue($this->priceOption));
     }
 
-    public function test__ToString(): void
+    public function testToString(): void
     {
         $expected = 'free €0.00';
         $priceOption = new PriceOption();
@@ -196,7 +190,7 @@ class PriceOptionTest extends KernelTestCase
     public function testGetRegistrations(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);
@@ -206,7 +200,7 @@ class PriceOptionTest extends KernelTestCase
     public function testAddRegistration(): void
     {
         $expected = new Registration();
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
 
@@ -221,7 +215,7 @@ class PriceOptionTest extends KernelTestCase
         $expected = new ArrayCollection();
         $registration = new Registration();
         $expected->add($registration);
-        $property = (new ReflectionClass(PriceOption::class))
+        $property = (new \ReflectionClass(PriceOption::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->priceOption, $expected);

@@ -21,6 +21,11 @@ parameters:
 			path: src/Entity/Activity/PriceOption.php
 
 		-
+			message: "#^Property App\\\\Entity\\\\Activity\\\\Registration\\:\\:\\$option type mapping mismatch\\: property can contain App\\\\Entity\\\\Activity\\\\PriceOption\\|null but database expects App\\\\Entity\\\\Activity\\\\PriceOption\\.$#"
+			count: 1
+			path: src/Entity/Activity/Registration.php
+
+		-
 			message: "#^Property App\\\\Entity\\\\Log\\\\Event\\:\\:\\$discr type mapping mismatch\\: database can contain string but property expects class\\-string\\<App\\\\Log\\\\AbstractEvent\\>\\|null\\.$#"
 			count: 1
 			path: src/Entity/Log/Event.php
@@ -39,6 +44,21 @@ parameters:
 			message: "#^Parameter \\#1 \\$data of class App\\\\Entity\\\\Order constructor expects array\\<int\\>, array\\<int\\<0, max\\>, float\\|int\\<\\-25, 25\\>\\> given\\.$#"
 			count: 1
 			path: src/Entity/Order.php
+
+		-
+			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$email type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
+			count: 1
+			path: src/Entity/Security/LocalAccount.php
+
+		-
+			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$familyName type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
+			count: 1
+			path: src/Entity/Security/LocalAccount.php
+
+		-
+			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$givenName type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
+			count: 1
+			path: src/Entity/Security/LocalAccount.php
 
 		-
 			message: "#^Return type \\(string\\|null\\) of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getUsername\\(\\) should be covariant with return type \\(string\\) of method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:getUsername\\(\\)$#"

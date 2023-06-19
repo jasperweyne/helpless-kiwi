@@ -11,17 +11,11 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 #[GQL\Description('A registrant for an activity.')]
 class ExternalRegistrant implements ContactInterface
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Column(type: 'string', length: 180, nullable: true)]
-    private $email;
+    private ?string $email;
 
-    /**
-     * @var ?string
-     */
     #[ORM\Column(type: 'string', length: 180, nullable: true)]
-    private $name;
+    private ?string $name;
 
     #[GQL\Field(type: 'String')]
     #[GQL\Description('The e-mail address of the registrant.')]

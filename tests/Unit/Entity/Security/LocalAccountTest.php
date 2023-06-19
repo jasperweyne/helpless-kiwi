@@ -8,24 +8,20 @@ use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class LocalAccountTest.
  *
  * @covers \App\Entity\Security\LocalAccount
+ *
+ * @group entities
  */
 class LocalAccountTest extends KernelTestCase
 {
-    /**
-     * @var LocalAccount
-     */
-    protected $localAccount;
+    protected LocalAccount $localAccount;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,9 +29,7 @@ class LocalAccountTest extends KernelTestCase
         $this->localAccount = new LocalAccount();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -46,7 +40,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -56,7 +50,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->localAccount->setId($expected);
@@ -66,7 +60,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetEmail(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -76,7 +70,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetEmail(): void
     {
         $expected = 'john@doe.eyes';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $this->localAccount->setEmail($expected);
@@ -86,7 +80,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetUsername(): void
     {
         $expected = 'johndoe96';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -97,14 +91,14 @@ class LocalAccountTest extends KernelTestCase
     {
         self::assertNull($this->localAccount->getName());
         $expectedJohn = 'John';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expectedJohn);
         self::assertSame($expectedJohn, $this->localAccount->getName());
 
         $expectedDoe = 'Doe';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expectedDoe);
@@ -116,7 +110,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetName(): void
     {
         $expected = 'Daneel';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
         $this->localAccount->setName($expected);
@@ -126,7 +120,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetGivenName(): void
     {
         $expected = 'John';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -136,7 +130,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetGivenName(): void
     {
         $expected = 'John';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
         $this->localAccount->setGivenName($expected);
@@ -146,7 +140,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetFamilyName(): void
     {
         $expected = 'Doe';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -156,7 +150,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetFamilyName(): void
     {
         $expected = 'Doe';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('familyName');
         $property->setAccessible(true);
         $this->localAccount->setFamilyName($expected);
@@ -169,7 +163,7 @@ class LocalAccountTest extends KernelTestCase
         $group->setActive(true);
 
         $expected = ['ROLE_USER'];
-        $local = new ReflectionClass(LocalAccount::class);
+        $local = new \ReflectionClass(LocalAccount::class);
         $roleProperty = $local
             ->getProperty('roles');
         $roleProperty->setAccessible(true);
@@ -188,7 +182,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetRoles(): void
     {
         $expected = [];
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('roles');
         $property->setAccessible(true);
         $this->localAccount->setRoles($expected);
@@ -198,7 +192,7 @@ class LocalAccountTest extends KernelTestCase
     public function testIsAdmin(): void
     {
         $expected = ['ROLE_ADMIN'];
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('roles');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -208,7 +202,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetPassword(): void
     {
         $expected = 'T0tallys3curePa$$w0rd';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('password');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -218,7 +212,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetPassword(): void
     {
         $expected = 'T0tallys3curePa$$w0rd';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('password');
         $property->setAccessible(true);
         $this->localAccount->setPassword($expected);
@@ -227,7 +221,7 @@ class LocalAccountTest extends KernelTestCase
 
     public function testGetSalt(): void
     {
-        //To-Do: implement or remove function
+        // To-Do: implement or remove function
         self::assertNull($this->localAccount->getSalt());
     }
 
@@ -239,7 +233,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetOidc(): void
     {
         $expected = 'magicalSubjectClaim';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('oidc');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -249,7 +243,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetOidc(): void
     {
         $expected = 'magicalSubjectClaim';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('oidc');
         $property->setAccessible(true);
         $this->localAccount->setOidc($expected);
@@ -259,7 +253,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetPasswordRequestToken(): void
     {
         $expected = null;
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestToken');
         $property->setAccessible(true);
         $this->localAccount->setPasswordRequestToken($expected);
@@ -269,7 +263,7 @@ class LocalAccountTest extends KernelTestCase
     public function testSetPasswordRequestedAt(): void
     {
         $expected = new \DateTime();
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
         $this->localAccount->setPasswordRequestedAt($expected);
@@ -279,7 +273,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetPasswordRequestedAt(): void
     {
         $expected = null;
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -292,7 +286,7 @@ class LocalAccountTest extends KernelTestCase
     public function testIsPasswordRequestNonExpired(): void
     {
         $expected = new \DateTime();
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestedAt');
         $property->setAccessible(true);
         $this->localAccount->setPasswordRequestedAt($expected);
@@ -302,7 +296,7 @@ class LocalAccountTest extends KernelTestCase
     public function testIsEqualTo(): void
     {
         $expected = 'john@doe.eyes';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $this->localAccount->setEmail($expected);
@@ -312,7 +306,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetPasswordRequestToken(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('passwordRequestToken');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -338,27 +332,27 @@ class LocalAccountTest extends KernelTestCase
         $familyName = 'Doe';
         $fullName = $givenName.' '.$familyName;
 
-        //testing with just an id, no email or name
-        $property = (new ReflectionClass(LocalAccount::class))
+        // testing with just an id, no email or name
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $id);
         self::assertSame($expectedPseudo, $this->localAccount->getCanonical());
 
-        //test with email
-        $property = (new ReflectionClass(LocalAccount::class))
+        // test with email
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $email);
         self::assertSame($email, $this->localAccount->getCanonical());
 
-        //test with full name
-        $property = (new ReflectionClass(LocalAccount::class))
+        // test with full name
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $givenName);
 
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $familyName);
@@ -374,27 +368,27 @@ class LocalAccountTest extends KernelTestCase
         $familyName = 'Doe';
         $fullName = $givenName.' '.$familyName;
 
-        //testing with just an id, no email or name
-        $property = (new ReflectionClass(LocalAccount::class))
+        // testing with just an id, no email or name
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $id);
         self::assertSame($expectedPseudo, $this->localAccount->__toString());
 
-        //test with email
-        $property = (new ReflectionClass(LocalAccount::class))
+        // test with email
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $email);
         self::assertSame($email, $this->localAccount->__toString());
 
-        //test with full name
-        $property = (new ReflectionClass(LocalAccount::class))
+        // test with full name
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('givenName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $givenName);
 
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('familyName');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $familyName);
@@ -404,7 +398,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetRegistrations(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -416,7 +410,7 @@ class LocalAccountTest extends KernelTestCase
         /** @var MockObject&Registration */
         $expected = $this->createMock(Registration::class);
         $expected->expects(self::once())->method('setPerson')->with($this->localAccount);
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
         $this->localAccount->addRegistration($expected);
@@ -432,7 +426,7 @@ class LocalAccountTest extends KernelTestCase
         $expected = $this->createMock(Registration::class);
         $expected->method('getPerson')->willReturn($this->localAccount);
         $expected->expects(self::once())->method('setPerson')->with(null);
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('registrations');
         $property->setAccessible(true);
 
@@ -447,7 +441,7 @@ class LocalAccountTest extends KernelTestCase
     public function testGetRelations(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $property->setValue($this->localAccount, $expected);
@@ -458,7 +452,7 @@ class LocalAccountTest extends KernelTestCase
     {
         /** @var MockObject&Group */
         $expected = $this->createMock(Group::class);
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $this->localAccount->addRelation($expected);
@@ -471,7 +465,7 @@ class LocalAccountTest extends KernelTestCase
     {
         /** @var MockObject&Group */
         $expected = $this->createMock(Group::class);
-        $property = (new ReflectionClass(LocalAccount::class))
+        $property = (new \ReflectionClass(LocalAccount::class))
             ->getProperty('relations');
         $property->setAccessible(true);
         $collection = $property->getValue($this->localAccount);
@@ -487,7 +481,7 @@ class LocalAccountTest extends KernelTestCase
         $group = new Group();
         $group->setActive(true);
 
-        $local = new ReflectionClass(LocalAccount::class);
+        $local = new \ReflectionClass(LocalAccount::class);
 
         $relations = new ArrayCollection([$group]);
         $relationProperty = $local
