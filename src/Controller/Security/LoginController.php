@@ -22,7 +22,7 @@ class LoginController extends AbstractController
 
         $oidcEnabled = isset($_ENV['OIDC_ADDRESS']);
         if ('local' !== $request->query->getAlpha('provider') && $oidcEnabled) {
-            return $oidc->generateAuthorizationRedirect(null, ['openid', 'profile', 'email']);
+            return $oidc->generateAuthorizationRedirect(null, ['openid', 'profile', 'email'], true);
         }
 
         // get the login error if there is one
