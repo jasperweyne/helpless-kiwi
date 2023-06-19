@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class RemoveAccountsEventTest.
  *
- * @covers \App\Entity\Security\RemoveAccountsEvent
+ * @covers \App\Event\RemoveAccountsEvent
  */
 class RemoveAccountsEventTest extends TestCase
 {
