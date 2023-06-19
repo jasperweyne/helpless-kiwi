@@ -8,6 +8,7 @@ use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class SecurityControllerTest.
@@ -62,6 +63,39 @@ class SecurityControllerTest extends AuthWebTestCase
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testImportAction(): void
+    {
+        // Mock the CSV file
+        $csvContent = "email,given_name,family_name,admin,oidc\n";
+        $csvPath = sys_get_temp_dir().'/test.csv';
+        file_put_contents($csvPath, $csvContent);
+        $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
+
+        // first Act
+        $crawler = $this->client->request('GET', $this->endpoint.'/import');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('next')->form();
+        $form->setValues([
+            'upload_csv[file]' => $csvFile->getPathname(),
+        ]);
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSame(
+            'Accounts importeren',
+            $crawler->filter('h3')->first()->text()
+        );
+
+        // second Act
+        $form = $crawler->selectButton('finish')->form();
+        $crawler = $this->client->submit($form);
+
+        // second Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Accounts succesvol geimporteerd');
     }
 
     public function testNewAction(): void

@@ -9,12 +9,14 @@ use App\Security\PasswordResetService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class PasswordControllerTest.
  *
  * @author A-Daneel
+ *
  * @covers \App\Controller\Security\PasswordController
  */
 class PasswordControllerTest extends AuthWebTestCase
@@ -45,6 +47,11 @@ class PasswordControllerTest extends AuthWebTestCase
     protected $userProvider;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -55,8 +62,9 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->passwordHasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         $this->passwordReset = self::getContainer()->get(PasswordResetService::class);
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->dispatcher = self::getContainer()->get(EventDispatcherInterface::class);
         $this->passwordController = new PasswordController($this->passwordHasher, $this->passwordReset, $this->em);
-        $this->userProvider = new LocalUserProvider($this->em);
+        $this->userProvider = new LocalUserProvider($this->em, $this->dispatcher);
 
         $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
@@ -75,6 +83,7 @@ class PasswordControllerTest extends AuthWebTestCase
         unset($this->passwordReset);
         unset($this->userProvider);
         unset($this->em);
+        unset($this->dispatcher);
     }
 
     /**
@@ -190,6 +199,6 @@ class PasswordControllerTest extends AuthWebTestCase
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', "Er is een mail met instructies gestuurd naar ${inValidEmail}");
+        self::assertSelectorTextContains('.container', "Er is een mail met instructies gestuurd naar {$inValidEmail}");
     }
 }

@@ -15,7 +15,7 @@ class ApiToken
 
     public function __construct(
         #[ORM\ManyToOne(fetch: 'EAGER')]
-        #[ORM\JoinColumn(nullable: false)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
         public readonly LocalAccount $account,
         #[ORM\ManyToOne(inversedBy: 'tokens')]
         #[ORM\JoinColumn(nullable: false)]

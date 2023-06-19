@@ -3,6 +3,7 @@
 namespace Tests\Unit\Security;
 
 use App\Entity\Security\LocalAccount;
+use App\Event\Security\CreateAccountsEvent;
 use App\Security\LocalUserProvider;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
@@ -11,6 +12,7 @@ use Drenso\OidcBundle\Model\OidcUserData;
 use Drenso\OidcBundle\Security\Exception\OidcUserNotFoundException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 /**
@@ -31,6 +33,11 @@ class LocalUserProviderTest extends KernelTestCase
     protected $em;
 
     /**
+     * @var EventDispatcherInterface&MockObject
+     */
+    protected $dispatcher;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -38,7 +45,8 @@ class LocalUserProviderTest extends KernelTestCase
         parent::setUp();
 
         $this->em = $this->createMock(EntityManager::class);
-        $this->localUserProvider = new LocalUserProvider($this->em);
+        $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->localUserProvider = new LocalUserProvider($this->em, $this->dispatcher);
     }
 
     /**
@@ -50,6 +58,7 @@ class LocalUserProviderTest extends KernelTestCase
 
         unset($this->localUserProvider);
         unset($this->em);
+        unset($this->dispatcher);
     }
 
     public function testRefreshUser(): void
@@ -76,8 +85,9 @@ class LocalUserProviderTest extends KernelTestCase
         $this->em->method('getRepository')->willReturn($repo);
 
         // Expect the object to be flushed to db
-        $this->em->expects(self::once())->method('persist');
-        $this->em->expects(self::once())->method('flush');
+        $this->dispatcher->expects(self::once())
+            ->method('dispatch')
+            ->with(self::isInstanceOf(CreateAccountsEvent::class));
 
         // Act
         $this->localUserProvider->ensureUserExists($token->getSub(), $token);
