@@ -9,17 +9,14 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * Class OrderTest.
  *
  * @covers \App\Entity\Order
+ *
+ * @group entities
  */
 class OrderTest extends KernelTestCase
 {
-    /**
-     * @var Order
-     */
-    protected $order;
+    protected Order $order;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,9 +26,7 @@ class OrderTest extends KernelTestCase
         $this->order = Order::create('test');
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -39,7 +34,7 @@ class OrderTest extends KernelTestCase
         unset($this->order);
     }
 
-    public function test__ToString(): void
+    public function testToString(): void
     {
         /* @todo This test is incomplete. */
         self::markTestIncomplete();

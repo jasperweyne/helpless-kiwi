@@ -17,109 +17,68 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[GQL\Description('A registered user who can log in and register for activities.')]
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
     #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
-    private $id;
+    private ?string $id;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[GQL\Field(type: 'String')]
     #[GQL\Description('The e-mail address of the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
-    private $email;
+    private ?string $email = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string', length: 180)]
     #[GQL\Field(type: 'String')]
     #[GQL\Description('The given name of the user (the first name in western cultures).')]
     #[GQL\Access('isAuthenticated()')]
-    private $givenName;
+    private ?string $givenName = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string', length: 180)]
     #[GQL\Field(type: 'String')]
     #[GQL\Description('The family name of the user (the last name in western cultures).')]
     #[GQL\Access('isAuthenticated()')]
-    private $familyName;
+    private ?string $familyName = null;
 
-    /**
-     * The hashed password.
-     *
-     * @var ?string
-     */
     #[ORM\Column(type: 'string', nullable: true)]
-    private $password;
+    private ?string $password = null;
 
-    /**
-     * The OpenID Connect subject claim value.
-     *
-     * @var ?string
-     */
     #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
-    private $oidc;
+    private ?string $oidc = null;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     #[ORM\Column(type: 'json')]
-    private $roles;
+    private array $roles;
 
-    /**
-     * Encrypted string whose value is sent to the user email address in order to (re-)set the password.
-     *
-     * @var ?string
-     */
+    /** Encrypted string whose value is sent to the user email address in order to (re-)set the password. */
     #[ORM\Column(name: 'password_request_token', type: 'string', nullable: true)]
-    protected $passwordRequestToken;
+    protected ?string $passwordRequestToken;
 
-    /**
-     * @var ?\DateTime
-     */
     #[ORM\Column(name: 'password_requested_at', type: 'datetime', nullable: true)]
-    protected $passwordRequestedAt;
+    protected ?\DateTime $passwordRequestedAt;
 
-    /**
-     * @var Collection<int, Registration>
-     */
+    /** @var Collection<int, Registration> */
     #[ORM\OneToMany(targetEntity: Registration::class, mappedBy: 'person')]
     #[GQL\Field(type: '[Registration]')]
     #[GQL\Description('All activity registrations for the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
-    private $registrations;
+    private Collection $registrations;
 
-    /**
-     * @var Collection<int, Group>
-     */
+    /** @var Collection<int, Group> */
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'relations')]
     #[ORM\JoinTable('relation')]
     #[ORM\JoinColumn('person_id', onDelete: 'CASCADE')]
     #[GQL\Field(type: '[Group]')]
     #[GQL\Description('All group memberships for the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
-    private $relations;
+    private Collection $relations;
 
-    /**
-     * Get id.
-     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * Set id.
-     */
     public function setId(string $id): self
     {
         $this->id = $id;
@@ -154,11 +113,6 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return (string) $this->getUsername();
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
     public function getName(): ?string
     {
         $name = \trim($this->getGivenName().' '.$this->getFamilyName());
@@ -211,9 +165,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return array_unique($roles);
     }
 
-    /**
-     * @param string[] $roles
-     */
+    /** @param string[] $roles */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -254,17 +206,11 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         // $this->plainPassword = null;
     }
 
-    /**
-     * Get OpenID Connect subject claim.
-     */
     public function getOidc(): ?string
     {
         return $this->oidc;
     }
 
-    /**
-     * Set the OpenID Connect subject claim.
-     */
     public function setOidc(?string $sub): self
     {
         $this->oidc = $sub;
@@ -286,12 +232,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    /**
-     * Gets the timestamp that the user requested a password reset.
-     *
-     * @return \DateTime|null
-     */
-    public function getPasswordRequestedAt()
+    public function getPasswordRequestedAt(): ?\DateTime
     {
         return $this->passwordRequestedAt;
     }
@@ -351,10 +292,8 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         $this->relations = new ArrayCollection();
     }
 
-    /**
-     * @return Collection<int, Registration>|null
-     */
-    public function getRegistrations()
+    /** @return Collection<int, Registration>|null */
+    public function getRegistrations(): ?Collection
     {
         return $this->registrations;
     }
@@ -381,9 +320,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    /**
-     * @return Collection<int, Group>
-     */
+    /** @return Collection<int, Group> */
     public function getRelations(): Collection
     {
         return $this->relations;
@@ -405,9 +342,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    /**
-     * @return Group[]
-     */
+    /** @return Group[] */
     public function getActiveGroups(): array
     {
         return $this->getRelations()->filter(fn (Group $group) => $group->isActive() ?? false)->toArray();

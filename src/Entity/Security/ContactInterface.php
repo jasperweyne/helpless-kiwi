@@ -2,9 +2,6 @@
 
 namespace App\Entity\Security;
 
-/**
- * An interface for contact details.
- */
 interface ContactInterface extends \Stringable
 {
     public function getName(): ?string;

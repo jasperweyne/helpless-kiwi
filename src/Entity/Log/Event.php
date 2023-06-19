@@ -13,68 +13,45 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'discr_idx', columns: ['discr'])]
 class Event
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
     #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
-    private $id;
+    private ?string $id;
 
-    /**
-     * @var ?class-string<AbstractEvent>
-     */
+    /** @var ?class-string<AbstractEvent> */
     #[ORM\Column(type: 'string', length: 100)]
     private $discr;
 
-    /**
-     * @var \DateTimeInterface
-     */
     #[ORM\Column(type: 'datetime')]
-    private $time;
+    private \DateTimeInterface $time;
 
-    /**
-     * @var ?string
-     */
     #[ORM\Column(type: 'string', nullable: true)]
-    private $objectId;
+    private ?string $objectId;
 
-    /**
-     * @var ?class-string<object>
-     */
+    /** @var ?class-string<object> */
     #[ORM\Column(type: 'string', nullable: true)]
     private $objectType;
 
-    /**
-     * @var ?LocalAccount
-     */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
     #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
-    private $person;
+    private ?LocalAccount $person = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'text')]
-    private $meta;
+    private string $meta;
 
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @return ?class-string<AbstractEvent>
-     */
+    /** @return ?class-string<AbstractEvent> */
     public function getDiscr(): ?string
     {
         return $this->discr;
     }
 
-    /**
-     * @param class-string<AbstractEvent> $discr
-     */
+    /** @param class-string<AbstractEvent> $discr */
     public function setDiscr(string $discr): self
     {
         $this->discr = $discr;
@@ -130,17 +107,13 @@ class Event
         return $this;
     }
 
-    /**
-     * @return ?class-string<object>
-     */
+    /** @return ?class-string<object> */
     public function getObjectType(): ?string
     {
         return $this->objectType;
     }
 
-    /**
-     * @param class-string<object> $objectType
-     */
+    /** @param class-string<object> $objectType */
     public function setObjectType(?string $objectType): self
     {
         $this->objectType = $objectType;

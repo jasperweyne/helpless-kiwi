@@ -10,9 +10,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\Entity]
 class TrustedClient implements PasswordAuthenticatedUserInterface
 {
-    /**
-     * @var Collection<int, ApiToken>
-     */
+    /** @var Collection<int, ApiToken> */
     #[ORM\OneToMany(targetEntity: ApiToken::class, mappedBy: 'client', cascade: ['remove'])]
     public Collection $tokens;
 
