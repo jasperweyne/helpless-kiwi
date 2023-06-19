@@ -185,7 +185,7 @@ class EventService
         return $this->populate($found);
     }
 
-    public function getIdentifier(object $entity): mixed
+    public function getIdentifier(object $entity): string
     {
         $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
@@ -193,7 +193,7 @@ class EventService
 
         assert($refl instanceof \ReflectionProperty);
 
-        return $refl->getValue($entity);
+        return (string) $refl->getValue($entity);
     }
 
     /**
