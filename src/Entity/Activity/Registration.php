@@ -15,8 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Registration
 {
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     private ?string $id;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\PriceOption", inversedBy: 'registrations')]

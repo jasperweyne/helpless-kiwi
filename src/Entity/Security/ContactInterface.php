@@ -2,7 +2,7 @@
 
 namespace App\Entity\Security;
 
-interface ContactInterface
+interface ContactInterface extends \Stringable
 {
     public function getName(): ?string;
 

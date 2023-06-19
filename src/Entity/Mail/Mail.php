@@ -10,8 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Mail
 {
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     private ?string $id;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]

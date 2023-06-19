@@ -11,8 +11,9 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 class Location
 {
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     private ?string $id;
 
     #[ORM\Column(type: 'string')]

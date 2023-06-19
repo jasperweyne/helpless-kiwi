@@ -15,8 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PriceOption
 {
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     private ?string $id;
 
     #[ORM\Column(type: 'string', length: 100, name: 'title')]

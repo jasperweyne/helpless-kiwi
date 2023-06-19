@@ -77,17 +77,8 @@ class EventService
 
         $object = $event->getEntity();
         if (null !== $object) {
-            if (!is_string($this->getIdentifier($object))) {
-                @trigger_error(
-                    'Entities with identifiers that are not of type string, are not supported yet.',
-                    E_USER_WARNING
-                );
-
-                return null;
-            }
-
             $entity
-                ->setObjectId($this->getIdentifier($object)) // todo: assumes id is string without assertion, fix this
+                ->setObjectId($this->getIdentifier($object))
                 ->setObjectType($this->getClassName($object));
         }
 
@@ -185,7 +176,7 @@ class EventService
         return $this->populate($found);
     }
 
-    public function getIdentifier(object $entity): mixed
+    public function getIdentifier(object $entity): string
     {
         $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
@@ -193,7 +184,12 @@ class EventService
 
         assert($refl instanceof \ReflectionProperty);
 
-        return $refl->getValue($entity);
+        $identifier = $refl->getValue($entity);
+        if (!is_string($identifier) && !($identifier instanceof \Stringable)) {
+            throw new \UnexpectedValueException('Entities with identifiers that are not of type string, are not supported yet.');
+        }
+
+        return (string) $identifier;
     }
 
     /**

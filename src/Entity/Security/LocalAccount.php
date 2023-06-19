@@ -18,8 +18,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface
 {
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     private ?string $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]

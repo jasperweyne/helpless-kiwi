@@ -16,6 +16,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
  * Class PasswordControllerTest.
  *
  * @author A-Daneel
+ *
  * @covers \App\Controller\Security\PasswordController
  */
 class PasswordControllerTest extends AuthWebTestCase
@@ -198,6 +199,6 @@ class PasswordControllerTest extends AuthWebTestCase
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', "Er is een mail met instructies gestuurd naar ${inValidEmail}");
+        self::assertSelectorTextContains('.container', "Er is een mail met instructies gestuurd naar {$inValidEmail}");
     }
 }
