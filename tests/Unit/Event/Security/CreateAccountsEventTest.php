@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class CreateAccountsEventTest.
  *
- * @covers \App\Entity\Security\CreateAccountsEvent
+ * @covers \App\Event\CreateAccountsEvent
  */
 class CreateAccountsEventTest extends TestCase
 {
