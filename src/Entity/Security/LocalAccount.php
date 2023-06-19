@@ -21,8 +21,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
      * @var ?string
      */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     private $id;
 
     /**
