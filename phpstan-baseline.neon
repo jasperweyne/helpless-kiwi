@@ -11,7 +11,22 @@ parameters:
 			path: src/Controller/Admin/EventController.php
 
 		-
+			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$deadline type mapping mismatch\\: property can contain DateTime\\|null but database expects DateTimeInterface\\.$#"
+			count: 1
+			path: src/Entity/Activity/Activity.php
+
+		-
+			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$end type mapping mismatch\\: property can contain DateTime\\|null but database expects DateTimeInterface\\.$#"
+			count: 1
+			path: src/Entity/Activity/Activity.php
+
+		-
 			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$imageFile \\(Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\File\\) does not accept Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\File\\|null\\.$#"
+			count: 1
+			path: src/Entity/Activity/Activity.php
+
+		-
+			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$start type mapping mismatch\\: property can contain DateTime\\|null but database expects DateTimeInterface\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
 

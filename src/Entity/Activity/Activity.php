@@ -94,7 +94,7 @@ class Activity
     #[Assert\Expression('value >= this.getStart()', message: 'Een activiteit kan niet eindigen voor de start.')]
     private ?\DateTime $end = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: 'datetime')]
     #[GQL\Field(type: 'DateTimeScalar!')]
     #[GQL\Description('The final date and time users may (de)register for this activity.')]
     #[Assert\NotBlank]
