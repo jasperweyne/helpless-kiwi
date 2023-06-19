@@ -6,43 +6,27 @@ use App\Calendar\ICalProvider;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
+use App\Event\Security\CreateAccountsEvent;
 use App\Mail\Attachment;
 use App\Mail\MailService;
+use App\Security\PasswordResetService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Security;
 
 class MailNotificationSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var \Twig\Environment
-     */
-    private $template;
-
-    /**
-     * @var MailService
-     */
-    private $mailer;
-
-    /**
-     * @var ICalProvider
-     */
-    private $calendar;
-
-    /**
      * @var ?LocalAccount
      */
     private $user;
 
     public function __construct(
-        \Twig\Environment $template,
-        MailService $mailer,
-        ICalProvider $calendar,
-        Security $security
+        private \Twig\Environment $template,
+        private MailService $mailer,
+        private ICalProvider $calendar,
+        private PasswordResetService $passwordResetService,
+        Security $security,
     ) {
-        $this->template = $template;
-        $this->mailer = $mailer;
-        $this->calendar = $calendar;
-
         $user = $security->getUser();
         assert($user instanceof LocalAccount);
         $this->user = $user;
@@ -57,6 +41,9 @@ class MailNotificationSubscriber implements EventSubscriberInterface
             ],
             RegistrationRemovedEvent::class => [
                 ['notifyRegistrationRemoved', -10],
+            ],
+            CreateAccountsEvent::class => [
+                ['notifyCreateAccount', -10],
             ],
         ];
     }
@@ -118,5 +105,30 @@ class MailNotificationSubscriber implements EventSubscriberInterface
                 'by' => $this->user,
             ])
         );
+    }
+
+    public function notifyCreateAccount(CreateAccountsEvent $event): void
+    {
+        foreach ($event->accounts as $account) {
+            // don't notify accounts that can already login
+            if (null !== $account->getOidc() || null !== $account->getPassword()) {
+                continue;
+            }
+
+            // generate a token that doesn't expire
+            $token = $this->passwordResetService->generatePasswordRequestToken($account, false);
+            $account->setPasswordRequestedAt(null);
+
+            // send an email
+            $this->mailer->message(
+                [$account],
+                'Jouw account',
+                $this->template->render('email/newaccount.html.twig', [
+                    'name' => $account->getGivenName(),
+                    'account' => $account,
+                    'token' => $token,
+                ])
+            );
+        }
     }
 }

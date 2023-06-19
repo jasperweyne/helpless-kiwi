@@ -15,8 +15,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class CreateLocalAccountCommandTest extends AuthWebTestCase
 {
-    /** @var EntityManagerInterface */
-    protected $em;
+    protected EntityManagerInterface $em;
 
     /**
      * {@inheritdoc}
