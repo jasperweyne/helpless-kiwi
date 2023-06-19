@@ -9,25 +9,20 @@ use App\Entity\Activity\Registration;
 use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
 use App\Repository\RegistrationRepository;
-use DateTime;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class RegistrationTest.
  *
  * @covers \App\Entity\Activity\Registration
+ *
+ * @group entities
  */
 class RegistrationTest extends KernelTestCase
 {
-    /**
-     * @var Registration
-     */
-    protected $registration;
+    protected Registration $registration;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,9 +32,7 @@ class RegistrationTest extends KernelTestCase
         $this->registration = new Registration();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -50,7 +43,7 @@ class RegistrationTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -60,7 +53,7 @@ class RegistrationTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->registration->setId($expected);
@@ -70,7 +63,7 @@ class RegistrationTest extends KernelTestCase
     public function testGetOption(): void
     {
         $expected = new PriceOption();
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('option');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -80,7 +73,7 @@ class RegistrationTest extends KernelTestCase
     public function testSetOption(): void
     {
         $expected = new PriceOption();
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('option');
         $property->setAccessible(true);
         $this->registration->setOption($expected);
@@ -91,7 +84,7 @@ class RegistrationTest extends KernelTestCase
     {
         $expected = new LocalAccount();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -102,7 +95,7 @@ class RegistrationTest extends KernelTestCase
     {
         $expected = new LocalAccount();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $this->registration->setPerson($expected);
@@ -113,7 +106,7 @@ class RegistrationTest extends KernelTestCase
     {
         $expected = new ExternalRegistrant();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $this->registration->setPerson($expected);
@@ -123,7 +116,7 @@ class RegistrationTest extends KernelTestCase
     public function testGetActivity(): void
     {
         $expected = new Activity();
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('activity');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -133,7 +126,7 @@ class RegistrationTest extends KernelTestCase
     public function testSetActivity(): void
     {
         $expected = new Activity();
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('activity');
         $property->setAccessible(true);
         $this->registration->setActivity($expected);
@@ -143,7 +136,7 @@ class RegistrationTest extends KernelTestCase
     public function testIsReserveTrue(): void
     {
         $expected = true;
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('reserve_position');
         $property->setAccessible(true);
         $reserveOrder = Order::create(RegistrationRepository::MINORDER());
@@ -160,7 +153,7 @@ class RegistrationTest extends KernelTestCase
     public function testGetReservePosition(): void
     {
         $expected = null;
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('reserve_position');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -170,7 +163,7 @@ class RegistrationTest extends KernelTestCase
     public function testSetReservePosition(): void
     {
         $expected = 'aaaaaaaaaaaaaaaa';
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('reserve_position');
         $property->setAccessible(true);
         $counter = Order::create(RegistrationRepository::MINORDER());
@@ -180,8 +173,8 @@ class RegistrationTest extends KernelTestCase
 
     public function testGetNewDate(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Registration::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('newdate');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -190,8 +183,8 @@ class RegistrationTest extends KernelTestCase
 
     public function testSetNewDate(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Registration::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('newdate');
         $property->setAccessible(true);
         $this->registration->setNewDate($expected);
@@ -200,8 +193,8 @@ class RegistrationTest extends KernelTestCase
 
     public function testGetDeleteDate(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Registration::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('deletedate');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -210,8 +203,8 @@ class RegistrationTest extends KernelTestCase
 
     public function testSetDeleteDate(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Registration::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('deletedate');
         $property->setAccessible(true);
         $this->registration->setDeleteDate($expected);
@@ -221,7 +214,7 @@ class RegistrationTest extends KernelTestCase
     public function testGetPresent(): void
     {
         $expected = null;
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('present');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -231,7 +224,7 @@ class RegistrationTest extends KernelTestCase
     public function testSetPresent(): void
     {
         $expected = null;
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('present');
         $property->setAccessible(true);
         $this->registration->setPresent($expected);
@@ -241,7 +234,7 @@ class RegistrationTest extends KernelTestCase
     public function testGetComment(): void
     {
         $expected = 'TestComment';
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('comment');
         $property->setAccessible(true);
         $property->setValue($this->registration, $expected);
@@ -251,7 +244,7 @@ class RegistrationTest extends KernelTestCase
     public function testSetComment(): void
     {
         $expected = 'TestComment';
-        $property = (new ReflectionClass(Registration::class))
+        $property = (new \ReflectionClass(Registration::class))
             ->getProperty('comment');
         $property->setAccessible(true);
         $this->registration->setComment($expected);

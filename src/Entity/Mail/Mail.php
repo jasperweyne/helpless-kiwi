@@ -9,50 +9,31 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Mail
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
-    private $id;
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var ?LocalAccount
-     */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
-    private $person;
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private ?LocalAccount $person = null;
 
-    /**
-     * @var Collection<int,Recipient>
-     */
+    /** @var Collection<int,Recipient> */
     #[ORM\OneToMany(targetEntity: "App\Entity\Mail\Recipient", mappedBy: 'mail')]
-    private $recipients;
+    private Collection $recipients;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string')]
-    private $title;
+    private string $title;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'text')]
-    private $content;
+    private string $content;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string', length: 255)]
-    private $sender;
+    private string $sender;
 
-    /**
-     * @var \DateTime
-     */
     #[ORM\Column(type: 'datetime')]
-    private $sentAt;
+    private \DateTime $sentAt;
 
     public function getId(): ?string
     {
@@ -107,11 +88,7 @@ class Mail
         return $this;
     }
 
-    /**
-     * Get recipients options.
-     *
-     * @return Collection<int,Recipient>
-     */
+    /** @return Collection<int,Recipient> */
     public function getRecipients(): Collection
     {
         return $this->recipients;

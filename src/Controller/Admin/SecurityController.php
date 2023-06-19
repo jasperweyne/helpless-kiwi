@@ -3,15 +3,18 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Security\LocalAccount;
+use App\Event\Security\CreateAccountsEvent;
+use App\Event\Security\RemoveAccountsEvent;
+use App\Form\Security\Import\ImportAccountsFlow;
+use App\Form\Security\Import\ImportedAccounts;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
-use App\Mail\MailService;
-use App\Security\PasswordResetService;
 use App\Template\Attribute\MenuItem;
 use App\Template\Attribute\SubmenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,10 +51,47 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * Import multiple accounts, overriding the current list of accoutns.
+     */
+    #[Route('/import', name: 'import', methods: ['GET', 'POST'])]
+    public function importAction(ImportAccountsFlow $flow, EventDispatcherInterface $dispatcher): Response
+    {
+        $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
+        $formData = new ImportedAccounts($accounts);
+
+        $flow->bind($formData);
+        $form = $flow->createForm();
+
+        if ($flow->isValid($form)) {
+            $flow->saveCurrentStepData($form);
+
+            if ($flow->nextStep()) {
+                // form for the next step
+                $form = $flow->createForm();
+            } else {
+                // flow finished
+                $formData->executeImport($dispatcher, $this->em);
+
+                $flow->reset(); // remove step data from the session
+
+                $this->addFlash('success', 'Accounts succesvol geimporteerd');
+
+                return $this->redirectToRoute('admin_security_index');
+            }
+        }
+
+        return $this->render('admin/security/import.html.twig', [
+            'form' => $form->createView(),
+            'flow' => $flow,
+            'data' => $formData,
+        ]);
+    }
+
+    /**
      * Creates a new LocalAccount.
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function newAction(Request $request, PasswordResetService $passwordReset, MailService $mailer): Response
+    public function newAction(Request $request, EventDispatcherInterface $dispatcher): Response
     {
         $account = new LocalAccount();
 
@@ -59,19 +99,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $token = $passwordReset->generatePasswordRequestToken($account);
-            $account->setPasswordRequestedAt(null);
-
-            $this->em->persist($account);
-            $this->em->flush();
-
-            $body = $this->renderView('email/newaccount.html.twig', [
-                'name' => $account->getGivenName(),
-                'account' => $account,
-                'token' => $token,
-            ]);
-
-            $mailer->message([$account], 'Jouw account', $body);
+            $dispatcher->dispatch(new CreateAccountsEvent([$account]));
 
             return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
         }
@@ -123,14 +151,13 @@ class SecurityController extends AbstractController
      * Delete selected LocalAccount.
      */
     #[Route('/{id}/delete', name: 'delete')]
-    public function deleteAction(Request $request, LocalAccount $account): Response
+    public function deleteAction(Request $request, LocalAccount $account, EventDispatcherInterface $dispatcher): Response
     {
         $form = $this->createDeleteForm($account);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->remove($account);
-            $this->em->flush();
+            $dispatcher->dispatch(new RemoveAccountsEvent([$account]));
 
             return $this->redirectToRoute('admin_security_index');
         }

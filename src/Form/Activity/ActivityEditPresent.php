@@ -33,7 +33,7 @@ class ActivityEditPresent extends AbstractType
         foreach ($registrationView->children as $childView) {
             $registration = $childView->vars['data'];
             assert($registration instanceof Registration);
-            $childView->vars['label'] = strval($registration->getPerson());
+            $childView->vars['label'] = (string) $registration->getPerson();
         }
 
         // Sort the children by label

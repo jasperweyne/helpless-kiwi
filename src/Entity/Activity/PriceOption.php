@@ -14,85 +14,58 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[GQL\Description('A registration option for an activity.')]
 class PriceOption
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
-    private $id;
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string', length: 100, name: 'title')]
     #[Assert\NotBlank]
     #[GQL\Field(type: 'String!')]
     #[GQL\Description('The name of the registration option.')]
-    private $name;
+    private string $name;
 
-    /**
-     * @var ?Activity
-     */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\Activity", inversedBy: 'options')]
     #[ORM\JoinColumn(name: 'activity', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[GQL\Field(type: 'Activity!')]
     #[GQL\Description('The activity associated with this registration option.')]
-    private $activity;
+    private ?Activity $activity = null;
 
-    /**
-     * @var ?Group
-     */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
     #[ORM\JoinColumn(name: 'target', referencedColumnName: 'id', nullable: true)]
     #[GQL\Field(type: 'Group')]
     #[GQL\Description('The target group of users that can register for this registration option.')]
-    private $target;
+    private ?Group $target;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(type: 'integer')]
     #[GQL\Field(type: 'Int')]
-    #[GQL\Description('The price of this option, stored in euro-cents.')]
-    private $price;
+    #[GQL\Description('The price int of this option, stored in euro-cents.')]
+    private int $price;
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     #[ORM\Column(type: 'json')]
-    private $details;
+    private array $details;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string')]
-    private $confirmationMsg;
+    private string $confirmationMsg;
 
-    /**
-     * @var Collection<int, Registration>
-     */
+    /** @var Collection<int, Registration> */
     #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'option')]
     #[GQL\Field(type: '[Registration]')]
     #[GQL\Description('The list of registrations for this price option.')]
-    private $registrations;
+    private Collection $registrations;
 
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
     }
 
-    /**
-     * Get id.
-     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * Set id.
-     */
     public function setId(string $id): self
     {
         $this->id = $id;
@@ -100,17 +73,11 @@ class PriceOption
         return $this;
     }
 
-    /**
-     * Get name.
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Set name.
-     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -118,17 +85,11 @@ class PriceOption
         return $this;
     }
 
-    /**
-     * Get target.
-     */
     public function getTarget(): ?Group
     {
         return $this->target;
     }
 
-    /**
-     * Set target.
-     */
     public function setTarget(?Group $target): self
     {
         $this->target = $target;
@@ -148,17 +109,13 @@ class PriceOption
         return $this;
     }
 
-    /**
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     public function getDetails(): ?array
     {
         return $this->details;
     }
 
-    /**
-     * @param array<string, string> $details
-     */
+    /** @param array<string, string> $details */
     public function setDetails(array $details): self
     {
         $this->details = $details;
@@ -195,9 +152,7 @@ class PriceOption
         return $this->name.' €'.number_format($this->price / 100, 2, '.', '');
     }
 
-    /**
-     * @return Collection<int, Registration>
-     */
+    /** @return Collection<int, Registration> */
     public function getRegistrations(): Collection
     {
         return $this->registrations;

@@ -10,21 +10,16 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 #[GQL\Description('A physical location where activities are organized.')]
 class Location
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
-    private $id;
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string')]
     #[GQL\Field(type: 'String')]
     #[GQL\Description('The address of the location.')]
-    private $address;
+    private string $address;
 
     public function getId(): ?string
     {

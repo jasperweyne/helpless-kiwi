@@ -4,25 +4,20 @@ namespace Tests\Unit\Entity\Activity;
 
 use App\Entity\Activity\ExternalRegistrant;
 use App\Entity\Group\Group;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class ExternalRegistrant.
  *
  * @covers \App\Entity\Activity\ExternalRegistrant
+ *
  * @group entities
  */
 class ExternalRegistrantTest extends KernelTestCase
 {
-    /**
-     * @var ExternalRegistrant
-     */
-    protected $exteralRegistrant;
+    protected ExternalRegistrant $exteralRegistrant;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -31,9 +26,7 @@ class ExternalRegistrantTest extends KernelTestCase
         $this->exteralRegistrant = new ExternalRegistrant();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -44,7 +37,7 @@ class ExternalRegistrantTest extends KernelTestCase
     public function testGetEmail(): void
     {
         $expected = 'test@email.kiwi';
-        $property = (new ReflectionClass(ExternalRegistrant::class))
+        $property = (new \ReflectionClass(ExternalRegistrant::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->exteralRegistrant, $expected);
@@ -54,7 +47,7 @@ class ExternalRegistrantTest extends KernelTestCase
     public function testSetEmail(): void
     {
         $expected = 'test@email.kiwi';
-        $property = (new ReflectionClass(ExternalRegistrant::class))
+        $property = (new \ReflectionClass(ExternalRegistrant::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $this->exteralRegistrant->setEmail($expected);
@@ -64,7 +57,7 @@ class ExternalRegistrantTest extends KernelTestCase
     public function testGetName(): void
     {
         $expected = 'Chase';
-        $property = (new ReflectionClass(ExternalRegistrant::class))
+        $property = (new \ReflectionClass(ExternalRegistrant::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->exteralRegistrant, $expected);
@@ -74,7 +67,7 @@ class ExternalRegistrantTest extends KernelTestCase
     public function testSetName(): void
     {
         $expected = 'Chase';
-        $property = (new ReflectionClass(ExternalRegistrant::class))
+        $property = (new \ReflectionClass(ExternalRegistrant::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $this->exteralRegistrant->setName($expected);
@@ -84,7 +77,7 @@ class ExternalRegistrantTest extends KernelTestCase
     public function testGetCanonicalNameAndEmail(): void
     {
         $expected = 'Chase@kiwi.com';
-        $property = (new ReflectionClass(ExternalRegistrant::class))
+        $property = (new \ReflectionClass(ExternalRegistrant::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->exteralRegistrant, $expected);
@@ -94,7 +87,7 @@ class ExternalRegistrantTest extends KernelTestCase
     public function testGetCanonicalOnlyName(): void
     {
         $expected = 'Chase';
-        $property = (new ReflectionClass(ExternalRegistrant::class))
+        $property = (new \ReflectionClass(ExternalRegistrant::class))
             ->getProperty('name');
         $property->setAccessible(true);
         $property->setValue($this->exteralRegistrant, $expected);
@@ -104,7 +97,7 @@ class ExternalRegistrantTest extends KernelTestCase
     public function testGetCanonicalOnlyEmail(): void
     {
         $expected = 'Chase@kiwi.com';
-        $property = (new ReflectionClass(ExternalRegistrant::class))
+        $property = (new \ReflectionClass(ExternalRegistrant::class))
             ->getProperty('email');
         $property->setAccessible(true);
         $property->setValue($this->exteralRegistrant, $expected);

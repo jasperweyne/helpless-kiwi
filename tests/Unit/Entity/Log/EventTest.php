@@ -5,25 +5,20 @@ namespace Tests\Unit\Entity\Log;
 use App\Entity\Log\Event;
 use App\Entity\Security\LocalAccount;
 use App\Log\AbstractEvent;
-use DateTime;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class EventTest.
  *
  * @covers \App\Entity\Log\Event
+ *
+ * @group entities
  */
 class EventTest extends KernelTestCase
 {
-    /**
-     * @var Event
-     */
-    protected $event;
+    protected Event $event;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,9 +28,7 @@ class EventTest extends KernelTestCase
         $this->event = new Event();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -46,7 +39,7 @@ class EventTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
@@ -56,7 +49,7 @@ class EventTest extends KernelTestCase
     public function testGetDiscr(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('discr');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
@@ -67,7 +60,7 @@ class EventTest extends KernelTestCase
     public function testSetDiscr(): void
     {
         $expected = AbstractEvent::class;
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('discr');
         $property->setAccessible(true);
         $this->event->setDiscr($expected);
@@ -76,8 +69,8 @@ class EventTest extends KernelTestCase
 
     public function testGetTime(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Event::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('time');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
@@ -86,8 +79,8 @@ class EventTest extends KernelTestCase
 
     public function testSetTime(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Event::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('time');
         $property->setAccessible(true);
         $this->event->setTime($expected);
@@ -97,7 +90,7 @@ class EventTest extends KernelTestCase
     public function testGetMeta(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('meta');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
@@ -107,7 +100,7 @@ class EventTest extends KernelTestCase
     public function testSetMeta(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('meta');
         $property->setAccessible(true);
         $this->event->setMeta($expected);
@@ -118,7 +111,7 @@ class EventTest extends KernelTestCase
     {
         $expected = new LocalAccount();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
@@ -129,7 +122,7 @@ class EventTest extends KernelTestCase
     {
         $expected = new LocalAccount();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $this->event->setPerson($expected);
@@ -139,7 +132,7 @@ class EventTest extends KernelTestCase
     public function testGetObjectId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('objectId');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
@@ -149,7 +142,7 @@ class EventTest extends KernelTestCase
     public function testSetObjectId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('objectId');
         $property->setAccessible(true);
         $this->event->setObjectId($expected);
@@ -159,7 +152,7 @@ class EventTest extends KernelTestCase
     public function testGetObjectType(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('objectType');
         $property->setAccessible(true);
         $property->setValue($this->event, $expected);
@@ -170,7 +163,7 @@ class EventTest extends KernelTestCase
     {
         /** @var class-string<object> $expected */
         $expected = '42';
-        $property = (new ReflectionClass(Event::class))
+        $property = (new \ReflectionClass(Event::class))
             ->getProperty('objectType');
         $property->setAccessible(true);
         $this->event->setObjectType($expected);
