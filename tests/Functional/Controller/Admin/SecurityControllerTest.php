@@ -76,7 +76,7 @@ class SecurityControllerTest extends AuthWebTestCase
         // first Act
         $crawler = $this->client->request('GET', $this->endpoint.'/import');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $form = $crawler->selectButton('next')->form();
+        $form = $crawler->selectButton('verder')->form();
         $form->setValues([
             'upload_csv[file]' => $csvFile->getPathname(),
         ]);
@@ -90,7 +90,7 @@ class SecurityControllerTest extends AuthWebTestCase
         );
 
         // second Act
-        $form = $crawler->selectButton('finish')->form();
+        $form = $crawler->selectButton('afronden')->form();
         $crawler = $this->client->submit($form);
 
         // second Assert
