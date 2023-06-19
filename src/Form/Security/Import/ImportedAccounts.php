@@ -50,7 +50,7 @@ class ImportedAccounts
         }
 
         // Updates are scheduled by doctrine automatically
-        // Possibly flush scheduled changes to database
+        // Possibly flush scheduled account changes to database
         $em->flush();
     }
 
