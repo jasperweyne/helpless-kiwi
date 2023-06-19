@@ -80,13 +80,13 @@ class Activity
     #[Assert\NotBlank]
     private string $color;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: 'datetime')]
     #[GQL\Field(type: 'DateTimeScalar!')]
     #[GQL\Description('The date and time the activity starts.')]
     #[Assert\NotBlank]
     private ?\DateTime $start = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: 'datetime')]
     #[GQL\Field(type: 'DateTimeScalar!')]
     #[GQL\Description('The date and time the activity ends.')]
     #[Assert\NotBlank]
