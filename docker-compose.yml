@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   database:
-    image: mariadb:10.7
+    image: mariadb:10.11
     container_name: kiwi_database-dev
     restart: on-failure
     environment:
