@@ -2,22 +2,22 @@
 
 namespace Tests\Unit\Repository;
 
-use App\Repository\RegistrationRepository;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
+use App\Repository\RegistrationRepository;
 use App\Tests\Database\Activity\ActivityFixture;
 use App\Tests\Database\Activity\RegistrationFixture;
 use App\Tests\Database\Group\GroupFixture;
 use App\Tests\Database\Group\RelationFixture;
 use App\Tests\Database\Security\LocalAccountFixture;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ObjectManager;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Doctrine\Persistence\ObjectManager;
 
 /**
  * Class RegistrationRepositoryTest.
@@ -116,15 +116,14 @@ class RegistrationRepositoryTest extends KernelTestCase
             return $registration->isReserve();
         })->map(function (Registration $registration) {
             return strval($registration->getReservePosition());
-        });
+        })->toArray();
 
         $prepend = strval($this->em->getRepository(Registration::class)->findPrependPosition($activity));
         $registrations[] = $prepend;
 
         // sort positions
-        $regArray = $registrations->toArray();
-        sort($regArray);
-        $registrations = new ArrayCollection($regArray);
+        sort($registrations);
+        $registrations = new ArrayCollection($registrations);
 
         // check that prepend position is first when list is ordered
         self::assertSame($prepend, $registrations->first());
@@ -140,15 +139,14 @@ class RegistrationRepositoryTest extends KernelTestCase
             return $registration->isReserve();
         })->map(function (Registration $registration) {
             return strval($registration->getReservePosition());
-        });
+        })->toArray();
 
         $append = strval($this->em->getRepository(Registration::class)->findAppendPosition($activity));
         $registrations[] = $append;
 
         // sort positions
-        $regArray = $registrations->toArray();
-        sort($regArray);
-        $registrations = new ArrayCollection($regArray);
+        sort($registrations);
+        $registrations = new ArrayCollection($registrations);
 
         // check that prepend position is first when list is ordered
         self::assertSame($append, $registrations->last());
