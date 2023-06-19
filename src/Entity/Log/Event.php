@@ -33,8 +33,8 @@ class Event
     private $objectType;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
-    private ?LocalAccount $person;
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private ?LocalAccount $person = null;
 
     #[ORM\Column(type: 'text')]
     private string $meta;

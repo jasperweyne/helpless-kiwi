@@ -99,28 +99,6 @@
                         </tbody>
                     </table>
             </div>
-            {% if activity.reserveRegistrations|length > 0 %}
-            <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Reservelijst</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for registration in activity.reserveRegistrations|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
-                            <tr>
-                                <td>{{ registration }}</td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td>Geen aanmeldingen reserve.</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-            </div>
-            {% endif %}
         </div>
         {% endif %}
     </div>

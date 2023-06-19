@@ -15,8 +15,8 @@ class Mail
     private ?string $id;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
-    private ?LocalAccount $person;
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private ?LocalAccount $person = null;
 
     /** @var Collection<int,Recipient> */
     #[ORM\OneToMany(targetEntity: "App\Entity\Mail\Recipient", mappedBy: 'mail')]

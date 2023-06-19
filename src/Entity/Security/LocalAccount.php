@@ -67,7 +67,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     /** @var Collection<int, Group> */
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'relations')]
     #[ORM\JoinTable('relation')]
-    #[ORM\JoinColumn('person_id')]
+    #[ORM\JoinColumn('person_id', onDelete: 'CASCADE')]
     #[GQL\Field(type: '[Group]')]
     #[GQL\Description('All group memberships for the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
@@ -180,12 +180,12 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return in_array('ROLE_ADMIN', $this->getRoles(), true);
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 

@@ -74,7 +74,7 @@ class ActivityRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = false')
-            ->orderBy('p.start', 'ASC')
+            ->orderBy('p.start', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -86,7 +86,7 @@ class ActivityRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = true')
-            ->orderBy('p.start', 'ASC')
+            ->orderBy('p.start', 'DESC')
             ->getQuery()
             ->getResult();
     }

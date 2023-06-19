@@ -27,7 +27,7 @@ class Registration
     private ?PriceOption $option = null;
 
     #[ORM\ManyToOne(targetEntity: LocalAccount::class, inversedBy: 'registrations')]
-    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     #[GQL\Field(type: 'LocalAccount')]
     #[GQL\Description('The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")]
