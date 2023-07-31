@@ -225,6 +225,7 @@ class PriceOptionTest extends KernelTestCase
 
     public function testClone(): void
     {
+        $this->priceOption->setId('test'); // make sure id has value assigned
         $copy = clone $this->priceOption;
 
         self::assertNotSame($copy->getId(), $this->priceOption->getId());
