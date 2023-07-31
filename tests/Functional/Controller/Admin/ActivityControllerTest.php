@@ -194,6 +194,37 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals($newName, $newActivity->getName());
     }
 
+    public function testCloneAction(): void
+    {
+        // Arrange
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+        $newName = 'copy';
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/clone");
+        $form = $crawler->selectButton('Toevoegen')->form();
+        $form['activity_edit[name]'] = $newName;
+        $form['activity_edit[deadline][date]'] = '2016-03-15';
+        $form['activity_edit[deadline][time]'] = '22:59';
+        $form['activity_edit[start][date]'] = '2016-03-15';
+        $form['activity_edit[start][time]'] = '22:59';
+        $form['activity_edit[end][date]'] = '2016-03-15';
+        $form['activity_edit[end][time]'] = '22:59';
+        $crawler = $this->client->submit($form);
+
+        self::assertSelectorTextContains('.container', 'Activiteit '.$newName);
+        $newActivity = $this->em->getRepository(Activity::class)->findOneBy(['name' => $newName]);
+
+        // Assert
+        if (null == $newActivity) {
+            self::fail();
+        }
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals($newName, $newActivity->getName());
+        self::assertNotSame($id, $newActivity->getId());
+    }
+
     public function testImageAction(): void
     {
         // Arrange

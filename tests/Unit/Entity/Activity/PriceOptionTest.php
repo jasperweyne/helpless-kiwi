@@ -222,4 +222,13 @@ class PriceOptionTest extends KernelTestCase
         $this->priceOption->removeRegistration($registration);
         self::assertNotSame($registration, $property->getValue($this->priceOption));
     }
+
+    public function testClone(): void
+    {
+        $copy = clone $this->priceOption;
+
+        self::assertNotSame($copy->getId(), $this->priceOption->getId());
+        self::assertEmpty($copy->getRegistrations());
+        self::assertNull($copy->getActivity());
+    }
 }

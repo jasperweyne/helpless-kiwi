@@ -634,4 +634,33 @@ class ActivityTest extends KernelTestCase
         $visibleAfter->setValue($this->activity, new \DateTime('yesterday'));
         self::assertTrue($this->activity->isVisibleBy($value));
     }
+
+    public function testClone(): void
+    {
+        $copy = clone $this->activity;
+
+        self::assertNotSame($copy->getId(), $this->activity->getId());
+
+        self::assertSame($copy->getName(), $this->activity->getName());
+        self::assertSame($copy->getDescription(), $this->activity->getDescription());
+        self::assertSame($copy->getAuthor(), $this->activity->getAuthor());
+        self::assertSame($copy->getCapacity(), $this->activity->getCapacity());
+        self::assertSame($copy->getAuthor(), $this->activity->getAuthor());
+        self::assertSame($copy->getTarget(), $this->activity->getTarget());
+
+        self::assertSameSize($copy->getOptions(), $this->activity->getOptions());
+        self::assertEmpty($copy->getOptions()->filter(fn (PriceOption $o) => $o->getActivity() !== $copy));
+
+        self::assertEmpty($copy->getRegistrations());
+        self::assertEmpty($copy->getCurrentRegistrations());
+        self::assertEmpty($copy->getDeregistrations());
+        self::assertEmpty($copy->getReserveRegistrations());
+
+        self::assertFalse($copy->getArchived());
+        self::assertNull($copy->getStart());
+        self::assertNull($copy->getEnd());
+        self::assertNull($copy->getDeadline());
+        self::assertNull($copy->getVisibleAfter());
+        self::assertNull($copy->getPresent());
+    }
 }
