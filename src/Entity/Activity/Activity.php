@@ -61,7 +61,7 @@ class Activity
     #[GQL\Field(type: 'Location!')]
     #[GQL\Description('The (physical) location of the activity.')]
     #[Assert\NotBlank]
-    private ?Location $location;
+    private ?Location $location = null;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
     #[ORM\JoinColumn(name: 'primairy_author', referencedColumnName: 'id', nullable: true)]
