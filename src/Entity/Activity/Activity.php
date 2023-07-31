@@ -527,4 +527,24 @@ class Activity
 
         return $this->isVisible($groups);
     }
+
+    public function __clone()
+    {
+        $this->id = null;
+        $this->archived = false;
+
+        // Clone or reset nested fields
+        $this->location = null !== $this->location ? clone $this->location : null;
+        $this->options = new ArrayCollection($this->options->map(fn (PriceOption $o) => (clone $o)->setActivity($this))->toArray());
+
+        // Reset date/time fields
+        $this->start = null;
+        $this->end = null;
+        $this->deadline = null;
+        $this->visibleAfter = null;
+
+        // Reset registration related fields
+        $this->registrations = new ArrayCollection();
+        $this->present = null;
+    }
 }
