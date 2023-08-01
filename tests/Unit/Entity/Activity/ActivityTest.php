@@ -637,7 +637,14 @@ class ActivityTest extends KernelTestCase
 
     public function testClone(): void
     {
-        $this->activity->setId('test'); // make sure id has value assigned
+        // initialize activity
+        $this->activity
+            ->setName('test')
+            ->setDescription('test')
+            ->setTarget(new Group())
+            ->setId('test')
+        ;
+
         $copy = clone $this->activity;
 
         self::assertNotSame($copy->getId(), $this->activity->getId());
