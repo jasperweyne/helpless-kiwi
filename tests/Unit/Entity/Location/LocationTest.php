@@ -73,4 +73,12 @@ class LocationTest extends KernelTestCase
         $this->location->setAddress($expected);
         self::assertSame($expected, $property->getValue($this->location));
     }
+
+    public function testClone(): void
+    {
+        $this->location->setId('test'); // make sure id has value assigned
+        $copy = clone $this->location;
+
+        self::assertNotSame($copy->getId(), $this->location->getId());
+    }
 }

@@ -7,6 +7,7 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
+use App\Form\Activity\ActivityEditType;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
@@ -193,6 +194,42 @@ class ActivityController extends AbstractController
         return $this->render('admin/activity/edit.html.twig', [
             'activity' => $activity,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Clones an existing a activity into a new activity entity.
+     */
+    #[Route('/{id}/clone', name: 'clone', methods: ['GET', 'POST'])]
+    public function cloneAction(Request $request, Activity $base): Response
+    {
+        $activity = clone $base;
+
+        $form = $this->createForm(ActivityEditType::class, $activity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $location = $activity->getLocation();
+            assert(null !== $location);
+
+            $this->em->persist($activity);
+            $this->em->persist($location);
+            foreach ($activity->getOptions() as $option) {
+                $this->em->persist($option);
+            }
+
+            $this->em->flush();
+
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['id' => $activity->getId()]
+            );
+        }
+
+        return $this->render('admin/activity/new.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+            'page_title' => 'Activiteit kopiëren',
         ]);
     }
 

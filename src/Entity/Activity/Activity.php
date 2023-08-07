@@ -61,7 +61,7 @@ class Activity
     #[GQL\Field(type: 'Location!')]
     #[GQL\Description('The (physical) location of the activity.')]
     #[Assert\NotBlank]
-    private ?Location $location;
+    private ?Location $location = null;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
     #[ORM\JoinColumn(name: 'primairy_author', referencedColumnName: 'id', nullable: true)]
@@ -526,5 +526,26 @@ class Activity
         }
 
         return $this->isVisible($groups);
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
+        $this->archived = false;
+
+        // Clone or reset nested fields
+        $clonedOptions = $this->options->map(fn (PriceOption $o) => (clone $o)->setActivity($this));
+        $this->options = new ArrayCollection($clonedOptions->toArray());
+        $this->location = null !== $this->location ? clone $this->location : null;
+
+        // Reset date/time fields
+        $this->start = null;
+        $this->end = null;
+        $this->deadline = null;
+        $this->visibleAfter = null;
+
+        // Reset registration related fields
+        $this->registrations = new ArrayCollection();
+        $this->present = null;
     }
 }
