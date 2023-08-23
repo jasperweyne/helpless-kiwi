@@ -99,7 +99,7 @@ class ActivityController extends AbstractController
     {
         $activities = $this
             ->activitiesRepo
-            ->findAuthor($this->groupsRepo->findSubGroupsFor($group));
+            ->findAuthor([$group, ...$this->groupsRepo->findSubGroupsFor($group)]);
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
