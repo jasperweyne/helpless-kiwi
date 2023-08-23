@@ -25,10 +25,10 @@ class WaitlistSubscriber implements EventSubscriberInterface
         // return the subscribed events, their methods and priorities
         return [
             RegistrationAddedEvent::class => [
-                ['removeWaitlistSpots', 0],
+                ['removeWaitlistSpots', 10],
             ],
             RegistrationRemovedEvent::class => [
-                ['checkWaitlist', 0],
+                ['checkWaitlist', 10],
             ],
         ];
     }
@@ -59,9 +59,9 @@ class WaitlistSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($activity->getDeadline() < new \DateTime('now')) {
+        if ($activity->getDeadline() > new \DateTime('now')) {
             $this->addFromWaitlist($option);
-        } elseif ($activity->getStart() < new \DateTime('now')) {
+        } elseif ($activity->getStart() > new \DateTime('now')) {
             $this->notifyWaitlist($option);
         }
     }
@@ -72,7 +72,6 @@ class WaitlistSubscriber implements EventSubscriberInterface
             return; // no one on the waitlist
         }
 
-        assert($spot instanceof WaitlistSpot);
         $registration = new Registration();
         $registration
             ->setOption($option)

@@ -14,7 +14,7 @@ class WaitlistSpot
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'guid')]
     #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
-    public readonly string $id;
+    public string $id;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     public readonly \DateTimeImmutable $timestamp;
