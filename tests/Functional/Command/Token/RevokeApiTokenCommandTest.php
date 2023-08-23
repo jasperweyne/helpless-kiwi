@@ -53,7 +53,7 @@ class RevokeApiTokenCommandTest extends AuthWebTestCase
         $application = new Application($this->client->getKernel());
         $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
         $client = $this->em->getRepository(TrustedClient::class)->find(TrustedClientFixture::ID);
-        assert($user !== null && $client !== null);
+        assert(null !== $user && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
 
         // Act

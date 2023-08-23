@@ -28,7 +28,7 @@ class CreateTrustedClientCommandTest extends AuthWebTestCase
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->databaseTool->loadFixtures([
-            TrustedClientFixture::class
+            TrustedClientFixture::class,
         ]);
     }
 

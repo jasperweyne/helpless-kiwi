@@ -3,8 +3,6 @@
 namespace Tests\Unit\Log;
 
 use App\Log\AbstractEvent;
-use DateTime;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -43,8 +41,8 @@ class AbstractEventTest extends KernelTestCase
 
     public function testGetTime(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(AbstractEvent::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(AbstractEvent::class))
             ->getProperty('time');
         $property->setAccessible(true);
         $property->setValue($this->abstractEvent, $expected);
@@ -59,8 +57,8 @@ class AbstractEventTest extends KernelTestCase
 
     public function testGetEntity(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(AbstractEvent::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(AbstractEvent::class))
             ->getProperty('entity');
         $property->setAccessible(true);
         $property->setValue($this->abstractEvent, $expected);
@@ -70,7 +68,7 @@ class AbstractEventTest extends KernelTestCase
     public function testSetEntity(): void
     {
         $expected = new \stdClass();
-        $property = (new ReflectionClass(AbstractEvent::class))
+        $property = (new \ReflectionClass(AbstractEvent::class))
             ->getProperty('entity');
         $property->setAccessible(true);
         $this->abstractEvent->setEntity($expected);
@@ -80,7 +78,7 @@ class AbstractEventTest extends KernelTestCase
     public function testGetEntityType(): void
     {
         $expected = new \stdClass();
-        $property = (new ReflectionClass(AbstractEvent::class))
+        $property = (new \ReflectionClass(AbstractEvent::class))
             ->getProperty('entityType');
         $property->setAccessible(true);
         $property->setValue($this->abstractEvent, $expected);
@@ -91,7 +89,7 @@ class AbstractEventTest extends KernelTestCase
     public function testSetEntityType(): void
     {
         $expected = null;
-        $property = (new ReflectionClass(AbstractEvent::class))
+        $property = (new \ReflectionClass(AbstractEvent::class))
             ->getProperty('entityType');
         $property->setAccessible(true);
         $this->abstractEvent->setEntityType($expected);

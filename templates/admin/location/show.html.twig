@@ -1,0 +1,87 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Locatie ' ~ location.address %}
+    
+    {% block buttons %}
+        <a href="{{ path('admin_location_edit', { 'id': location.id }) }}">Bewerken</a>
+        <a href="{{ path('admin_location_delete', { 'id': location.id }) }}">Verwijderen</a>
+        <a href="{{ path('admin_location_index') }}">Terug</a>
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+    <div class="table">
+    <table>
+        <tbody>
+            <tr>
+            <tr>
+                <th>Adres</th>
+                <td>{{ location.address }}</td>
+            </tr>
+            <tr>
+                <th>Activiteiten</th>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Begindatum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for activity in location.activities %}
+                            <tr>
+                                <td>{{ activity.name ?? '' }}</td>
+                                <td>{{ activity.start|date('d-m-Y') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen activiteiten.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th>Gemaakt op</th>
+                <td>
+                    {{ createdAt ? createdAt.time|date('d-m-Y - H:i') : '' }}
+                </td>
+            </tr>
+            <tr>
+                <th>Gemaakt door</th>
+                <td>
+                    {{ createdAt.person.canonical ?? '' }}
+                </td>
+            </tr>
+            <tr>
+                <th>Aanpassingen</th>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Door</th>
+                                <th>Tijdstip</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for modif in modifs %}
+                            <tr>
+                                <td>{{ modif.person.canonical ?? '' }}</td>
+                                <td>{{ modif.time|date('d-m-Y - H:i') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>Geen aanpassingen.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

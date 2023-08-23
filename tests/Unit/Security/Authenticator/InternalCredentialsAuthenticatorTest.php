@@ -33,7 +33,7 @@ class InternalCredentialsAuthenticatorTest extends KernelTestCase
         parent::setUp();
 
         $this->authenticator = new InternalCredentialsAuthenticator(
-            ($this->userProvider = $this->createMock(LocalUserProvider::class)),
+            $this->userProvider = $this->createMock(LocalUserProvider::class),
         );
     }
 
@@ -113,6 +113,7 @@ class InternalCredentialsAuthenticatorTest extends KernelTestCase
             InternalCredentialsAuthenticator::USER => $username,
             InternalCredentialsAuthenticator::PASS => $password,
         ]);
+
         return $request;
     }
 }

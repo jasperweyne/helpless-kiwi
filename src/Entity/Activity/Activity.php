@@ -56,7 +56,10 @@ class Activity
     #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
     private Collection $registrations;
 
-    #[ORM\OneToOne(targetEntity: "App\Entity\Location\Location")]
+    /**
+     * @var ?Location
+     */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Location\Location", inversedBy: 'activities')]
     #[ORM\JoinColumn(name: 'location', referencedColumnName: 'id')]
     #[GQL\Field(type: 'Location!')]
     #[GQL\Description('The (physical) location of the activity.')]
@@ -390,7 +393,7 @@ class Activity
         return $this->location;
     }
 
-    public function setLocation(Location $location): self
+    public function setLocation(?Location $location): self
     {
         $this->location = $location;
 

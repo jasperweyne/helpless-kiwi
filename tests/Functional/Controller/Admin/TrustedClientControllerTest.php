@@ -71,7 +71,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
 
     public function testNewActionGet(): void
     {
-        $this->client->request('GET', $this->controllerEndpoint . "/new");
+        $this->client->request('GET', $this->controllerEndpoint.'/new');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -84,7 +84,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
         $originalCount = $this->em->getRepository(TrustedClient::class)->count([]);
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/new");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/new');
         $form = $crawler->selectButton('Toevoegen')->form();
         ($field = $form['form[id]']) instanceof FormField && $field->setValue('Test');
         $this->client->submit($form);
@@ -101,14 +101,14 @@ class TrustedClientControllerTest extends AuthWebTestCase
         // Arrange
         $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
         $account = $this->user(LocalAccountFixture::USERNAME);
-        assert($account instanceof LocalAccount && $client !== null);
+        assert($account instanceof LocalAccount && null !== $client);
         $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
         $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('-1 minutes')));
         $this->em->flush();
         $originalCount = $this->em->getRepository(ApiToken::class)->count([]);
 
         // Act
-        $this->client->request('GET', $this->controllerEndpoint . "/clear");
+        $this->client->request('GET', $this->controllerEndpoint.'/clear');
 
         // Assert
         $newCount = $this->em->getRepository(ApiToken::class)->count([]);
@@ -120,7 +120,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testTokenActionGet(): void
     {
         $id = TrustedClientFixture::ID;
-        $this->client->request('GET', $this->controllerEndpoint . "/$id/token");
+        $this->client->request('GET', $this->controllerEndpoint."/$id/token");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -136,7 +136,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
         $id = TrustedClientFixture::ID;
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/$id/token");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/$id/token");
         $form = $crawler->selectButton('Toevoegen')->form();
         ($field = $form['generate_token[account]']) instanceof FormField && $field->setValue($user->getId());
         ($field = $form['generate_token[expiresAt][date]']) instanceof FormField && $field->setValue('2013-03-15');
@@ -153,7 +153,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testDeleteActionGet(): void
     {
         $id = TrustedClientFixture::ID;
-        $this->client->request('GET', $this->controllerEndpoint . "/$id/delete");
+        $this->client->request('GET', $this->controllerEndpoint."/$id/delete");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -173,7 +173,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
         $originalCountToken = $this->em->getRepository(ApiToken::class)->count([]);
 
         // Act
-        $crawler = $this->client->request('GET', $this->controllerEndpoint . "/$id/delete");
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/$id/delete");
         $form = $crawler->selectButton('Ja, verwijder')->form();
         $this->client->submit($form);
 
