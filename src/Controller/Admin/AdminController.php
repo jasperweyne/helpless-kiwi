@@ -15,18 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Activity controller.
  */
-#[Route("/admin", name: "admin_")]
+#[Route('/admin', name: 'admin_')]
 class AdminController extends AbstractController
 {
     /**
      * Lists all activities.
      */
-    #[MenuItem(title: "Overzicht", menu: "admin", activeCriteria: "admin_index", order: -1)]
-    #[Route("/", name: "index", methods: ["GET"])]
+    #[MenuItem(title: 'Overzicht', menu: 'admin', activeCriteria: 'admin_index', order: -1)]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function indexAction(ActivityRepository $activitiesRepo, GroupRepository $groupsRepo): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = $activitiesRepo->findBy([], ['start' => 'DESC']);
+            $activities = $activitiesRepo->findActive();
         } else {
             $user = $this->getUser();
             assert($user instanceof LocalAccount);
@@ -34,11 +34,12 @@ class AdminController extends AbstractController
             $activities = $activitiesRepo->findAuthor($groups);
         }
 
-        // Only retain current and future activities
-        $activities = (new ArrayCollection($activities))->filter(fn (Activity $activity) => $activity->getEnd() > new \DateTime("now"));
+        // Filter activities to be shown from current to future, filtering out past events
+        $reversed = array_reverse($activities);
+        $future = (new ArrayCollection($reversed))->filter(fn (Activity $activity) => $activity->getEnd() > new \DateTime('now'));
 
         return $this->render('admin/index.html.twig', [
-            'activities' => $activities,
+            'activities' => $future,
         ]);
     }
 }

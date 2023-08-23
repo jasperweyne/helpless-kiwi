@@ -43,6 +43,7 @@ class LoginControllerTest extends AuthWebTestCase
         // Assert
         $response = $this->client->getResponse();
         self::assertEquals(302, $response->getStatusCode());
+        self::assertIsString($response->headers->get('Location'));
         self::assertStringContainsString($address, $response->headers->get('Location'));
     }
 
@@ -90,6 +91,7 @@ class LoginControllerTest extends AuthWebTestCase
         $prop = $refl->getProperty('configuration');
         $conf = file_get_contents(__DIR__.'/../../../assets/google-openid-configuration.json');
         $prop->setAccessible(true);
+        self::assertIsString($conf);
         $prop->setValue($oidc, json_decode($conf, true));
     }
 

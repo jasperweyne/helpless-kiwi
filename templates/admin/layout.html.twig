@@ -37,7 +37,7 @@
                     {% if item.sub is defined %}
                         <div class="sub">
                         {% for sub in item.sub %}
-                            <a href="{{ sub.path is iterable ? path(sub.path[0], sub.path[1]) : path(sub.path) }}">{{ sub.title }}</a>
+                            <a href="{{ sub.param  ? path(sub.path, sub.param) : path(sub.path) }}">{{ sub.title }}</a>
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -80,7 +80,7 @@
             {% elseif version != '' %}
                 <li>Version {{ version }}</li>
             {% endif %}
-            <li>Maintained by Studio Weyne</li>
+            <li>Created by Jasper Weyne &amp; developed with the <a href="https://github.com/jasperweyne/helpless-kiwi/graphs/contributors">community</a></li>
             <li>Licensed under Apache version 2.0</li>
             <li>Built with &hearts; and Symfony</li>
         </ul>

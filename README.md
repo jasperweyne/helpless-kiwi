@@ -20,6 +20,7 @@
   
 
 - [About Helpless Kiwi](#about-helpless-kiwi)
+- [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
 	- [Deployment](#deployment)
 	- [Development](#development)
@@ -35,6 +36,11 @@ Helpless Kiwi is a (self-hosted) activity manager for (student) associations.
 It can help you manage your activities and the participation to them. Helpless
 Kiwi should give you insight into which activities do well, as well as allow
 your members a convenient and central way to view and sign up for them.
+
+## Screenshots
+![homepage](assets/image/screen-home.png)
+![activity](assets/image/screen-activity.png)
+![admin-activity](assets/image/screen-admin-activity.png)
 
 ## Getting started
 Regardless of if you're going to develop or wanting to deploy. Kiwi has some
@@ -75,7 +81,6 @@ appreciated!
 | **Name** | **Organisation** |
 |---|---|
 | [Jasper Weyne](https://github.com/jasperweyne) | Project Owner |
-| [Karel Zijp](https://github.com/zpks) | Particolarte |
 | [Peter Sabel (Zabel)](https://github.com/A-Daneel) | Particolarte |
 | [Kim Matthieu](https://github.com/KimJoy2507) | Particolarte |
 | [David Koymans](https://github.com/DavidckPixel) | ViaKunst |

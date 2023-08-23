@@ -28,7 +28,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     /**
      * @var string
      */
-    private $controller = "/admin/activity/register";
+    private $controller = '/admin/activity/register';
 
     /**
      * {@inheritdoc}
@@ -65,17 +65,17 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/new/{$id}/external");
+        $this->client->request('GET', $this->controller."/new/{$id}/external");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorExists("form");
-        self::assertSelectorExists("#registration");
-        self::assertPageTitleContains("Nieuwe aanmelding voor");
-        self::assertSelectorTextContains("#registration_person > div:nth-child(1) > label", "Name");
-        self::assertSelectorTextContains("#registration_person > div:nth-child(2) > label", "Email");
-        self::assertSelectorTextContains("#registration > div:nth-child(2) > label", "Optie");
-        self::assertSelectorTextContains("#registration > div:nth-child(3) > label", "Comment");
+        self::assertSelectorExists('form');
+        self::assertSelectorExists('#registration');
+        self::assertPageTitleContains('Nieuwe aanmelding voor');
+        self::assertSelectorTextContains('#registration_person > div:nth-child(1) > label', 'Name');
+        self::assertSelectorTextContains('#registration_person > div:nth-child(2) > label', 'Email');
+        self::assertSelectorTextContains('#registration > div:nth-child(2) > label', 'Optie');
+        self::assertSelectorTextContains('#registration > div:nth-child(3) > label', 'Comment');
     }
 
     public function testNewActionGet(): void
@@ -85,7 +85,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/new/{$id}");
+        $this->client->request('GET', $this->controller."/new/{$id}");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -102,11 +102,12 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/new/{$id}");
+        $this->client->request('GET', $this->controller."/new/{$id}");
         $this->client->submitForm('Toevoegen');
 
         // Assert
         $activity = $this->em->getRepository(Activity::class)->find($id);
+        self::assertNotNull($activity);
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'gelukt');
@@ -118,7 +119,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         // Arrange
         $registration = $this->em->getRepository(Registration::class)->findAll()[0];
         $id = $registration->getId();
-        $crawler = $this->client->request('GET', $this->controller . "/edit/{$id}");
+        $crawler = $this->client->request('GET', $this->controller."/edit/{$id}");
         $comment = 'This is a test comment';
 
         // Act
@@ -128,6 +129,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         // Assert
         $currentcomment = $this->em->getRepository(Registration::class)->find($id);
+        self::assertNotNull($currentcomment);
         $newcomment = $currentcomment->getComment();
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -141,7 +143,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $registration->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/delete/{$id}");
+        $this->client->request('GET', $this->controller."/delete/{$id}");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -158,7 +160,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         self::assertEquals(null, $registration->getDeleteDate());
 
         // Act
-        $crawler = $this->client->request('GET', $this->controller . "/delete/{$id}");
+        $crawler = $this->client->request('GET', $this->controller."/delete/{$id}");
         $form = $crawler->selectButton('Ja, meld af')->form();
         $this->client->submit($form);
 
@@ -166,6 +168,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $registration = $this->em->getRepository(Registration::class)->find($id);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'gelukt');
+        self::assertNotNull($registration);
         self::assertNotNull($registration->getDeleteDate());
     }
 
@@ -176,7 +179,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/reserve/new/{$id}");
+        $this->client->request('GET', $this->controller."/reserve/new/{$id}");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -193,11 +196,12 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/reserve/new/{$id}");
+        $this->client->request('GET', $this->controller."/reserve/new/{$id}");
         $this->client->submitForm('Toevoegen');
 
         // Assert
         $activity = $this->em->getRepository(Activity::class)->find($id);
+        self::assertNotNull($activity);
         $newCount = $activity->getRegistrations()->count();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
@@ -208,14 +212,16 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
-        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $reserves = $activity->getReserveRegistrations();
+        self::assertNotNull($reserves[1]);
         $secondReserveId = $reserves[1]->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/reserve/move/{$secondReserveId}/up");
+        $this->client->request('GET', $this->controller."/reserve/move/{$secondReserveId}/up");
 
         // Assert
-        $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $updatedReserves = $activity->getReserveRegistrations();
+        self::assertNotNull($updatedReserves[0]);
         $updatedFirstReserveId = $updatedReserves[0]->getId();
         self::assertEquals($updatedFirstReserveId, $secondReserveId);
         self::assertSelectorTextContains('.container', 'naar boven verplaatst!');
@@ -225,14 +231,16 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // Arrange
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
-        $reserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $reserves = $activity->getReserveRegistrations();
+        self::assertNotNull($reserves[0]);
         $firstReserveId = $reserves[0]->getId();
 
         // Act
-        $this->client->request('GET', $this->controller . "/reserve/move/{$firstReserveId}/down");
+        $this->client->request('GET', $this->controller."/reserve/move/{$firstReserveId}/down");
 
         // Assert
-        $updatedReserves = $this->em->getRepository(Registration::class)->findReserve($activity);
+        $updatedReserves = $activity->getReserveRegistrations();
+        self::assertNotNull($updatedReserves[1]);
         $updatedRegistrationId = $updatedReserves[1]->getId();
         self::assertEquals($updatedRegistrationId, $firstReserveId);
         self::assertSelectorTextContains('.container', 'naar beneden verplaatst!');
@@ -243,7 +251,7 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     public function testNoAccess(string $url): void
     {
-        //arrange
+        // arrange
         /** @var Activity $activity */
         $activity = $this->em->getRepository(Activity::class)->findAll()[0];
 
@@ -251,18 +259,19 @@ class RegistrationControllerTest extends AuthWebTestCase
         $registration = $activity->getRegistrations()[0];
         $id = $registration->getId();
 
-        $reserve = $this->em->getRepository(Registration::class)->findReserve($activity)[0];
+        $reserve = $activity->getReserveRegistrations()[0];
+        self::assertNotNull($reserve);
         $reserveId = $reserve->getId();
 
         $url = str_replace('id', strval($id), $url);
         $url = str_replace('rid', strval($reserveId), $url);
 
-        //act
+        // act
         $this->logout();
         $this->login([]);
         $this->client->request('GET', $url);
 
-        //assert
+        // assert
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -271,7 +280,7 @@ class RegistrationControllerTest extends AuthWebTestCase
      */
     public function testNullActivityNotAdmin(string $url): void
     {
-        //arrange
+        // arrange
         /** @var Registration $registration */
         $registration = $this->em->getRepository(Registration::class)->findOneBy(['activity' => null]);
         $id = $registration->getId();
@@ -279,12 +288,12 @@ class RegistrationControllerTest extends AuthWebTestCase
         $url = str_replace('id', strval($id), $url);
         $url = str_replace('rid', strval($id), $url);
 
-        //act
+        // act
         $this->logout();
         $this->login([]);
         $this->client->request('GET', $url);
 
-        //assert
+        // assert
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
@@ -294,11 +303,11 @@ class RegistrationControllerTest extends AuthWebTestCase
     public function noAccessProvider()
     {
         return [
-            [$this->controller . '/edit/id'],
-            [$this->controller . '/delete/id'],
-            [$this->controller . '/reserve/new/id'],
-            [$this->controller . '/reserve/move/rid/up'],
-            [$this->controller . '/reserve/move/rid/down'],
+            [$this->controller.'/edit/id'],
+            [$this->controller.'/delete/id'],
+            [$this->controller.'/reserve/new/id'],
+            [$this->controller.'/reserve/move/rid/up'],
+            [$this->controller.'/reserve/move/rid/down'],
         ];
     }
 }

@@ -30,12 +30,28 @@ class ActivityRepository extends ServiceEntityRepository
     public function findAuthor($groups)
     {
         return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = false')
             ->andWhere('(p.author IN (:groups))')
             ->setParameter('groups', $groups)
             ->orderBy('p.start', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    /**
+     * @param Group[] $groups
+     *
+     * @return Activity[] Returns an array of Activity objects
+     */
+    public function findAuthorArchive($groups)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = true')
+            ->andWhere('(p.author IN (:groups))')
+            ->setParameter('groups', $groups)
+            ->orderBy('p.start', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -44,11 +60,35 @@ class ActivityRepository extends ServiceEntityRepository
     public function findUpcoming()
     {
         return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = false')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->orderBy('p.start', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    /**
+     * @return Activity[] Returns an array of Activity objects
+     */
+    public function findActive()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = false')
+            ->orderBy('p.start', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Activity[] Returns an array of Activity objects
+     */
+    public function findArchived()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = true')
+            ->orderBy('p.start', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -59,13 +99,13 @@ class ActivityRepository extends ServiceEntityRepository
     public function findUpcomingByGroup($groups)
     {
         return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = false')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->andWhere('(p.target IN (:groups)) OR (p.target is NULL)')
             ->setParameter('groups', $groups)
             ->orderBy('p.start', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**
@@ -76,6 +116,7 @@ class ActivityRepository extends ServiceEntityRepository
     public function findVisibleUpcomingByGroup($groups)
     {
         return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = false')
             ->andWhere('p.end > CURRENT_TIMESTAMP()')
             ->andWhere('(p.target IN (:groups)) OR (p.target is NULL)')
             ->andWhere('p.visibleAfter IS NOT NULL')
@@ -83,36 +124,6 @@ class ActivityRepository extends ServiceEntityRepository
             ->setParameter('groups', $groups)
             ->orderBy('p.start', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-
-    // /**
-    //  * @return Activity[] Returns an array of Activity objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Activity
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -74,13 +74,6 @@ class MailServiceTest extends KernelTestCase
         unset($this->params);
     }
 
-    public function testMessageNull(): void
-    {
-        $this->em->expects(self::never())->method('persist');
-        $this->mailer->expects(self::never())->method('send');
-        $this->mailService->message(null, '', '');
-    }
-
     public function testMessage(): void
     {
         $recipient = new LocalAccount();
@@ -92,7 +85,7 @@ class MailServiceTest extends KernelTestCase
         $this->em->expects(self::atLeastOnce())->method('persist');
         $this->em->expects(self::once())->method('flush');
         $this->mailer->expects(self::once())->method('send');
-        $this->mailService->message($recipient, '', '');
+        $this->mailService->message([$recipient], '', '');
     }
 
     public function testMessageExternal(): void
@@ -106,6 +99,6 @@ class MailServiceTest extends KernelTestCase
         $this->em->expects(self::atLeastOnce())->method('persist');
         $this->em->expects(self::once())->method('flush');
         $this->mailer->expects(self::once())->method('send');
-        $this->mailService->message($recipient, '', '');
+        $this->mailService->message([$recipient], '', '');
     }
 }

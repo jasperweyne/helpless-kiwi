@@ -5,26 +5,21 @@ namespace Tests\Unit\Entity\Mail;
 use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
 use App\Entity\Security\LocalAccount;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class MailTest.
  *
  * @covers \App\Entity\Mail\Mail
+ *
+ * @group entities
  */
 class MailTest extends KernelTestCase
 {
-    /**
-     * @var Mail
-     */
-    protected $mail;
+    protected Mail $mail;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,9 +29,7 @@ class MailTest extends KernelTestCase
         $this->mail = new Mail();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -47,7 +40,7 @@ class MailTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -57,7 +50,7 @@ class MailTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->mail->setId($expected);
@@ -67,7 +60,7 @@ class MailTest extends KernelTestCase
     public function testGetTitle(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('title');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -77,7 +70,7 @@ class MailTest extends KernelTestCase
     public function testSetTitle(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('title');
         $property->setAccessible(true);
         $this->mail->setTitle($expected);
@@ -87,7 +80,7 @@ class MailTest extends KernelTestCase
     public function testGetContent(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('content');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -97,7 +90,7 @@ class MailTest extends KernelTestCase
     public function testSetContent(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('content');
         $property->setAccessible(true);
         $this->mail->setContent($expected);
@@ -108,7 +101,7 @@ class MailTest extends KernelTestCase
     {
         $expected = new LocalAccount();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -119,7 +112,7 @@ class MailTest extends KernelTestCase
     {
         $expected = new LocalAccount();
         $expected->setEmail('john@doe.eyes');
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('person');
         $property->setAccessible(true);
         $this->mail->setPerson($expected);
@@ -129,7 +122,7 @@ class MailTest extends KernelTestCase
     public function testGetRecipients(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('recipients');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -147,7 +140,7 @@ class MailTest extends KernelTestCase
         $expected = new ArrayCollection();
         $recipient = new Recipient();
         $expected->add($recipient);
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('recipients');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -159,7 +152,7 @@ class MailTest extends KernelTestCase
     public function testGetSender(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('sender');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -169,7 +162,7 @@ class MailTest extends KernelTestCase
     public function testSetSender(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Mail::class))
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('sender');
         $property->setAccessible(true);
         $this->mail->setSender($expected);
@@ -178,8 +171,8 @@ class MailTest extends KernelTestCase
 
     public function testGetSentAt(): void
     {
-        $expected = $this->createMock(DateTime::class);
-        $property = (new ReflectionClass(Mail::class))
+        $expected = $this->createMock(\DateTime::class);
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('sentAt');
         $property->setAccessible(true);
         $property->setValue($this->mail, $expected);
@@ -188,8 +181,8 @@ class MailTest extends KernelTestCase
 
     public function testSetSentAt(): void
     {
-        $expected = new DateTime();
-        $property = (new ReflectionClass(Mail::class))
+        $expected = new \DateTime();
+        $property = (new \ReflectionClass(Mail::class))
             ->getProperty('sentAt');
         $property->setAccessible(true);
         $this->mail->setSentAt($expected);

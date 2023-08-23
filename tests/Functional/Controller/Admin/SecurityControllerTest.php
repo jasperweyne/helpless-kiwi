@@ -8,6 +8,7 @@ use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class SecurityControllerTest.
@@ -16,15 +17,13 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class SecurityControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var SecurityController
-     */
-    protected $securityController;
+    protected SecurityController $securityController;
 
-    /**
-     * @var EventService
-     */
-    protected $events;
+    protected EventService $events;
+
+    protected EntityManagerInterface $em;
+
+    protected string $endpoint = '/admin/security';
 
     /**
      * {@inheritdoc}
@@ -60,20 +59,56 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testIndexAction(): void
     {
         // Act
-        $this->client->request('GET', '/admin/security/');
+        $this->client->request('GET', $this->endpoint);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testImportAction(): void
+    {
+        // Mock the CSV file
+        $csvContent = "email,given_name,family_name,admin,oidc\n";
+        $csvPath = sys_get_temp_dir().'/test.csv';
+        file_put_contents($csvPath, $csvContent);
+        $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
+
+        // first Act
+        $crawler = $this->client->request('GET', $this->endpoint.'/import');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('verder')->form();
+        $form->setValues([
+            'upload_csv[file]' => $csvFile->getPathname(),
+        ]);
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSame(
+            'Accounts importeren',
+            $crawler->filter('h3')->first()->text()
+        );
+
+        // second Act
+        $form = $crawler->selectButton('afronden')->form();
+        $crawler = $this->client->submit($form);
+
+        // second Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertSelectorTextContains('.container', 'Accounts succesvol geimporteerd');
+    }
+
     public function testNewAction(): void
     {
         // Act
-        $crawler = $this->client->request('GET', '/admin/security/new');
+        $crawler = $this->client->request('GET', $this->endpoint.'/new');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Toevoegen')->form();
-        $form['local_account[name]'] = 'John';
-        $form['local_account[email]'] = 'john@doe.eyes';
+        $form->setValues([
+            'local_account[givenname]' => 'John',
+            'local_account[familyname]' => 'Doe',
+            'local_account[email]' => 'john@doe.eyes',
+        ]);
         $crawler = $this->client->submit($form);
 
         // Assert
@@ -90,14 +125,39 @@ class SecurityControllerTest extends AuthWebTestCase
 
     public function testEditAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Setup
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $id = $localAccount->getId();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->endpoint.'/'.$id.'/edit');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('Opslaan')->form();
+        $form->setValues([
+            'local_account[givenname]' => 'John',
+            'local_account[familyname]' => 'Doeeye',
+            'local_account[email]' => 'john@doe.eyes',
+        ]);
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        /** @var LocalAccount $localAccount */
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        self::assertEquals($localAccount->getFamilyName(), 'Doeeye');
     }
 
     public function testDeleteAction(): void
     {
-        /* @todo This test is incomplete. */
-        self::markTestIncomplete();
+        // Setup
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $id = $localAccount->getId();
+
+        // Act
+        $this->client->request('GET', $this->endpoint.'/'.$id.'/delete');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        // TODO add deletion logic as soon as it's implemented
     }
 
     public function testRolesAction(): void
@@ -110,7 +170,9 @@ class SecurityControllerTest extends AuthWebTestCase
         $crawler = $this->client->request('GET', "/admin/security/{$id}/roles");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $form = $crawler->selectButton('Opslaan')->form();
-        $form['form[admin]']->setValue(false);
+        $form->setValues([
+            'form[admin]' => false,
+        ]);
         $this->client->submit($form);
         self::assertSelectorTextContains('.container', 'Rollen bewerkt');
         $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];

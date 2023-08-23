@@ -9,6 +9,7 @@
 
             {% block buttons %}
                 <a href="{{ path("admin_security_new") }} ">Nieuw</a>
+                <a href="{{ path("admin_security_import") }} ">Importeren</a>
             {% endblock %}
         {% endembed %}
     {% endblock %}
@@ -29,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for account in accounts|sort((a, b) => (a.person.canonical ?? '') <=> (b.person.canonical ?? '')) %}
+            {% for account in accounts|sort((a, b) => (a.canonical ?? '') <=> (b.canonical ?? '')) %}
                 <tr>
                     <td><a href="{{ path("admin_security_show", { 'id': account.id }) }}">{{ account.canonical ?? '{onbekend}'}}</a></td>
                     <td>{{ account.email }}</td>

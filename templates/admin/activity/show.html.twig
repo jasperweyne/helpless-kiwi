@@ -2,11 +2,19 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Activiteit ' ~ activity.name %}
-    
+
     {% block buttons %}
-        <a href="{{ path('admin_activity_image', { 'id': activity.id }) }}">Afbeelding aanpassen</a>
-        <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Bewerken</a>
-        <a href="{{ path('admin_activity_delete', { 'id': activity.id }) }}">Verwijderen</a>
+        <a href="{{ path('admin_activity_clone', { 'id': activity.id }) }}">Kopiëren</a>
+        {% if not activity.archived %}
+             <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Activiteit bewerken</a> 
+        {% endif %}
+        {% if is_granted("ROLE_ADMIN") %}
+            {% if activity.archived %}
+                <a href="{{ path('admin_activity_activate', { 'id': activity.id }) }}">Activiteit her activeren</a>
+            {% else %}
+                 <a href="{{ path('admin_activity_archive', { 'id': activity.id }) }}">Archiveren</a>
+            {% endif %}
+        {% endif %}
     {% endblock %}
 {% endif %}
 
@@ -51,15 +59,11 @@
                                 <td>{{ activity.target.name ?? '' }}{% if not activity.target %}<i>Iedereen</i>{% endif %}</td>
                             </tr>
                             <tr>
-                                <th>{% if activity.present is null %}
-                                Hoeveelheid aanwezigen
-                                {% else %} Hoeveelheid aanwezigen{% endif %}</th>
+                                <th>Hoeveelheid aanwezigen</th>
                                 {% if activity.present is null %}
-                                <td><i>{{present}}</i> (Automatisch gegenereerd)</td>
-                                <td><a href="{{ path('admin_activity_amount_present', { 'id': activity.id }) }}"> set </a></td>
+                                <td><i>{{activity.currentRegistrations|filter(r => r.present)|length}}</i> (Automatisch gegenereerd)</td>
                                 {% else %}
                                 <td>{{activity.present}}</td>
-                                <td> <a href="{{ path('admin_activity_reset_amount_present', { 'id': activity.id }) }}">Herstel</a></td>
                                 {% endif %}
                             </tr>
                             {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
@@ -108,6 +112,10 @@
                             <tr>
                                 <th>Afbeelding</th>
                                 <td>{% if activity.image.name %}<img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" />{% else %}Geen afbeelding.{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td> <a href="{{ path('admin_activity_image', { 'id': activity.id }) }}">Afbeelding aanpassen</a> </td>
                             </tr>
                             <tr>
                                 <th>Kleur</th>
@@ -203,7 +211,7 @@
                                 <td><a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a></td>
                             </tr>
                         {% endfor %}
-                        {% for registration in registrations|sort((a, b) => a.newdate <=> b.newdate) %}
+                        {% for registration in activity.currentRegistrations|sort((a, b) => a.newdate <=> b.newdate) %}
                             <tr>
                                 <td>{{ registration.person.canonical ?? 'Onbekend' }}{% if registration.external %} <i>(extern)</i>{% endif %}</td>
                                 <td>{{ registration.option.name }}</td>
@@ -231,11 +239,16 @@
                             <tr>
                                 <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
                                 <td></td><td></td>
-                                <td><a href="{{ path('admin_activity_present', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                <td>
+                                    {% if activity.currentRegistrations|length == 0 or activity.present is not null %}
+                                    <a href="{{ path('admin_activity_present_set', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                    {% else %}
+                                    <a href="{{ path('admin_activity_present_edit', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                    {% endif %}
                                 <td></td>
                                 <td>
-                                    {% if registrations|length > 0 %}
-                                    <a href="mailto:?bcc={{ registrations|map(r => r.person.email)|join(',') }}" target="_blank">Deelnemers mailen</a>
+                                    {% if activity.currentRegistrations|length > 0 %}
+                                    <a href="mailto:?bcc={{ activity.currentRegistrations|map(r => r.person.email)|join(',') }}" target="_blank">Deelnemers mailen</a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -263,7 +276,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in reserve %}
+                        {% for registration in activity.reserveRegistrations %}
                             <tr>
                                 <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
                                 <td>{{ registration.option.name }}</td>

@@ -38,7 +38,7 @@ class RegistrationEditTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->registerationedittype = new RegistrationEditType();
+        $this->registrationedittype = new RegistrationEditType();
     }
 
     /**
@@ -51,7 +51,7 @@ class RegistrationEditTypeTest extends KernelTestCase
         unset($this->registrationedittype);
     }
 
-    public function testBindValidData()
+    public function testBindValidData(): void
     {
         $type = new Registration();
         $formData = [

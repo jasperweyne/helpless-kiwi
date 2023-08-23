@@ -16,164 +16,135 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[GQL\Type]
-#[GQL\Description("Information on a physical activity that users can register themselves to.")]
+#[GQL\Description('Information on a physical activity that users can register themselves to.')]
 #[ORM\Entity(repositoryClass: "App\Repository\ActivityRepository")]
 #[Vich\Uploadable]
 class Activity
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
-    private $id;
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "string", length: 100, name: "title")]
+    #[ORM\Column(type: 'string', length: 100, name: 'title')]
     #[Assert\NotBlank]
-    #[GQL\Field(type: "String!")]
-    #[GQL\Description("The name of the activity.")]
-    private $name;
+    #[GQL\Field(type: 'String!')]
+    #[GQL\Description('The name of the activity.')]
+    private string $name;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "text")]
+    #[ORM\Column(name: 'archived', type: 'boolean', options: ['default' => false])]
+    #[GQL\Field(type: 'Boolean!')]
+    #[GQL\Description('If this activity is archived')]
+    private bool $archived = false;
+
+    #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
-    #[GQL\Field(type: "String!")]
-    #[GQL\Description("A textual description of the activity.")]
-    private $description;
+    #[GQL\Field(type: 'String!')]
+    #[GQL\Description('A textual description of the activity.')]
+    private string $description;
 
-    /**
-     * @var Collection<int, PriceOption>
-     */
-    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\PriceOption", mappedBy: "activity")]
-    #[GQL\Field(type: "[PriceOption]")]
-    #[GQL\Description("The available registration options for the activity.")]
-    private $options;
+    /** @var Collection<int, PriceOption> */
+    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\PriceOption", mappedBy: 'activity')]
+    #[GQL\Field(type: '[PriceOption]')]
+    #[GQL\Description('The available registration options for the activity.')]
+    private Collection $options;
 
-    /**
-     * @var Collection<int, Registration>
-     */
-    #[GQL\Field(type: "[Registration]")]
-    #[GQL\Description("All registrations stored for this activity, regardless of option.")]
-    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: "activity")]
-    private $registrations;
+    /** @var Collection<int, Registration> */
+    #[GQL\Field(type: '[Registration]')]
+    #[GQL\Description('All registrations stored for this activity, regardless of option.')]
+    #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
+    private Collection $registrations;
 
     /**
      * @var ?Location
      */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Location\Location", inversedBy: 'activities')]
-    #[ORM\JoinColumn(name: "location", referencedColumnName: "id")]
-    #[GQL\Field(type: "Location!")]
-    #[GQL\Description("The (physical) location of the activity.")]
+    #[ORM\JoinColumn(name: 'location', referencedColumnName: 'id')]
+    #[GQL\Field(type: 'Location!')]
+    #[GQL\Description('The (physical) location of the activity.')]
     #[Assert\NotBlank]
-    private $location;
+    private ?Location $location = null;
 
-    /**
-     * @var ?Group
-     */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
-    #[ORM\JoinColumn(name: "primairy_author", referencedColumnName: "id", nullable: true)]
-    #[GQL\Field(type: "Group")]
-    #[GQL\Description("The group that authored this activity.")]
-    private $author;
+    #[ORM\JoinColumn(name: 'primairy_author', referencedColumnName: 'id', nullable: true)]
+    #[GQL\Field(type: 'Group')]
+    #[GQL\Description('The group that authored this activity.')]
+    private ?Group $author = null;
 
-    /**
-     * @var ?Group
-     */
-    #[GQL\Field(type: "Group")]
-    #[GQL\Description("The group of all users that can see and register to this activity.")]
+    #[GQL\Field(type: 'Group')]
+    #[GQL\Description('The group of all users that can see and register to this activity.')]
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
-    #[ORM\JoinColumn(name: "target", referencedColumnName: "id", nullable: true)]
-    private $target;
+    #[ORM\JoinColumn(name: 'target', referencedColumnName: 'id', nullable: true)]
+    private ?Group $target;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "string")]
-    #[GQL\Field(type: "String!")]
-    #[GQL\Description("The color associated with this activity, stored for presentation purposes.")]
+    #[ORM\Column(type: 'string')]
+    #[GQL\Field(type: 'String!')]
+    #[GQL\Description('The color associated with this activity, stored for presentation purposes.')]
     #[Assert\NotBlank]
-    private $color;
+    private string $color;
 
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(type: "datetime")]
-    #[GQL\Field(type: "DateTimeScalar!")]
-    #[GQL\Description("The date and time the activity starts.")]
+    #[ORM\Column(type: 'datetime')]
+    #[GQL\Field(type: 'DateTimeScalar!')]
+    #[GQL\Description('The date and time the activity starts.')]
     #[Assert\NotBlank]
-    private $start;
+    private ?\DateTime $start = null;
 
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(type: "datetime")]
-    #[GQL\Field(type: "DateTimeScalar!")]
-    #[GQL\Description("The date and time the activity ends.")]
+    #[ORM\Column(type: 'datetime')]
+    #[GQL\Field(type: 'DateTimeScalar!')]
+    #[GQL\Description('The date and time the activity ends.')]
     #[Assert\NotBlank]
-    #[Assert\Expression("value >= this.getStart()", message: "Een activiteit kan niet eindigen voor de start.")]
-    private $end;
+    #[Assert\Expression('value >= this.getStart()', message: 'Een activiteit kan niet eindigen voor de start.')]
+    private ?\DateTime $end = null;
 
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(type: "datetime")]
-    #[GQL\Field(type: "DateTimeScalar!")]
-    #[GQL\Description("The final date and time users may (de)register for this activity.")]
+    #[ORM\Column(type: 'datetime')]
+    #[GQL\Field(type: 'DateTimeScalar!')]
+    #[GQL\Description('The final date and time users may (de)register for this activity.')]
     #[Assert\NotBlank]
-    #[Assert\Expression("value <= this.getStart()", message: "Aanmelddeadline kan niet na de start van de activiteit vallen.")]
-    private $deadline;
+    #[Assert\Expression('value <= this.getStart()', message: 'Aanmelddeadline kan niet na de start van de activiteit vallen.')]
+    private ?\DateTime $deadline = null;
 
-    /**
-     * @var File
-     */
-    #[Vich\UploadableField(mapping: "activities", fileNameProperty: "image.name", size: "image.size", mimeType: "image.mimeType", originalName: "image.originalName", dimensions: "image.dimensions")]
+    /** @var File */
+    #[Vich\UploadableField(
+        mapping: 'activities',
+        fileNameProperty: 'image.name',
+        size: 'image.size',
+        mimeType: 'image.mimeType',
+        originalName: 'image.originalName',
+        dimensions: 'image.dimensions')]
     private $imageFile;
 
-    /**
-     * @var EmbeddedFile
-     */
     #[ORM\Embedded(class: "Vich\UploaderBundle\Entity\File")]
-    private $image;
+    private EmbeddedFile $image;
 
-    /**
-     * @var \DateTime
-     */
-    #[ORM\Column(type: "datetime")]
-    private $imageUpdatedAt;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTime $imageUpdatedAt;
 
-    /**
-     * @var ?int
-     */
-    #[ORM\Column(type: "integer", nullable: true)]
-    #[GQL\Field(type: "Int")]
-    #[GQL\Description("The maximum number of users that can be registered for this activity.")]
-    private $capacity;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[GQL\Field(type: 'Int')]
+    #[GQL\Description('The maximum number of users that can be registered for this activity.')]
+    #[Assert\PositiveOrZero]
+    private ?int $capacity = null;
 
-    /**
-     * @var ?int
-     */
-    #[ORM\Column(type: "integer", nullable: true)]
-    #[GQL\Field(type: "Int")]
-    #[GQL\Description("A stored number of users that were present at this activity.")]
-    private $present;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[GQL\Field(type: 'Int')]
+    #[GQL\Description('A stored number of users that were present at this activity.')]
+    #[Assert\PositiveOrZero]
+    private ?int $present;
 
-    /**
-     * @var ?\DateTime
-     */
-    #[ORM\Column(type: "datetime", nullable: true, options: ["default" => "1970-01-01 00:00:00"])]
-    #[GQL\Field(type: "DateTimeScalar")]
-    #[GQL\Description("The time after which the activity will be publicized.")]
-    private $visibleAfter;
+    #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => '1970-01-01 00:00:00'])]
+    #[GQL\Field(type: 'DateTimeScalar')]
+    #[GQL\Description('The time after which the activity will be publicized.')]
+    private ?\DateTime $visibleAfter;
 
-    /**
-     * Get id.
-     */
+    public function __construct()
+    {
+        $this->registrations = new ArrayCollection();
+        $this->options = new ArrayCollection();
+        $this->image = new EmbeddedFile();
+        $this->visibleAfter = new \DateTime();
+    }
+
     public function getId(): ?string
     {
         return $this->id;
@@ -191,17 +162,11 @@ class Activity
         $this->id = $id;
     }
 
-    /**
-     * Get name.
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Set name.
-     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -209,17 +174,23 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get description.
-     */
+    public function getArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(bool $archived): self
+    {
+        $this->archived = $archived;
+
+        return $this;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set description.
-     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
@@ -227,11 +198,7 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get price options.
-     *
-     * @return Collection<int, PriceOption>
-     */
+    /** @return Collection<int, PriceOption> */
     public function getOptions(): Collection
     {
         return $this->options;
@@ -260,9 +227,7 @@ class Activity
         return $this;
     }
 
-    /**
-     * @return Collection<int, Registration>
-     */
+    /** @return Collection<int, Registration> */
     public function getRegistrations(): Collection
     {
         return $this->registrations;
@@ -291,17 +256,71 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get author.
-     */
+    /** @return Collection<int, Registration> */
+    public function getCurrentRegistrations(): Collection
+    {
+        $current = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && !$reg->isDeleted());
+
+        // Don't retain original indices
+        return new ArrayCollection($current->getValues());
+    }
+
+    public function addCurrentRegistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeCurrentRegistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
+    /** @return Collection<int, Registration> */
+    public function getDeregistrations(): Collection
+    {
+        $deregs = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && $reg->isDeleted());
+
+        // Don't retain original indices
+        return new ArrayCollection($deregs->getValues());
+    }
+
+    public function addDeregistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeDeregistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
+    /** @return Collection<int, Registration> */
+    public function getReserveRegistrations(): Collection
+    {
+        $reserve = $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isReserve() && !$reg->isDeleted());
+
+        // Don't retain original indices
+        $array = $reserve->getValues();
+        \usort($array, fn (Registration $a, Registration $b) => $a->getReservePosition() <=> $b->getReservePosition());
+
+        return new ArrayCollection($array);
+    }
+
+    public function addReserveRegistration(Registration $registration): self
+    {
+        return $this->addRegistration($registration);
+    }
+
+    public function removeReserveRegistration(Registration $registration): self
+    {
+        return $this->removeRegistration($registration);
+    }
+
     public function getAuthor(): ?Group
     {
         return $this->author;
     }
 
-    /**
-     * Set author.
-     */
     public function setAuthor(?Group $author): self
     {
         $this->author = $author;
@@ -309,19 +328,11 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get target.
-     */
     public function getTarget(): ?Group
     {
         return $this->target;
     }
 
-    /**
-     * Set target.
-     *
-     * @param Group $target
-     */
     public function setTarget(?Group $target): self
     {
         $this->target = $target;
@@ -329,19 +340,11 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get color.
-     *
-     * @return string
-     */
     public function getColor(): ?string
     {
         return $this->color;
     }
 
-    /**
-     * Set color.
-     */
     public function setColor(string $color): self
     {
         $this->color = $color;
@@ -349,19 +352,11 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get start.
-     *
-     * @return \DateTime
-     */
     public function getStart(): ?\DateTime
     {
         return $this->start;
     }
 
-    /**
-     * Set start.
-     */
     public function setStart(\DateTime $start): self
     {
         $this->start = $start;
@@ -369,19 +364,11 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get end.
-     *
-     * @return \DateTime
-     */
     public function getEnd(): ?\DateTime
     {
         return $this->end;
     }
 
-    /**
-     * Set id.
-     */
     public function setEnd(\DateTime $end): self
     {
         $this->end = $end;
@@ -389,19 +376,11 @@ class Activity
         return $this;
     }
 
-    /**
-     * Get deadline.
-     *
-     * @return \DateTime
-     */
     public function getDeadline(): ?\DateTime
     {
         return $this->deadline;
     }
 
-    /**
-     * Set id.
-     */
     public function setDeadline(\DateTime $deadline): self
     {
         $this->deadline = $deadline;
@@ -421,9 +400,7 @@ class Activity
         return $this;
     }
 
-    /**
-     * @param File|UploadedFile $imageFile
-     */
+    /** @param File|UploadedFile $imageFile */
     public function setImageFile(File $imageFile = null): self
     {
         $this->imageFile = $imageFile;
@@ -431,7 +408,7 @@ class Activity
         if (null !== $imageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->imageUpdatedAt = new \DateTimeImmutable();
+            $this->imageUpdatedAt = new \DateTime();
         }
 
         return $this;
@@ -454,32 +431,16 @@ class Activity
         return $this->image;
     }
 
-    /**
-     * Get imageUpdatedAt.
-     *
-     * @return \DateTime
-     */
     public function getImageUpdatedAt(): ?\DateTime
     {
         return $this->imageUpdatedAt;
     }
 
-    /**
-     * Set id.
-     */
     public function setImageUpdatedAt(\DateTime $imageUpdatedAt): self
     {
         $this->imageUpdatedAt = $imageUpdatedAt;
 
         return $this;
-    }
-
-    public function __construct()
-    {
-        $this->registrations = new ArrayCollection();
-        $this->options = new ArrayCollection();
-        $this->image = new EmbeddedFile();
-        $this->visibleAfter = new \DateTime();
     }
 
     public function hasCapacity(): bool
@@ -497,6 +458,15 @@ class Activity
         $this->capacity = $capacity;
 
         return $this;
+    }
+
+    /**
+     * Returns whether the activity is at/over capacity
+     * If so, new registrations should be placed in the reserve list.
+     */
+    public function atCapacity(): bool
+    {
+        return $this->hasCapacity() && ($this->getCurrentRegistrations()->count() >= $this->getCapacity() || $this->getReserveRegistrations()->count() > 0);
     }
 
     public function getPresent(): ?int
@@ -538,14 +508,13 @@ class Activity
      */
     public function isVisible(array $groups = []): bool
     {
-        $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups);
+        $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups, true);
 
         return
             $this->getEnd() > new \DateTime() &&
             $in_groups &&
-            $this->getVisibleAfter() &&
-            $this->getVisibleAfter() < new \DateTime()
-        ;
+            null !== $this->getVisibleAfter() &&
+            $this->getVisibleAfter() < new \DateTime();
     }
 
     /**
@@ -555,10 +524,31 @@ class Activity
     {
         // gather the currently applicable groups
         $groups = [];
-        if ($user) {
+        if (null !== $user) {
             $groups = $user->getRelations()->toArray();
         }
 
         return $this->isVisible($groups);
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
+        $this->archived = false;
+
+        // Clone or reset nested fields
+        $clonedOptions = $this->options->map(fn (PriceOption $o) => (clone $o)->setActivity($this));
+        $this->options = new ArrayCollection($clonedOptions->toArray());
+        $this->location = null !== $this->location ? clone $this->location : null;
+
+        // Reset date/time fields
+        $this->start = null;
+        $this->end = null;
+        $this->deadline = null;
+        $this->visibleAfter = null;
+
+        // Reset registration related fields
+        $this->registrations = new ArrayCollection();
+        $this->present = null;
     }
 }

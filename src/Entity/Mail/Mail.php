@@ -3,57 +3,37 @@
 namespace App\Entity\Mail;
 
 use App\Entity\Security\LocalAccount;
-use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 class Mail
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
-    private $id;
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var ?LocalAccount
-     */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
-    private $person;
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private ?LocalAccount $person = null;
 
-    /**
-     * @var Collection<int,Recipient>
-     */
-    #[ORM\OneToMany(targetEntity: "App\Entity\Mail\Recipient", mappedBy: "mail")]
-    private $recipients;
+    /** @var Collection<int,Recipient> */
+    #[ORM\OneToMany(targetEntity: "App\Entity\Mail\Recipient", mappedBy: 'mail')]
+    private Collection $recipients;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "string")]
-    private $title;
+    #[ORM\Column(type: 'string')]
+    private string $title;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "text")]
-    private $content;
+    #[ORM\Column(type: 'text')]
+    private string $content;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "string", length: 255)]
-    private $sender;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $sender;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(type: "datetime")]
-    private $sentAt;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTime $sentAt;
 
     public function getId(): ?string
     {
@@ -108,11 +88,7 @@ class Mail
         return $this;
     }
 
-    /**
-     * Get recipients options.
-     *
-     * @return Collection<int,Recipient>
-     */
+    /** @return Collection<int,Recipient> */
     public function getRecipients(): Collection
     {
         return $this->recipients;
@@ -153,12 +129,12 @@ class Mail
         return $this;
     }
 
-    public function getSentAt(): ?DateTime
+    public function getSentAt(): ?\DateTime
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(DateTime $sentAt): self
+    public function setSentAt(\DateTime $sentAt): self
     {
         $this->sentAt = $sentAt;
 

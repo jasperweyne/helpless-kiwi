@@ -7,24 +7,20 @@ use App\Entity\Location\Location;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class LocationTest.
  *
  * @covers \App\Entity\Location\Location
+ *
+ * @group entities
  */
 class LocationTest extends KernelTestCase
 {
-    /**
-     * @var Location
-     */
-    protected $location;
+    protected Location $location;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,9 +30,7 @@ class LocationTest extends KernelTestCase
         $this->location = new Location();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -47,7 +41,7 @@ class LocationTest extends KernelTestCase
     public function testGetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->location, $expected);
@@ -57,7 +51,7 @@ class LocationTest extends KernelTestCase
     public function testSetId(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('id');
         $property->setAccessible(true);
         $this->location->setId($expected);
@@ -67,7 +61,7 @@ class LocationTest extends KernelTestCase
     public function testGetAddress(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('address');
         $property->setAccessible(true);
         $property->setValue($this->location, $expected);
@@ -77,7 +71,7 @@ class LocationTest extends KernelTestCase
     public function testSetAddress(): void
     {
         $expected = '42';
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('address');
         $property->setAccessible(true);
         $this->location->setAddress($expected);
@@ -87,7 +81,7 @@ class LocationTest extends KernelTestCase
     public function testGetActivities(): void
     {
         $expected = new ArrayCollection();
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('activities');
         $property->setAccessible(true);
         $property->setValue($this->location, $expected);
@@ -105,7 +99,7 @@ class LocationTest extends KernelTestCase
         $this->location->addActivity($expected);
 
         // assert
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('activities');
         $property->setAccessible(true);
         $activities = $property->getValue($this->location);
@@ -120,7 +114,7 @@ class LocationTest extends KernelTestCase
         $expected = $this->createMock(Activity::class);
         $expected->method('getLocation')->willReturn($this->location);
         $expected->expects(self::once())->method('setLocation')->with(null);
-        $property = (new ReflectionClass(Location::class))
+        $property = (new \ReflectionClass(Location::class))
             ->getProperty('activities');
         $property->setAccessible(true);
         $activities = $property->getValue($this->location);
@@ -134,5 +128,13 @@ class LocationTest extends KernelTestCase
         $activities = $property->getValue($this->location);
         self::assertInstanceOf(Collection::class, $activities);
         self::assertNotContains($expected, $activities);
+    }
+
+    public function testClone(): void
+    {
+        $this->location->setId('test'); // make sure id has value assigned
+        $copy = clone $this->location;
+
+        self::assertNotSame($copy->getId(), $this->location->getId());
     }
 }

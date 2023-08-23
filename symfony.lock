@@ -5,6 +5,9 @@
     "composer/xdebug-handler": {
         "version": "1.4.4"
     },
+    "craue/formflow-bundle": {
+        "version": "3.6.0"
+    },
     "dama/doctrine-test-bundle": {
         "version": "4.0",
         "recipe": {

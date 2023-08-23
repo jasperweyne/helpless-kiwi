@@ -30,8 +30,8 @@ class ExternalRegistrantType extends AbstractType
             ->add('email', EmailType::class, [
                 'constraints' => [
                     new Expression('value not in emails', 'Dit e-mailadres hoort al bij een gebruikersaccount', [
-                        'emails' => $this->emails
-                    ])
+                        'emails' => $this->emails,
+                    ]),
                 ],
             ])
         ;

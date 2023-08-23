@@ -3,10 +3,12 @@
 namespace App\Security;
 
 use App\Entity\Security\LocalAccount;
+use App\Event\Security\CreateAccountsEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Drenso\OidcBundle\Model\OidcUserData;
 use Drenso\OidcBundle\Security\Exception\OidcUserNotFoundException;
 use Drenso\OidcBundle\Security\UserProvider\OidcUserProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,14 +16,10 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->em = $em;
+    public function __construct(
+        private EntityManagerInterface $em,
+        private EventDispatcherInterface $dispatcher,
+    ) {
     }
 
     /**
@@ -50,11 +48,10 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         $user = $repository->findOneBy(['oidc' => $userIdentifier]);
 
         // If user does not exist, create it
-        if (null === $user) {
+        if ($create = (null === $user)) {
             $user = new LocalAccount();
             $user->setOidc($userIdentifier);
             $user->setRoles([]);
-            $this->em->persist($user);
         }
 
         // Update the user data
@@ -62,7 +59,12 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         $user->setGivenName($token->getGivenName());
         $user->setFamilyName($token->getFamilyName());
         $user->setEmail($token->getEmail());
-        $this->em->flush();
+
+        if ($create) {
+            $this->dispatcher->dispatch(new CreateAccountsEvent([$user]));
+        } else {
+            $this->em->flush();
+        }
     }
 
     public function loadOidcUser(string $userIdentifier): UserInterface
@@ -70,7 +72,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         $repository = $this->em->getRepository(LocalAccount::class);
         $user = $repository->findOneBy(['oidc' => $userIdentifier]);
 
-        if ($user === null) {
+        if (null === $user) {
             throw new OidcUserNotFoundException("$userIdentifier is unknown");
         }
 

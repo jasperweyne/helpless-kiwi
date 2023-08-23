@@ -3,6 +3,7 @@
 namespace App\Log;
 
 use App\Entity\Log\Event as EventEntity;
+use App\Entity\Security\LocalAccount;
 use App\Reflection\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -39,9 +40,12 @@ class EventService
         $this->refl = $refl;
     }
 
-    public function log(AbstractEvent $event)
+    public function log(AbstractEvent $event): void
     {
         $entity = $this->hydrate($event);
+        assert(null !== $entity); // hydrate can return null, that's unwanted.
+        // this only happens if you pass it null as an argument.
+        // should be rewritten in a nicer fashion.
 
         $this->em->persist($entity);
         $this->em->flush();
@@ -64,25 +68,18 @@ class EventService
         }
 
         $entity = new EventEntity();
+        assert($this->person instanceof LocalAccount || null === $this->person);
         $entity
             ->setTime(new \DateTime())
             ->setDiscr(get_class($event))
             ->setPerson($this->person)
-            ->setMeta(serialize($meta))
-        ;
+            ->setMeta(serialize($meta));
 
         $object = $event->getEntity();
         if (null !== $object) {
-            if (!is_string($this->getIdentifier($object))) {
-                @trigger_error('Entities with identifiers that are not of type string, are not supported yet.', E_USER_WARNING);
-
-                return null;
-            }
-
             $entity
-                ->setObjectId($this->getIdentifier($object)) // todo: assumes id is string without assertion, fix this
-                ->setObjectType($this->getClassName($object))
-            ;
+                ->setObjectId($this->getIdentifier($object))
+                ->setObjectType($this->getClassName($object));
         }
 
         return $entity;
@@ -98,10 +95,12 @@ class EventService
         $objectId = $entity->getObjectId();
         $em = $this->em;
 
+        assert(null !== $objectType);
         $objectClosure = function () use ($em, $objectType, $objectId) {
             return $em->find($objectType, $objectId);
         };
 
+        assert(is_string($entity->getMeta()));
         /** @var array<string, mixed> */
         $fields = unserialize($entity->getMeta());
         $fields['time'] = $entity->getTime();
@@ -109,13 +108,15 @@ class EventService
         $fields['entityCb'] = $objectClosure;
         $fields['entityType'] = $objectType;
 
+        assert(null !== $entity->getDiscr());
         $class = class_exists($entity->getDiscr()) ? $entity->getDiscr() : AbstractEvent::class;
 
+        /** @var AbstractEvent */
         return $this->refl->instantiate($class, $fields);
     }
 
     /**
-     * @param object $entities
+     * @param array<EventEntity> $entities
      *
      * @return (?AbstractEvent)[]
      */
@@ -175,21 +176,27 @@ class EventService
         return $this->populate($found);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getIdentifier(object $entity)
+    public function getIdentifier(object $entity): string
     {
         $className = $this->getClassName($entity);
         $identifier = $this->em->getClassMetadata($className)->getSingleIdentifierFieldName();
         $refl = $this->refl->getAccessibleProperty($className, $identifier);
 
-        return $refl->getValue($entity);
+        assert($refl instanceof \ReflectionProperty);
+
+        $identifier = $refl->getValue($entity);
+        if (!is_string($identifier) && !($identifier instanceof \Stringable)) {
+            throw new \UnexpectedValueException('Entities with identifiers that are not of type string, are not supported yet.');
+        }
+
+        return (string) $identifier;
     }
 
     /**
      * @template T of object
+     *
      * @phpstan-param T $entity
+     *
      * @phpstan-return class-string<T>
      */
     public function getClassName(object $entity): string

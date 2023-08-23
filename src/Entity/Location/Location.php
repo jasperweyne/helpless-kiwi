@@ -10,24 +10,19 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 
 #[ORM\Entity]
 #[GQL\Type]
-#[GQL\Description("A physical location where activities are organized.")]
+#[GQL\Description('A physical location where activities are organized.')]
 class Location
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
-    private $id;
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "string")]
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("The address of the location.")]
-    private $address;
+    #[ORM\Column(type: 'string')]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('The address of the location.')]
+    private string $address;
 
     /**
      * @var Collection<int, Activity>
@@ -102,5 +97,10 @@ class Location
         }
 
         return $this;
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
     }
 }

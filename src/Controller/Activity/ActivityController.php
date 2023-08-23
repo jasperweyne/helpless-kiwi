@@ -6,7 +6,6 @@ use App\Calendar\ICalProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
@@ -24,7 +23,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * Activity controller.
  */
-#[Route("/", name: "activity_")]
+#[Route('/', name: 'activity_')]
 class ActivityController extends AbstractController
 {
     /**
@@ -46,9 +45,9 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities.
      */
-    #[MenuItem(title: "Terug naar frontend", menu: "admin-profile", class: "mobile")]
-    #[MenuItem(title: "Activiteiten")]
-    #[Route("/", name: "index", methods: ["GET"])]
+    #[MenuItem(title: 'Terug naar frontend', menu: 'admin-profile', class: 'mobile')]
+    #[MenuItem(title: 'Activiteiten')]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function indexAction(): Response
     {
         $groups = [];
@@ -67,7 +66,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      */
-    #[Route("/activity/{id}/unregister", name: "unregister", methods: ["POST"])]
+    #[Route('/activity/{id}/unregister', name: 'unregister', methods: ['POST'])]
     public function unregisterAction(
         Request $request,
         Activity $activity
@@ -76,35 +75,37 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var array{registration_single: string} $data */
             $data = $form->getData();
-            $registration = $this->em->getRepository(Registration::class)->find($data['registration_single'] ?? '');
+            $registration = $this->em->getRepository(Registration::class)->find($data['registration_single']);
 
-            if ($registration !== null) {
+            if (null !== $registration) {
                 $event = new RegistrationRemovedEvent($registration);
                 $this->events->dispatch($event);
             } else {
                 $this->addFlash('error', 'Probleem tijdens afmelden');
             }
         }
+
         return $this->redirectToRoute(
             'activity_show',
             ['id' => $activity->getId()]
         );
     }
 
-    #[Route("/ical", methods: ["GET"])]
+    #[Route('/ical', methods: ['GET'])]
     public function callIcal(
         ICalProvider $iCalProvider
     ): Response {
         $publicActivities = $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup([]); // Only return activities without target audience
 
-        return new Response($iCalProvider->IcalFeed($publicActivities));
+        return new Response($iCalProvider->icalFeed($publicActivities));
     }
 
     /**
      * Displays a form to register to an activity.
      */
-    #[Route("/activity/{id}/register", name: "register", methods: ["POST"])]
+    #[Route('/activity/{id}/register', name: 'register', methods: ['POST'])]
     public function registerAction(
         Request $request,
         Activity $activity
@@ -113,10 +114,12 @@ class ActivityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var array{single_option: string} $data */
             $data = $form->getData();
-            $option = $this->em->getRepository(PriceOption::class)->find($data['single_option'] ?? null);
-            if ($option === null) {
+            $option = $this->em->getRepository(PriceOption::class)->find($data['single_option']);
+            if (null === $option) {
                 $this->addFlash('error', 'Probleem met aanmelding.');
+
                 return $this->redirectToRoute(
                     'activity_show',
                     ['id' => $activity->getId()]
@@ -134,26 +137,19 @@ class ActivityController extends AbstractController
             ]);
             if ($registrations > 0) {
                 $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
+
                 return $this->redirectToRoute(
                     'activity_show',
                     ['id' => $activity->getId()]
                 );
             }
 
-            // create reserve registration if the activity is full
-            $registrations = $this->em->getRepository(Registration::class)->findBy([
-                'activity' => $activity,
-                'reserve_position' => null,
-                'deletedate' => null,
-            ]);
-            $reserve = $activity->hasCapacity() && (count($registrations) >= $activity->getCapacity() || count($this->em->getRepository(Registration::class)->findReserve($activity)) > 0);
-
             $registration = new Registration();
             $registration
                 ->setActivity($activity)
                 ->setOption($option)
                 ->setPerson($user)
-                ->setReservePosition($reserve ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
+                ->setReservePosition($activity->atCapacity() ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
             ;
 
             $event = new RegistrationAddedEvent($registration);
@@ -169,16 +165,9 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route("/activity/{id}", name: "show", methods: ["GET"])]
+    #[Route('/activity/{id}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
-        $regs = $this->em->getRepository(Registration::class)->findBy([
-            'activity' => $activity,
-            'deletedate' => null,
-            'reserve_position' => null,
-        ]);
-        $reserve = $this->em->getRepository(Registration::class)->findReserve($activity);
-        $hasReserve = $activity->hasCapacity() && (count($regs) >= $activity->getCapacity() || count($reserve) > 0);
         $groups = [];
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);
@@ -189,7 +178,7 @@ class ActivityController extends AbstractController
         foreach ($targetoptions as $option) {
             $forms[] = [
                 'data' => $option,
-                'form' => $this->singleRegistrationForm($option, $hasReserve)->createView(),
+                'form' => $this->singleRegistrationForm($option, $activity->atCapacity())->createView(),
             ];
         }
         $unregister = null;
@@ -206,16 +195,16 @@ class ActivityController extends AbstractController
 
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
-            'registrations' => $regs,
             'options' => $forms,
             'unregister' => $unregister,
-            'reserve' => $reserve,
         ]);
     }
 
     public function singleUnregistrationForm(Registration $registration): FormInterface
     {
-        $form = $this->createUnregisterForm($registration->getActivity());
+        $activity = $registration->getActivity();
+        assert(null !== $activity);
+        $form = $this->createUnregisterForm($activity);
         $form->get('registration_single')->setData($registration->getId());
 
         return $form;
@@ -223,7 +212,9 @@ class ActivityController extends AbstractController
 
     public function singleRegistrationForm(PriceOption $option, bool $reserve): FormInterface
     {
-        $form = $this->createRegisterForm($option->getActivity(), $reserve);
+        $activity = $option->getActivity();
+        assert(null !== $activity);
+        $form = $this->createRegisterForm($activity, $reserve);
         $form->get('single_option')->setData($option->getId());
 
         return $form;

@@ -66,6 +66,9 @@ services:
 
     App\GraphQL\Query:
         public: true
+        
+    App\GraphQL\Mutation:
+        public: true
 
     drenso.oidc.client:
         public: true

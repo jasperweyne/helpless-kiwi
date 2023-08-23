@@ -22,25 +22,13 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class ActivityRepositoryTest extends KernelTestCase
 {
-    /**
-     * @var AbstractDatabaseTool
-     */
-    protected $databaseTool;
+    protected AbstractDatabaseTool $databaseTool;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $em;
+    protected ObjectManager $em;
 
-    /**
-     * @var ActivityRepository
-     */
-    protected $activityRepository;
+    protected ActivityRepository $activityRepository;
 
-    /**
-     * @var ManagerRegistry
-     */
-    protected $registry;
+    protected ManagerRegistry $registry;
 
     /**
      * {@inheritdoc}
@@ -101,10 +89,42 @@ class ActivityRepositoryTest extends KernelTestCase
         self::assertTrue(count($activities) > 0);
     }
 
+    public function testFindAuthorArchive(): void
+    {
+        /* @todo This test is incomplete. */
+        self::markTestIncomplete();
+    }
+
     public function testFindUpcoming(): void
     {
         /* @todo This test is incomplete. */
         self::markTestIncomplete();
+    }
+
+    public function testFindActive(): void
+    {
+        $activities = $this->em
+            ->getRepository(Activity::class)
+            ->findActive();
+
+        foreach ($activities as $activitie) {
+            self::assertFalse($activitie->getArchived());
+        }
+
+        self::assertTrue(count($activities) > 0);
+    }
+
+    public function testFindArchived(): void
+    {
+        $activities = $this->em
+            ->getRepository(Activity::class)
+            ->findArchived();
+
+        foreach ($activities as $activitie) {
+            self::assertTrue($activitie->getArchived());
+        }
+
+        self::assertTrue(0 == count($activities));
     }
 
     public function testFindUpcomingByGroup(): void
@@ -126,5 +146,17 @@ class ActivityRepositoryTest extends KernelTestCase
         }
 
         self::assertTrue(count($activities) > 0);
+    }
+
+    public function testArchiveAndActiveMatchAll(): void
+    {
+        $repo = $this->em
+            ->getRepository(Activity::class);
+        $active = $repo->findActive();
+        $archive = $repo->findArchived();
+        $all = $repo->findAll();
+
+        $activeAndArchive = array_merge($active, $archive);
+        self::assertEqualsCanonicalizing($all, $activeAndArchive);
     }
 }

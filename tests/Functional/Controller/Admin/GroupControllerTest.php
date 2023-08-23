@@ -3,7 +3,6 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Group\Group;
-use App\Entity\Group\Relation;
 use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Group\GroupFixture;
@@ -18,16 +17,11 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class GroupControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
+    protected EntityManagerInterface $em;
 
-    private $controllerEndpoint = '/admin/group';
+    private string $controllerEndpoint = '/admin/group';
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -42,9 +36,7 @@ class GroupControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -139,7 +131,7 @@ class GroupControllerTest extends AuthWebTestCase
         // Arrange
         $user = $this->em->getRepository(LocalAccount::class)->findAll()[0];
         $group = $user->getRelations()[0];
-        assert($group !== null);
+        assert(null !== $group);
         $id = $group->getId();
         $account_id = $user->getId();
 

@@ -8,27 +8,19 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Recipient
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
-    private $id;
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var ?LocalAccount
-     */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Security\LocalAccount")]
-    #[ORM\JoinColumn(name: "person_id", referencedColumnName: "id")]
-    private $person;
+    #[ORM\JoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private ?LocalAccount $person = null;
 
-    /**
-     * @var ?Mail
-     */
-    #[ORM\ManyToOne(targetEntity: "App\Entity\Mail\Mail", inversedBy: "recipients")]
-    #[ORM\JoinColumn(name: "mail", referencedColumnName: "id")]
-    private $mail;
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Mail\Mail", inversedBy: 'recipients')]
+    #[ORM\JoinColumn(name: 'mail', referencedColumnName: 'id')]
+    private ?Mail $mail = null;
 
     public function getId(): ?string
     {

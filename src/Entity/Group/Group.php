@@ -10,100 +10,70 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: "App\Repository\GroupRepository")]
-#[ORM\Table("taxonomy")]
+#[ORM\Table('taxonomy')]
 #[GQL\Type]
-#[GQL\Description("A group of persons.")]
+#[GQL\Description('A group of persons.')]
 class Group
 {
-    /**
-     * @var ?string
-     */
     #[ORM\Id()]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    #[ORM\Column(type: "guid")]
-    private $id;
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\Column(type: 'guid')]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: "string", length: 100, name: "title")]
-    #[GQL\Field(type: "String!")]
-    #[GQL\Description("The name of the group.")]
+    #[ORM\Column(type: 'string', length: 100, name: 'title')]
+    #[GQL\Field(type: 'String!')]
+    #[GQL\Description('The name of the group.')]
     #[Assert\NotBlank]
-    private $name;
+    private string $name;
 
-    /**
-     * @var ?string
-     */
-    #[ORM\Column(type: "text", nullable: true)]
-    #[GQL\Field(type: "String")]
-    #[GQL\Description("A textual description of the the group.")]
-    private $description;
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('A textual description of the the group.')]
+    private ?string $description;
 
-    /**
-     * @var ?Group
-     */
-    #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group", inversedBy: "children")]
-    #[ORM\JoinColumn(name: "parent", referencedColumnName: "id")]
-    #[GQL\Field(type: "Group")]
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group", inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent', referencedColumnName: 'id')]
+    #[GQL\Field(type: 'Group')]
     #[GQL\Description("The parent group of this (sub)group. Note that the members don't need to be a subset of the parent group.")]
-    private $parent;
+    private ?Group $parent = null;
 
-    /**
-     * @var Collection<int, Group>
-     */
-    #[ORM\OneToMany(targetEntity: "App\Entity\Group\Group", mappedBy: "parent")]
-    #[GQL\Field(type: "[Group]")]
+    /** @var Collection<int, Group> */
+    #[ORM\OneToMany(targetEntity: "App\Entity\Group\Group", mappedBy: 'parent')]
+    #[GQL\Field(type: '[Group]')]
     #[GQL\Description("The child (sub)groups of this group. Note that their members don't need to be a subset of this group.")]
-    protected $children;
+    protected Collection $children;
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(type: "boolean")]
-    #[GQL\Field(type: "Boolean!")]
-    #[GQL\Description("Whether the group can be modified.")]
-    private $readonly;
+    #[ORM\Column(type: 'boolean')]
+    #[GQL\Field(type: 'Boolean!')]
+    #[GQL\Description('Whether the group can be modified.')]
+    private bool $readonly;
 
-    /**
-     * @var ?bool
-     */
-    #[ORM\Column(type: "boolean", nullable: true)]
-    #[GQL\Field(type: "Boolean")]
-    #[GQL\Description("Whether the group can contain member users.")]
-    private $relationable;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[GQL\Field(type: 'Boolean')]
+    #[GQL\Description('Whether the group can contain member users.')]
+    private ?bool $relationable;
 
-    /**
-     * @var ?bool
-     */
-    #[ORM\Column(type: "boolean", nullable: true)]
-    #[GQL\Field(type: "Boolean")]
-    #[GQL\Description("Whether the group can contain children (sub)groups.")]
-    private $subgroupable;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[GQL\Field(type: 'Boolean')]
+    #[GQL\Description('Whether the group can contain children (sub)groups.')]
+    private ?bool $subgroupable;
 
-    /**
-     * @var Collection<int, LocalAccount>
-     */
+    /** @var Collection<int, LocalAccount> */
     #[ORM\ManyToMany(targetEntity: LocalAccount::class, mappedBy: 'relations')]
-    #[GQL\Field(type: "[LocalAccount]")]
-    #[GQL\Description("The member users of this group.")]
-    private $relations;
+    #[GQL\Field(type: '[LocalAccount]')]
+    #[GQL\Description('The member users of this group.')]
+    private Collection $relations;
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(type: "boolean")]
-    #[GQL\Field(type: "Boolean!")]
-    #[GQL\Description("Whether the group is currently active, eg. whether it can organise activities.")]
-    private $active;
+    #[ORM\Column(type: 'boolean')]
+    #[GQL\Field(type: 'Boolean!')]
+    #[GQL\Description('Whether the group is currently active, eg. whether it can organise activities.')]
+    private bool $active;
 
-    /**
-     * @var ?bool
-     */
-    #[ORM\Column(type: "boolean", nullable: true)]
-    #[GQL\Field(type: "Boolean")]
-    #[GQL\Description("Whether the group can be currently used as a target group for activities.")]
-    private $register;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[GQL\Field(type: 'Boolean')]
+    #[GQL\Description('Whether the group can be currently used as a target group for activities.')]
+    private ?bool $register;
 
     public function __construct()
     {
@@ -113,17 +83,11 @@ class Group
         $this->active = false;
     }
 
-    /**
-     * Get id.
-     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * Set id.
-     */
     public function setId(string $id): self
     {
         $this->id = $id;
@@ -131,17 +95,11 @@ class Group
         return $this;
     }
 
-    /**
-     * Get name.
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Set name.
-     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -149,17 +107,11 @@ class Group
         return $this;
     }
 
-    /**
-     * Get description.
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set description.
-     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
@@ -193,8 +145,8 @@ class Group
 
     public function getRelationable(): ?bool
     {
-        //If true, then the group is allowed members.
-        //Otherwise no member, but only subgroups are allowed.
+        // If true, then the group is allowed members.
+        // Otherwise no member, but only subgroups are allowed.
         return $this->relationable;
     }
 
@@ -207,8 +159,8 @@ class Group
 
     public function getSubgroupable(): ?bool
     {
-        //If true, then the group is allowed members.
-        //Otherwise no member, but only subgroups are allowed.
+        // If true, then the group is allowed members.
+        // Otherwise no member, but only subgroups are allowed.
         return $this->subgroupable;
     }
 
@@ -219,9 +171,7 @@ class Group
         return $this;
     }
 
-    /**
-     * @return Collection<int, LocalAccount>
-     */
+    /** @return Collection<int, LocalAccount> */
     public function getRelations(): Collection
     {
         return $this->relations;
@@ -266,9 +216,7 @@ class Group
         return $relationList;
     }
 
-    /**
-     * @return Collection<int, Group>
-     */
+    /** @return Collection<int, Group> */
     public function getChildren(): Collection
     {
         return $this->children;

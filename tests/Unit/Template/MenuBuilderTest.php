@@ -3,7 +3,6 @@
 namespace Tests\Unit\Template;
 
 use App\Template\MenuBuilder;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -31,7 +30,7 @@ class MenuBuilderTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $this->extensions = null;
+        $this->extensions = [];
         $this->menuBuilder = new MenuBuilder($this->extensions);
     }
 
@@ -49,7 +48,7 @@ class MenuBuilderTest extends KernelTestCase
     public function testGetExtensions(): void
     {
         $expected = [];
-        $property = (new ReflectionClass(MenuBuilder::class))
+        $property = (new \ReflectionClass(MenuBuilder::class))
             ->getProperty('extensions');
         $property->setAccessible(true);
         $property->setValue($this->menuBuilder, $expected);
