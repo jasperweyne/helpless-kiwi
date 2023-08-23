@@ -8,6 +8,7 @@ use App\Entity\Activity\WaitlistSpot;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
+use App\Mail\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -17,6 +18,8 @@ class WaitlistSubscriber implements EventSubscriberInterface
     public function __construct(
         private EntityManagerInterface $em,
         private EventDispatcherInterface $dispatcher,
+        private MailService $mailer,
+        private \Twig\Environment $template,
     ) {
     }
 
@@ -84,6 +87,15 @@ class WaitlistSubscriber implements EventSubscriberInterface
 
     private function notifyWaitlist(PriceOption $option): void
     {
-        // todo
+        foreach ($option->getWaitlist() as $spot) {
+            $this->mailer->message(
+                [$spot->person],
+                'Er is een ticket aangeboden voor '.($option->getActivity()?->getName() ?? ''),
+                $this->template->render('email/waitlist_notify.html.twig', [
+                    'option' => $option,
+                    'person' => $spot->person,
+                ])
+            );
+        }
     }
 }

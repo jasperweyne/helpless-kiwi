@@ -178,7 +178,12 @@ class ActivityController extends AbstractController
                     $this->em->persist(new WaitlistSpot($user, $option));
                     $this->em->flush();
 
-                    $this->addFlash('success', 'Je bent aangemeld op de wachtlijst. Indien er een plek vrij komt voor de aanmelddeadline, wordt je automatisch aangemeld. Daarna ontvang je een mail om een ticket over te nemen');
+                    $description = match ($activity->getDeadline() > new \DateTime('now')) {
+                        true => 'Indien iemand zich afmeld, wordt de eerstvolgende op de wachtlijst automatisch aangemeld. Na de aanmelddeadline ontvang je een melding per e-mail als iemand z\'n ticket aanbiedt.',
+                        false => 'Indien iemand z\'n ticket aanbiedt, ontvang je hier een melding van per e-mail.',
+                    };
+
+                    $this->addFlash('success', "Je bent aangemeld op de wachtlijst. $description");
                 }
 
                 return $this->redirectToRoute(
