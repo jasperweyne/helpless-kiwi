@@ -9,14 +9,14 @@ use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class WaitlistSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private EventDispatcher $dispatcher,
+        private EventDispatcherInterface $dispatcher,
     ) {
     }
 
