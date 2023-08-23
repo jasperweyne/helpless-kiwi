@@ -16,7 +16,7 @@ class LocationDeleteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $location = $options['location'];
-        if ($location === null || !($location instanceof Location)) {
+        if (null === $location || !($location instanceof Location)) {
             throw new \LogicException('A location must be provided for a LocationDeleteType form');
         }
 
@@ -30,15 +30,13 @@ class LocationDeleteType extends AbstractType
                     return $repo->createQueryBuilder('l')
                         ->where('l != :self')
                         ->orderBy('l.address', 'ASC')
-                        ->setParameter('self', $location)
-                    ;
+                        ->setParameter('self', $location);
                 },
                 'attr' => ['data-select' => 'true'],
                 'constraints' => [
                     new NotBlank(),
-                ]
-            ])
-        ;
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
