@@ -32,7 +32,7 @@ class OidcClientFactory
     ): OidcClientInterface {
         // True oidc client, for when oidc is enabled.
         // This is the regular oidc client, which should function as advertised.
-        if (isset($_ENV['OIDC_ADDRESS']) && $_ENV['OIDC_ADDRESS']!=='') {
+        if (isset($_ENV['OIDC_ADDRESS']) && '' !== $_ENV['OIDC_ADDRESS']) {
             return new OidcClient(
                 $requestStack,
                 $httpUtils,
