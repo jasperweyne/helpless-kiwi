@@ -197,7 +197,7 @@ class RegistrationController extends AbstractController
     /**
      * Remove someone from the activity waitlist.
      */
-    #[Route('/waitlist/remove/{id}', name: 'waitlist_remove', methods: ['GET', 'POST'])]
+    #[Route('/waitlist/remove/{id}', name: 'waitlist_remove')]
     public function waitlistRemoveAction(
         Request $request,
         WaitlistSpot $spot
@@ -225,8 +225,8 @@ class RegistrationController extends AbstractController
             ]);
         }
 
-        return $this->render('admin/activity/registration/delete.html.twig', [
-            'registration' => $spot,
+        return $this->render('admin/activity/waitlist/remove.html.twig', [
+            'waitlist' => $spot,
             'form' => $form->createView(),
         ]);
     }
@@ -253,7 +253,7 @@ class RegistrationController extends AbstractController
     protected function createWaitlistDeleteForm(WaitlistSpot $spot): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_registration_waitlist_delete', ['id' => $spot->id]))
+            ->setAction($this->generateUrl('admin_activity_registration_waitlist_remove', ['id' => $spot->id]))
             ->setMethod('DELETE')
             ->getForm()
         ;
