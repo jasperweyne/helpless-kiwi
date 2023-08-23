@@ -65,7 +65,7 @@ class ActivityController extends AbstractController
     }
 
     /**
-     * Displays a form to edit an existing activity entity.
+     * Removes all registrations (including waitlist) for the current user.
      */
     #[Route('/activity/{id}/unregister', name: 'unregister', methods: ['POST'])]
     public function unregisterAction(
@@ -76,14 +76,34 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var array{registration_single: string} $data */
-            $data = $form->getData();
-            $registration = $this->em->getRepository(Registration::class)->find($data['registration_single']);
+            // Find waitlist spots for this user
+            $waitlist = $this->em->getRepository(WaitlistSpot::class)->findBy([
+                'option' => $activity->getOptions()->toArray(),
+                'person' => $this->getUser(),
+            ]);
 
-            if (null !== $registration) {
-                $event = new RegistrationRemovedEvent($registration);
-                $this->events->dispatch($event);
-            } else {
+            // Remove user from any waitlist for this activity
+            foreach ($waitlist as $spot) {
+                $this->em->remove($spot);
+                $this->addFlash('success', 'Afgemeld van wachtlijst voor optie '.$spot->option->getName());
+            }
+
+            // Find registrations for this user
+            $registrations = $this->em->getRepository(Registration::class)->findBy([
+                'person' => $this->getUser(),
+                'option' => $activity->getOptions()->toArray(),
+                'deletedate' => null,
+            ]);
+
+            // Remove any registrations from user for this activity
+            foreach ($registrations as $registration) {
+                $this->events->dispatch(new RegistrationRemovedEvent($registration));
+            }
+
+            $this->em->flush();
+
+            // Check if any changes happened
+            if (0 === count($registrations) + count($waitlist)) {
                 $this->addFlash('error', 'Probleem tijdens afmelden');
             }
         }
@@ -104,7 +124,7 @@ class ActivityController extends AbstractController
     }
 
     /**
-     * Displays a form to register to an activity.
+     * Creates registration for the current user.
      */
     #[Route('/activity/{id}/register', name: 'register', methods: ['POST'])]
     public function registerAction(
@@ -145,6 +165,7 @@ class ActivityController extends AbstractController
                 );
             }
 
+            // Check if the activity is full
             if ($activity->atCapacity()) {
                 $waitlist = $this->em->getRepository(WaitlistSpot::class)->count([
                     'option' => $option,
@@ -157,7 +178,7 @@ class ActivityController extends AbstractController
                     $this->em->persist(new WaitlistSpot($user, $option));
                     $this->em->flush();
 
-                    $this->addFlash('success', 'Je bent aangemeld op de wachtlijst. Indien er een plek vrij komt, wordt je automatisch aangemeld tot de aanmelddeadline. Daarna ontvang je een mail om een ticket over te nemen');
+                    $this->addFlash('success', 'Je bent aangemeld op de wachtlijst. Indien er een plek vrij komt voor de aanmelddeadline, wordt je automatisch aangemeld. Daarna ontvang je een mail om een ticket over te nemen');
                 }
 
                 return $this->redirectToRoute(
@@ -189,46 +210,42 @@ class ActivityController extends AbstractController
     #[Route('/activity/{id}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
+        // Find all groups that this user is in
         $groups = [];
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);
             $groups = $user->getRelations()->toArray();
         }
-        $targetoptions = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
-        $forms = [];
-        foreach ($targetoptions as $option) {
-            $forms[] = [
-                'data' => $option,
-                'form' => $this->singleRegistrationForm($option, $activity->atCapacity())->createView(),
-            ];
-        }
+
+        // Find all price options (with form) for the groups that this user is in
+        $options = array_map(fn (PriceOption $option) => [
+            'data' => $option,
+            'form' => $this->singleRegistrationForm($option, $activity->atCapacity())->createView(),
+        ], $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups));
+
+        // Build deregistration form (if applicable)
         $unregister = null;
         if (null !== $this->getUser()) {
-            $registration = $this->em->getRepository(Registration::class)->findOneBy([
+            $registration = $this->em->getRepository(Registration::class)->findBy([
                 'activity' => $activity,
                 'person' => $this->getUser(),
                 'deletedate' => null,
             ]);
-            if (null !== $registration) {
-                $unregister = $this->singleUnregistrationForm($registration)->createView();
+            $waitlistSpot = $this->em->getRepository(WaitlistSpot::class)->findBy([
+                'option' => $activity->getOptions()->toArray(),
+                'person' => $this->getUser(),
+            ]);
+
+            if (0 !== count($registration) + count($waitlistSpot)) {
+                $unregister = $this->createUnregisterForm($activity)->createView();
             }
         }
 
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
-            'options' => $forms,
+            'options' => $options,
             'unregister' => $unregister,
         ]);
-    }
-
-    public function singleUnregistrationForm(Registration $registration): FormInterface
-    {
-        $activity = $registration->getActivity();
-        assert(null !== $activity);
-        $form = $this->createUnregisterForm($activity);
-        $form->get('registration_single')->setData($registration->getId());
-
-        return $form;
     }
 
     public function singleRegistrationForm(PriceOption $option, bool $waitlist): FormInterface
@@ -245,7 +262,6 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('activity_unregister', ['id' => $activity->getId()]))
-            ->add('registration_single', HiddenType::class)
             ->add('submit', SubmitType::class, [
                 'attr' => ['class' => 'button delete'],
                 'label' => 'Afmelden',
