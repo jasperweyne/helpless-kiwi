@@ -278,7 +278,7 @@
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.timestamp|date('Y-m-d H:i:s')  }} </td>
                                 <td>
-                                    <a href="{{ path('admin_activity_registration_remove', { 'id': registration.id }) }}">Afmelden</a>
+                                    <a href="{{ path('admin_activity_registration_waitlist_remove', { 'id': registration.id }) }}">Afmelden</a>
                                     <a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a>
                                 </td>
                             </tr>
