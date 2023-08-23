@@ -3,6 +3,7 @@
 namespace App\Entity\Security;
 
 use App\Entity\Activity\Registration;
+use App\Entity\Activity\WaitlistSpot;
 use App\Entity\Group\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -73,6 +74,10 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     #[GQL\Description('All group memberships for the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
     private Collection $relations;
+
+    /** @var Collection<int, WaitlistSpot> */
+    #[ORM\OneToMany(mappedBy: 'person', targetEntity: WaitlistSpot::class, orphanRemoval: true)]
+    private Collection $waitlist;
 
     public function getId(): ?string
     {
@@ -290,6 +295,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
+        $this->waitlist = new ArrayCollection();
     }
 
     /** @return Collection<int, Registration>|null */
@@ -346,5 +352,13 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     public function getActiveGroups(): array
     {
         return $this->getRelations()->filter(fn (Group $group) => $group->isActive() ?? false)->toArray();
+    }
+
+    /**
+     * @return Collection<int, WaitlistSpot>
+     */
+    public function getWaitlist(): Collection
+    {
+        return $this->waitlist;
     }
 }

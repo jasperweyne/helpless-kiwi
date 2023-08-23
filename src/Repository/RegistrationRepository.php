@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
-use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,155 +17,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RegistrationRepository extends ServiceEntityRepository
 {
-    /** @var ?Order */
-    private static $min;
-
-    /** @var ?Order */
-    private static $max;
-
-    public static function MINORDER(): Order
-    {
-        if (is_null(self::$min)) {
-            self::$min = Order::create('aaaaaaaaaaaaaaaa');
-        }
-
-        return self::$min;
-    }
-
-    public static function MAXORDER(): Order
-    {
-        if (is_null(self::$max)) {
-            self::$max = Order::create('zzzzzzzzzzzzzzzz');
-        }
-
-        return self::$max;
-    }
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Registration::class);
-    }
-
-    public function findPrependPosition(Activity $activity): Order
-    {
-        /** @var ?Registration */
-        $val = $this->createQueryBuilder('r')
-            ->where('r.reserve_position IS NOT NULL')
-            ->andWhere('r.activity = :activity')
-            ->andWhere('r.deletedate IS NULL')
-            ->setParameter('activity', $activity)
-            ->orderBy('r.reserve_position', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-
-        if (is_null($val)) {
-            return Order::avg(self::MINORDER(), self::MAXORDER());
-        }
-
-        $current = Order::create($val->getReservePosition());
-
-        // Six orders of magnitude removed
-        return Order::avg(
-            $current,
-            Order::avg(
-                $current,
-                Order::avg(
-                    $current,
-                    Order::avg(
-                        $current,
-                        Order::avg(
-                            $current,
-                            Order::avg($current, self::MINORDER())
-                        )
-                    )
-                )
-            )
-        );
-    }
-
-    public function findAppendPosition(Activity $activity): Order
-    {
-        /** @var ?Registration */
-        $val = $this->createQueryBuilder('r')
-            ->where('r.reserve_position IS NOT NULL')
-            ->andWhere('r.activity = :activity')
-            ->andWhere('r.deletedate IS NULL')
-            ->setParameter('activity', $activity)
-            ->orderBy('r.reserve_position', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-
-        if (is_null($val)) {
-            return Order::avg(self::MINORDER(), self::MAXORDER());
-        }
-
-        $current = Order::create($val->getReservePosition());
-
-        // Six orders of magnitude removed
-        return Order::avg(
-            $current,
-            Order::avg(
-                $current,
-                Order::avg(
-                    $current,
-                    Order::avg(
-                        $current,
-                        Order::avg(
-                            $current,
-                            Order::avg($current, self::MAXORDER())
-                        )
-                    )
-                )
-            )
-        );
-    }
-
-    public function findBefore(Activity $activity, Order $position): Order
-    {
-        /** @var ?Registration */
-        $reg = $this->createQueryBuilder('r')
-            ->where('r.reserve_position < :position')
-            ->andWhere('r.activity = :activity')
-            ->andWhere('r.deletedate IS NULL')
-            ->setParameter('position', strval($position))
-            ->setParameter('activity', $activity)
-            ->orderBy('r.reserve_position', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-
-        if (is_null($reg)) {
-            return $this->findPrependPosition($activity);
-        }
-
-        return $reg->getReservePosition();
-    }
-
-    public function findAfter(Activity $activity, Order $position): Order
-    {
-        /** @var ?Registration */
-        $reg = $this->createQueryBuilder('r')
-            ->where('r.reserve_position > :position')
-            ->andWhere('r.activity = :activity')
-            ->andWhere('r.deletedate IS NULL')
-            ->setParameter('position', strval($position))
-            ->setParameter('activity', $activity)
-            ->orderBy('r.reserve_position', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-
-        if (is_null($reg)) {
-            return $this->findAppendPosition($activity);
-        }
-
-        return $reg->getReservePosition();
     }
 
     /**
@@ -183,7 +36,6 @@ class RegistrationRepository extends ServiceEntityRepository
                     $this->createQueryBuilder('b')
                         ->select('IDENTITY(b.person)')
                         ->where('b.deletedate IS NULL')
-                        ->andWhere('b.reserve_position IS NULL')
                         ->andWhere('b.activity = :val')
                         ->andWhere('b.person IS NOT NULL')
                         ->setParameter('val', $activity)
@@ -191,7 +43,6 @@ class RegistrationRepository extends ServiceEntityRepository
                 )
             )
             ->andWhere('r.activity = :val')
-            ->andWhere('r.reserve_position IS NULL')
             ->andWhere('r.deletedate IS NOT NULL')
             ->setParameter('val', $activity)
             ->orderBy('r.deletedate', 'DESC')

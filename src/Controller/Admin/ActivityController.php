@@ -392,7 +392,6 @@ class ActivityController extends AbstractController
             $regs = $repository->findBy([
                 'activity' => $activity,
                 'deletedate' => null,
-                'reserve_position' => null,
             ]);
 
             if (count($regs) > 0 && $originalPrice < $price->getPrice()) {

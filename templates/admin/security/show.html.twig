@@ -112,7 +112,6 @@
                             <tr>
                                 <td>
                                     <a href="{{ path("admin_activity_show", { 'id': registration.activity.id }) }}">{{ registration.activity.name }}</a>
-                                    {% if registration.reserve %} (reservelijst) {% endif %}
                                     {% if registration.deletedate %} (afgemeld) {% endif %}
                                 </td>
                                 <td>{{ registration.option.name }}</td>

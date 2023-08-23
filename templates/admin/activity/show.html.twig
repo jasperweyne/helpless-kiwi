@@ -258,7 +258,7 @@
             {% endblock %}
         {% endembed %}
 
-        {% embed 'components/tab.html.twig' with {'tab_label': 'Reservelijst', 'tab_name': 'reserve'} %}
+        {% embed 'components/tab.html.twig' with {'tab_label': 'Wachtlijst', 'tab_name': 'waitlist'} %}
             {% block tab %}
             <div class="card">
                 <div class="table">
@@ -272,25 +272,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for registration in activity.reserveRegistrations %}
+                        {% for registration in activity.waitlist %}
                             <tr>
                                 <td>{{ registration.person.canonical ?? 'Onbekend' }}</td>
                                 <td>{{ registration.option.name }}</td>
-                                <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                                <td>{{ registration.timestamp|date('Y-m-d H:i:s')  }} </td>
                                 <td>
-                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
+                                    <a href="{{ path('admin_activity_registration_remove', { 'id': registration.id }) }}">Afmelden</a>
                                     <a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a>
                                 </td>
-                                <td>{% if not loop.first %}<a href="{{ path('admin_activity_registration_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
-                                <td>{% if not loop.last %}<a href="{{ path('admin_activity_registration_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td>Geen reservelijst aanmeldingen.</td>
+                                <td>Geen wachtlijst aanmeldingen.</td>
                             </tr>
                         {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_activity_registration_reserve_new', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
+                                <td><a href="{{ path('admin_activity_registration_waitlist_add', { 'id': activity.id }) }}">Aanmelding wachtlijst toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>

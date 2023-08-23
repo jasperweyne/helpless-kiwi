@@ -68,9 +68,8 @@ class RegistrationSubscriber implements EventSubscriberInterface
         if ($registrant->getName() !== $this->user->getName()) {
             $name = ' van '.$registrant->getName();
         }
-        $location = $registration->isReserve() ? ' op de reservelijst!' : ' gelukt!';
 
-        $this->flash->add('success', 'Aanmelding'.$name.$location);
+        $this->flash->add('success', 'Aanmelding'.$name.' gelukt!');
     }
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void

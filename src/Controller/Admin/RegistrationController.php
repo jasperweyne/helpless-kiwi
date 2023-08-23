@@ -3,10 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use App\Entity\Order;
+use App\Entity\Activity\WaitlistSpot;
+use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
+use App\Form\Activity\WaitlistSpotType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -156,28 +159,28 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * Add someone in any acitity reserve list.
+     * Add someone to an activity waitlist.
      */
-    #[Route('/reserve/new/{id}', name: 'reserve_new', methods: ['GET', 'POST'])]
-    public function reserveNewAction(
+    #[Route('/waitlist/new/{id}', name: 'waitlist_add', methods: ['GET', 'POST'])]
+    public function waitlistAddAction(
         Request $request,
         Activity $activity
     ): Response {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
-        $registration = new Registration();
-        $registration
-            ->setActivity($activity)
-            ->setReservePosition($this->em->getRepository(Registration::class)->findAppendPosition($activity))
-        ;
-
-        $form = $this->createForm('App\Form\Activity\RegistrationType', $registration, [
+        $form = $this->createForm(WaitlistSpotType::class, null, [
             'allowed_options' => $activity->getOptions(),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->events->dispatch(new RegistrationAddedEvent($registration));
+            /** @var array{person: LocalAccount, option: PriceOption} */
+            $data = $form->getData();
+
+            $this->em->persist(new WaitlistSpot($data['person'], $data['option']));
+            $this->em->flush();
+
+            $this->addFlash('success', 'Aangemeld op de wachtlijst!');
 
             return $this->redirectToRoute('admin_activity_show', [
                 'id' => $activity->getId(),
@@ -186,88 +189,45 @@ class RegistrationController extends AbstractController
             return $this->render('admin/activity/registration/new.html.twig', [
                 'activity' => $activity,
                 'form' => $form->createView(),
-                'reserve' => true,
+                'waitlist' => true,
             ]);
         }
     }
 
     /**
-     * Promote someone in any acitity reserve list.
+     * Remove someone from the activity waitlist.
      */
-    #[Route('/reserve/move/{id}/up', name: 'reserve_move_up', methods: ['GET', 'POST'])]
-    public function reserveMoveUpAction(
-        Registration $registration
+    #[Route('/waitlist/remove/{id}', name: 'waitlist_remove', methods: ['GET', 'POST'])]
+    public function waitlistRemoveAction(
+        Request $request,
+        WaitlistSpot $spot
     ): Response {
-        if (null !== $registration->getActivity()) {
-            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
+        if (null !== $spot->option->getActivity()) {
+            $this->denyAccessUnlessGranted('in_group', $spot->option->getActivity()->getAuthor());
         } elseif (!$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Admin registration');
         }
 
-        $activity = $registration->getActivity();
+        $activity = $spot->option->getActivity();
         assert(null !== $activity);
 
-        $position = $registration->getReservePosition();
-        if (null === $position) {
-            $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
+        $form = $this->createWaitlistDeleteForm($spot);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->remove($spot);
+            $this->em->flush();
+
+            $this->addFlash('success', 'Afgemeld van de wachtlijst!');
 
             return $this->redirectToRoute('admin_activity_show', [
                 'id' => $activity->getId(),
             ]);
         }
 
-        $x1 = $this->em->getRepository(Registration::class)->findBefore($activity, $position);
-        $x2 = $this->em->getRepository(Registration::class)->findBefore($activity, $x1);
-
-        $registration->setReservePosition(Order::avg($x1, $x2));
-
-        $this->em->flush();
-
-        $person = $registration->getPerson();
-        $this->addFlash('success', (null !== $person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
-
-        return $this->redirectToRoute('admin_activity_show', [
-            'id' => $activity->getId(),
-        ]);
-    }
-
-    /**
-     * Demote someone in any acitity reserve list.
-     */
-    #[Route('/reserve/move/{id}/down', name: 'reserve_move_down', methods: ['GET', 'POST'])]
-    public function reserveMoveDownAction(
-        Registration $registration
-    ): Response {
-        if (null !== $registration->getActivity()) {
-            $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
-        } elseif (!$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('Admin registration');
-        }
-
-        $activity = $registration->getActivity();
-        assert(null !== $activity);
-
-        $position = $registration->getReservePosition();
-        if (null === $position) {
-            $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
-
-            return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
-            ]);
-        }
-
-        $x1 = $this->em->getRepository(Registration::class)->findAfter($activity, $position);
-        $x2 = $this->em->getRepository(Registration::class)->findAfter($activity, $x1);
-
-        $registration->setReservePosition(Order::avg($x1, $x2));
-
-        $this->em->flush();
-
-        $person = $registration->getPerson();
-        $this->addFlash('success', (null !== $person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
-
-        return $this->redirectToRoute('admin_activity_show', [
-            'id' => $activity->getId(),
+        return $this->render('admin/activity/registration/delete.html.twig', [
+            'registration' => $spot,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -280,6 +240,20 @@ class RegistrationController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_registration_delete', ['id' => $registration->getId()]))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+
+    /**
+     * Creates a form to check out all checked in users.
+     *
+     * @return \Symfony\Component\Form\FormInterface The form
+     */
+    protected function createWaitlistDeleteForm(WaitlistSpot $spot): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('admin_activity_registration_waitlist_delete', ['id' => $spot->id]))
             ->setMethod('DELETE')
             ->getForm()
         ;

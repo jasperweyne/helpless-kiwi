@@ -56,9 +56,15 @@ class PriceOption
     #[GQL\Description('The list of registrations for this price option.')]
     private Collection $registrations;
 
+    /** @var Collection<int, WaitlistSpot> */
+    #[ORM\OneToMany(mappedBy: 'option', targetEntity: WaitlistSpot::class)]
+    #[ORM\OrderBy(['timestamp' => 'ASC'])]
+    private Collection $waitlist;
+
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
+        $this->waitlist = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -181,10 +187,41 @@ class PriceOption
         return $this;
     }
 
+    /**
+     * @return Collection<int, WaitlistSpot>
+     */
+    public function getWaitlist(): Collection
+    {
+        return $this->waitlist;
+    }
+
+    public function addWaitlistSpot(WaitlistSpot $waitlistSpot): static
+    {
+        if (!$this->waitlist->contains($waitlistSpot)) {
+            $this->waitlist->add($waitlistSpot);
+            $waitlistSpot->setPriceOption($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWaitlistSpot(WaitlistSpot $waitlistSpot): static
+    {
+        if ($this->waitlist->removeElement($waitlistSpot)) {
+            // set the owning side to null (unless already changed)
+            if ($waitlistSpot->getPriceOption() === $this) {
+                $waitlistSpot->setPriceOption(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function __clone()
     {
         $this->id = null;
         $this->activity = null;
         $this->registrations = new ArrayCollection();
+        $this->waitlist = new ArrayCollection();
     }
 }

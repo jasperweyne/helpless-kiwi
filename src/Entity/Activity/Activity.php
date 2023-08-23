@@ -256,61 +256,28 @@ class Activity
     /** @return Collection<int, Registration> */
     public function getCurrentRegistrations(): Collection
     {
-        $current = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && !$reg->isDeleted());
+        $current = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isDeleted());
 
         // Don't retain original indices
         return new ArrayCollection($current->getValues());
     }
 
-    public function addCurrentRegistration(Registration $registration): self
-    {
-        return $this->addRegistration($registration);
-    }
-
-    public function removeCurrentRegistration(Registration $registration): self
-    {
-        return $this->removeRegistration($registration);
-    }
-
     /** @return Collection<int, Registration> */
     public function getDeregistrations(): Collection
     {
-        $deregs = $this->getRegistrations()->filter(fn (Registration $reg) => !$reg->isReserve() && $reg->isDeleted());
+        $deregs = $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isDeleted());
 
         // Don't retain original indices
         return new ArrayCollection($deregs->getValues());
     }
 
-    public function addDeregistration(Registration $registration): self
+    /** @return Collection<int, WaitlistSpot> */
+    public function getWaitlist(): Collection
     {
-        return $this->addRegistration($registration);
-    }
+        $waitlist = $this->getOptions()->reduce(fn (?array $acc, PriceOption $option) => [...($acc ?? []), ...$option->getWaitlist()]) ?? [];
+        \usort($waitlist, fn (WaitlistSpot $a, WaitlistSpot $b) => $a->timestamp <=> $b->timestamp);
 
-    public function removeDeregistration(Registration $registration): self
-    {
-        return $this->removeRegistration($registration);
-    }
-
-    /** @return Collection<int, Registration> */
-    public function getReserveRegistrations(): Collection
-    {
-        $reserve = $this->getRegistrations()->filter(fn (Registration $reg) => $reg->isReserve() && !$reg->isDeleted());
-
-        // Don't retain original indices
-        $array = $reserve->getValues();
-        \usort($array, fn (Registration $a, Registration $b) => $a->getReservePosition() <=> $b->getReservePosition());
-
-        return new ArrayCollection($array);
-    }
-
-    public function addReserveRegistration(Registration $registration): self
-    {
-        return $this->addRegistration($registration);
-    }
-
-    public function removeReserveRegistration(Registration $registration): self
-    {
-        return $this->removeRegistration($registration);
+        return new ArrayCollection($waitlist);
     }
 
     public function getAuthor(): ?Group
@@ -459,11 +426,11 @@ class Activity
 
     /**
      * Returns whether the activity is at/over capacity
-     * If so, new registrations should be placed in the reserve list.
+     * If so, new registrations should be placed in the waitlist.
      */
     public function atCapacity(): bool
     {
-        return $this->hasCapacity() && ($this->getCurrentRegistrations()->count() >= $this->getCapacity() || $this->getReserveRegistrations()->count() > 0);
+        return $this->hasCapacity() && ($this->getCurrentRegistrations()->count() >= $this->getCapacity() || $this->getWaitlist()->count() > 0);
     }
 
     public function getPresent(): ?int

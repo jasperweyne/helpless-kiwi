@@ -6,6 +6,7 @@ use App\Calendar\ICalProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
+use App\Entity\Activity\WaitlistSpot;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
@@ -144,12 +145,32 @@ class ActivityController extends AbstractController
                 );
             }
 
+            if ($activity->atCapacity()) {
+                $waitlist = $this->em->getRepository(WaitlistSpot::class)->count([
+                    'option' => $option,
+                    'person' => $user,
+                ]);
+
+                if ($waitlist > 0) {
+                    $this->addFlash('error', 'Je staat al op de wachtlijst voor deze prijsoptie.');
+                } else {
+                    $this->em->persist(new WaitlistSpot($user, $option));
+                    $this->em->flush();
+
+                    $this->addFlash('success', 'Je bent aangemeld op de wachtlijst. Indien er een plek vrij komt, wordt je automatisch aangemeld tot de aanmelddeadline. Daarna ontvang je een mail om een ticket over te nemen');
+                }
+
+                return $this->redirectToRoute(
+                    'activity_show',
+                    ['id' => $activity->getId()]
+                );
+            }
+
             $registration = new Registration();
             $registration
                 ->setActivity($activity)
                 ->setOption($option)
                 ->setPerson($user)
-                ->setReservePosition($activity->atCapacity() ? $this->em->getRepository(Registration::class)->findAppendPosition($activity) : null)
             ;
 
             $event = new RegistrationAddedEvent($registration);
@@ -210,11 +231,11 @@ class ActivityController extends AbstractController
         return $form;
     }
 
-    public function singleRegistrationForm(PriceOption $option, bool $reserve): FormInterface
+    public function singleRegistrationForm(PriceOption $option, bool $waitlist): FormInterface
     {
         $activity = $option->getActivity();
         assert(null !== $activity);
-        $form = $this->createRegisterForm($activity, $reserve);
+        $form = $this->createRegisterForm($activity, $waitlist);
         $form->get('single_option')->setData($option->getId());
 
         return $form;
@@ -233,14 +254,14 @@ class ActivityController extends AbstractController
         ;
     }
 
-    private function createRegisterForm(Activity $activity, bool $reserve = false): FormInterface
+    private function createRegisterForm(Activity $activity, bool $waitlist = false): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('activity_register', ['id' => $activity->getId()]))
             ->add('single_option', HiddenType::class)
             ->add('submit', SubmitType::class, [
-                'attr' => ['class' => 'button '.($reserve ? 'warning' : 'confirm')],
-                'label' => 'Aanmelden'.($reserve ? ' reserve' : ''),
+                'attr' => ['class' => 'button '.($waitlist ? 'warning' : 'confirm')],
+                'label' => 'Aanmelden'.($waitlist ? ' wachtlijst' : ''),
             ])
             ->getForm()
         ;
