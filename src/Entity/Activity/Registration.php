@@ -60,6 +60,11 @@ class Registration
     #[ORM\Embedded(class: ExternalRegistrant::class)]
     private ?ExternalRegistrant $externalPerson;
 
+    #[ORM\Column(name: 'present', type: 'boolean')]
+    #[GQL\Field(type: 'Boolean')]
+    #[GQL\Description('Whether this registration is available for transfer to another user.')]
+    private bool $transferable = false;
+
     /**
      * Get id.
      */
@@ -173,6 +178,18 @@ class Registration
     public function setComment(?string $comment): void
     {
         $this->comment = $comment;
+    }
+
+    public function isTransferable(): bool
+    {
+        return $this->transferable;
+    }
+
+    public function setTransferable(bool $transferable): self
+    {
+        $this->transferable = $transferable;
+
+        return $this;
     }
 
     public function __construct()

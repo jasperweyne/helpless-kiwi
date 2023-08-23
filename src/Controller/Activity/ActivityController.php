@@ -215,40 +215,50 @@ class ActivityController extends AbstractController
     #[Route('/activity/{id}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
-        // Find all groups that this user is in
-        $groups = [];
+        $forms = [];
+        $unregister = null;
+        $transfer = null;
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);
+
+            // Find all price options for the groups that this user is in
             $groups = $user->getRelations()->toArray();
-        }
+            $options = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
 
-        // Find all price options (with form) for the groups that this user is in
-        $options = array_map(fn (PriceOption $option) => [
-            'data' => $option,
-            'form' => $this->singleRegistrationForm($option, $activity->atCapacity())->createView(),
-        ], $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups));
-
-        // Build deregistration form (if applicable)
-        $unregister = null;
-        if (null !== $this->getUser()) {
-            $registration = $this->em->getRepository(Registration::class)->findBy([
+            // Find current waitlist/registration for user
+            $registrations = $this->em->getRepository(Registration::class)->findBy([
                 'activity' => $activity,
                 'person' => $this->getUser(),
                 'deletedate' => null,
             ]);
-            $waitlistSpot = $this->em->getRepository(WaitlistSpot::class)->findBy([
+            $waitlist = $this->em->getRepository(WaitlistSpot::class)->findBy([
                 'option' => $activity->getOptions()->toArray(),
                 'person' => $this->getUser(),
             ]);
 
-            if (0 !== count($registration) + count($waitlistSpot)) {
-                $unregister = $this->createUnregisterForm($activity)->createView();
+            // Build all forms for the current state of the user
+            if ($activity->getStart() < new \DateTime('now')) {
+                if (0 === count($registrations) + count($waitlist)) { // only register/wait if not registered/waiting yet
+                    $forms = array_map(fn (PriceOption $option) => [
+                        'data' => $option,
+                        'form' => $this->singleRegistrationForm($option, $activity->atCapacity())->createView(),
+                    ], $options);
+                } else {
+                    // Build deregistration form (if applicable)
+                    $unregister = $this->createUnregisterForm($activity)->createView();
+                }
+
+                // If the deadline has passed, mark tickets available for transfer
+                if (count($registrations) > 0 && $activity->getDeadline() > new \DateTime('now')) {
+                    $transfer = $this->createTransferForm($activity)->createView();
+                }
             }
         }
 
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
-            'options' => $options,
+            'options' => $forms,
+            'transfer' => $transfer,
             'unregister' => $unregister,
         ]);
     }
@@ -283,6 +293,18 @@ class ActivityController extends AbstractController
             ->add('submit', SubmitType::class, [
                 'attr' => ['class' => 'button '.($waitlist ? 'warning' : 'confirm')],
                 'label' => 'Aanmelden'.($waitlist ? ' wachtlijst' : ''),
+            ])
+            ->getForm()
+        ;
+    }
+
+    private function createTransferForm(Activity $activity): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('activity_transfer', ['id' => $activity->getId()]))
+            ->add('submit', SubmitType::class, [
+                'attr' => ['class' => 'button warning'],
+                'label' => 'Tickets aanbieden voor overname',
             ])
             ->getForm()
         ;
