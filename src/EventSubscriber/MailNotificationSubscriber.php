@@ -7,10 +7,10 @@ use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use App\Event\Security\CreateAccountsEvent;
-use App\Mail\Attachment;
-use App\Mail\MailService;
 use App\Security\PasswordResetService;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Security\Core\Security;
 
 class MailNotificationSubscriber implements EventSubscriberInterface
@@ -22,7 +22,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private \Twig\Environment $template,
-        private MailService $mailer,
+        private Mailer $mailer,
         private ICalProvider $calendar,
         private PasswordResetService $passwordResetService,
         Security $security,
@@ -58,26 +58,23 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $activity = $event->getRegistration()->getActivity();
         assert(null !== $activity);
 
-        $ics = new Attachment(
-            $this->calendar->icalSingle($activity),
-            $activity->getName().'.ics',
-            'text/calendar'
-        );
-
         $confirmation = $event->getRegistration()->getPerson() === $this->user ? 'bevestiging' : 'bericht';
         $title = "Aanmeld$confirmation ".$activity->getName();
         $participant = $event->getRegistration()->getPerson();
         assert(null !== $participant);
-        $this->mailer->message(
-            [$participant],
-            $title,
-            $this->template->render('email/newregistration.html.twig', [
+
+        $this->mailer->send((new TemplatedEmail())
+            ->from($_ENV['DEFAULT_FROM'])
+            ->to($participant->getEmail())
+            ->subject($title)
+            ->htmlTemplate('email/newregistration.html.twig')
+            ->context([
                 'person' => $event->getRegistration()->getPerson(),
                 'activity' => $activity,
                 'title' => $title,
                 'by' => $this->user,
-            ]),
-            [$ics]
+            ])
+            ->attach($this->calendar->icalSingle($activity), $activity->getName().'.ics', 'text/calendar')
         );
     }
 
@@ -95,10 +92,13 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $title = "Afmeld$confirmation ".$activity->getName();
         $participant = $event->getRegistration()->getPerson();
         assert(null !== $participant);
-        $this->mailer->message(
-            [$participant],
-            $title,
-            $this->template->render('email/removedregistration.html.twig', [
+
+        $this->mailer->send((new TemplatedEmail())
+            ->from($_ENV['DEFAULT_FROM'])
+            ->to($participant->getEmail())
+            ->subject($title)
+            ->htmlTemplate('email/removedregistration.html.twig')
+            ->context([
                 'person' => $event->getRegistration()->getPerson(),
                 'activity' => $activity,
                 'title' => $title,
@@ -120,10 +120,12 @@ class MailNotificationSubscriber implements EventSubscriberInterface
             $account->setPasswordRequestedAt(null);
 
             // send an email
-            $this->mailer->message(
-                [$account],
-                'Jouw account',
-                $this->template->render('email/newaccount.html.twig', [
+            $this->mailer->send((new TemplatedEmail())
+                ->from($_ENV['DEFAULT_FROM'])
+                ->to($account->getEmail())
+                ->subject('Jouw account')
+                ->htmlTemplate('email/newaccount.html.twig')
+                ->context([
                     'name' => $account->getGivenName(),
                     'account' => $account,
                     'token' => $token,

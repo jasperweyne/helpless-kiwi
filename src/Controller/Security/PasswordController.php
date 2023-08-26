@@ -3,15 +3,16 @@
 namespace App\Controller\Security;
 
 use App\Entity\Security\LocalAccount;
-use App\Mail\MailService;
 use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
@@ -83,7 +84,7 @@ class PasswordController extends AbstractController
      * Request new password mail.
      */
     #[Route('/request', name: 'request', methods: ['GET', 'POST'])]
-    public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer): Response
+    public function requestAction(Request $request, LocalUserProvider $userProvider, MailerInterface $mailer): Response
     {
         $form = $this->createForm('App\Form\Security\PasswordRequestType', []);
         $form->handleRequest($request);
@@ -110,16 +111,23 @@ class PasswordController extends AbstractController
                 assert($auth instanceof LocalAccount);
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
 
-                $body = $this->renderView('email/resetpassword.html.twig', [
-                    'auth' => $auth,
-                    'token' => urlencode($token),
-                ]);
-
-                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
+                $mailer->send((new TemplatedEmail())
+                    ->from($_ENV['DEFAULT_FROM'])
+                    ->to($localAccount->getEmail())
+                    ->subject('Wachtwoord vergeten')
+                    ->htmlTemplate('email/resetpassword.html.twig')
+                    ->context([
+                        'auth' => $auth,
+                        'token' => urlencode($token),
+                    ])
+                );
             } catch (UserNotFoundException) {
-                $body = $this->renderView('email/unknownemail.html.twig');
-
-                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
+                $mailer->send((new TemplatedEmail())
+                    ->from($_ENV['DEFAULT_FROM'])
+                    ->to($localAccount->getEmail())
+                    ->subject('Wachtwoord vergeten')
+                    ->htmlTemplate('email/unknownemail.html.twig')
+                );
             }
 
             $this->addFlash('success', 'Er is een mail met instructies gestuurd naar '.$mail);
