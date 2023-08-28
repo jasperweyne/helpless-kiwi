@@ -64,7 +64,6 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         assert(null !== $participant);
 
         $this->mailer->send((new TemplatedEmail())
-            ->from($_ENV['DEFAULT_FROM'])
             ->to($participant->getEmail())
             ->subject($title)
             ->htmlTemplate('email/newregistration.html.twig')
@@ -94,7 +93,6 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         assert(null !== $participant);
 
         $this->mailer->send((new TemplatedEmail())
-            ->from($_ENV['DEFAULT_FROM'])
             ->to($participant->getEmail())
             ->subject($title)
             ->htmlTemplate('email/removedregistration.html.twig')
@@ -121,7 +119,6 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
             // send an email
             $this->mailer->send((new TemplatedEmail())
-                ->from($_ENV['DEFAULT_FROM'])
                 ->to($account->getEmail())
                 ->subject('Jouw account')
                 ->htmlTemplate('email/newaccount.html.twig')
