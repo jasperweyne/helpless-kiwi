@@ -11,6 +11,11 @@ parameters:
 			path: src/Controller/Admin/EventController.php
 
 		-
+			message: "#^Parameter \\#1 \\.\\.\\.\\$addresses of method Symfony\\\\Component\\\\Mime\\\\Email\\:\\:to\\(\\) expects string\\|Symfony\\\\Component\\\\Mime\\\\Address, string\\|null given\\.$#"
+			count: 2
+			path: src/Controller/Security/PasswordController.php
+
+		-
 			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$deadline type mapping mismatch\\: property can contain DateTime\\|null but database expects DateTimeInterface\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
@@ -84,6 +89,16 @@ parameters:
 			message: "#^Offset 'joinTable' does not exist on array\\{cache\\?\\: array, cascade\\: array\\<string\\>, declared\\?\\: class\\-string, fetch\\: mixed, fieldName\\: string, id\\?\\: bool, inherited\\?\\: class\\-string, indexBy\\?\\: string, \\.\\.\\.\\}\\.$#"
 			count: 1
 			path: src/EventListener/DoctrineTablePrefixListener.php
+
+		-
+			message: "#^Parameter \\#1 \\.\\.\\.\\$addresses of method Symfony\\\\Component\\\\Mime\\\\Email\\:\\:to\\(\\) expects string\\|Symfony\\\\Component\\\\Mime\\\\Address, string\\|null given\\.$#"
+			count: 3
+			path: src/EventSubscriber/MailNotificationSubscriber.php
+
+		-
+			message: "#^Parameter \\#1 \\$title of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setTitle\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/EventSubscriber/MailSentSubscriber.php
 
 		-
 			message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node\\:\\:\\$value\\.$#"

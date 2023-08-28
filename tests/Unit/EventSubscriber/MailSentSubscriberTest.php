@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\EventSubscriber;
 
+use App\Entity\Security\LocalAccount;
 use App\EventSubscriber\MailSentSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -82,7 +83,7 @@ class MailSentSubscriberTest extends KernelTestCase
         $event = new MessageEvent($msg = new Email(), $envelope, 'test');
         $msg->subject('test');
 
-        /** @var EntityRepository&MockObject $accountRepository */
+        /** @var EntityRepository<LocalAccount>&MockObject $accountRepository */
         $accountRepository = $this->createMock(EntityRepository::class);
         $accountRepository->method('findBy')->willReturn([]);
 

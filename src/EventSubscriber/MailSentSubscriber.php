@@ -11,6 +11,7 @@ use Symfony\Component\Mailer\Event\MessageEvent;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class MailSentSubscriber implements EventSubscriberInterface
 {
@@ -68,10 +69,7 @@ class MailSentSubscriber implements EventSubscriberInterface
         $this->em->flush();
     }
 
-    /**
-     * @return UserInterface|null
-     */
-    private function getUser()
+    private function getUser(): ?UserInterface
     {
         if (null === $token = $this->tokenStorage->getToken()) {
             return null;
@@ -85,6 +83,11 @@ class MailSentSubscriber implements EventSubscriberInterface
         return $user;
     }
 
+    /**
+     * @param Address[] $addresses
+     *
+     * @return string[]
+     */
     private function emails(array $addresses): array
     {
         return array_map(fn (Address $address) => $address->getAddress(), $addresses);
