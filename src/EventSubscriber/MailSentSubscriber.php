@@ -6,8 +6,6 @@ use App\Entity\Mail\Mail;
 use App\Entity\Mail\Recipient;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\BodyRenderer;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\Event\MessageEvent;
 use Symfony\Component\Mime\Address;
@@ -19,8 +17,6 @@ class MailSentSubscriber implements EventSubscriberInterface
     public function __construct(
         private EntityManagerInterface $em,
         private TokenStorageInterface $tokenStorage,
-        private ParameterBagInterface $params,
-        private BodyRenderer $renderer,
     ) {
     }
 
@@ -46,14 +42,14 @@ class MailSentSubscriber implements EventSubscriberInterface
             'plain' => $message->getTextBody(),
         ]);
 
-        assert($author instanceof LocalAccount);
+        assert(null === $author || $author instanceof LocalAccount);
         assert(false !== $content);
 
         // Construct mail entity
         $msgEntity = new Mail();
         $msgEntity
             ->setSender(implode('; ', $this->emails($message->getFrom())))
-            ->setPerson($this->getUser())
+            ->setPerson($author)
             ->setTitle($message->getSubject())
             ->setContent($content)
             ->setSentAt(new \DateTime());
