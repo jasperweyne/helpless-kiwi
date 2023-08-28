@@ -10,7 +10,7 @@ use App\Event\Security\CreateAccountsEvent;
 use App\Security\PasswordResetService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\Security;
 
 class MailNotificationSubscriber implements EventSubscriberInterface
@@ -22,7 +22,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private \Twig\Environment $template,
-        private Mailer $mailer,
+        private MailerInterface $mailer,
         private ICalProvider $calendar,
         private PasswordResetService $passwordResetService,
         Security $security,
