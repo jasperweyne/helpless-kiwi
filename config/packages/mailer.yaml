@@ -3,3 +3,5 @@ framework:
         dsn: '%env(MAILER_URL)%'
         envelope:
             sender: '%env(DEFAULT_FROM)%'
+        headers:
+            From: '%env(DEFAULT_FROM)%'
