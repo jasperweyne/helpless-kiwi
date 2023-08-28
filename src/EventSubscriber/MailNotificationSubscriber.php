@@ -21,7 +21,6 @@ class MailNotificationSubscriber implements EventSubscriberInterface
     private $user;
 
     public function __construct(
-        private \Twig\Environment $template,
         private MailerInterface $mailer,
         private ICalProvider $calendar,
         private PasswordResetService $passwordResetService,
