@@ -45,6 +45,7 @@ class MailSentSubscriber implements EventSubscriberInterface
 
         assert(null === $author || $author instanceof LocalAccount);
         assert(false !== $content);
+        assert(is_string($message->getSubject()));
 
         // Construct mail entity
         $msgEntity = new Mail();

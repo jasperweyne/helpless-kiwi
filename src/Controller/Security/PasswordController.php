@@ -112,7 +112,7 @@ class PasswordController extends AbstractController
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
 
                 $mailer->send((new TemplatedEmail())
-                    ->to($localAccount->getEmail())
+                    ->to($mail)
                     ->subject('Wachtwoord vergeten')
                     ->htmlTemplate('email/resetpassword.html.twig')
                     ->context([
@@ -122,7 +122,7 @@ class PasswordController extends AbstractController
                 );
             } catch (UserNotFoundException) {
                 $mailer->send((new TemplatedEmail())
-                    ->to($localAccount->getEmail())
+                    ->to($mail)
                     ->subject('Wachtwoord vergeten')
                     ->htmlTemplate('email/unknownemail.html.twig')
                 );

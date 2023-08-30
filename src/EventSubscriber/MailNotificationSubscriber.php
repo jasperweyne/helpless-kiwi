@@ -62,6 +62,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $participant = $event->getRegistration()->getPerson();
         assert(null !== $participant);
 
+        assert(is_string($participant->getEmail()));
         $this->mailer->send((new TemplatedEmail())
             ->to($participant->getEmail())
             ->subject($title)
@@ -91,6 +92,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         $participant = $event->getRegistration()->getPerson();
         assert(null !== $participant);
 
+        assert(is_string($participant->getEmail()));
         $this->mailer->send((new TemplatedEmail())
             ->to($participant->getEmail())
             ->subject($title)
@@ -117,6 +119,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
             $account->setPasswordRequestedAt(null);
 
             // send an email
+            assert(is_string($account->getEmail()));
             $this->mailer->send((new TemplatedEmail())
                 ->to($account->getEmail())
                 ->subject('Jouw account')
