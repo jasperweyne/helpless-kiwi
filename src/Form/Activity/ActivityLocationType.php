@@ -1,25 +1,25 @@
 <?php
 
-namespace App\Form\Location;
+namespace App\Form\Activity;
 
-use App\Entity\Location\Location;
+use App\Form\Location\LocationType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LocationType extends AbstractType
+class ActivityLocationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('name')
-            ->add('address');
+        $builder->add('newLocation', LocationType::class, [
+            'label' => false,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Location::class,
+            'data_class' => ActivityCreationData::class,
         ]);
     }
 }

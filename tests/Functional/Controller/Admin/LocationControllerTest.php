@@ -3,12 +3,10 @@
 namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Location\Location;
-use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
 use App\Tests\Database\Location\LocationFixture;
 use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class LocationControllerTest.
@@ -17,15 +15,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class LocationControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var string
-     */
-    private $controllerEndpoint = '/admin/location';
+    private string $controllerEndpoint = '/admin/location';
 
     /**
      * {@inheritdoc}
@@ -70,6 +62,7 @@ class LocationControllerTest extends AuthWebTestCase
 
     public function testNewAction(): void
     {
+        $name = 'here';
         $address = 'testname';
 
         // Act
@@ -77,6 +70,7 @@ class LocationControllerTest extends AuthWebTestCase
 
         // Act
         $form = $crawler->selectButton('Toevoegen')->form();
+        $form['location[name]'] = $name;
         $form['location[address]'] = $address;
 
         $crawler = $this->client->submit($form);
