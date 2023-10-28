@@ -78,6 +78,20 @@ class LocationControllerTest extends AuthWebTestCase
         self::assertSelectorTextContains('.container', 'Locatie '.$address);
     }
 
+    public function testMergeAction(): void
+    {
+        /* Arrange */
+        $locations = $this->em->getRepository(Location::class)->findAll();
+        self::assertCount(3, $locations);
+
+        /* Act */
+        $this->client->request('GET', $this->controllerEndpoint.'/merge/');
+
+        /* Assert */
+        $mergedLocations = $this->em->getRepository(Location::class)->findAll();
+        self::assertCount(2, $mergedLocations);
+    }
+
     public function testShowAction(): void
     {
         /* Arrange */

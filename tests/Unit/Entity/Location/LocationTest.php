@@ -78,6 +78,26 @@ class LocationTest extends KernelTestCase
         self::assertSame($expected, $property->getValue($this->location));
     }
 
+    public function testGetName(): void
+    {
+        $expected = 'here';
+        $property = (new \ReflectionClass(Location::class))
+            ->getProperty('name');
+        $property->setAccessible(true);
+        $property->setValue($this->location, $expected);
+        self::assertSame($expected, $this->location->getName());
+    }
+
+    public function testSetName(): void
+    {
+        $expected = 'here';
+        $property = (new \ReflectionClass(Location::class))
+            ->getProperty('name');
+        $property->setAccessible(true);
+        $this->location->setName($expected);
+        self::assertSame($expected, $property->getValue($this->location));
+    }
+
     public function testGetActivities(): void
     {
         $expected = new ArrayCollection();
