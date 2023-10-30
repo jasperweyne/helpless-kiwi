@@ -537,7 +537,6 @@ class Activity
         // Clone or reset nested fields
         $clonedOptions = $this->options->map(fn (PriceOption $o) => (clone $o)->setActivity($this));
         $this->options = new ArrayCollection($clonedOptions->toArray());
-        $this->location = $this->location;
 
         // Reset date/time fields
         $this->start = null;
