@@ -2,12 +2,13 @@
 
 namespace App\Form\Activity;
 
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class ActivityNewType extends ActivityEditType
+class ActivityNewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

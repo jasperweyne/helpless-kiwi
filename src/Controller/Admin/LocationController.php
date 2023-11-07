@@ -67,37 +67,6 @@ class LocationController extends AbstractController
     }
 
     /**
-     * Merge all duplicate location entities.
-     */
-    #[Route('/merge', name: 'merge', methods: ['GET', 'POST'])]
-    public function mergeAction(): Response
-    {
-        /** @var Location[] $locations */
-        $locations = $this->em->getRepository(Location::class)->findAll();
-        /** @var Location[][] $dupes */
-        $dupes = [];
-
-        /** @var Location $location */
-        foreach ($locations as $location) {
-            $address = $location->getAddress();
-
-            if (isset($dupes[$address])) {
-                $original = $dupes[$address][0];
-
-                foreach ($location->getActivities() as $activity) {
-                    $activity->setLocation($original);
-                }
-                $this->em->remove($location);
-            } else {
-                $dupes[$address] = [$location];
-            }
-        }
-        $this->em->flush();
-
-        return $this->redirectToRoute('admin_location_index');
-    }
-
-    /**
      * Show a location entity.
      */
     #[Route('/{id}', name: 'show', methods: ['GET'])]

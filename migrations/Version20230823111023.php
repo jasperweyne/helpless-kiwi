@@ -23,6 +23,7 @@ final class Version20230823111023 extends AbstractMigration
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE kiwi_location ADD name VARCHAR(255) NOT NULL');
+        $this->addSql('UPDATE kiwi_location SET name = address');
     }
 
     public function down(Schema $schema): void
