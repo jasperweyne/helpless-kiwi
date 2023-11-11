@@ -18,8 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Location controller.
- *
- * @
  */
 #[Route('/admin/location', name: 'admin_location_')]
 class LocationController extends AbstractController
@@ -69,7 +67,7 @@ class LocationController extends AbstractController
     }
 
     /**
-     * Finds and displays an auth entity.
+     * Show a location entity.
      */
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function showAction(Location $location): Response
@@ -85,7 +83,7 @@ class LocationController extends AbstractController
     }
 
     /**
-     * Displays a form to edit an existing activity entity.
+     * Deletes a location entity.
      */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, Location $location): Response

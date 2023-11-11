@@ -53,7 +53,7 @@ class ExternalRegistrantTypeTest extends KernelTestCase
 
         // Setup empty data
         $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class
+            LocalAccountFixture::class,
         ]);
     }
 
@@ -64,7 +64,7 @@ class ExternalRegistrantTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->externalRegistrationType);
+        unset($this->externalRegistrantType);
         unset($this->em);
     }
 
@@ -73,7 +73,7 @@ class ExternalRegistrantTypeTest extends KernelTestCase
         $type = new ExternalRegistrant();
         $formData = [
             'name' => 'Chase',
-            'email' => 'Chase@kiwi.nl'
+            'email' => 'Chase@kiwi.nl',
         ];
 
         $formfactory = self::$container->get('form.factory');
@@ -90,7 +90,7 @@ class ExternalRegistrantTypeTest extends KernelTestCase
         $type = new ExternalRegistrant();
         $formData = [
             'name' => 'Chase',
-            'email' => LocalAccountFixture::USERNAME
+            'email' => LocalAccountFixture::USERNAME,
         ];
 
         $formfactory = self::$container->get('form.factory');

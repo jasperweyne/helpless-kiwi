@@ -56,10 +56,8 @@ class Activity
     #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
     private Collection $registrations;
 
-    /**
-     * @var ?Location
-     */
-    #[ORM\ManyToOne(targetEntity: "App\Entity\Location\Location", inversedBy: 'activities')]
+    /** @var ?Location */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Location\Location", inversedBy: 'activities', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'location', referencedColumnName: 'id')]
     #[GQL\Field(type: 'Location!')]
     #[GQL\Description('The (physical) location of the activity.')]
@@ -539,7 +537,6 @@ class Activity
         // Clone or reset nested fields
         $clonedOptions = $this->options->map(fn (PriceOption $o) => (clone $o)->setActivity($this));
         $this->options = new ArrayCollection($clonedOptions->toArray());
-        $this->location = null !== $this->location ? clone $this->location : null;
 
         // Reset date/time fields
         $this->start = null;

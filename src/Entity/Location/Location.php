@@ -24,6 +24,11 @@ class Location
     #[GQL\Description('The address of the location.')]
     private string $address;
 
+    #[ORM\Column(type: 'string')]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('The name given to the location')]
+    private string $name;
+
     /**
      * @var Collection<int, Activity>
      */
@@ -62,6 +67,18 @@ class Location
     public function setAddress(string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }

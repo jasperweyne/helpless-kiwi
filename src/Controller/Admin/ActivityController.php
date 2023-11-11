@@ -7,7 +7,8 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
-use App\Form\Activity\ActivityEditType;
+use App\Form\Activity\ActivityCreationData;
+use App\Form\Activity\ActivityCreationFlow;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
@@ -29,24 +30,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/activity', name: 'admin_activity_')]
 class ActivityController extends AbstractController
 {
-    private EventService $events;
-
-    private ActivityRepository $activitiesRepo;
-
-    private GroupRepository $groupsRepo;
-
-    private EntityManagerInterface $em;
-
     public function __construct(
-        EventService $events,
-        GroupRepository $groups,
-        ActivityRepository $activities,
-        EntityManagerInterface $em
+        private EventService $events,
+        private GroupRepository $groupsRepo,
+        private ActivityRepository $activitiesRepo,
+        private EntityManagerInterface $em
     ) {
-        $this->events = $events;
-        $this->activitiesRepo = $activities;
-        $this->groupsRepo = $groups;
-        $this->em = $em;
     }
 
     /**
@@ -110,41 +99,50 @@ class ActivityController extends AbstractController
      * Creates a new activity entity.
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function newAction(Request $request): Response
+    public function newAction(ActivityCreationFlow $flow): Response
     {
         $activity = new Activity();
+        $activityData = new ActivityCreationData();
+        $activityData->activity = $activity;
 
-        $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
-        $form->handleRequest($request);
+        $flow->bind($activityData);
+        $form = $flow->createForm();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $location = $activity->getLocation();
-            assert(null !== $location);
-            $this->em->persist($activity);
-            $this->em->persist($location);
+        if ($flow->isValid($form)) {
+            $flow->saveCurrentStepData($form);
+            if ($flow->nextStep()) {
+                $form = $flow->createForm();
+            } else {
+                if (null !== $activityData->price) {
+                    $option = (new PriceOption())
+                        ->setName('standaard')
+                        ->setPrice($activityData->price)
+                        ->setDetails([])
+                        ->setConfirmationMsg('');
+                    $this->em->persist($option);
+                    $activity->addOption($option);
+                }
 
-            if (null !== $price = $form->get('price')->getData()) {
-                assert(is_int($price));
-                $option = new PriceOption();
-                $activity->addOption($option);
-                $option
-                    ->setName('standaard')
-                    ->setPrice($price)
-                    ->setDetails([])
-                    ->setConfirmationMsg('');
-                $this->em->persist($option);
+                if (null !== $newLocation = $activityData->newLocation) {
+                    $this->em->persist($newLocation);
+                    $activity->setLocation($newLocation);
+                }
+
+                $this->em->persist($activity);
+                $this->em->flush();
+                $this->addFlash('success', 'Activiteit succesvol aangemaakt');
+                $flow->reset();
+
+                return $this->redirectToRoute(
+                    'admin_activity_show',
+                    ['id' => $activity->getId()]
+                );
             }
-            $this->em->flush();
-
-            return $this->redirectToRoute(
-                'admin_activity_show',
-                ['id' => $activity->getId()]
-            );
         }
 
         return $this->render('admin/activity/new.html.twig', [
-            'activity' => $activity,
             'form' => $form->createView(),
+            'flow' => $flow,
         ]);
     }
 
@@ -201,24 +199,43 @@ class ActivityController extends AbstractController
      * Clones an existing a activity into a new activity entity.
      */
     #[Route('/{id}/clone', name: 'clone', methods: ['GET', 'POST'])]
-    public function cloneAction(Request $request, Activity $base): Response
+    public function cloneAction(ActivityCreationFlow $flow, Activity $base): Response
     {
         $activity = clone $base;
+        $activityData = new ActivityCreationData();
+        $activityData->activity = $activity;
 
-        $form = $this->createForm(ActivityEditType::class, $activity);
-        $form->handleRequest($request);
+        $flow->bind($activityData);
+        $form = $flow->createForm();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $location = $activity->getLocation();
-            assert(null !== $location);
+        if ($flow->isValid($form)) {
+            $flow->saveCurrentStepData($form);
+            if ($flow->nextStep()) {
+                $form = $flow->createForm();
+            } else {
+                if (null !== $activityData->price) {
+                    $option = (new PriceOption())
+                        ->setName('standaard')
+                        ->setPrice($activityData->price)
+                        ->setDetails([])
+                        ->setConfirmationMsg('');
+                    $this->em->persist($option);
+                    $activity->addOption($option);
+                }
 
-            $this->em->persist($activity);
-            $this->em->persist($location);
-            foreach ($activity->getOptions() as $option) {
-                $this->em->persist($option);
+                if (null !== $newLocation = $activityData->newLocation) {
+                    $this->em->persist($newLocation);
+                    $activity->setLocation($newLocation);
+                }
+                foreach ($activity->getOptions() as $priceOption) {
+                    $this->em->persist($priceOption);
+                }
+
+                $this->em->persist($activity);
+                $this->em->flush();
+                $this->addFlash('success', 'Activiteit succesvol aangemaakt');
+                $flow->reset();
             }
-
-            $this->em->flush();
 
             return $this->redirectToRoute(
                 'admin_activity_show',
@@ -227,8 +244,8 @@ class ActivityController extends AbstractController
         }
 
         return $this->render('admin/activity/new.html.twig', [
-            'activity' => $activity,
             'form' => $form->createView(),
+            'flow' => $flow,
             'page_title' => 'Activiteit kopiëren',
         ]);
     }
