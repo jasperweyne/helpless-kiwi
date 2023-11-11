@@ -2,9 +2,9 @@
 
 namespace Tests\Integration\Form\Activity;
 
-use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
 use App\Entity\Security\LocalAccount;
+use App\Form\Activity\ActivityCreationData;
 use App\Form\Activity\ActivityNewType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -25,10 +25,7 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class ActivityNewTypeTest extends KernelTestCase
 {
-    /**
-     * @var AbstractDatabaseTool
-     */
-    protected $databaseTool;
+    protected AbstractDatabaseTool $databaseTool;
 
     /**
      * {@inheritdoc}
@@ -74,23 +71,25 @@ class ActivityNewTypeTest extends KernelTestCase
         $location->setAddress('test');
         $local_file = __DIR__.'/../../../assets/Faint.png';
 
-        $type = new Activity();
+        $type = new ActivityCreationData();
         $formdata = [
-            'name' => 'testname',
-            'description' => 'test description',
-            'location' => $location,
-            'deadline' => 5,
-            'start' => 10,
-            'end' => 11,
-            'capacity' => 50,
-            'color' => 2,
-            'imageFile' => new UploadedFile(
-                $local_file,
-                'Faint.png',
-                'image/png',
-                null,
-                true
-            ),
+            'activity' => [
+                'name' => 'testname',
+                'description' => 'test description',
+                'location' => $location,
+                'deadline' => 5,
+                'start' => 10,
+                'end' => 11,
+                'capacity' => 50,
+                'color' => 2,
+                'imageFile' => new UploadedFile(
+                    $local_file,
+                    'Faint.png',
+                    'image/png',
+                    null,
+                    true
+                ),
+            ],
         ];
 
         /** @var FormFactoryInterface */

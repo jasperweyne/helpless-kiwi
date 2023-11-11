@@ -9,13 +9,13 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class LocationTypeTest.
+ * Class ActivityLocationTypeTest.
  *
- * @covers \App\Form\Location\LocationType
+ * @covers \App\Form\Activity\ActivityLocationType
  */
-class LocationTypeTest extends KernelTestCase
+class ActivityLocationTypeTest extends KernelTestCase
 {
-    protected LocationType $locationType;
+    protected LocationType $activityLocationType;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class LocationTypeTest extends KernelTestCase
         self::bootKernel();
 
         /* @todo Correctly instantiate tested object to use it. */
-        $this->locationType = new LocationType();
+        $this->activityLocationType = new LocationType();
     }
 
     /**
@@ -36,7 +36,7 @@ class LocationTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->locationType);
+        unset($this->activityLocationType);
     }
 
     public function testBuildForm(): void
@@ -61,7 +61,7 @@ class LocationTypeTest extends KernelTestCase
     public function testConfigureOptions(): void
     {
         $resolver = new OptionsResolver();
-        $this->locationType->configureOptions($resolver);
+        $this->activityLocationType->configureOptions($resolver);
         $opts = $resolver->resolve([]);
 
         self::assertSame($opts['data_class'], Location::class);

@@ -274,6 +274,7 @@ GRAPHQL;
         $client->request('POST', '/api/graphql/', [], [], $params, $request);
 
         self::assertIsString($client->getResponse()->getContent());
+
         return (array) json_decode($client->getResponse()->getContent(), true);
     }
 }

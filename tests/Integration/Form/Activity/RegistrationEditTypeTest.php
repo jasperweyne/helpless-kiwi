@@ -29,6 +29,7 @@ class RegistrationEditTypeTest extends KernelTestCase
      * @var RegistrationEditType
      */
     protected $registrationedittype;
+
     /**
      * {@inheritdoc}
      */

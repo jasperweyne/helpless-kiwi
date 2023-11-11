@@ -50,11 +50,10 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
         $this->user = $this->createMock(LocalAccount::class);
         $this->user->method('getUserIdentifier')->willReturn('userid');
 
-
         // Native Tokens
         $trustClient = $this->createMock(TrustedClient::class);
         $expdate = new \DateTimeImmutable('-30 minutes');
-        $nowdate =  new \DateTimeImmutable('+5 minutes');
+        $nowdate = new \DateTimeImmutable('+5 minutes');
 
         $this->validToken = new ApiToken($this->user, $trustClient, $nowdate);
         $this->unvalidToken = new ApiToken($this->user, $trustClient, $expdate);
@@ -94,7 +93,7 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
 
     public function testAuthenticate(): void
     {
-        //Valid native token
+        // Valid native token
         $request = $this->mockRequest($this->validToken->token);
         $passport = $this->auth->authenticate($request);
         $badge = $passport->getBadge(UserBadge::class);
@@ -102,7 +101,7 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
         self::assertInstanceOf(UserBadge::class, $badge);
         self::assertSame($badge->getUserIdentifier(), $this->user->getUserIdentifier());
 
-        //Unvalid native token
+        // Unvalid native token
         $request = $this->mockRequest($this->unvalidToken->token);
         self::expectException(CredentialsExpiredException::class);
         $this->auth->authenticate($request);
@@ -116,6 +115,7 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
         $request->headers = new HeaderBag([
             'Authorization' => "Bearer $token",
         ]);
+
         return $request;
     }
 }

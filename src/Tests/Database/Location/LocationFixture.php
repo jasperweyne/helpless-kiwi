@@ -13,9 +13,20 @@ class LocationFixture extends Fixture
     public function load(ObjectManager $manager): void
     {
         $location = new Location();
+        $location->setName('here');
         $location->setAddress('@localhost');
 
+        $locationDuplicate = new Location();
+        $locationDuplicate->setName('here');
+        $locationDuplicate->setAddress('@localhost');
+
+        $location2 = new Location();
+        $location2->setName('there');
+        $location2->setAddress('@externalhost');
+
         $manager->persist($location);
+        $manager->persist($locationDuplicate);
+        $manager->persist($location2);
         $this->addReference(self::LOCATION_REFERENCE, $location);
 
         $manager->flush();

@@ -8,10 +8,7 @@
     <div class="form">
         {{ form_start(form) }}
             {{ form_widget(form) }}
-            <div class="button-group">
-                <button type="submit" class="button add icon">Toevoegen</button>
-                <a href="{{ path('admin_activity_index') }}" class="button secondary">Annuleren</a>
-            </div>
+            {% include '@CraueFormFlow/FormFlow/buttons.html.twig' with {'craue_formflow_button_render_reset': false} %}
         {{ form_end(form) }}
         <br></br>
         * Dit veld is verplicht

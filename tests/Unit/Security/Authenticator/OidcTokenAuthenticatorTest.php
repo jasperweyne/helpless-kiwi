@@ -36,8 +36,8 @@ class OidcTokenAuthenticatorTest extends KernelTestCase
 
         $_ENV['OIDC_ADDRESS'] = 'test';
         $this->authenticator = new OidcTokenAuthenticator(
-            ($this->oidcClient = $this->createMock(OidcClientInterface::class)),
-            ($this->userProvider = $this->createMock(LocalUserProvider::class)),
+            $this->oidcClient = $this->createMock(OidcClientInterface::class),
+            $this->userProvider = $this->createMock(LocalUserProvider::class),
         );
     }
 
@@ -124,6 +124,7 @@ class OidcTokenAuthenticatorTest extends KernelTestCase
         $request->headers = new HeaderBag([
             'Authorization' => "Bearer $token",
         ]);
+
         return $request;
     }
 }

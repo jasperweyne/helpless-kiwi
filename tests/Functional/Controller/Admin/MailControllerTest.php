@@ -17,7 +17,7 @@ class MailControllerTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
-    private string $controllerEndpoint = "/admin/mail";
+    private string $controllerEndpoint = '/admin/mail';
 
     /**
      * {@inheritdoc}

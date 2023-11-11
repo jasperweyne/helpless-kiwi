@@ -63,7 +63,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $exist = false;
         /** @var Activity $activity */
         foreach ($activities as $activity) {
-            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() !== null && $activity->getVisibleAfter() < new \DateTime()) {
+            if ($activity->getName() == $node->html() && null !== $activity->getVisibleAfter() && $activity->getVisibleAfter() < new \DateTime()) {
                 $exist = true;
             }
         }
@@ -76,7 +76,7 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testCallIcal(): void
     {
         $this->client->request('GET', '/ical');
-        $icalReturnPrefix = "BEGIN:VCALENDAR";
+        $icalReturnPrefix = 'BEGIN:VCALENDAR';
         $icalReturnSuffix = "END:VCALENDAR\r\n";
         $icalResponse = $this->client->getResponse();
 

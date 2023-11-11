@@ -653,6 +653,7 @@ class ActivityTest extends KernelTestCase
         self::assertSame($copy->getDescription(), $this->activity->getDescription());
         self::assertSame($copy->getAuthor(), $this->activity->getAuthor());
         self::assertSame($copy->getCapacity(), $this->activity->getCapacity());
+        self::assertSame($copy->getLocation(), $this->activity->getLocation());
         self::assertSame($copy->getAuthor(), $this->activity->getAuthor());
         self::assertSame($copy->getTarget(), $this->activity->getTarget());
 

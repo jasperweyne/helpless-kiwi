@@ -1,34 +1,42 @@
 <?php
 
-namespace Tests\Integration\Form\Activity;
+namespace Tests\Integration\Form\Location;
 
-use App\Entity\Activity\ExternalRegistrant;
-use App\Form\Activity\ExternalRegistrantType;
-use App\Tests\Database\Security\LocalAccountFixture;
+use App\Entity\Location\Location;
+use App\Form\Delete\LocationDeleteData;
+use App\Form\Location\LocationDeleteType;
+use App\Tests\Database\Location\LocationFixture;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ExternalRegistrantType.
+ * Class LocationDeleteTypeTest.
  *
- * @covers \App\Form\Activity\ExternalRegistrantType
+ * @covers \App\Form\Location\LocationDeleteType
  */
-class ExternalRegistrantTypeTest extends KernelTestCase
+class LocationDeleteTypeTest extends KernelTestCase
 {
+    /**
+     * @var EntityRepository<Location>
+     */
+    protected $repository;
+
     /**
      * @var AbstractDatabaseTool
      */
     protected $databaseTool;
 
     /**
-     * @var ExternalRegistrantType
+     * @var LocationDeleteType
      */
-    protected $externalRegistrantType;
+    protected $locationDeleteType;
 
     /**
      * {@inheritdoc}
@@ -49,12 +57,15 @@ class ExternalRegistrantTypeTest extends KernelTestCase
 
         // Load database tool
         $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
-        $this->externalRegistrantType = new ExternalRegistrantType($em);
 
         // Setup empty data
         $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
+            LocationFixture::class
         ]);
+
+        /* @todo Correctly instantiate tested object to use it. */
+        $this->locationDeleteType = new LocationDeleteType();
+        $this->repository = $em->getRepository(Location::class);
     }
 
     /**
@@ -64,51 +75,39 @@ class ExternalRegistrantTypeTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->externalRegistrantType);
-        unset($this->em);
+        unset($this->locationType);
+        unset($this->databaseTool);
     }
 
     public function testBindValidData(): void
     {
-        $type = new ExternalRegistrant();
-        $formData = [
-            'name' => 'Chase',
-            'email' => 'Chase@kiwi.nl',
-        ];
+        $type = new LocationDeleteData();
+        $location = $this->repository->findOneBy(['address' => '@localhost']);
+        $replaced = $this->repository->findOneBy(['address' => '@externalhost']);
+        self::assertNotNull($replaced);
 
-        $formfactory = self::$container->get('form.factory');
-        $form = $formfactory->create(ExternalRegistrantType::class, $type, ['csrf_protection' => false]);
+        $formfactory = self::getContainer()->get('form.factory');
+        /** @var FormInterface $form */
+        $form = $formfactory->create(LocationDeleteType::class, $type, [
+            'csrf_protection' => false,
+            'location' => $location,
+        ]);
 
-        $form->submit($formData);
+        $form->submit([
+            'activity' => $replaced->getId(),
+        ]);
         self::assertTrue($form->isSynchronized());
         self::assertTrue($form->isSubmitted());
-        self::assertTrue($form->isValid());
-    }
-
-    public function testBindDuplicateData(): void
-    {
-        $type = new ExternalRegistrant();
-        $formData = [
-            'name' => 'Chase',
-            'email' => LocalAccountFixture::USERNAME,
-        ];
-
-        $formfactory = self::$container->get('form.factory');
-        $form = $formfactory->create(ExternalRegistrantType::class, $type, ['csrf_protection' => false]);
-
-        $form->submit($formData);
-        self::assertTrue($form->isSynchronized());
-        self::assertTrue($form->isSubmitted());
-        self::assertFalse($form->isValid());
+        self::assertTrue($form->isValid(), strval($form->getErrors(true)));
     }
 
     public function testConfigureOptions(): void
     {
-        /** @var MockObject&OptionsResolver */
+        /** @var OptionsResolver&MockObject */
         $resolver = $this->getMockBuilder(OptionsResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
         $resolver->expects($this::exactly(1))->method('setDefaults');
-        $this->externalRegistrantType->configureOptions($resolver);
+        $this->locationDeleteType->configureOptions($resolver);
     }
 }

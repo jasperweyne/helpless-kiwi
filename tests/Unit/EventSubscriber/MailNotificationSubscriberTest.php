@@ -10,12 +10,11 @@ use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use App\Event\Security\CreateAccountsEvent;
 use App\EventSubscriber\MailNotificationSubscriber;
-use App\Mail\MailService;
 use App\Security\PasswordResetService;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\Security;
-use Twig\Environment;
 
 /**
  * Class MailNotificationSubscriberTest.
@@ -25,8 +24,7 @@ use Twig\Environment;
 final class MailNotificationSubscriberTest extends KernelTestCase
 {
     private MailNotificationSubscriber $mailNotificationSubscriber;
-    private Environment&MockObject $template;
-    private MailService&MockObject $mailer;
+    private MailerInterface&MockObject $mailer;
     private PasswordResetService&MockObject $passwordReset;
     private LocalAccount&MockObject $localAccount;
     private Security&MockObject $security;
@@ -39,15 +37,13 @@ final class MailNotificationSubscriberTest extends KernelTestCase
     {
         parent::setUp();
 
-        $this->template = self::createMock(Environment::class);
-        $this->mailer = self::createMock(MailService::class);
+        $this->mailer = self::createMock(MailerInterface::class);
         $this->security = self::createMock(Security::class);
         $this->passwordReset = self::createMock(PasswordResetService::class);
         $this->localAccount = self::createMock(LocalAccount::class);
         $this->registration = self::createMock(Registration::class);
 
         $this->mailNotificationSubscriber = new MailNotificationSubscriber(
-            $this->template,
             $this->mailer,
             self::createMock(ICalProvider::class),
             $this->passwordReset,
@@ -62,7 +58,6 @@ final class MailNotificationSubscriberTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->template);
         unset($this->mailer);
         unset($this->security);
         unset($this->passwordReset);
@@ -104,8 +99,15 @@ final class MailNotificationSubscriberTest extends KernelTestCase
             ->method('getActivity')
             ->willReturn(self::createMock(Activity::class));
 
-        $this->template->method('render')->willReturn('<html>');
-        $this->mailer->expects(self::once())->method('message');
+        $this->localAccount
+            ->method('getEmail')
+            ->willReturn('foo@bar.com');
+
+        $this->registration
+            ->method('getPerson')
+            ->willReturn($this->localAccount);
+
+        $this->mailer->expects(self::once())->method('send');
 
         $event = new RegistrationAddedEvent($this->registration);
         $this->mailNotificationSubscriber->notifyRegistrationAdded($event);
@@ -115,7 +117,7 @@ final class MailNotificationSubscriberTest extends KernelTestCase
     {
         $this->registration->method('isReserve')->willReturn(true);
 
-        $this->mailer->expects(self::never())->method('message');
+        $this->mailer->expects(self::never())->method('send');
 
         $event = new RegistrationAddedEvent($this->registration);
         $this->mailNotificationSubscriber->notifyRegistrationAdded($event);
@@ -127,8 +129,15 @@ final class MailNotificationSubscriberTest extends KernelTestCase
             ->method('getActivity')
             ->willReturn(self::createMock(Activity::class));
 
-        $this->template->method('render')->willReturn('<html>');
-        $this->mailer->expects(self::once())->method('message');
+        $this->localAccount
+            ->method('getEmail')
+            ->willReturn('foo@bar.com');
+
+        $this->registration
+            ->method('getPerson')
+            ->willReturn($this->localAccount);
+
+        $this->mailer->expects(self::once())->method('send');
 
         $event = new RegistrationRemovedEvent($this->registration);
         $this->mailNotificationSubscriber->notifyRegistrationRemoved($event);
@@ -138,7 +147,7 @@ final class MailNotificationSubscriberTest extends KernelTestCase
     {
         $this->registration->method('isReserve')->willReturn(true);
 
-        $this->mailer->expects(self::never())->method('message');
+        $this->mailer->expects(self::never())->method('send');
 
         $event = new RegistrationRemovedEvent($this->registration);
         $this->mailNotificationSubscriber->notifyRegistrationRemoved($event);
@@ -156,6 +165,9 @@ final class MailNotificationSubscriberTest extends KernelTestCase
             ->expects($this::once())
             ->method('getPassword')
             ->willReturn(null);
+        $this->localAccount
+            ->method('getEmail')
+            ->willReturn('foo@bar.com');
         $this->passwordReset
             ->expects($this::once())
             ->method('generatePasswordRequestToken')
@@ -165,18 +177,9 @@ final class MailNotificationSubscriberTest extends KernelTestCase
             ->expects($this::once())
             ->method('setPasswordRequestedAt')
             ->with(null);
-        $this->template
-            ->expects($this::once())
-            ->method('render')
-            ->willReturn('test_email_content');
         $this->mailer
             ->expects($this::once())
-            ->method('message')
-            ->with(
-                [$this->localAccount],
-                'Jouw account',
-                'test_email_content'
-            );
+            ->method('send');
 
         $this->mailNotificationSubscriber->notifyCreateAccount($event);
     }
@@ -193,7 +196,7 @@ final class MailNotificationSubscriberTest extends KernelTestCase
 
         $this->mailer
             ->expects(self::never())
-            ->method('message');
+            ->method('send');
 
         $this->mailNotificationSubscriber->notifyCreateAccount($event);
     }
