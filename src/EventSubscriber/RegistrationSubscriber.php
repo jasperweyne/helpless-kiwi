@@ -16,35 +16,11 @@ use Symfony\Component\Security\Core\Security;
 
 class RegistrationSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var FlashBagInterface
-     */
-    private $flash;
-
-    /**
-     * @var LocalAccount
-     */
-    private $user;
-
     public function __construct(
-        EntityManagerInterface $em,
-        RequestStack $stack,
-        Security $security
+        private EntityManagerInterface $em,
+        private RequestStack $stack,
+        private Security $security
     ) {
-        $this->em = $em;
-
-        $session = $stack->getSession();
-        assert($session instanceof FlashBagAwareSessionInterface);
-        $this->flash = $session->getFlashBag();
-
-        $user = $security->getUser();
-        assert($user instanceof LocalAccount);
-        $this->user = $user;
     }
 
     public static function getSubscribedEvents(): array
@@ -70,12 +46,12 @@ class RegistrationSubscriber implements EventSubscriberInterface
         $name = '';
         $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
-        if ($registrant->getName() !== $this->user->getName()) {
+        if ($registrant->getName() !== $this->getUser()->getName()) {
             $name = ' van '.$registrant->getName();
         }
         $location = $registration->isReserve() ? ' op de reservelijst!' : ' gelukt!';
 
-        $this->flash->add('success', 'Aanmelding'.$name.$location);
+        $this->getFlashbag()->add('success', 'Aanmelding'.$name.$location);
     }
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void
@@ -93,9 +69,25 @@ class RegistrationSubscriber implements EventSubscriberInterface
         $name = '';
         $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
-        if ($registrant->getName() !== $this->user->getName()) {
+        if ($registrant->getName() !== $this->getUser()->getName()) {
             $name = ' van '.$registrant->getName();
         }
-        $this->flash->add('success', 'Afmelding'.$name.' gelukt!');
+        $this->getFlashbag()->add('success', 'Afmelding'.$name.' gelukt!');
+    }
+
+    private function getFlashbag(): FlashBagInterface
+    {
+        $session = $this->stack->getSession();
+        assert($session instanceof FlashBagAwareSessionInterface);
+
+        return $session->getFlashBag();
+    }
+
+    private function getUser(): LocalAccount
+    {
+        $user = $this->security->getUser();
+        assert($user instanceof LocalAccount);
+
+        return $user;
     }
 }
