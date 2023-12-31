@@ -9,7 +9,9 @@ use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Security\Core\Security;
 
 class RegistrationSubscriber implements EventSubscriberInterface
@@ -31,11 +33,14 @@ class RegistrationSubscriber implements EventSubscriberInterface
 
     public function __construct(
         EntityManagerInterface $em,
-        FlashBagInterface $flash,
+        RequestStack $stack,
         Security $security
     ) {
         $this->em = $em;
-        $this->flash = $flash;
+
+        $session = $stack->getSession();
+        assert($session instanceof FlashBagAwareSessionInterface);
+        $this->flash = $session->getFlashBag();
 
         $user = $security->getUser();
         assert($user instanceof LocalAccount);
