@@ -76,7 +76,7 @@ class ExternalRegistrantTypeTest extends KernelTestCase
             'email' => 'Chase@kiwi.nl',
         ];
 
-        $formfactory = self::$container->get('form.factory');
+        $formfactory = self::getContainer()->get('form.factory');
         $form = $formfactory->create(ExternalRegistrantType::class, $type, ['csrf_protection' => false]);
 
         $form->submit($formData);
@@ -93,7 +93,7 @@ class ExternalRegistrantTypeTest extends KernelTestCase
             'email' => LocalAccountFixture::USERNAME,
         ];
 
-        $formfactory = self::$container->get('form.factory');
+        $formfactory = self::getContainer()->get('form.factory');
         $form = $formfactory->create(ExternalRegistrantType::class, $type, ['csrf_protection' => false]);
 
         $form->submit($formData);

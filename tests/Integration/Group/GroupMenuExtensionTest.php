@@ -12,8 +12,8 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\TestBrowserToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Class GroupMenuExtensionTest.
@@ -70,7 +70,7 @@ class GroupMenuExtensionTest extends KernelTestCase
         $this->user = $users[0];
 
         // build token storage
-        $token = new PostAuthenticationGuardToken($this->user, 'main', ['ROLE_USER']);
+        $token = new TestBrowserToken(['ROLE_USER'], $this->user, 'main');
         $tokenStorage = self::getContainer()->get(TokenStorageInterface::class);
         $tokenStorage->setToken($token);
 

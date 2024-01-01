@@ -12,11 +12,11 @@ use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\TestBrowserToken;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Class ActivityNewTypeTest.
@@ -38,7 +38,7 @@ class ActivityNewTypeTest extends KernelTestCase
         $firewallName = 'main';
 
         $user = new LocalAccount();
-        $token = new PostAuthenticationGuardToken($user, $firewallName, ['ROLE_USER']);
+        $token = new TestBrowserToken(['ROLE_USER'], $user, $firewallName);
 
         /** @var TokenStorageInterface */
         $storage = self::getContainer()->get(TokenStorageInterface::class);
