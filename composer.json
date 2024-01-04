@@ -15,6 +15,7 @@
         "doctrine/orm": "^2.5.11",
         "drenso/symfony-oidc-bundle": "^2.0",
         "eluceo/ical": "^2.0",
+        "nikic/php-parser": "^4.18",
         "overblog/graphql-bundle": "^0.15",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpstan/phpdoc-parser": "^1.23",
