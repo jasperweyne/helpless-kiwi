@@ -2,35 +2,45 @@
 
 {% set page_title = 'Activiteiten' %}
 
-{% block body_root %}
-<div class="container row">
+{% block body %}
+    <div class="mx-auto max-w-6xl px-5 mb-5">
     {% if activities %}
-        <div class="cardholder">
-            <div class="grid-x large-up-2">
-                {% for activity in activities %}
-                    <div class="cell">
-                        <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="activity {{ activity.color ?? '' }}">
-                            {% if activity.image.name %}
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="filter">
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="over">
-                            {% endif %}
-                            <div class="container">
-                                <h2>{{ activity.name }}</h2>
-                                <span>{{ activity.start|format_datetime(pattern='E d LLL') }} -
-                                {% if not activity.atCapacity %}
-                                    {{ activity.currentRegistrations|length }}
-                                    {% if activity.hasCapacity %}/ {{ activity.capacity }}{% endif %}
-                                    aanmeldingen
-                                {% else %}VOL!{% endif %}
-                                </span>
-                            </div>
-                        </a>
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {% for activity in activities %}
+                <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="text-white block h-80 relative rounded shadow-lg overflow-hidden transition-shadow w-full bg-gray-600 group">
+                    {% if activity.image.name %}
+                        {% set filters = {
+                            'red':    'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(320deg)',
+                            'orange': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(350deg)',
+                            'yellow': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(10deg)',
+                            'green':  'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(80deg)',
+                            'cyan':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(120deg)',
+                            'ltblue': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(150deg)',
+                            'blue':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(180deg)',
+                            'purple': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(210deg)',
+                            'pink':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(290deg)',
+                        }%}
+                        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="transition absolute inline-block h-full w-full object-cover group-hover:scale-125 ease-out duration-[4s]" style="{{ filters[activity.color] ?? 'filter: contrast(5%) brightness(0.5) grayscale(100%)' }}">
+                        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="transition absolute inline-block h-full w-full object-cover group-hover:scale-125 ease-out duration-[4s] filter saturate-200" style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.1));">
+                    {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 p-5">
+                        <h2 class="font-extrabold text-3xl break-words">{{ activity.name }}</h2>
+                        <span>{{ activity.start|format_datetime(pattern='E d LLL') }}
+                        {% if activity.options|length > 0 %}
+                        -
+                        {% if not activity.atCapacity %}
+                            {{ activity.currentRegistrations|length }}
+                            {% if activity.hasCapacity %}/ {{ activity.capacity }}{% endif %}
+                            aanmeldingen
+                        {% else %}VOL!{% endif %}
+                        {% endif %}
+                        </span>
                     </div>
-                {% endfor %}
-            </div>
+                </a>
+            {% endfor %}
         </div>
     {% else %}
         <p>Geen activiteiten, kom later terug!</p>
     {% endif %}
-</div>
+    </div>
 {% endblock %}

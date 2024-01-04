@@ -7,100 +7,109 @@
 {% set messages_overlay = true %}
 
 {% block body_root %}
-<div class="activity hero row {{ activity.color ?? '' }}">
+<div class="text-white block h-[70vh] lg:h-[60vh] w-full relative -mt-5 mb-8 bg-gray-600">
     {% if activity.image.name %}
-        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="filter">
-        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="over">
+        {% set filters = {
+            'red':    'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(320deg)',
+            'orange': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(350deg)',
+            'yellow': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(10deg)',
+            'green':  'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(80deg)',
+            'cyan':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(120deg)',
+            'ltblue': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(150deg)',
+            'blue':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(180deg)',
+            'purple': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(210deg)',
+            'pink':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(290deg)',
+        }%}
+        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute inline-block h-full w-full object-cover" style="{{ filters[activity.color] ?? 'filter: contrast(5%) brightness(0.5) grayscale(100%)' }}">
+        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute inline-block h-full w-full object-cover filter saturate-200" style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.1));">
     {% endif %}
-    <div class="container">
-        <h2>{{ activity.name }}</h2>
+    <div class="mx-auto max-w-6xl px-5 mb-5 absolute bottom-5 left-0 right-0">
+        <h2 class="font-extrabold text-2xl">{{ activity.name }}</h2>
         {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
-            <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('none', 'short') }}</span>
+            <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('none', 'short') }}</span><br />
         {% else %}
-            <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('medium', 'short') }}</span>
+            <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('medium', 'short') }}</span><br />
         {% endif %}
-        <span>{{ activity.location.address }}</span>
+        <span>{{ activity.location.address }}</span><br />
         {% if activity.author %}
-            <span>{{ activity.author.name }}</span>
+            <span>{{ activity.author.name }}</span><br />
         {% endif %}
         {% set prices = activity.options|sort((a, b)=>a.price<=>b.price)|map(p => '%01.2f'|format(p.price / 100)) %}
         {% if prices|length > 0 %}
-            <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span>
-        {% endif %}
-        <span>{{ activity.currentRegistrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|format_datetime('medium', 'none') }}</span>
-        <div class="buttons">
-            {% if not is_granted('ROLE_USER') %}
-                <span class="button confirm disabled">Niet ingelogd</span>
-            {% elseif options|length == 0 %}
-                <span class="button confirm disabled">Niet beschikbaar</span>
-            {% elseif activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
-                {% if unregister is null %}
-                    <span class="button confirm disabled">Inschrijvingen gesloten</span>
+            <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span><br />
+            <span>{{ activity.currentRegistrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|format_datetime('medium', 'none') }}</span><br />
+            <div class="buttons">
+                {% if not is_granted('ROLE_USER') %}
+                    <span class="button confirm disabled">Niet ingelogd</span>
+                {% elseif activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
+                    {% if unregister is null %}
+                        <span class="button confirm disabled">Inschrijvingen gesloten</span>
+                    {% else %}
+                        <span class="button delete disabled">Uitschrijvingen gesloten</span>
+                    {% endif %}
+                {% elseif unregister is not null %}
+                    {{ form(unregister) }}
+                {% elseif options|length == 1 %}
+                    {{ form(options|first.form) }}
                 {% else %}
-                    <span class="button delete disabled">Uitschrijvingen gesloten</span>
-                {% endif %}
-            {% elseif unregister is not null %}
-                {{ form(unregister) }}
-            {% elseif options|length == 1 %}
-                {{ form(options|first.form) }}
-            {% else %}
-                <div class="button confirm grow">
-                    <span>Aanmelden</span>
-                    <div class="content">
-                        <table>
-                            <tbody>
-                            {% for option in options|sort((a, b)=>a.data.price<=>b.data.price) %}
-                                <tr>
-                                    <td>{{ option.data.name }}</td>
-                                    <td>&euro; {{ '%01.2f'|format(option.data.price / 100) }}</td>
-                                    <td>{{ form(option.form) }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                    <div class="button confirm grow">
+                        <span>Aanmelden</span>
+                        <div class="content">
+                            <table>
+                                <tbody>
+                                {% for option in options|sort((a, b)=>a.data.price<=>b.data.price) %}
+                                    <tr>
+                                        <td>{{ option.data.name }}</td>
+                                        <td>&euro; {{ '%01.2f'|format(option.data.price / 100) }}</td>
+                                        <td>{{ form(option.form) }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
-        </div>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 </div>
-<div class="container row">
-    <div class="grid-x">
-        <div class="cell small-12 {{ is_granted('ROLE_USER') ? 'medium-8' : ''}}">
-            <p>{{ activity.description | nl2br }}</p>
-        </div>
-        {% if is_granted('ROLE_USER') %}
-        <div class="cell medium-4 registrations">
-            <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Aanmeldingen</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% if activity.currentRegistrations|length > 0 %}
-                            {% for registration in activity.currentRegistrations|filter(a => not a.external)|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
-                                <tr>
-                                    <td>{{ registration }}</td>
-                                </tr>
-                            {% endfor %}
-                            {% set externalCount = activity.currentRegistrations|filter(a => a.external)|length %}
-                            {% if externalCount > 0 %}
-                                <tr>
-                                    <td><i>{{ externalCount }} externe{{ externalCount == 1 ? '' : 'n' }}</i></td>
-                                </tr>
-                            {% endif %}
-                        {% else %}
-                            <tr>
-                                <td>Geen aanmeldingen.</td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
-            </div>
-        </div>
-        {% endif %}
+<div class="mx-auto max-w-6xl flex flex-row gap-5 px-5 mb-5">
+    {% if is_granted('ROLE_USER') %}
+    <div class="w-full sm:w-8/12">
+    {% else %}
+    <div class="w-full">
+    {% endif %}
+        <p>{{ activity.description | nl2br }}</p>
     </div>
+    {% if is_granted('ROLE_USER') %}
+    <div class="sm:w-4/12 z-10">
+    <table class="bg-white rounded text-left -mt-40 w-full">
+        <thead class="border-b-2 border-solid border-neutral-300">
+            <tr>
+                <th class="py-3 px-3">Aanmeldingen</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if activity.currentRegistrations|length > 0 %}
+            {% for registration in activity.currentRegistrations|filter(a => not a.external)|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
+                <tr>
+                    <td class="py-3 px-3">{{ registration }}</td>
+                </tr>
+            {% endfor %}
+            {% set externalCount = activity.currentRegistrations|filter(a => a.external)|length %}
+            {% if externalCount > 0 %}
+                <tr>
+                    <td class="py-3 px-3"><i>{{ externalCount }} externe{{ externalCount == 1 ? '' : 'n' }}</i></td>
+                </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td class="py-3 px-3">Geen aanmeldingen.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
