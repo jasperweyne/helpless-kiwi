@@ -8,7 +8,7 @@
         "ext-intl": "*",
         "craue/formflow-bundle": "^3.6",
         "dg/mysql-dump": "^1.5",
-        "doctrine/annotations": "^1.0",
+        "doctrine/annotations": "^2.0",
         "doctrine/doctrine-bundle": "^1.6.10|^2.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/migrations": "^3.0",
@@ -46,7 +46,7 @@
         "twig/extra-bundle": "^3.0",
         "twig/intl-extra": "^3.0",
         "twig/twig": "^2.11",
-        "vich/uploader-bundle": "^1.10"
+        "vich/uploader-bundle": "^2.0"
     },
     "require-dev": {
         "ext-sqlite3": "*",
