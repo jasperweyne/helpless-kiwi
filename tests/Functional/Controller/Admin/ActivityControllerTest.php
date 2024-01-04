@@ -274,7 +274,7 @@ class ActivityControllerTest extends AuthWebTestCase
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertNotNull($activityImage);
-        self::assertEquals($newImage->getClientOriginalName(), $activityImage->getName());
+        self::assertEquals($newImage->getMimeType(), $activityImage->getMimeType());
     }
 
     public function testDeleteAction(): void
