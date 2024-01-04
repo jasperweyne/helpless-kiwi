@@ -34,7 +34,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        return $this->loadUserByUsername($user->getUserIdentifier());
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
     }
 
     /**
@@ -80,11 +80,6 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         }
 
         return $user;
-    }
-
-    public function loadUserByUsername(string $username): UserInterface
-    {
-        return $this->loadUserByIdentifier($username);
     }
 
     /**

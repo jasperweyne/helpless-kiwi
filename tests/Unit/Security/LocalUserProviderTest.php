@@ -154,30 +154,6 @@ class LocalUserProviderTest extends KernelTestCase
         $this->localUserProvider->loadOidcUser('doesnt.exist');
     }
 
-    /**
-     * @depends testLoadUserByIdentifier
-     */
-    public function testLoadUserByUsername(): void
-    {
-        // Arrange data
-        $user = new LocalAccount();
-
-        // Arrange stubs
-        /** @var ServiceEntityRepository<LocalAccount>&MockObject */
-        $repo = $this->createMock(ServiceEntityRepository::class);
-        $repo->method('findOneBy')->willReturn($user);
-        $this->em->method('getRepository')->willReturn($repo);
-
-        // Arrange loadUserByIdentifier result
-        $expect = $this->localUserProvider->loadUserByIdentifier('test');
-
-        // Act
-        $result = $this->localUserProvider->loadUserByUsername('test');
-
-        // Assert
-        self::assertEquals($expect, $result);
-    }
-
     public function testLoadUserByIdentifier(): void
     {
         // Arrange data

@@ -15,10 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class HasLocalAccountCommand extends Command
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
-    {
+    public function __construct(
+        private EntityManagerInterface $em
+    ) {
         $this->em = $em;
 
         parent::__construct();
