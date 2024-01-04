@@ -27,7 +27,7 @@ class ActivityEditPresent extends AbstractType
     {
         // Get registrations field
         $registrationView = $view['currentRegistrations'];
-        assert(null !== $registrationView);
+        assert(null !== $registrationView->children);
 
         // Assign person as label
         foreach ($registrationView->children as $childView) {

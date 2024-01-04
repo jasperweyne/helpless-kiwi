@@ -23,7 +23,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 class InternalCredentialsAuthenticatorTest extends KernelTestCase
 {
     protected InternalCredentialsAuthenticator $authenticator;
-    protected MockObject&UserProviderInterface $userProvider;
+    protected LocalUserProvider&MockObject $userProvider;
 
     /**
      * {@inheritdoc}
@@ -32,8 +32,11 @@ class InternalCredentialsAuthenticatorTest extends KernelTestCase
     {
         parent::setUp();
 
+        /** @var UserProviderInterface<LocalAccount>&MockObject $userProvider */
+        $userProvider = ($this->userProvider = $this->createMock(LocalUserProvider::class));
+
         $this->authenticator = new InternalCredentialsAuthenticator(
-            $this->userProvider = $this->createMock(LocalUserProvider::class),
+            $userProvider,
         );
     }
 

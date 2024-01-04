@@ -20,10 +20,7 @@ use Symfony\Component\Form\FormFactoryInterface;
  */
 class ActivityEditPresentTest extends KernelTestCase
 {
-    /**
-     * @var ActivityEditPresent
-     */
-    protected $activityEditPresent;
+    protected ActivityEditPresent $activityEditPresent;
 
     /**
      * {@inheritdoc}
@@ -83,10 +80,7 @@ class ActivityEditPresentTest extends KernelTestCase
         self::assertTrue($form->isSynchronized());
         self::assertTrue($form->isSubmitted());
         self::assertTrue($form->isValid(), $form->getErrors());
-        self::assertNotNull($registrationView);
         self::assertEquals($registrationView->count(), 2);
-        self::assertNotNull($registrationView[0]);
-        self::assertNotNull($registrationView[1]);
         self::assertEquals('a', $registrationView[0]->vars['label']);
         self::assertEquals('b', $registrationView[1]->vars['label']);
         self::assertTrue($rCurrent1->getPresent());

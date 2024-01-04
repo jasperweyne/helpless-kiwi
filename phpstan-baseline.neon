@@ -76,11 +76,6 @@ parameters:
 			path: src/Entity/Security/LocalAccount.php
 
 		-
-			message: "#^Return type \\(string\\|null\\) of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getUsername\\(\\) should be covariant with return type \\(string\\) of method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:getUsername\\(\\)$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
 			message: "#^Offset 'joinTable' does not exist on array\\{cache\\?\\: array, cascade\\: array\\<string\\>, declared\\?\\: class\\-string, fetch\\: mixed, fieldName\\: string, id\\?\\: bool, inherited\\?\\: class\\-string, indexBy\\?\\: string, \\.\\.\\.\\}\\.$#"
 			count: 1
 			path: src/EventListener/DoctrineTablePrefixListener.php
@@ -184,36 +179,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Template/AttributeMenuExtension.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method invalidate\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method save\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method set\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Service \"Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\SessionInterface\" is not registered in the container\\.$#"
-			count: 2
-			path: src/Tests/AuthWebTestCase.php
 
 		-
 			message: "#^Parameter \\#1 \\$content of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setContent\\(\\) expects string, string\\|false given\\.$#"

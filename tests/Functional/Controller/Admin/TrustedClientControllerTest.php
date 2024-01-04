@@ -18,15 +18,9 @@ use Symfony\Component\DomCrawler\Field\FormField;
  */
 class TrustedClientControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
+    protected EntityManagerInterface $em;
 
-    /**
-     * @var string
-     */
-    private $controllerEndpoint = '/admin/security/client';
+    private string $controllerEndpoint = '/admin/security/client';
 
     /**
      * {@inheritdoc}
@@ -86,7 +80,9 @@ class TrustedClientControllerTest extends AuthWebTestCase
         // Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint.'/new');
         $form = $crawler->selectButton('Toevoegen')->form();
-        ($field = $form['form[id]']) instanceof FormField && $field->setValue('Test');
+        if (($field = $form['form[id]']) instanceof FormField) {
+            $field->setValue('Test');
+        }
         $this->client->submit($form);
 
         // Assert
@@ -138,9 +134,15 @@ class TrustedClientControllerTest extends AuthWebTestCase
         // Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/$id/token");
         $form = $crawler->selectButton('Toevoegen')->form();
-        ($field = $form['generate_token[account]']) instanceof FormField && $field->setValue($user->getId());
-        ($field = $form['generate_token[expiresAt][date]']) instanceof FormField && $field->setValue('2013-03-15');
-        ($field = $form['generate_token[expiresAt][time]']) instanceof FormField && $field->setValue('23:59');
+        if (($field = $form['generate_token[account]']) instanceof FormField) {
+            $field->setValue($user->getId());
+        }
+        if (($field = $form['generate_token[expiresAt][date]']) instanceof FormField) {
+            $field->setValue('2013-03-15');
+        }
+        if (($field = $form['generate_token[expiresAt][time]']) instanceof FormField) {
+            $field->setValue('23:59');
+        }
         $this->client->submit($form);
 
         // Assert
