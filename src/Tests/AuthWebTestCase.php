@@ -9,10 +9,9 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Extends the WebTestCase class with support for logging in and fixtures.
@@ -104,23 +103,15 @@ class AuthWebTestCase extends WebTestCase
             throw new \RuntimeException('Tried to login without users in the database. Did you load LocalAccountFixture before running login()?.');
         }
 
-        $session = self::getContainer()->get(SessionInterface::class);
-
-        $firewallName = 'main';
-        $firewallContext = 'main';
-
-        $user = $this->user($roles);
-        $token = new PostAuthenticationGuardToken($user, $firewallName, $user->getRoles());
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
+        $this->client->loginUser($this->user($roles));
     }
 
     protected function logout(): void
     {
-        self::getContainer()->get(SessionInterface::class)->invalidate();
+        try {
+            self::getContainer()->get(RequestStack::class)->getSession()->invalidate();
+        } catch (SessionNotFoundException) {
+        }
         self::getContainer()->get('security.token_storage')->setToken(null);
     }
 }

@@ -98,7 +98,6 @@ class ApiTokenAuthenticatorTest extends KernelTestCase
         $passport = $this->auth->authenticate($request);
         $badge = $passport->getBadge(UserBadge::class);
         self::assertNotNull($badge);
-        self::assertInstanceOf(UserBadge::class, $badge);
         self::assertSame($badge->getUserIdentifier(), $this->user->getUserIdentifier());
 
         // Unvalid native token

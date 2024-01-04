@@ -14,6 +14,9 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * @implements UserProviderInterface<LocalAccount>
+ */
 class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterface
 {
     public function __construct(
@@ -31,7 +34,7 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        return $this->loadUserByUsername($user->getUsername());
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
     }
 
     /**
@@ -77,11 +80,6 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         }
 
         return $user;
-    }
-
-    public function loadUserByUsername(string $username): UserInterface
-    {
-        return $this->loadUserByIdentifier($username);
     }
 
     /**

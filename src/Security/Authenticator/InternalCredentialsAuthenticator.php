@@ -2,6 +2,7 @@
 
 namespace App\Security\Authenticator;
 
+use App\Entity\Security\LocalAccount;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -21,6 +22,7 @@ class InternalCredentialsAuthenticator extends AbstractAuthenticator
     public const USER = '_credentials_authenticator_user_identfier';
     public const PASS = '_credentials_authenticator_password';
 
+    /** @param UserProviderInterface<LocalAccount> $userProvider*/
     public function __construct(
         private UserProviderInterface $userProvider,
     ) {

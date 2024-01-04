@@ -9,7 +9,7 @@ use App\Log\EventService;
 use App\Repository\GroupRepository;
 use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -193,9 +193,12 @@ class GroupController extends AbstractController
      * Deletes a ApiKey entity.
      */
     #[Route('/relation/delete/{id}/{account_id}', name: 'relation_delete')]
-    #[Entity('account', expr: 'repository.find(account_id)')]
-    public function relationDeleteAction(Request $request, Group $relation, LocalAccount $account): Response
-    {
+    public function relationDeleteAction(
+        Request $request,
+        Group $relation,
+        #[MapEntity(id: 'account_id')]
+        LocalAccount $account
+    ): Response {
         $this->denyAccessUnlessGranted('edit_group', $relation);
 
         $form = $this->createRelationDeleteForm($relation, $account);

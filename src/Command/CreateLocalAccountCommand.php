@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Entity\Security\LocalAccount;
 use App\Event\Security\CreateAccountsEvent;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,11 +15,12 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+#[AsCommand(
+    name: 'app:create-account',
+    description: 'Creates a new user.',
+)]
 class CreateLocalAccountCommand extends Command
 {
-    // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'app:create-account';
-
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $userpasswordHasher,

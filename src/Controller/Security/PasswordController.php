@@ -107,7 +107,7 @@ class PasswordController extends AbstractController
             }
 
             try {
-                $auth = $userProvider->loadUserByUsername($mail);
+                $auth = $userProvider->loadUserByIdentifier($mail);
                 assert($auth instanceof LocalAccount);
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
 
