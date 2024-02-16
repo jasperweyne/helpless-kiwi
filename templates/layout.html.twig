@@ -71,7 +71,7 @@
                 <ul class="bottom-legal">
                     <li>importeer de feed van alle activiteiten in je agenda via <a href="{{ path('ical_public') }}">deze link</a>. </li>
                     <br />
-                    <li>importeer je persoonlijke activiteiten feed in je agenda via <a href="{{ path('ical_personal', { 'icalToken': app.user}) }}">deze link</a>. </li>
+                    <li>importeer je persoonlijke activiteiten feed in je agenda via <a href="{{ path('ical_personal', { 'calendarToken': app.user}) }}">deze link</a>. </li>
                     <br />
                     <li>
                         <form method="post" action="{{ path('ical_renew') }}">

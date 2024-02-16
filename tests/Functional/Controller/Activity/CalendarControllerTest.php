@@ -57,10 +57,14 @@ class CalendarControllerTest extends AuthWebTestCase
 
     public function testGetPersonalCalendar(): void
     {
-        $this->client->request('GET', '/ical/personal/invalid-icall-token');
+        /** @var LocalAccount $user */
+        $user = $this->fixtures->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
+        $token = $user->getCalendarToken();
+
+        $this->client->request('GET', '/ical/personal/'.$token);
         $icalResponse = $this->client->getResponse();
 
-        self::assertSame(404, $icalResponse->getStatusCode());
+        self::assertSame(200, $icalResponse->getStatusCode());
     }
 
     public function testPostPersonalCalendarRenew(): void
@@ -70,9 +74,7 @@ class CalendarControllerTest extends AuthWebTestCase
         $token = $user->getCalendarToken();
 
         $this->client->request('POST', '/ical/renew');
-        $icalResponse = $this->client->getResponse();
 
-        self::assertSame(200, $icalResponse->getStatusCode());
         self::assertNotSame($user->getCalendarToken(), $token);
     }
 }

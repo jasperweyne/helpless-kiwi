@@ -35,7 +35,7 @@ class CalendarController extends AbstractController
         return new Response($iCalProvider->calendarFeed($publicActivities));
     }
 
-    #[Route('/personal/{icalToken}', methods: ['GET'], name: 'personal')]
+    #[Route('/personal/{calendarToken}', methods: ['GET'], name: 'personal')]
     public function getPersonalCalendar(
         CalendarProvider $iCalProvider,
         LocalAccount $user
