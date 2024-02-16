@@ -222,7 +222,7 @@ class GroupController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     private function createDeleteForm(Group $group): FormInterface
     {
@@ -236,7 +236,7 @@ class GroupController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     private function createRelationDeleteForm(Group $group, LocalAccount $account): FormInterface
     {

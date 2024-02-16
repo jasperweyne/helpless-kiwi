@@ -33,7 +33,7 @@ class TestData
      *
      * @return TestData<X> a testdata builder for the given type
      */
-    public static function create(string $type = null): TestData
+    public static function create(?string $type = null): TestData
     {
         if (is_null($type)) {
             return new TestData([]);
@@ -129,8 +129,6 @@ class TestData
     /**
      * Add value options for a given property (or array key) to the data builder.
      *
-     * @param mixed $options
-     *
      * @return TestData<T>
      */
     public function with(string $property, ...$options): TestData
@@ -154,8 +152,6 @@ class TestData
 
     /**
      * Add an action callables to the data builder with multiple data options.
-     *
-     * @param mixed $options
      *
      * @return TestData<T>
      */

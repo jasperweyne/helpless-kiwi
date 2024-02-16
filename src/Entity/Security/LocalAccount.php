@@ -240,7 +240,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    public function setPasswordRequestedAt(\DateTime $date = null): self
+    public function setPasswordRequestedAt(?\DateTime $date = null): self
     {
         $this->passwordRequestedAt = $date;
 
