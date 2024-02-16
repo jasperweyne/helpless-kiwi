@@ -7,7 +7,8 @@
 {% set messages_overlay = true %}
 
 {% block body_root %}
-<div class="text-white block h-[70vh] lg:h-[60vh] w-full relative -mt-5 mb-8 bg-gray-600">
+{% set prices = activity.options|sort((a, b)=>a.price<=>b.price)|map(p => '%01.2f'|format(p.price / 100)) %}
+<div class="text-white block h-[70vh] lg:h-[60vh] w-full relative -mt-5 {% if prices|length > 0 %} mb-8 {% else %} mb-5 {% endif %} bg-gray-600">
     {% if activity.image.name %}
         {% set filters = {
             'red':    'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(320deg)',
@@ -23,7 +24,7 @@
         <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute inline-block h-full w-full object-cover" style="{{ filters[activity.color] ?? 'filter: contrast(5%) brightness(0.5) grayscale(100%)' }}">
         <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute inline-block h-full w-full object-cover filter saturate-200" style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.1));">
     {% endif %}
-    <div class="mx-auto max-w-6xl px-5 mb-5 absolute bottom-5 left-0 right-0">
+    <div class="mx-auto max-w-6xl px-5 mb-5 absolute left-0 right-0 {% if prices|length > 0 %} bottom-5 {% else %} bottom-0 {% endif %}">
         <h2 class="font-extrabold text-3xl">{{ activity.name }}</h2>
         {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
             <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('none', 'short') }}</span><br />
@@ -34,11 +35,10 @@
         {% if activity.author %}
             <span>{{ activity.author.name }}</span><br />
         {% endif %}
-        {% set prices = activity.options|sort((a, b)=>a.price<=>b.price)|map(p => '%01.2f'|format(p.price / 100)) %}
         {% if prices|length > 0 %}
             <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span><br />
             <span>{{ activity.currentRegistrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|format_datetime('medium', 'none') }}</span><br />
-            <div class="-mb-12 mt-4">
+            <div class="-mb-16 mt-4">
                 {% if not is_granted('ROLE_USER') %}
                     <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white">Niet ingelogd</span>
                 {% elseif activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
@@ -48,23 +48,46 @@
                         <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white">Uitschrijvingen gesloten</span>
                     {% endif %}
                 {% elseif unregister is not null %}
-                    {% form_theme unregister with ['form.html.twig'] only %}
-                    {{ form(unregister) }}
+                    {{ form_start(unregister) }}
+                    {{ form_widget(unregister) }}
+                    <button class="rounded px-4 py-3 text-white bg-red-500" type="submit">Afmelden</button>
+                    {{ form_end(unregister) }}
                 {% elseif options|length == 1 %}
-                    {% form_theme (options|first.form) with ['form.html.twig'] only %}
-                    {{ form(options|first.form) }}
+                    {{ form_start(options|first.form) }}
+                    {{ form_widget(options|first.form) }}
+                    {% if activity.atCapacity %}
+                        <button class="rounded px-4 py-3 text-white bg-orange-500" type="submit">Aanmelden reserve</button>
+                    {% else %}
+                        <button class="rounded px-4 py-3 text-white bg-green-500" type="submit">Aanmelden</button>
+                    {% endif %}
+                    {{ form_end(options|first.form) }}
                 {% else %}
-                    <div class="button confirm grow">
-                        <span>Aanmelden</span>
-                        <div class="content">
-                            <table>
+                    <input type="checkbox" id="registermodal" class="hidden peer" />
+                    {% if activity.atCapacity %}
+                        <label for="registermodal" class="rounded px-4 py-3 text-white bg-orange-500">Aanmelden reserve</label>
+                    {% else %}
+                        <label for="registermodal" class="rounded px-4 py-3 text-white bg-green-500">Aanmelden</label>
+                    {% endif %}
+                    <label for="registermodal" class="fixed left-0 top-0 z-50 size-full bg-opacity-50 bg-black hidden peer-checked:block"></label>
+                    <div class="fixed size-fit m-auto p-8 left-0 right-0 top-0 bottom-0 z-50 hidden peer-checked:block">
+                        <div class="bg-white rounded text-black">
+                            <h2 class="text-center text-2xl font-extrabold p-4 pb-0">Selecteer optie</h2>
+                            <table class="border-spacing-2 border-separate p-2">
                                 <tbody>
                                 {% for option in options|sort((a, b)=>a.data.price<=>b.data.price) %}
-                                    {% form_theme option.form with ['form.html.twig'] only %}
                                     <tr>
                                         <td>{{ option.data.name }}</td>
                                         <td>&euro; {{ '%01.2f'|format(option.data.price / 100) }}</td>
-                                        <td>{{ form(option.form) }}</td>
+                                        <td>
+                                            {{ form_start(option.form) }}
+                                            {{ form_widget(option.form) }}
+                                            {% if activity.atCapacity %}
+                                                <button class="rounded px-4 py-3 text-white bg-orange-500" type="submit">Aanmelden reserve</button>
+                                            {% else %}
+                                                <button class="rounded px-4 py-3 text-white bg-green-500" type="submit">Aanmelden</button>
+                                            {% endif %}
+                                            {{ form_end(option.form) }}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -77,37 +100,37 @@
     </div>
 </div>
 <div class="mx-auto max-w-6xl flex flex-row gap-5 px-5 mb-5">
-    {% if is_granted('ROLE_USER') %}
+    {% if is_granted('ROLE_USER') and prices|length > 0 %}
     <div class="w-full sm:w-8/12">
     {% else %}
     <div class="w-full">
     {% endif %}
         <p>{{ activity.description | nl2br }}</p>
     </div>
-    {% if is_granted('ROLE_USER') %}
+    {% if is_granted('ROLE_USER') and prices|length > 0 %}
     <div class="sm:w-4/12 z-10">
     <table class="bg-white rounded text-left -mt-40 w-full">
         <thead class="border-b-2 border-solid border-neutral-300">
             <tr>
-                <th class="py-3 px-3">Aanmeldingen</th>
+                <th class="p-3">Aanmeldingen</th>
             </tr>
         </thead>
         <tbody>
         {% if activity.currentRegistrations|length > 0 %}
             {% for registration in activity.currentRegistrations|filter(a => not a.external)|map(a => a.person.name ?? a.person.shortname ?? 'Onbekend')|sort((a, b) => a <=> b) %}
                 <tr>
-                    <td class="py-3 px-3">{{ registration }}</td>
+                    <td class="p-3">{{ registration }}</td>
                 </tr>
             {% endfor %}
             {% set externalCount = activity.currentRegistrations|filter(a => a.external)|length %}
             {% if externalCount > 0 %}
                 <tr>
-                    <td class="py-3 px-3"><i>{{ externalCount }} externe{{ externalCount == 1 ? '' : 'n' }}</i></td>
+                    <td class="p-3"><i>{{ externalCount }} externe{{ externalCount == 1 ? '' : 'n' }}</i></td>
                 </tr>
             {% endif %}
         {% else %}
             <tr>
-                <td class="py-3 px-3">Geen aanmeldingen.</td>
+                <td class="p-3">Geen aanmeldingen.</td>
             </tr>
         {% endif %}
         </tbody>

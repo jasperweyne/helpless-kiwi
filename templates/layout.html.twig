@@ -46,10 +46,10 @@
             </div>
         </header>
         {% endblock %}
-        <main>
+        <main class="relative">
             {% block messages %}
             {% if messages_overlay is defined and messages_overlay %}
-            <div class="messages messages_overlay absolute left-0 right-0 top-6 *:backdrop-blur">
+            <div class="messages messages_overlay absolute left-0 right-0 top-6 *:backdrop-blur z-10">
             {% else %}
             <div class="messages">
             {% endif %}
