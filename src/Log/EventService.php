@@ -134,7 +134,7 @@ class EventService
      *
      * @return (?AbstractEvent)[]
      */
-    public function findBy(object $entity = null, string $type = null, array $options = [])
+    public function findBy(?object $entity = null, ?string $type = null, array $options = [])
     {
         if (null !== $entity) {
             $options['objectId'] = $this->getIdentifier($entity);
@@ -160,7 +160,7 @@ class EventService
      *
      * @return ?AbstractEvent
      */
-    public function findOneBy(object $entity = null, ?string $type = null, array $options = [])
+    public function findOneBy(?object $entity = null, ?string $type = null, array $options = [])
     {
         if (null !== $entity) {
             $options['objectId'] = $this->getIdentifier($entity);

@@ -95,7 +95,6 @@ class EntityEventListener
     }
 
     /**
-     * @param mixed         $value
      * @param string        $field
      * @param ClassMetadata $metadata
      *

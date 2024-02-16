@@ -28,9 +28,6 @@ class AuthWebTestCase extends WebTestCase
      */
     protected $databaseTool;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,9 +48,6 @@ class AuthWebTestCase extends WebTestCase
         $this->databaseTool = $this->client->getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

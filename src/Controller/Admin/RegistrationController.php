@@ -274,7 +274,7 @@ class RegistrationController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     protected function createRegistrationDeleteForm(Registration $registration): FormInterface
     {
