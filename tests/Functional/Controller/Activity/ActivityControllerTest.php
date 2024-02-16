@@ -73,19 +73,6 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testCallIcal(): void
-    {
-        $this->client->request('GET', '/ical');
-        $icalReturnPrefix = 'BEGIN:VCALENDAR';
-        $icalReturnSuffix = "END:VCALENDAR\r\n";
-        $icalResponse = $this->client->getResponse();
-
-        self::assertNotFalse($icalResponse->getContent());
-        self::assertStringStartsWith($icalReturnPrefix, $icalResponse->getContent());
-        self::assertStringEndsWith($icalReturnSuffix, $icalResponse->getContent());
-        self::assertSame(200, $icalResponse->getStatusCode());
-    }
-
     public function testUnregisterAction(): void
     {
         // Arrange

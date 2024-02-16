@@ -51,6 +51,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     #[ORM\Column(type: 'json')]
     private array $roles;
 
+    #[ORM\Column(name: 'calendar_token', type: 'string', nullable: true)]
+    private ?string $calendarToken = null;
+
     /** Encrypted string whose value is sent to the user email address in order to (re-)set the password. */
     #[ORM\Column(name: 'password_request_token', type: 'string', nullable: true)]
     protected ?string $passwordRequestToken;
@@ -169,6 +172,18 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getCalendarToken(): ?string
+    {
+        return $this->calendarToken;
+    }
+
+    public function renewCalendarToken(): self
+    {
+        $this->calendarToken = bin2hex(random_bytes(16));
 
         return $this;
     }

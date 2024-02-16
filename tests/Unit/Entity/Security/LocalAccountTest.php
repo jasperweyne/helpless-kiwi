@@ -189,6 +189,25 @@ class LocalAccountTest extends KernelTestCase
         self::assertSame($expected, $property->getValue($this->localAccount));
     }
 
+    public function getCalendarToken(): void
+    {
+        $expected = '42';
+        $property = (new \ReflectionClass(LocalAccount::class))
+            ->getProperty('ical_token');
+        $property->setAccessible(true);
+        $property->setValue($this->localAccount, $expected);
+        self::assertSame($expected, $this->localAccount->getCalendarToken());
+    }
+
+    public function renewCalendarToken(): void
+    {
+        $property = (new \ReflectionClass(LocalAccount::class))
+            ->getProperty('ical_token');
+        $property->setAccessible(true);
+        $this->localAccount->renewCalendarToken();
+        self::assertNotNull($property->getValue($this->localAccount));
+    }
+
     public function testIsAdmin(): void
     {
         $expected = ['ROLE_ADMIN'];

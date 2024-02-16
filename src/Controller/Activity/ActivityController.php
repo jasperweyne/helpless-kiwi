@@ -2,7 +2,6 @@
 
 namespace App\Controller\Activity;
 
-use App\Calendar\ICalProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
@@ -26,18 +25,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 #[Route('/', name: 'activity_')]
 class ActivityController extends AbstractController
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $events;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
-
-    public function __construct(EventDispatcherInterface $events, EntityManagerInterface $em)
-    {
+    public function __construct(
+        protected EventDispatcherInterface $events,
+        protected EntityManagerInterface $em
+    ) {
         $this->events = $events;
         $this->em = $em;
     }
@@ -91,15 +82,6 @@ class ActivityController extends AbstractController
             'activity_show',
             ['id' => $activity->getId()]
         );
-    }
-
-    #[Route('/ical', methods: ['GET'])]
-    public function callIcal(
-        ICalProvider $iCalProvider
-    ): Response {
-        $publicActivities = $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup([]); // Only return activities without target audience
-
-        return new Response($iCalProvider->icalFeed($publicActivities));
     }
 
     /**
