@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240216160654 extends AbstractMigration
+final class Version20240216165246 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,7 @@ final class Version20240216160654 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE kiwi_local_account ADD calendar_token VARCHAR(255) DEFAULT MD5(CONCAT(RAND(), id))');
+        $this->addSql('ALTER TABLE kiwi_local_account ADD calendar_token VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema): void

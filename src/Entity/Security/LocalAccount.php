@@ -51,8 +51,8 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     #[ORM\Column(type: 'json')]
     private array $roles;
 
-    #[ORM\Column(name: 'calendar_token', type: 'string', nullable: true)]
-    private ?string $calendarToken = null;
+    #[ORM\Column(name: 'calendar_token', type: 'string')]
+    private string $calendarToken;
 
     /** Encrypted string whose value is sent to the user email address in order to (re-)set the password. */
     #[ORM\Column(name: 'password_request_token', type: 'string', nullable: true)]
@@ -305,6 +305,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
+        $this->renewCalendarToken();
     }
 
     /** @return Collection<int, Registration>|null */
