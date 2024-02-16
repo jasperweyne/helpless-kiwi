@@ -1,0 +1,10 @@
+{% use "tailwind_2_layout.html.twig" %}
+
+{% block submit_widget %}
+    {% set attr = attr|merge({class: (attr.class|default(block('class_submit')))|trim}) %}
+    {{ parent() }}
+{% endblock submit_widget %}
+
+{% block class_submit %}
+    text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2
+{% endblock class_submit %}

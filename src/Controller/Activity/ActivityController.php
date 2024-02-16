@@ -226,7 +226,7 @@ class ActivityController extends AbstractController
             ->setAction($this->generateUrl('activity_unregister', ['id' => $activity->getId()]))
             ->add('registration_single', HiddenType::class)
             ->add('submit', SubmitType::class, [
-                'attr' => ['class' => 'button delete'],
+                'attr' => ['class' => 'text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2'],
                 'label' => 'Afmelden',
             ])
             ->getForm()
@@ -239,7 +239,7 @@ class ActivityController extends AbstractController
             ->setAction($this->generateUrl('activity_register', ['id' => $activity->getId()]))
             ->add('single_option', HiddenType::class)
             ->add('submit', SubmitType::class, [
-                'attr' => ['class' => 'button '.($reserve ? 'warning' : 'confirm')],
+                'attr' => ['class' => 'rounded px-4 py-3 text-white '.($reserve ? 'bg-orange-500 cursor-not-allowed' : 'bg-green-500')],
                 'label' => 'Aanmelden'.($reserve ? ' reserve' : ''),
             ])
             ->getForm()

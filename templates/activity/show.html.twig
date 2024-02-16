@@ -24,7 +24,7 @@
         <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute inline-block h-full w-full object-cover filter saturate-200" style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.1));">
     {% endif %}
     <div class="mx-auto max-w-6xl px-5 mb-5 absolute bottom-5 left-0 right-0">
-        <h2 class="font-extrabold text-2xl">{{ activity.name }}</h2>
+        <h2 class="font-extrabold text-3xl">{{ activity.name }}</h2>
         {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
             <span>{{ activity.start|format_datetime('medium', 'short') }} - {{ activity.end|format_datetime('none', 'short') }}</span><br />
         {% else %}
@@ -38,18 +38,20 @@
         {% if prices|length > 0 %}
             <span>&euro; {{ prices|first }}{% if prices|first != prices|last %} - &euro; {{ prices|last }}{% endif %}</span><br />
             <span>{{ activity.currentRegistrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|format_datetime('medium', 'none') }}</span><br />
-            <div class="buttons">
+            <div class="-mb-12 mt-4">
                 {% if not is_granted('ROLE_USER') %}
-                    <span class="button confirm disabled">Niet ingelogd</span>
+                    <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white">Niet ingelogd</span>
                 {% elseif activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
                     {% if unregister is null %}
-                        <span class="button confirm disabled">Inschrijvingen gesloten</span>
+                        <span class="cursor-not-allowed rounded px-4 py-3 bg-green-200 text-white">Inschrijvingen gesloten</span>
                     {% else %}
-                        <span class="button delete disabled">Uitschrijvingen gesloten</span>
+                        <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white">Uitschrijvingen gesloten</span>
                     {% endif %}
                 {% elseif unregister is not null %}
+                    {% form_theme unregister with ['form.html.twig'] only %}
                     {{ form(unregister) }}
                 {% elseif options|length == 1 %}
+                    {% form_theme (options|first.form) with ['form.html.twig'] only %}
                     {{ form(options|first.form) }}
                 {% else %}
                     <div class="button confirm grow">
@@ -58,6 +60,7 @@
                             <table>
                                 <tbody>
                                 {% for option in options|sort((a, b)=>a.data.price<=>b.data.price) %}
+                                    {% form_theme option.form with ['form.html.twig'] only %}
                                     <tr>
                                         <td>{{ option.data.name }}</td>
                                         <td>&euro; {{ '%01.2f'|format(option.data.price / 100) }}</td>
