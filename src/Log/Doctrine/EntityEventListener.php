@@ -91,12 +91,9 @@ class EntityEventListener
     }
 
     /**
-     * @param string        $field
-     * @param ClassMetadata $metadata
-     *
      * @return array{entity: string, identifier: mixed}|mixed|null
      */
-    private function sanitize($value, $field, $metadata)
+    private function sanitize(mixed $value, string $field, ClassMetadata $metadata)
     {
         if (null === $value) {
             return null;
