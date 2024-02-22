@@ -99,17 +99,17 @@
         {% endif %}
     </div>
 </div>
-<div class="mx-auto max-w-6xl flex flex-row gap-5 flex-wrap px-5 mb-5">
+<div class="mx-auto max-w-6xl px-5 mb-5">
     {% if is_granted('ROLE_USER') and prices|length > 0 %}
-    <div class="w-full sm:w-8/12">
+    <div class="w-full sm:w-8/12 sm:pr-5 float-left">
     {% else %}
-    <div class="w-full">
+    <div class="w-full float-left">
     {% endif %}
         <p>{{ activity.description | nl2br }}</p>
     </div>
     {% if is_granted('ROLE_USER') and prices|length > 0 %}
-    <div class="w-full sm:w-4/12 z-10">
-    <table class="bg-white rounded text-left sm:-mt-40 w-full">
+    <div class="w-full sm:w-4/12 z-10 float-left relative mt-5 sm:mt-0">
+    <table class="bg-white rounded text-left sm:-mt-40 w-full max-h-96 overflow-y-auto">
         <thead class="border-b-2 border-solid border-neutral-300">
             <tr>
                 <th class="p-3">Aanmeldingen</th>

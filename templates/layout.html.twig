@@ -49,9 +49,9 @@
         <main class="relative">
             {% block messages %}
             {% if messages_overlay is defined and messages_overlay %}
-            <div class="messages messages_overlay absolute left-0 right-0 top-6 *:backdrop-blur z-10">
+            <div class="messages messages_overlay absolute left-0 right-0 top-6 *:backdrop-blur z-10 px-5">
             {% else %}
-            <div class="messages">
+            <div class="messages px-5">
             {% endif %}
                 {% for flash_message in app.session.flashbag.get('error') %}
                     <div class="container row mx-auto max-w-6xl p-5 mb-5 relative bg-red-500/65">
@@ -67,23 +67,18 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% if is_granted('ROLE_ADMIN') and updater.newestVersion != version %}
+                    <div class="container row mx-auto max-w-6xl p-5 mb-5 relative bg-red-500/65">
+                        <div class="flash flash-error">
+                            Update '{{ updater.newestVersion }}' is beschikbaar, <a class="text-white" href="/update.php">klik hier</a> om nu te updaten vanaf '{{ version }}'.
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             {% endblock %}
             {% block body_root %}{% block body %}{% endblock %}{% endblock %}
         </main>
         {% block footer %}
-        {% if is_granted('ROLE_ADMIN') and updater.newestVersion != version %}
-            <div class="update button grow">
-                <span>!</span>
-                <div class="content">
-                    <h4>Er is een kiwi update beschikbaar</h4>
-                    <p>
-                        huidige versie:  {{ version }}<br>
-                        nieuwste versie: {{ updater.newestVersion}}.<br>
-                        <a href="/update.php">Klik hier om nu te updaten.</a></p> 
-                </div>
-            </div>
-        {% endif %}
         <div class="bg-gray-500/50 rounded-full bottom-8 right-8 size-10 fixed z-20 transition backdrop-blur group">
             <span class="text-2xl text-white p-4">i</span>
             <div class="transition opacity-0 p-5 invisible group-focus:opacity-100 group-focus:visible group-active:opacity-100 group-active:visible group-hover:opacity-100 group-hover:visible w-[80vw] bg-white right-0 bottom-0 absolute  max-w-lg rounded-lg shadow-xl z-10">
