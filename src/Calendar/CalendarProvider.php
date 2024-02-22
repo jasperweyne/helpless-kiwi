@@ -15,14 +15,14 @@ use Eluceo\iCal\Domain\ValueObject\TimeSpan;
 use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 
-class ICalProvider
+class CalendarProvider
 {
     /**
-     * create an ical feed the passed activity array.
+     * create an ical feed for the passed activity array.
      *
      * @param Activity[] $activities
      */
-    public function icalFeed(array $activities): string
+    public function calendarFeed(array $activities): string
     {
         $calendar = $this->createCalendar();
 
@@ -42,7 +42,7 @@ class ICalProvider
     /**
      * create an ical for passed activity.
      */
-    public function icalSingle(Activity $activity): string
+    public function calendarItem(Activity $activity): string
     {
         $calendar = $this->createCalendar();
         $calendar->addEvent($this->createEvent($activity));

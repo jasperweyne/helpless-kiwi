@@ -2,7 +2,7 @@
 
 namespace App\EventSubscriber;
 
-use App\Calendar\ICalProvider;
+use App\Calendar\CalendarProvider;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
@@ -22,7 +22,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private MailerInterface $mailer,
-        private ICalProvider $calendar,
+        private CalendarProvider $calendar,
         private PasswordResetService $passwordResetService,
         Security $security,
     ) {
@@ -73,7 +73,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
                 'title' => $title,
                 'by' => $this->user,
             ])
-            ->attach($this->calendar->icalSingle($activity), $activity->getName().'.ics', 'text/calendar')
+            ->attach($this->calendar->calendarItem($activity), $activity->getName().'.ics', 'text/calendar')
         );
     }
 
