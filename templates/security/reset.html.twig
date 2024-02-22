@@ -5,10 +5,10 @@
 {% block body %}
 <div class="mx-auto max-w-6xl px-5 mb-5">
     {{ form_start(form) }}
+    <div class="bg-gradient-to-b from-zinc-700 to-zinc-900 rounded shadow-2xl text-white flex flex-col h-96 mx-auto max-w-72 p-5 w-full">
         {{ form_widget(form) }}
-        <div class="button-group">
-            <button type="submit">Nieuw wachtwoord bevestigen</button>
-        </div>
+        <button class="bg-white text-black rounded px-5 py-3 mt-auto mb-5" type="submit">Nieuw wachtwoord bevestigen</button>
+    </div>
     {{ form_end(form) }}
 </div>
 {% endblock body %}

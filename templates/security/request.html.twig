@@ -3,14 +3,15 @@
 {% set page_title = 'Wachtwoord vergeten' %}
 
 {% block body %}
+
 <div class="mx-auto max-w-6xl px-5 mb-5">
-    <p>Ben je je wachtwoord vergeten? Vul hier je e-mailadres in waarmee je {{ org }} account is ingeschreven, dan sturen we je een herstelmail.</p>
     {{ form_start(form) }}
+    <div class="bg-gradient-to-b from-zinc-700 to-zinc-900 rounded shadow-2xl text-white flex flex-col h-96 mx-auto max-w-72 p-5 w-full">
+        <p class="mb-5">Ben je je wachtwoord vergeten? Vul hier je e-mailadres in waarmee je {{ org }} account is ingeschreven, dan sturen we je een herstelmail.</p>
         {{ form_widget(form) }}
-        <div class="button-group">
-            <button type="submit">Verzenden</button>
-            <a href="{{ path('app_login') }}">Terug naar login</a>
-        </div>
+        <button class="bg-white text-black rounded px-5 py-3 mt-auto mb-5" type="submit">Verzenden</button>
+        <a href="{{ path('app_login') }}">Terug naar login</a>
+    </div>
     {{ form_end(form) }}
 </div>
 {% endblock body %}
