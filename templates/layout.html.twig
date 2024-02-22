@@ -16,12 +16,12 @@
         <header class="w-full bg-white mb-5 h-16 lg:h-24">
             <div class="flex items-center h-full justify-around px-5 lg:hidden group">
                 <span class="block text-center">{{ page_title }}</span>
-                <label for="nav-state" class="cursor-pointer py-2 absolute right-5 w-6 z-30">
+                <label for="nav-state" class="cursor-pointer py-2 absolute right-5 w-6 z-40">
                     <b class="bg-gray-300 block h-0.5 relative transition group-has-[~.peer:checked]:bg-transparent before:bg-gray-300 before:block before:h-full before:w-full before:absolute before:top-0 before:origin-center before:transition before:-translate-y-2 before:group-has-[~.peer:checked]:rotate-45 before:group-has-[~.peer:checked]:translate-y-0 after:bg-gray-300 after:block after:h-full after:w-full after:absolute after:top-0 after:origin-center after:transition after:translate-y-2 after:group-has-[~.peer:checked]:-rotate-45 after:group-has-[~.peer:checked]:translate-y-0"></b>
                 </label>
             </div>
             <input type="checkbox" id="nav-state" class="hidden peer">
-            <div class="hidden peer-checked:flex items-center justify-between bg-black flex-wrap flex-col text-white bottom-0 left-0 right-0 top-0 mx-auto max-w-6xl p-5 fixed z-20 lg:bg-white lg:text-black lg:flex lg:flex-row lg:h-24 lg:static lg:py-0 lg:mb-5">
+            <div class="hidden peer-checked:flex items-center justify-between bg-black flex-wrap flex-col text-white bottom-0 left-0 right-0 top-0 mx-auto max-w-6xl p-5 fixed z-30 lg:bg-white lg:text-black lg:flex lg:flex-row lg:h-24 lg:static lg:py-0 lg:mb-5">
                 <a href="/" class="inline-block pr-2 whitespace-nowrap">{{ org }}</a>
                 <nav class="items-center flex flex-col lg:flex-row">
                     {% for item in menu.getItems() %}
@@ -84,7 +84,7 @@
                 </div>
             </div>
         {% endif %}
-        <div class="bg-gray-500/50 rounded-full bottom-8 right-8 size-10 fixed z-0 transition backdrop-blur group">
+        <div class="bg-gray-500/50 rounded-full bottom-8 right-8 size-10 fixed z-20 transition backdrop-blur group">
             <span class="text-2xl text-white p-4">i</span>
             <div class="transition opacity-0 p-5 invisible group-focus:opacity-100 group-focus:visible group-active:opacity-100 group-active:visible group-hover:opacity-100 group-hover:visible w-[80vw] bg-white right-0 bottom-0 absolute  max-w-lg rounded-lg shadow-xl z-10">
                 <h3 class="text-xl font-extrabold">Feedback</h3>

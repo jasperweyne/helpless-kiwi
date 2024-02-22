@@ -40,36 +40,36 @@
             <span>{{ activity.currentRegistrations|length }} {{ activity.hasCapacity ? '/ ' ~ activity.capacity : '' }} aanmeldingen - uiterlijk {{ activity.deadline|format_datetime('medium', 'none') }}</span><br />
             <div class="-mb-16 mt-4">
                 {% if not is_granted('ROLE_USER') %}
-                    <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white">Niet ingelogd</span>
+                    <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white inline-block">Niet ingelogd</span>
                 {% elseif activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
                     {% if unregister is null %}
-                        <span class="cursor-not-allowed rounded px-4 py-3 bg-green-200 text-white">Inschrijvingen gesloten</span>
+                        <span class="cursor-not-allowed rounded px-4 py-3 bg-green-200 text-white inline-block">Inschrijvingen gesloten</span>
                     {% else %}
-                        <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white">Uitschrijvingen gesloten</span>
+                        <span class="cursor-not-allowed rounded px-4 py-3 bg-red-200 text-white inline-block">Uitschrijvingen gesloten</span>
                     {% endif %}
                 {% elseif unregister is not null %}
                     {{ form_start(unregister) }}
                     {{ form_widget(unregister) }}
-                    <button class="rounded px-4 py-3 text-white bg-red-500" type="submit">Afmelden</button>
+                    <button class="rounded px-4 py-3 text-white bg-red-500 inline-block" type="submit">Afmelden</button>
                     {{ form_end(unregister) }}
                 {% elseif options|length == 1 %}
                     {{ form_start(options|first.form) }}
                     {{ form_widget(options|first.form) }}
                     {% if activity.atCapacity %}
-                        <button class="rounded px-4 py-3 text-white bg-orange-500" type="submit">Aanmelden reserve</button>
+                        <button class="rounded px-4 py-3 text-white bg-orange-500 inline-block" type="submit">Aanmelden reserve</button>
                     {% else %}
-                        <button class="rounded px-4 py-3 text-white bg-green-500" type="submit">Aanmelden</button>
+                        <button class="rounded px-4 py-3 text-white bg-green-500 inline-block" type="submit">Aanmelden</button>
                     {% endif %}
                     {{ form_end(options|first.form) }}
                 {% else %}
                     <input type="checkbox" id="registermodal" class="hidden peer" />
                     {% if activity.atCapacity %}
-                        <label for="registermodal" class="rounded px-4 py-3 text-white bg-orange-500">Aanmelden reserve</label>
+                        <label for="registermodal" class="rounded px-4 py-3 text-white bg-orange-500 inline-block">Aanmelden reserve</label>
                     {% else %}
-                        <label for="registermodal" class="rounded px-4 py-3 text-white bg-green-500">Aanmelden</label>
+                        <label for="registermodal" class="rounded px-4 py-3 text-white bg-green-500 inline-block">Aanmelden</label>
                     {% endif %}
                     <label for="registermodal" class="fixed left-0 top-0 z-50 size-full bg-opacity-50 bg-black hidden peer-checked:block"></label>
-                    <div class="fixed size-fit m-auto p-8 left-0 right-0 top-0 bottom-0 z-50 hidden peer-checked:block">
+                    <div class="fixed size-fit m-auto max-w-full p-8 left-0 right-0 top-0 bottom-0 z-50 hidden peer-checked:block">
                         <div class="bg-white rounded text-black">
                             <h2 class="text-center text-2xl font-extrabold p-4 pb-0">Selecteer optie</h2>
                             <table class="border-spacing-2 border-separate p-2">
@@ -99,7 +99,7 @@
         {% endif %}
     </div>
 </div>
-<div class="mx-auto max-w-6xl flex flex-row gap-5 px-5 mb-5">
+<div class="mx-auto max-w-6xl flex flex-row gap-5 flex-wrap px-5 mb-5">
     {% if is_granted('ROLE_USER') and prices|length > 0 %}
     <div class="w-full sm:w-8/12">
     {% else %}
@@ -108,8 +108,8 @@
         <p>{{ activity.description | nl2br }}</p>
     </div>
     {% if is_granted('ROLE_USER') and prices|length > 0 %}
-    <div class="sm:w-4/12 z-10">
-    <table class="bg-white rounded text-left -mt-40 w-full">
+    <div class="w-full sm:w-4/12 z-10">
+    <table class="bg-white rounded text-left sm:-mt-40 w-full">
         <thead class="border-b-2 border-solid border-neutral-300">
             <tr>
                 <th class="p-3">Aanmeldingen</th>
