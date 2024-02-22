@@ -81,6 +81,11 @@ parameters:
 			path: src/EventListener/DoctrineTablePrefixListener.php
 
 		-
+			message: "#^While loop condition is always true\\.$#"
+			count: 1
+			path: src/Form/Security/Import/ImportedAccounts.php
+
+		-
 			message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node\\:\\:\\$value\\.$#"
 			count: 1
 			path: src/GraphQL/Types/DatetimeScalar.php
@@ -91,9 +96,29 @@ parameters:
 			path: src/GraphQL/Types/DatetimeScalar.php
 
 		-
-			message: "#^Parameter \\#1 \\$datetime of class DateTime constructor expects string, mixed given\\.$#"
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\DatetimeScalar\\:\\:parseValue\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/GraphQL/Types/DatetimeScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\DatetimeScalar\\:\\:parseValue\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/DatetimeScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\NullScalar\\:\\:parseValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/NullScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\NullScalar\\:\\:parseValue\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/NullScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\NullScalar\\:\\:serialize\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/NullScalar.php
 
 		-
 			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$person is never written, only read\\.$#"
@@ -171,6 +196,16 @@ parameters:
 			path: src/Repository/RegistrationRepository.php
 
 		-
+			message: "#^Asserted type mixed for \\$subject with type mixed does not narrow down the type\\.$#"
+			count: 1
+			path: src/Security/GroupVoter.php
+
+		-
+			message: "#^Asserted type string for \\$attribute with type string does not narrow down the type\\.$#"
+			count: 1
+			path: src/Security/GroupVoter.php
+
+		-
 			message: "#^Only booleans are allowed in a ternary operator condition, string given\\.$#"
 			count: 1
 			path: src/Template/AttributeMenuExtension.php
@@ -236,11 +271,6 @@ parameters:
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, mixed given\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
 			message: "#^Parameter \\#1 \\$initial of class App\\\\Tests\\\\TestData constructor expects T of object, array given\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
@@ -269,3 +299,8 @@ parameters:
 			message: "#^Method Tests\\\\Functional\\\\GraphQL\\\\QueryTest\\:\\:graphqlQuery\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Functional/GraphQL/QueryTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$fields of class App\\\\Log\\\\Doctrine\\\\EntityNewEvent constructor expects array\\<string, mixed\\>, stdClass given\\.$#"
+			count: 1
+			path: tests/Unit/Log/Doctrine/EntityNewEventTest.php

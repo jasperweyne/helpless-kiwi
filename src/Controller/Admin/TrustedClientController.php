@@ -135,7 +135,7 @@ class TrustedClientController extends AbstractController
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     private function createDeleteForm(TrustedClient $client): FormInterface
     {

@@ -22,9 +22,6 @@ class Kernel extends BaseKernel
         parent::__construct($environment, $debug);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getProjectDir(): string
     {
         // also works in the absence of composer.json, as opposed to parent implementation

@@ -15,11 +15,6 @@ class DatetimeScalar
         return $value->format(\DateTime::RFC3339);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return mixed
-     */
     public static function parseValue($value)
     {
         return new \DateTime($value);
