@@ -7,7 +7,6 @@ use App\Reflection\ClassNameService;
 
 class EntityNewEvent extends AbstractEvent
 {
-
     private mixed $fields;
 
     /**
