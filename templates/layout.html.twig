@@ -66,6 +66,27 @@
             {% block body_root %}{% block body %}{% endblock %}{% endblock %}
         </main>
         {% block footer %}
+        {% if is_granted('ROLE_USER') %}
+            <footer class="bottom">
+                <ul class="bottom-legal">
+                    <li>importeer de feed van alle activiteiten in je agenda via <a href="{{ path('ical_public') }}">deze link</a>. </li>
+                    <br />
+                    <li>importeer je persoonlijke activiteiten feed in je agenda via <a href="{{ path('ical_personal', { 'calendarToken': app.user}) }}">deze link</a>. </li>
+                    <br />
+                    <li>
+                        <form method="post" action="{{ path('ical_renew') }}">
+                            <input type="hidden" name="_csrf_token"
+                                value="{{ csrf_token('authenticate') }}"
+                            >
+                            <button style="background: none; padding: 0; color: #1779ba" type="submit">
+                                klik hier 
+                            </button>
+                            om je persoonlijke activiteiten feed te vernieuwen.
+                        </form>
+                    </li>
+                </ul>
+            </footer>
+        {% endif %}
         {% if is_granted('ROLE_ADMIN') and updater.newestVersion != version %}
             <div class="update button grow">
                 <span>!</span>
@@ -74,7 +95,7 @@
                     <p>
                         huidige versie:  {{ version }}<br>
                         nieuwste versie: {{ updater.newestVersion}}.<br>
-                        <a href="/update.php">Klik hier om nu te updaten.</a></p> 
+                        <a href="/update.php">Klik hier om nu te updaten.</a></p>
                 </div>
             </div>
         {% endif %}
@@ -86,7 +107,7 @@
                     Kiwi is volop in ontwikkeling. Er kunnen dus nog fouten in zitten.<br>
                     Heb jij een fout gevonden? Heb jij een idee om Kiwi te verbeteren? Of wil jij zelf graag mee helpen?<br>
                     Laat het <a href="https://github.com/jasperweyne/helpless-kiwi/issues">hier</a> weten, dan helpen we je uit de brand!
-                </p> 
+                </p>
             </div>
         </div>
         {% endblock %}

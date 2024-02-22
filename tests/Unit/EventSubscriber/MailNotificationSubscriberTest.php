@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\EventSubscriber;
 
-use App\Calendar\ICalProvider;
+use App\Calendar\CalendarProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Entity\Security\LocalAccount;
@@ -45,7 +45,7 @@ final class MailNotificationSubscriberTest extends KernelTestCase
 
         $this->mailNotificationSubscriber = new MailNotificationSubscriber(
             $this->mailer,
-            self::createMock(ICalProvider::class),
+            self::createMock(CalendarProvider::class),
             $this->passwordReset,
             $this->security
         );

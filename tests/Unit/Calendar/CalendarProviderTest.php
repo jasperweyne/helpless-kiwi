@@ -2,40 +2,30 @@
 
 namespace Tests\Unit\Calendar;
 
-use App\Calendar\ICalProvider;
+use App\Calendar\CalendarProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Location\Location;
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class ICalProviderTest.
- *
  * @author A-Daneel
- * @covers \App\Calendar\ICalProvider
+ *
+ * @covers \App\Calendar\CalendarProvider
  */
-class ICalProviderTest extends KernelTestCase
+class CalendarProviderTest extends KernelTestCase
 {
-    /** @var ICalProvider */
-    protected $iCalProvider;
+    protected CalendarProvider $calendarProvider;
 
-    /** @var Activity */
-    protected $firstActivity;
-    /** @var Activity */
-    protected $secondActivity;
-    /** @var Activity */
-    protected $invalidActivity;
+    protected Activity $firstActivity;
+    protected Activity $secondActivity;
+    protected Activity $invalidActivity;
 
-    /** @var DateTime */
-    protected $now;
+    protected \DateTime $now;
 
-    /** @var string */
-    protected $summary;
-    /** @var string */
-    protected $description;
+    protected string $summary;
+    protected string $description;
 
-    /** @var Location */
-    protected $location;
+    protected Location $location;
 
     /**
      * {@inheritdoc}
@@ -44,7 +34,7 @@ class ICalProviderTest extends KernelTestCase
     {
         parent::setUp();
 
-        $this->iCalProvider = new ICalProvider();
+        $this->calendarProvider = new CalendarProvider();
         $this->firstActivity = new Activity();
         $this->secondActivity = new Activity();
         $this->invalidActivity = new Activity();
@@ -90,7 +80,7 @@ class ICalProviderTest extends KernelTestCase
     {
         parent::tearDown();
 
-        unset($this->iCalProvider);
+        unset($this->calendarProvider);
         unset($this->firstActivity);
         unset($this->secondActivity);
         unset($this->invalidActivity);
@@ -99,30 +89,30 @@ class ICalProviderTest extends KernelTestCase
     /**
      * @test
      */
-    public function icalsingleSuccesWithSingleEvent(): void
+    public function calendarItemSuccesWithSingleEvent(): void
     {
-        $recieved = $this->iCalProvider->icalSingle(
+        $received = $this->calendarProvider->calendarItem(
             $this->firstActivity
         );
 
-        self::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
+        self::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $received);
         $start = $this->firstActivity->getStart();
         if (!is_null($start)) {
             $start = $start->format('Ymd\THis');
         }
-        self::assertStringContainsString('DTSTART:'.$start, $recieved);
-        self::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
-        self::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
-        self::assertStringContainsString('DESCRIPTION:kiwi test description', $recieved);
+        self::assertStringContainsString('DTSTART:'.$start, $received);
+        self::assertStringContainsString('SUMMARY:'.$this->summary, $received);
+        self::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $received);
+        self::assertStringContainsString('DESCRIPTION:kiwi test description', $received);
     }
 
     /**
      * @test
      */
-    public function icalsingleSuccesWithErrorHandling(): void
+    public function calendarItemSuccesWithErrorHandling(): void
     {
         $this->expectError();
-        $this->iCalProvider->icalSingle(
+        $this->calendarProvider->calendarItem(
             $this->invalidActivity
         );
     }
@@ -130,58 +120,58 @@ class ICalProviderTest extends KernelTestCase
     /**
      * @test
      */
-    public function icalfeedSuccesWithSingleEvent(): void
+    public function calendarFeedeedSuccesWithSingleEvent(): void
     {
-        $recieved = $this->iCalProvider->icalFeed([
+        $received = $this->calendarProvider->calendarFeed([
             $this->firstActivity,
         ]);
-        self::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $recieved);
+        self::assertStringContainsString('PRODID:-//Helpless Kiwi//'.$_ENV['ORG_NAME'].' v1.0//NL', $received);
         $start = $this->firstActivity->getStart();
         if (!is_null($start)) {
             $start = $start->format('Ymd\THis');
         }
-        self::assertStringContainsString('DTSTART:'.$start, $recieved);
-        self::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
-        self::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $recieved);
-        self::assertStringContainsString('DESCRIPTION:'.$this->description, $recieved);
+        self::assertStringContainsString('DTSTART:'.$start, $received);
+        self::assertStringContainsString('SUMMARY:'.$this->summary, $received);
+        self::assertStringContainsString('LOCATION:'.$this->location->getAddress(), $received);
+        self::assertStringContainsString('DESCRIPTION:'.$this->description, $received);
     }
 
     /**
      * @test
      */
-    public function icalfeedSuccesWithTwoValidEvents(): void
+    public function calendarFeedSuccesWithTwoValidEvents(): void
     {
-        $recieved = $this->iCalProvider->icalFeed([
+        $received = $this->calendarProvider->calendarFeed([
             $this->firstActivity,
             $this->secondActivity,
         ]);
-        self::assertStringContainsString('SUMMARY:'.$this->summary, $recieved);
-        self::assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
+        self::assertStringContainsString('SUMMARY:'.$this->summary, $received);
+        self::assertStringContainsString('SUMMARY:second '.$this->summary, $received);
     }
 
     /**
      * @test
      */
-    public function icalfeedSuccesWithOneValidAndOneInvalidEvent(): void
+    public function calendarFeedSuccesWithOneValidAndOneInvalidEvent(): void
     {
-        $recieved = $this->iCalProvider->icalFeed([
+        $received = $this->calendarProvider->calendarFeed([
             $this->invalidActivity,
             $this->secondActivity,
         ]);
-        self::assertStringContainsString('SUMMARY:second '.$this->summary, $recieved);
+        self::assertStringContainsString('SUMMARY:second '.$this->summary, $received);
     }
 
     /**
      * @test
      */
-    public function icalfeedSuccesWithMissingEnvVariable(): void
+    public function calendarFeedSuccesWithMissingEnvVariable(): void
     {
         $_orgName = $_ENV['ORG_NAME'];
         unset($_ENV['ORG_NAME']);
-        $recieved = $this->iCalProvider->icalFeed([
+        $received = $this->calendarProvider->calendarFeed([
             $this->firstActivity,
         ]);
-        self::assertStringContainsString('PRODID:-//Helpless Kiwi//kiwi v1.0//NL', $recieved);
+        self::assertStringContainsString('PRODID:-//Helpless Kiwi//kiwi v1.0//NL', $received);
         $_ENV['ORG_NAME'] = $_orgName;
     }
 }

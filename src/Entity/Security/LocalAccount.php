@@ -51,6 +51,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     #[ORM\Column(type: 'json')]
     private array $roles;
 
+    #[ORM\Column(name: 'calendar_token', type: 'string')]
+    private string $calendarToken;
+
     /** Encrypted string whose value is sent to the user email address in order to (re-)set the password. */
     #[ORM\Column(name: 'password_request_token', type: 'string', nullable: true)]
     protected ?string $passwordRequestToken;
@@ -173,6 +176,18 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
+    public function getCalendarToken(): ?string
+    {
+        return $this->calendarToken;
+    }
+
+    public function renewCalendarToken(): self
+    {
+        $this->calendarToken = bin2hex(random_bytes(16));
+
+        return $this;
+    }
+
     #[GQL\Field(type: 'Boolean!')]
     #[GQL\Description('Whether this user is an administrator.')]
     #[GQL\Access('isAuthenticated()')]
@@ -290,6 +305,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
+        $this->renewCalendarToken();
     }
 
     /** @return Collection<int, Registration>|null */
