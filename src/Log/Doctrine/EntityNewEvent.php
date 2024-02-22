@@ -7,8 +7,12 @@ use App\Reflection\ClassNameService;
 
 class EntityNewEvent extends AbstractEvent
 {
-    private $fields;
 
+    private mixed $fields;
+
+    /**
+     * @param array<string, array{entity: string, identifier: mixed}|mixed|null> $fields
+     */
     public function __construct(object $entity, $fields)
     {
         $this->setEntity($entity);
@@ -16,7 +20,7 @@ class EntityNewEvent extends AbstractEvent
         $this->fields = $fields;
     }
 
-    public function getFields()
+    public function getFields(): mixed
     {
         return $this->fields;
     }

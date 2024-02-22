@@ -131,7 +131,7 @@ class TestData
      *
      * @return TestData<T>
      */
-    public function with(string $property, ...$options): TestData
+    public function with(string $property, mixed ...$options): TestData
     {
         $this->property_options[$property] = array_merge($this->property_options[$property] ?? [], $options);
 
@@ -155,7 +155,7 @@ class TestData
      *
      * @return TestData<T>
      */
-    public function doWith(string $key, callable $action, ...$options): TestData
+    public function doWith(string $key, callable $action, mixed ...$options): TestData
     {
         $actions = [];
         foreach ($options as $option) {
@@ -236,7 +236,7 @@ class TestData
     }
 
     /**
-     * Test whether all provided conditions return succesful for the given object.
+     * Test whether all provided conditions return successful for the given object.
      *
      * @param T $object
      */
