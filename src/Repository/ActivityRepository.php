@@ -139,6 +139,7 @@ class ActivityRepository extends ServiceEntityRepository
             ->andWhere('reg.person = :person')
             ->setParameter('person', $person)
             ->andWhere('act.archived = false')
+            ->andWhere('reg.deletedate IS NULL')
             ->orderBy('act.start', 'ASC')
             ->getQuery()
             ->getResult();
