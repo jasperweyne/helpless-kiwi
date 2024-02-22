@@ -399,7 +399,7 @@ class Activity
     }
 
     /** @param File|UploadedFile $imageFile */
-    public function setImageFile(File $imageFile = null): self
+    public function setImageFile(?File $imageFile = null): self
     {
         $this->imageFile = $imageFile;
 
@@ -481,8 +481,6 @@ class Activity
 
     /**
      * Get the time after which the activity will be visible for users.
-     *
-     * @return \DateTime
      */
     public function getVisibleAfter(): ?\DateTime
     {
@@ -509,10 +507,10 @@ class Activity
         $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups, true);
 
         return
-            $this->getEnd() > new \DateTime() &&
-            $in_groups &&
-            null !== $this->getVisibleAfter() &&
-            $this->getVisibleAfter() < new \DateTime();
+            $this->getEnd() > new \DateTime()
+            && $in_groups
+            && null !== $this->getVisibleAfter()
+            && $this->getVisibleAfter() < new \DateTime();
     }
 
     /**

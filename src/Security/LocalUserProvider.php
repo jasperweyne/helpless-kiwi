@@ -25,9 +25,6 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
     ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$this->supportsClass(get_class($user))) {
@@ -37,9 +34,6 @@ class LocalUserProvider implements UserProviderInterface, OidcUserProviderInterf
         return $this->loadUserByIdentifier($user->getUserIdentifier());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsClass(string $class): bool
     {
         return LocalAccount::class === $class || is_subclass_of($class, LocalAccount::class);

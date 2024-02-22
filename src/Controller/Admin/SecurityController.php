@@ -204,7 +204,7 @@ class SecurityController extends AbstractController
     /**
      * Creates a form to delete an LocalAccount.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     private function createDeleteForm(LocalAccount $account): FormInterface
     {
@@ -217,7 +217,7 @@ class SecurityController extends AbstractController
     /**
      * Creates a form to edit a LocalAccounts roles.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     private function createRoleForm(LocalAccount $account): FormInterface
     {
