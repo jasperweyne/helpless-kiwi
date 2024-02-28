@@ -23,9 +23,8 @@ class LocalAccountTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        $em = self::getContainer()->get();
         /* @todo Correctly instantiate tested object to use it. */
-        $this->localAccountType = new LocalAccountType($em);
+        $this->localAccountType = new LocalAccountType();
     }
 
     protected function tearDown(): void
