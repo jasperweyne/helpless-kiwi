@@ -18,9 +18,6 @@ class LocalAccountTypeTest extends KernelTestCase
 {
     protected LocalAccountType $localAccountType;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,9 +27,6 @@ class LocalAccountTypeTest extends KernelTestCase
         $this->localAccountType = new LocalAccountType();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
