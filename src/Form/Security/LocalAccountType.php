@@ -16,9 +16,7 @@ class LocalAccountType extends AbstractType
         $builder
             ->add('givenname', TextType::class, ['required' => true])
             ->add('familyname', TextType::class, ['required' => true])
-            ->add('email', EmailType::class, [
-                'required' => true,
-            ])
+            ->add('email', EmailType::class, ['required' => true])
         ;
     }
 
