@@ -36,3 +36,8 @@ Thumbs.db
 /temp_update_test_dir
 /phpstan.neon
 ###< custom ###
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor
+###< symfony/asset-mapper ###

@@ -7,16 +7,6 @@
     <h2>{{ page_title }}</h2>
 </div>
 <div class="container row">
-    {% if is_granted('ROLE_ADMIN') and updater.newestVersion != version %}
-        <h4>Er is een kiwi update beschikbaar</h4> 
-        <p>
-            huidige versie: {{ version }}<br>
-            nieuwste versie: {{ updater.newestVersion}}<br>
-            <br>
-            <a href="/updater.php" class="button">Klik hier om nu te updaten</a>
-        </p>
-        <hr>
-    {% endif %}
     {% if activities|length > 0 %}
         <div class="cardholder">
             <div class="grid-x">
