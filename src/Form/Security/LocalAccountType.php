@@ -14,9 +14,18 @@ class LocalAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('givenname', TextType::class, ['required' => true])
-            ->add('familyname', TextType::class, ['required' => true])
-            ->add('email', EmailType::class, ['required' => true])
+            ->add('givenname', TextType::class, [
+                'required' => true,
+                'label' => 'Voornaam',
+            ])
+            ->add('familyname', TextType::class, [
+                'required' => true,
+                'label' => 'Achternaam',
+            ])
+            ->add('email', EmailType::class, [
+                'required' => true,
+                'label' => 'E-mail',
+            ])
         ;
     }
 
