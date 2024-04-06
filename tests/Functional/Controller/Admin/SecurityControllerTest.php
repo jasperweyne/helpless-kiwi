@@ -25,9 +25,6 @@ class SecurityControllerTest extends AuthWebTestCase
 
     protected string $endpoint = '/admin/security';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,9 +37,6 @@ class SecurityControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -68,7 +62,7 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testImportAction(): void
     {
         // Mock the CSV file
-        $csvContent = "email,given_name,family_name,admin,oidc\n";
+        $csvContent = "email,given_name,family_name,admin,oidc\njohn@doe.kiwi,john,doe,User,,false";
         $csvPath = sys_get_temp_dir().'/test.csv';
         file_put_contents($csvPath, $csvContent);
         $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
@@ -89,7 +83,7 @@ class SecurityControllerTest extends AuthWebTestCase
             $crawler->filter('h3')->first()->text()
         );
 
-        // second Act
+        // // second Act
         $form = $crawler->selectButton('afronden')->form();
         $crawler = $this->client->submit($form);
 
