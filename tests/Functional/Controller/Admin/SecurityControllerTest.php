@@ -25,9 +25,6 @@ class SecurityControllerTest extends AuthWebTestCase
 
     protected string $endpoint = '/admin/security';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,9 +37,6 @@ class SecurityControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -68,8 +62,10 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testImportAction(): void
     {
         // Mock the CSV file
-        $csvContent = "email,given_name,family_name,admin,oidc\n";
-        $csvPath = sys_get_temp_dir().'/test.csv';
+        $csvContent = 'email,given_name,family_name,admin,oidc
+        john@doe.kiwi,john,doe,User,,false';
+        $csvPath = tempnam(sys_get_temp_dir(), 'csv');
+        self::assertIsString($csvPath);
         file_put_contents($csvPath, $csvContent);
         $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
 
@@ -96,6 +92,52 @@ class SecurityControllerTest extends AuthWebTestCase
         // second Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'Accounts succesvol geimporteerd');
+        unlink($csvPath);
+    }
+
+    public function testDuplicateEmailImportAction(): void
+    {
+        $csvContent = <<<CSV
+email,given_name,family_name,oidc,admin
+example2@user.kiwi,Example,User,,false
+example@user.kiwi,Example,User,,false
+example3@user.kiwi,Example,User,,false
+example4@user.kiwi,Example,User,,false
+example5@user.kiwi,Example,User,,false
+example4@user.kiwi,Example,User,1234,false
+example@user.kiwi,Example,User,1234,false 
+CSV;
+        // Mock the CSV file
+        $csvPath = tempnam(sys_get_temp_dir(), 'csv');
+        self::assertIsString($csvPath);
+        file_put_contents($csvPath, $csvContent);
+        $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
+
+        // first Act
+        $crawler = $this->client->request('GET', $this->endpoint.'/import');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('verder')->form();
+        $form->setValues([
+            'upload_csv[file]' => $csvFile->getPathname(),
+        ]);
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $formFilter = $crawler->filter('body > main > div.container.row > div > div > form');
+        self::assertEquals(
+            $formFilter->filter('ul > li:nth-child(1)')->text(),
+            'Duplicate email "example@user.kiwi" found 2 times'
+        );
+        self::assertEquals(
+            $formFilter->filter('ul > li:nth-child(2)')->text(),
+            'Duplicate email "example4@user.kiwi" found 2 times'
+        );
+        self::assertEquals(
+            $formFilter->filter('ul > li:nth-child(3)')->text(),
+            'Duplicate oidc "1234" found 2 times'
+        );
+        unlink($csvPath);
     }
 
     public function testNewAction(): void

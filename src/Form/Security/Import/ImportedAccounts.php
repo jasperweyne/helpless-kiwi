@@ -173,7 +173,7 @@ class ImportedAccounts
     }
 
     #[Assert\Callback]
-    public function validate(ExecutionContextInterface $context, mixed $payload): void
+    public function validate(ExecutionContextInterface $context): void
     {
         if (null === $this->additions) {
             try {
@@ -182,6 +182,29 @@ class ImportedAccounts
                 $context->buildViolation($e->getMessage())
                     ->atPath('file')
                     ->addViolation();
+            }
+        }
+        if (null !== $this->additions) {
+            foreach (['email', 'oidc'] as $field) {
+                $values = array_map(fn (LocalAccount $acc) => match ($field) {
+                    'email' => $acc->getEmail(),
+                    'oidc' => $acc->getOidc(),
+                }, $this->additions->toArray());
+
+                $values = array_filter($values, fn ($value) => '' !== $value);
+                $duplicates = array_filter(
+                    array_count_values($values),
+                    fn (int $count) => $count > 1
+                );
+
+                foreach ($duplicates as $value => $count) {
+                    $context->buildViolation('Duplicate %field% "%value%" found %count% times')
+                        ->setParameter('%field%', $field)
+                        ->setParameter('%value%', $value)
+                        ->setParameter('%count%', strval($count))
+                        ->atPath('file')
+                        ->addViolation();
+                }
             }
         }
     }

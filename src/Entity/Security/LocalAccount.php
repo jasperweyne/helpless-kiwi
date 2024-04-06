@@ -18,6 +18,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
     fields: 'email',
     message: 'This e-mail address is already in use.'
 )]
+#[UniqueEntity(
+    fields: 'oidc',
+    message: 'This OpenID Connect sub is already in use.'
+)]
 #[GQL\Type]
 #[GQL\Description('A registered user who can log in and register for activities.')]
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface
