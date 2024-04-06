@@ -10,8 +10,6 @@ use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-use function PHPUnit\Framework\assertIsString;
-
 /**
  * Class SecurityControllerTest.
  *
@@ -67,7 +65,7 @@ class SecurityControllerTest extends AuthWebTestCase
         $csvContent = 'email,given_name,family_name,admin,oidc
         john@doe.kiwi,john,doe,User,,false';
         $csvPath = tempnam(sys_get_temp_dir(), 'csv');
-        assertIsString($csvPath);
+        self::assertIsString($csvPath);
         file_put_contents($csvPath, $csvContent);
         $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
 
@@ -87,7 +85,7 @@ class SecurityControllerTest extends AuthWebTestCase
             $crawler->filter('h3')->first()->text()
         );
 
-        // // second Act
+        // second Act
         $form = $crawler->selectButton('afronden')->form();
         $crawler = $this->client->submit($form);
 
@@ -111,7 +109,7 @@ example@user.kiwi,Example,User,1234,false
 CSV;
         // Mock the CSV file
         $csvPath = tempnam(sys_get_temp_dir(), 'csv');
-        assertIsString($csvPath);
+        self::assertIsString($csvPath);
         file_put_contents($csvPath, $csvContent);
         $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
 
