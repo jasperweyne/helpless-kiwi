@@ -20,6 +20,9 @@ class ImportAccountsFlow extends FormFlow
             [
                 'label' => 'upload',
                 'form_type' => UploadCsvType::class,
+                'form_options' => [
+                    'validation_groups' => ['Default', 'Unique'],
+                ],
             ],
             [
                 'label' => 'confirmation',

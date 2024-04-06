@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints;
 
 #[ORM\Entity]
 #[UniqueEntity(
@@ -32,6 +33,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     #[GQL\Field(type: 'String')]
     #[GQL\Description('The e-mail address of the user.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value == getUser()")]
+    #[Constraints\Unique(message: 'This email is already in use.', groups: ['Unique'])]
     private ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 180)]
@@ -50,6 +52,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     private ?string $password = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
+    #[Constraints\Unique(message: 'This OpenID Connect sub is already in use.', groups: ['Unique'])]
     private ?string $oidc = null;
 
     /** @var string[] */
