@@ -47,10 +47,10 @@
 {% endblock %}
 
 {% block body_root %}
-    <div class="sm:pl-80">
+    <div class="max-w-6xl p-5 pt-0 mx-auto">
         <span class="top">
             {% block top %}
-            <h3>{{ page_title }}</h3>
+            <h3 class="text-4xl font-bold">{{ page_title }}</h3>
             <span class="buttons">
             {% block buttons %}
             {% endblock %}
@@ -58,7 +58,7 @@
             {% endblock %}
         </span>
         {% block body_wrap %}
-        <div class="card">
+        <div class="bg-neutral-50 rounded shadow">
         {% block body %}
         {% endblock %}
         </div>
@@ -69,17 +69,17 @@
 {% endblock %}
 
 {% block footer %}
-    <footer class="bottom overflow-hidden">
-        <ul class="bottom-legal">
+    <footer class="text-center text-xs text-neutral-500 pb-5 px-5">
+        <ul class="bottom-legal *:inline-block *:after:content-['•'] *:after:pl-1">
             <li>Helpless Kiwi</li>
             {% if app.environment == 'dev' %}
                 <li>Development mode</li>
             {% elseif version != '' %}
                 <li>Version {{ version }}</li>
             {% endif %}
-            <li>Created by Jasper Weyne &amp; developed with the <a href="https://github.com/jasperweyne/helpless-kiwi/graphs/contributors">community</a></li>
+            <li>Created by Jasper Weyne &amp; developed with the <a class="text-blue-500" href="https://github.com/jasperweyne/helpless-kiwi/graphs/contributors">community</a></li>
             <li>Licensed under Apache version 2.0</li>
-            <li>Built with &hearts; and Symfony</li>
+            <li class="after:hidden">Built with &hearts; and Symfony</li>
         </ul>
     </footer>
 {% endblock %}
