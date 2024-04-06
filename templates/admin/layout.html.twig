@@ -1,27 +1,13 @@
 {% extends 'layout.html.twig' %}
 
-{% block stylesheets %}
-    {{ encore_entry_link_tags('admin') }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ encore_entry_script_tags('admin') }}
-{% endblock %}
-
 {% block nav %}
-    <input type="checkbox" id="nav-state">
-    <header class="topbar">
-        <label for="nav-state" class="nav-toggle"><b></b></label>
-        <h2 class="nav-site">{{ org }}</h2>
-        <div class="nav-profile">
-            {% for item in menu.getItems('admin-profile') %}
-                <a href="{{item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}">{{ item.title }}</a>
-            {% endfor %}
-        </div>
-    </header>
-    <nav>
-        <h2>{{ org }}</h2>
-        <label for="nav-state" class="nav-toggle"><b></b>Sluit</label>
+    <input type="checkbox" id="nav-state" class="hidden peer" />
+    <nav class="bg-gray-800 text-slate-600 h-screen w-80 top-0 left-0 fixed overflow-y-auto z-50 transition -translate-x-80 *:p-5 peer-checked:translate-x-0 xl:translate-x-0 xl:static xl:float-left">
+        <h2 class="font-bold hidden xl:block text-white">{{ org }}</h2>
+        <label for="nav-state" class="cursor-pointer hover:text-white group font-bold block xl:hidden">
+            <b class="bg-slate-600 inline-block h-0.5 w-3 align-baseline relative before:bg-inherit before:block before:absolute before:size-full before:bottom-1 after:bg-inherit after:block after:absolute after:size-full after:bottom-2"></b>
+            Sluit
+        </label>
         {% if activeSection is not defined %}
             {% set activeSection = app.request.get('_route') %}
         {% endif %}
@@ -29,15 +15,15 @@
             {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
                 {% set item_type = (item.path is defined) ? "a"                          : "span" %}
                 {% set item_path = (item.path is defined) ? "href="~(item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)) : "" %}
-                {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "active " : "" %}
+                {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "bg-gray-900 text-white" : "" %}
                 {% if item.path is defined %}
-                <div class="{{ (item_active ~ " " ~ item.class ?? "")|trim }}">
+                <div class="hover:text-white {{ (item_active ~ " " ~ item.class ?? "")|trim }}">
                 {% endif %}
                     <{{ item_type }} class="{{ item_active }}" {{ item_path }}>{{ item.title }}</{{ item_type }}>
-                    {% if item.sub is defined %}
-                        <div class="sub">
+                    {% if item.sub is defined and item_active %}
+                        <div class="text-sm pl-4 pt-2 text-slate-600">
                         {% for sub in item.sub %}
-                            <a href="{{ sub.param  ? path(sub.path, sub.param) : path(sub.path) }}">{{ sub.title }}</a>
+                            <a href="{{ sub.param  ? path(sub.path, sub.param) : path(sub.path) }}" class="hover:text-white block">{{ sub.title }}</a>
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -47,10 +33,21 @@
             {% endif %}
         {% endfor %}
     </nav>
+    <header class="overflow-hidden p-5 text-slate-600">
+        <label for="nav-state" class="cursor-pointer block float-left pr-5 xl:hidden">
+            <b class="bg-slate-600 inline-block h-0.5 w-3 align-baseline relative before:bg-inherit before:block before:absolute before:size-full before:bottom-1 after:bg-inherit after:block after:absolute after:size-full after:bottom-2"></b>
+        </label>
+        <h2 class="float-left xl:hidden font-bold">{{ org }}</h2>
+        <div class="float-right hidden md:block">
+            {% for item in menu.getItems('admin-profile') %}
+                <a href="{{item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}" class="pl-5 hover:text-black">{{ item.title }}</a>
+            {% endfor %}
+        </div>
+    </header>
 {% endblock %}
 
 {% block body_root %}
-    <div class="container row">
+    <div class="sm:pl-80">
         <span class="top">
             {% block top %}
             <h3>{{ page_title }}</h3>
@@ -72,7 +69,7 @@
 {% endblock %}
 
 {% block footer %}
-    <footer class="bottom">
+    <footer class="bottom overflow-hidden">
         <ul class="bottom-legal">
             <li>Helpless Kiwi</li>
             {% if app.environment == 'dev' %}
