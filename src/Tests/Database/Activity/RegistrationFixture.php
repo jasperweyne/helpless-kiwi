@@ -5,9 +5,7 @@ namespace App\Tests\Database\Activity;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
-use App\Repository\RegistrationRepository;
 use App\Tests\Database\Security\LocalAccountFixture;
 use App\Tests\TestData;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -50,17 +48,11 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
      */
     public static function generate(array $priceOption, Activity $activity, LocalAccount $person): TestData
     {
-        $counter = Order::create(RegistrationRepository::MINORDER());
-
         return TestData::from(new Registration())
             ->with('id', '')
             ->with('option', ...$priceOption)
             ->with('activity', $activity, null)
             ->with('person', $person)
-            ->do('reserve_position', fn ($reg) => $reg, function ($registration) use (&$counter) {
-                $counter = Order::calc($counter, Order::create('b'), fn ($a, $b) => $a + $b);
-                $registration->setReservePosition($counter);
-            })
             ->with('newdate', new \DateTime('first day January 2038'))
         ;
     }

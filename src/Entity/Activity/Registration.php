@@ -2,7 +2,6 @@
 
 namespace App\Entity\Activity;
 
-use App\Entity\Order;
 use App\Entity\Security\ContactInterface;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\Mapping as ORM;
@@ -40,11 +39,6 @@ class Registration
     #[GQL\Description('The activity for which the user registered.')]
     private ?Activity $activity = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[GQL\Field(type: 'String')]
-    #[GQL\Description('If placed on the reserve list, this value indicates their relative position, by alphabetical ordering.')]
-    private ?string $reserve_position = null;
-
     #[ORM\Column(name: 'newdate', type: 'datetime', nullable: false)]
     #[GQL\Field(name: 'created', type: 'DateTimeScalar!', resolve: '@=value.getNewDate()')]
     #[GQL\Description('The date and time the user registered for the activity.')]
@@ -65,6 +59,11 @@ class Registration
 
     #[ORM\Embedded(class: ExternalRegistrant::class)]
     private ?ExternalRegistrant $externalPerson;
+
+    #[ORM\Column(name: 'present', type: 'boolean')]
+    #[GQL\Field(type: 'Boolean')]
+    #[GQL\Description('Whether this registration is available for transfer to another user.')]
+    private bool $transferable = false;
 
     /**
      * Get id.
@@ -132,31 +131,6 @@ class Registration
         return $this;
     }
 
-    public function isReserve(): bool
-    {
-        return !\is_null($this->reserve_position);
-    }
-
-    public function getReservePosition(): ?Order
-    {
-        if (!\is_null($this->reserve_position)) {
-            return Order::create($this->reserve_position);
-        } else {
-            return null;
-        }
-    }
-
-    public function setReservePosition(?Order $reserve_position): self
-    {
-        if (!\is_null($reserve_position)) {
-            $this->reserve_position = strval($reserve_position);
-        } else {
-            $this->reserve_position = null;
-        }
-
-        return $this;
-    }
-
     public function getNewDate(): \DateTime
     {
         return $this->newdate;
@@ -204,6 +178,18 @@ class Registration
     public function setComment(?string $comment): void
     {
         $this->comment = $comment;
+    }
+
+    public function isTransferable(): bool
+    {
+        return $this->transferable;
+    }
+
+    public function setTransferable(bool $transferable): self
+    {
+        $this->transferable = $transferable;
+
+        return $this;
     }
 
     public function __construct()
