@@ -60,7 +60,7 @@ class Registration
     #[ORM\Embedded(class: ExternalRegistrant::class)]
     private ?ExternalRegistrant $externalPerson;
 
-    #[ORM\Column(name: 'present', type: 'boolean')]
+    #[ORM\Column(name: 'transferable', type: 'boolean')]
     #[GQL\Field(type: 'Boolean')]
     #[GQL\Description('Whether this registration is available for transfer to another user.')]
     private bool $transferable = false;

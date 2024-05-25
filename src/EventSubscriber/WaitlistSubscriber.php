@@ -8,17 +8,18 @@ use App\Entity\Activity\WaitlistSpot;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
-use App\Mail\MailService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Mailer\MailerInterface;
 
 class WaitlistSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private EntityManagerInterface $em,
         private EventDispatcherInterface $dispatcher,
-        private MailService $mailer,
+        private MailerInterface $mailer,
         private \Twig\Environment $template,
     ) {
     }
@@ -88,10 +89,11 @@ class WaitlistSubscriber implements EventSubscriberInterface
     private function notifyWaitlist(PriceOption $option): void
     {
         foreach ($option->getWaitlist() as $spot) {
-            $this->mailer->message(
-                [$spot->person],
-                'Er is een ticket aangeboden voor '.($option->getActivity()?->getName() ?? ''),
-                $this->template->render('email/waitlist_notify.html.twig', [
+            $this->mailer->send((new TemplatedEmail())
+                ->to($spot->person)
+                ->subject('Er is een ticket aangeboden voor '.($option->getActivity()?->getName() ?? ''))
+                ->htmlTemplate('email/waitlist_notify.html.twig')
+                ->context([
                     'option' => $option,
                     'person' => $spot->person,
                 ])
