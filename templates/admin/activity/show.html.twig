@@ -19,10 +19,10 @@
 {% endif %}
 
 {% block body_wrap %}
-    <div class="tabs">
+    <div class="tabs flex flex-wrap max-w-full">
         {% embed 'components/tab.html.twig' with {'tab_label': 'Details', 'tab_default': true} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <tbody>
@@ -187,7 +187,7 @@
 
         {% embed 'components/tab.html.twig' with {'tab_label': 'Deelnemers', 'tab_name': 'participants'} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <thead>
@@ -264,7 +264,7 @@
 
         {% embed 'components/tab.html.twig' with {'tab_label': 'Reservelijst', 'tab_name': 'reserve'} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <thead>

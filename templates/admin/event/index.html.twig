@@ -2,18 +2,13 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Gebeurtenislog' %}
-    
-    {% block top %}
-        {% embed 'admin/listview.html.twig' %}
-            {% block results %}
-                <span class="subtitle">
-                {% if pagination %}
-                Resultaten {{ pagination.index }}{% if pagination.results|length > 1 %}-{{ pagination.index + pagination.results|length - 1 }}{% endif %} -
-                {% endif %}
-                {{ pagination.total ?? log|length }} resultaten gevonden
-                </span>
-            {% endblock %}
-        {% endembed %}
+    {% block results %}
+        <span class="text-neutral-300">
+        {% if pagination %}
+        Resultaten {{ pagination.index }}{% if pagination.results|length > 1 %}-{{ pagination.index + pagination.results|length - 1 }}{% endif %} -
+        {% endif %}
+        {{ pagination.total ?? log|length }} resultaten gevonden
+        </span>
     {% endblock %}
 {% endif %}
 
@@ -45,10 +40,18 @@
 {% endblock %}
 
 {% block pagination %}
-<div class="container row">
-    <div class="button">
-        <a href="{{ pagination.hasPrev ? path('admin_event_index', { 'index': pagination.prev }) : '' }}">Prev</a>
-        <a href="{{ pagination.hasNext ? path('admin_event_index', { 'index': pagination.next }) : '' }}">Next</a>
+<div>
+    <div class="h-7 mx-auto bg-white shadow rounded w-max mb-5 overflow-hidden *:block *:float-left *:px-4 *:w-max *:h-full text-xl">
+        {% if pagination.hasPrev %}
+            <a class="cursor-pointer" href="{{ path('admin_event_index', { 'index': pagination.prev }) }}">&larr;</a>
+        {% else %}
+            <span class="cursor-default bg-neutral-300 text-neutral-700">&larr;</span>
+        {% endif %}
+        {% if pagination.hasNext %}
+            <a class="cursor-pointer" href="{{ path('admin_event_index', { 'index': pagination.next }) }}">&rarr;</a>
+        {% else %}
+            <span class="cursor-default bg-neutral-300 text-neutral-700">&rarr;</span>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

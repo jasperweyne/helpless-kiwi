@@ -41,12 +41,12 @@ Example usage:
 {% endif %}
 
 {% block tab_picker %}
-    <input type="radio" name="tabs" id="{{ tab_name }}" {{ tab_default ? 'checked' : ''}}>
-    <label for="{{ tab_name }}" class="tab {{ tab_default ? 'active' : ''}}">
+    <input type="radio" name="tabs" id="{{ tab_name }}" class="absolute opacity-0" {{ tab_default ? 'checked' : ''}}>
+    <label for="{{ tab_name }}" class="px-8 py-4 cursor-pointer font-bold text-lg transition-colors rounded w-full md:w-auto md:-mb-1 tab {{ tab_default ? 'active' : ''}}">
         <span>{{ tab_label }}</span>
     </label>
 {% endblock %}
-<div class="panel">
+<div class="panel order-12 w-full mt-4 md:mt-0">
     {% block tab %}
     {% endblock %}
 </div>

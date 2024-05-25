@@ -11,3 +11,201 @@ input {
 nav .mobile {
     @apply md:hidden;
 }
+
+.tabs {
+    & > input + label {
+        background: #e5e5e5;
+        color: #7f7f7f;
+    }
+    & > input:focus + label {
+        box-shadow: inset 0 0 0 3px #2aa1c0;
+        z-index: 1;
+    }
+      
+    & > input:checked + label {
+        background: #fbfbfb;
+        color: #000;
+        z-index: 1;
+    }
+
+    & > input + label + .panel {
+        display: none;
+    }
+      
+    & > input:checked + label + .panel {
+        display: block;
+    }
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border-spacing: 0;
+
+    a {
+        @apply text-blue-500;
+    }
+
+    /* Caption */
+    caption {
+        padding: 0.5rem;
+        font-weight: 700;
+    }
+
+    thead {
+        border-bottom: 2px solid #f1f1f1;
+    }
+    
+    tfoot {
+        border-top: 2px solid #f1f1f1;
+    }
+
+    /* Table head and foot */
+    thead,
+    tfoot {
+        /* Cells within head and foot */
+        th,
+        td {
+            padding: 0.5rem;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+        }
+    }
+
+    /* Table rows */
+    tbody {
+        th,
+        td {
+            padding: 0.5rem;
+        }
+    }
+
+    tbody {
+        th {
+            width: 40%;
+            text-align: left;
+        }
+    }
+}
+
+@media(max-width: 639px) { /* sm only */
+    table {
+        thead {
+            th {
+                display: block;
+            }
+        }
+        
+        tfoot {
+            display: none;
+        }
+        
+        tr,
+        th,
+        td {
+            display: block;
+        }
+        
+        td {
+            border-top: 0;
+        }
+        tr {
+            padding: 4px 0;
+            
+            &:not(:last-child) {
+                border-bottom: 1px solid #f1f1f1;
+            }
+        }
+        td, th {
+            padding-top: 0;
+            padding-bottom: 0;
+            width: 100%;
+        }
+    }
+}
+
+@screen md {
+    .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+
+/* --- */
+
+form {
+    width: 100%;
+
+    select {
+        width: initial;
+    }
+
+    & div[id] {
+        & > div {
+            overflow: hidden;
+    
+            & > label {
+                padding: 0.5rem;
+                font-weight: 700;
+                text-align: left;
+                width: 40%;
+                float: left;
+
+                &.required:before {
+                    content: "*";
+                    color: red;
+                }
+            }
+        
+            & > :not(label) {
+                overflow: hidden;
+            }
+
+            input, select, textarea {
+                padding: 0.5rem;
+            }
+        }
+    }
+}
+
+@media(max-width: 639px) { /* sm only */
+    form {
+        thead {
+            display: none;
+        }
+        
+        tfoot {
+            display: none;
+        }
+        
+        tr,
+        th,
+        td {
+            display: block;
+        }
+        
+        td {
+            border-top: 0;
+        }
+    }
+    
+    div[id] div {
+        padding: 4px 0;
+
+        * {
+            padding-top: 0;
+            padding-bottom: 0;
+            width: 100%;
+        }
+    }
+}
+
+@screen md {
+    .form {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+}
