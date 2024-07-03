@@ -35,7 +35,7 @@ jobs:
       run: php bin/console tailwind:build
 
     - name: Install CSS dependencies
-      run: php bin/console asset-map:install
+      run: php bin/console asset-map:compile
 
     - name: Run linter
       run: composer lint

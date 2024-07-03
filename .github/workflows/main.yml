@@ -47,7 +47,7 @@ jobs:
 
     - name: Install CSS dependencies
       working-directory: kiwi
-      run: php bin/console asset-map:install
+      run: php bin/console asset-map:compile
 
     - name: Extract platform requirements composer.lock
       if: github.ref == 'refs/heads/master'
