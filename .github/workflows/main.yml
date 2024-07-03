@@ -9,29 +9,22 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
-    
     strategy:
       matrix:
-        node-version: [16.x]
+        php-version: ['8.1', '8.2', '8.3']
 
     steps:
     - uses: actions/checkout@v2
       with:
         path: 'kiwi'
-      
+
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-      
+        php-version: ${{ matrix.php-version }}
+
     - name: Move public for build
       if: github.ref == 'refs/heads/master'
       run: |
@@ -47,14 +40,12 @@ jobs:
       env:
         APP_DEBUG: 0
         APP_ENV: prod
-  
-    - name: Install JS dependencies
-      run: yarn install
-      working-directory: kiwi
-    
-    - name: Build JS dependencies
-      run: yarn build
-      working-directory: kiwi
+
+    - name: Build CSS dependencies
+      run: php bin/console tailwind:build
+
+    - name: Install CSS dependencies
+      run: php bin/console asset-map:install
 
     - name: Extract platform requirements composer.lock
       if: github.ref == 'refs/heads/master'
