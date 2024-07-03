@@ -4,7 +4,9 @@ namespace App\Form\Group;
 
 use App\Entity\Group\Group;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +18,10 @@ class GroupType extends AbstractType
         $builder
             ->add('name')
             ->add('description', TextareaType::class, [
+                'required' => false,
+            ])
+            ->add('contactFields', EmailType::class, [
+                'label' => 'Contact e-mailadres',
                 'required' => false,
             ])
             ->add('relationable', CheckboxType::class, [
@@ -36,6 +42,23 @@ class GroupType extends AbstractType
                 'help' => 'Doelgroepen kunnen geselecteerd worden als doelgroep voor activiteiten.',
                 'required' => false,
             ])
+        ;
+
+        $builder->get('contactFields')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($emailAsArray) {
+                    // transform the array to a string
+                    return str_replace('mailto:', '', $emailAsArray['email'] ?? '');
+                },
+                function ($emailAsString) {
+                    // transform the string back to an array
+                    if ($emailAsString) {
+                        return ['email' => "mailto:$emailAsString"];
+                    }
+
+                    return [];
+                }
+            ))
         ;
     }
 
