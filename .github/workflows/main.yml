@@ -42,9 +42,11 @@ jobs:
         APP_ENV: prod
 
     - name: Build CSS dependencies
+      working-directory: kiwi
       run: php bin/console tailwind:build
 
     - name: Install CSS dependencies
+      working-directory: kiwi
       run: php bin/console asset-map:install
 
     - name: Extract platform requirements composer.lock
