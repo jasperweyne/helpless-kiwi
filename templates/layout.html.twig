@@ -46,7 +46,8 @@
             </div>
         </header>
         {% endblock %}
-        <main class="relative overflow-hidden">
+        {% if main_class is not defined %}{% set main_class = 'relative' %}{% endif %}
+        <main class="{{ main_class }}">
             {% block messages %}
             {% if messages_overlay is defined and messages_overlay %}
             <div class="messages messages_overlay absolute left-0 right-0 top-6 *:backdrop-blur z-10 px-5">

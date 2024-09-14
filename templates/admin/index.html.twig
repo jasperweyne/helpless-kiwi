@@ -3,29 +3,35 @@
 {% set page_title = 'Overzicht' %}
 
 {% block body_root %}
-<div class="container">
-    <h2>{{ page_title }}</h2>
-</div>
-<div class="container row">
+<div class="max-w-6xl p-5 pt-0 mx-auto">
+    <h2 class="font-extrabold text-4xl mb-2">{{ page_title }}</h2>
     {% if activities|length > 0 %}
-        <div class="cardholder">
-            <div class="grid-x">
-                <div class="cell">
-                    {% for activity in activities %}
-                        <a href="{{ path("admin_activity_show", { 'id': activity.id }) }}" class="admin activity">
-                            {% if activity.image.name %}
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="bw">
+        <div class="grid grid-cols-1 gap-5">
+            {% for activity in activities %}
+                <a href="{{ path("admin_activity_show", { 'id': activity.id }) }}" class="text-white block h-32 relative rounded shadow-lg overflow-hidden w-full bg-gray-600 group">
+                    {% if activity.image.name %}
+                        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute h-full w-full object-cover grayscale blur-sm group-hover:scale-125 ease-out duration-[4s]">
+                    {% endif %}
+                    <div class="absolute w-full inset-x-0 bottom-0 p-5 break-words">
+                        <h2 class="text-4xl font-extrabold">{{ activity.name }}</h2>
+                        <span>
+                            {% set difference = date("now").diff(date(activity.start)) %}
+                            {% if difference.days > 1 %}
+                                Nog {{ difference.days }} dagen
+                            {% elseif not difference.invert %}
+                                Begint om {{ activity.start|date('H:i') }}
+                            {% else %}
+                                Nu bezig!
                             {% endif %}
-                            <div class="container">
-                                <h2>{{ activity.name }}</h2>
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
-            </div>
+                            -
+                            {{ activity.currentRegistrations|length }} (+{{ activity.reserveRegistrations|length }}) aanmeldingen
+                        </span>
+                    </div>
+                </a>
+            {% endfor %}
         </div>
     {% else %}
-        <span>Voeg een <a href="{{ path('admin_activity_new') }}">nieuwe activiteit</a> toe.</span>
+        <span>Voeg een <a class="text-blue-500" href="{{ path('admin_activity_new') }}">nieuwe activiteit</a> toe.</span>
     {% endif %}
 </div>
 {% endblock %}

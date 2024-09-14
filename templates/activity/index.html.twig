@@ -7,7 +7,7 @@
     {% if activities %}
         <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
             {% for activity in activities %}
-                <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="text-white block h-80 relative rounded shadow-lg overflow-hidden transition-shadow w-full bg-gray-600 group">
+                <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="text-white block h-80 relative rounded shadow overflow-hidden transition-shadow w-full bg-gray-600 group">
                     {% if activity.image.name %}
                         {% set filters = {
                             'red':    'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(320deg)',
