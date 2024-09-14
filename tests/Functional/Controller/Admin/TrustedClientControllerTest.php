@@ -22,9 +22,6 @@ class TrustedClientControllerTest extends AuthWebTestCase
 
     private string $controllerEndpoint = '/admin/security/client';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,9 +35,6 @@ class TrustedClientControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -51,7 +45,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testIndexAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
-        self::assertSelectorTextContains('span', 'API');
+        self::assertSelectorTextContains('#title', 'API');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

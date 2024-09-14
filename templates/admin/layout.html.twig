@@ -52,7 +52,7 @@
     <div class="max-w-6xl p-5 pt-0 mx-auto">
         <div class="relative pb-2">
             {% block top %}
-            <h3 class="text-4xl font-bold">{{ page_title }}</h3>
+            <h3 id="title" class="text-4xl font-bold">{{ page_title }}</h3>
             {% block results %}
             {% if resultcount is defined %}
             <span class="text-neutral-300">{{ resultcount }} resultaten gevonden</span>

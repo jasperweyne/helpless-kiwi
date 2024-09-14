@@ -25,9 +25,6 @@ class SecurityControllerTest extends AuthWebTestCase
 
     protected string $endpoint = '/admin/security';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,9 +37,6 @@ class SecurityControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -114,7 +108,7 @@ class SecurityControllerTest extends AuthWebTestCase
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         // TODO: figure our if this is actually the way to test this....
-        self::assertEquals(1, $crawler->filter('.top > h3:nth-child(1)')->count());
+        self::assertSelectorTextContains('table', 'john@doe.eyes');
     }
 
     public function testShowAction(): void
