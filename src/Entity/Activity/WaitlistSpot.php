@@ -30,4 +30,9 @@ class WaitlistSpot
     ) {
         $this->timestamp = new \DateTimeImmutable('now');
     }
+
+    public function getPriceOption(): ?PriceOption
+    {
+        return $this->option;
+    }
 }

@@ -243,27 +243,41 @@ class ActivityController extends AbstractController
             'deletedate' => null,
         ], limit: 1);
 
+        /** @var WaitlistSpot[] */
+        $waitListSpots = $this->em->getRepository(WaitlistSpot::class)->findBy([
+            'person' => $user,
+            'option' => $priceOption,
+        ], limit: 1);
+
         if (0 != count($registrated)) {
             $registrated = $registrated[0];
-            if ($priceOption->getActivity()->getDeadline() < new \DateTime('now')) {
-                /** @var ?WaitlistSpot $waitlist */
+            if ($priceOption->getActivity()->getDeadline() > new \DateTime('now')) {
+                /** @var ?WaitlistSpot[] $waitlist */
                 $waitlist = $this->em->getRepository(WaitlistSpot::class)->findBy([
                     'option' => $priceOption->getActivity()->getOptions()->toArray(),
                 ], ['timestamp' => 'ASC'], limit: 1);
 
                 if (null != $waitlist) {
-                    $registration = new Registration();
-                    $registration
-                        ->setActivity($priceOption->getActivity())
-                        ->setOption($priceOption)
-                        ->setPerson($user);
+                    /* $registration = new Registration(); */
+                    /* $registration */
+                    /*     ->setActivity($priceOption->getActivity()) */
+                    /*     ->setOption($priceOption) */
+                    /*     ->setPerson($waitlist[0]->person); */
                     $this->events->dispatch(new RegistrationRemovedEvent($registrated));
-                    $this->events->dispatch(new RegistrationAddedEvent($registration));
+                    /* $this->events->dispatch(new RegistrationRemovedEvent($registration)); */
+                    /* This is removed, since something already automatically adds the first waitlistspot */
 
                     return;
                 }
+                $this->events->dispatch(new RegistrationRemovedEvent($registrated));
+
+                return;
             }
             $registrated->setTransferable(new \DateTime('now'));
+            $this->em->flush();
+        } elseif (0 != count($waitListSpots)) {
+            $spot = $waitListSpots[0];
+            $this->em->remove($spot);
             $this->em->flush();
         }
     }
