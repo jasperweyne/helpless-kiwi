@@ -51,4 +51,21 @@ class RegistrationRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * @return Registration[] Returns an array of Activity objects
+     *                        that are available to swap
+     */
+    public function findAvailableTickets(Activity $activity)
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.activity = :activity')
+            ->setParameter('activity', $activity)
+            ->andWhere('r.deletedate IS null')
+            ->andWhere('r.transferable IS NOT null')
+            ->orderBy('r.transferable', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

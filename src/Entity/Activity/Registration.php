@@ -60,10 +60,10 @@ class Registration
     #[ORM\Embedded(class: ExternalRegistrant::class)]
     private ?ExternalRegistrant $externalPerson;
 
-    #[ORM\Column(name: 'transferable', type: 'boolean')]
-    #[GQL\Field(type: 'Boolean')]
+    #[ORM\Column(name: 'transferable', type: 'datetime', nullable: true)]
+    #[GQL\Field(type: 'DateTimeScalar')]
     #[GQL\Description('Whether this registration is available for transfer to another user.')]
-    private bool $transferable = false;
+    private ?\DateTime $transferable = null;
 
     /**
      * Get id.
@@ -180,12 +180,12 @@ class Registration
         $this->comment = $comment;
     }
 
-    public function isTransferable(): bool
+    public function isTransferable(): ?\DateTime
     {
         return $this->transferable;
     }
 
-    public function setTransferable(bool $transferable): self
+    public function setTransferable(?\DateTime $transferable): self
     {
         $this->transferable = $transferable;
 

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table('waitlist')]
+#[ORM\UniqueConstraint(name: 'unique_waitlist', columns: ['person_id', 'option_id'])]
 class WaitlistSpot
 {
     #[ORM\Id()]

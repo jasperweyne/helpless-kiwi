@@ -3,3 +3,6 @@ framework:
         # The paths to make available to the asset mapper.
         paths:
             - assets/
+
+symfonycasts_tailwind:
+  binary_version: 'v3.4.3'

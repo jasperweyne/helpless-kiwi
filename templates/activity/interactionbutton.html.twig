@@ -1,0 +1,32 @@
+{% extends 'layout.html.twig' %}
+
+
+
+{% block interaction_button %}
+    {{ form_start(options|first.form) }}
+    {{ form_widget(options|first.form) }}
+        {% if app.user not in activity.waitlist %}
+            {% if activity.atCapacity() %}
+                <!--ingelogd,activiteit toekomst,geen ticket,niet wachtlijst,vol: "Aanmelden wachtlijst"-->
+                <button class="rounded px-4 py-3 text-white bg-orange-500 inline-block" type="submit">Aanmelden wachtlijst</button>
+            {% else %}
+                {% if activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
+                    <!--ingelogd,activiteit toekomst,geen ticket,niet wachtlijst,vrije plek,deadline niet verstreken: "Aanmelden"-->
+                    <button class="rounded px-4 py-3 text-white bg-green-500 inline-block" type="submit">Aanmelden</button>
+                {% else %}
+                    <!--ingelogd,activiteit toekomst,geen ticket,niet wachtlijst,vrije plek,deadline verstreken: "Ticket overnemen"-->
+                    <button class="rounded px-4 py-3 text-white bg-green-500 inline-block" type="submit">Ticket overnemen</button>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            {% if activity.atCapacity() %}
+                <!--ingelogd,activiteit toekomst,geen ticket,op wachtlijst,vol: "Afmelden wachtlijst"-->
+                <button class="rounded px-4 py-3 text-white bg-red-500 inline-block" type="submit">Afmelden wachtlijst</button>
+            {% else %}
+                <!--ingelogd,activiteit toekomst,geen ticket,op wachtlijst,vrije plek: "Afmelden wachtlijst" + "Ticket overnemen"-->
+                <button class="rounded px-4 py-3 text-white bg-red-500 inline-block" type="submit">Afmelden wachtlijst</button>
+                <button class="rounded px-4 py-3 text-white bg-green-500 inline-block" type="submit">Ticket overnemen</button>
+            {% endif %}
+        {% endif %}
+    {{ form_end(options|first.form) }}
+{% block interaction_button %}
