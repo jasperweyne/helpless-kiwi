@@ -67,6 +67,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
                 'activity' => $activity,
                 'title' => $title,
                 'by' => $this->user,
+                'generated' => $event->generated,
             ])
             ->attach($this->calendar->calendarItem($activity), $activity->getName().'.ics', 'text/calendar')
         );

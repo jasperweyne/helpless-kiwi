@@ -28,10 +28,10 @@ class RegistrationSubscriber implements EventSubscriberInterface
         // return the subscribed events, their methods and priorities
         return [
             RegistrationAddedEvent::class => [
-                ['persistRegistrationAdded', 0],
+                ['persistRegistrationAdded', 5],
             ],
             RegistrationRemovedEvent::class => [
-                ['persistRegistrationRemoved', 0],
+                ['persistRegistrationRemoved', -5],
             ],
         ];
     }
@@ -50,7 +50,9 @@ class RegistrationSubscriber implements EventSubscriberInterface
             $name = ' van '.$registrant->getName();
         }
 
-        $this->getFlashbag()->add('success', 'Aanmelding'.$name.' gelukt!');
+        if (!$event->generated) {
+            $this->getFlashbag()->add('success', 'Aanmelding'.$name.' gelukt!');
+        }
     }
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void

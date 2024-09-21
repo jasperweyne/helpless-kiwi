@@ -193,6 +193,11 @@ class ActivityController extends AbstractController
     #[Route('/activity/{id}', name: 'interaction', methods: ['POST'])]
     public function interAction(Request $request, Activity $activity): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof LocalAccount) {
+            throw new \Exception("Current user isn't a user.");
+        }
+
         $form = $this->createInteractionForm($activity);
         $form->handleRequest($request);
 
@@ -211,9 +216,9 @@ class ActivityController extends AbstractController
 
         $optionRepository = $this->em->getRepository(PriceOption::class);
         if (null === $disengageId && null !== $engageId && null !== $engage = $optionRepository->find($engageId)) {
-            $this->engage($engage);
+            $this->engage($engage, $user);
         } elseif (null === $engageId && null !== $disengageId && null != $disengage = $optionRepository->find($disengageId)) {
-            $this->disengage($disengage);
+            $this->disengage($disengage, $user);
         } else {
             $this->addFlash('error', 'NEE FUKJOU');
         }
@@ -223,6 +228,7 @@ class ActivityController extends AbstractController
 
     private function disengage(
         PriceOption $priceOption,
+        LocalAccount $user,
     ): void {
         assert(null !== $priceOption->getActivity());
         if ($priceOption->getActivity()->getStart() < new \DateTime('now')) {
@@ -230,11 +236,6 @@ class ActivityController extends AbstractController
 
             return;
         }
-
-        if (null === $user = $this->getUser()) {
-            throw new \Exception("Current user isn't a user.");
-        }
-        assert($user instanceof LocalAccount);
 
         /** @var Registration[] */
         $registrated = $this->em->getRepository(Registration::class)->findBy([
@@ -252,25 +253,6 @@ class ActivityController extends AbstractController
         if (0 != count($registrated)) {
             $registrated = $registrated[0];
             if ($priceOption->getActivity()->getDeadline() > new \DateTime('now')) {
-                // /////////////////////////////////////////////////////////////////////////////////////
-                // This is removed, since something already automatically adds the first waitlistspot//
-                // /////////////////////////////////////////////////////////////////////////////////////
-                // /** @var ?WaitlistSpot[] $waitlist */
-                // $waitlist = $this->em->getRepository(WaitlistSpot::class)->findBy([
-                //    'option' => $priceOption->getActivity()->getOptions()->toArray(),
-                // ], ['timestamp' => 'ASC'], limit: 1);
-
-                // if (null != $waitlist) {
-                //    $registration = new Registration();
-                //    $registration
-                //        ->setActivity($priceOption->getActivity())
-                //        ->setOption($priceOption)
-                //        ->setPerson($waitlist[0]->person);
-                //    $this->events->dispatch(new RegistrationRemovedEvent($registrated));
-                //    $this->events->dispatch(new RegistrationRemovedEvent($registration));
-
-                //    return;
-                // }
                 $this->events->dispatch(new RegistrationRemovedEvent($registrated));
 
                 return;
@@ -286,6 +268,7 @@ class ActivityController extends AbstractController
 
     private function engage(
         PriceOption $priceOption,
+        LocalAccount $user,
     ): void {
         assert(null !== $priceOption->getActivity());
         if ($priceOption->getActivity()->getStart() < new \DateTime('now')) {
@@ -293,9 +276,6 @@ class ActivityController extends AbstractController
 
             return;
         }
-
-        $user = $this->getUser();
-        assert($user instanceof LocalAccount);
 
         /** @var Registration[] */
         $registrated = $this->em->getRepository(Registration::class)->findBy([

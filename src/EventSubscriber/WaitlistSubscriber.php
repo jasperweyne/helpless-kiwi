@@ -63,6 +63,11 @@ class WaitlistSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // make sure you don't add someone if the activity was over capacity
+        /* if ($activity->atCapacity()) { */
+        /*     return; */
+        /* } */
+
         if ($activity->getDeadline() > new \DateTime('now')) {
             $this->addFromWaitlist($option);
         } elseif ($activity->getStart() > new \DateTime('now')) {
@@ -83,7 +88,7 @@ class WaitlistSubscriber implements EventSubscriberInterface
             ->setActivity($option->getActivity())
         ;
 
-        $this->dispatcher->dispatch(new RegistrationAddedEvent($registration));
+        $this->dispatcher->dispatch(new RegistrationAddedEvent($registration, true));
     }
 
     private function notifyWaitlist(PriceOption $option): void

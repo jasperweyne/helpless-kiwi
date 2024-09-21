@@ -13,14 +13,10 @@ class RegistrationRemovedEvent extends Event
 {
     public const NAME = 'registration.removed';
 
-    /**
-     * @var Registration
-     */
-    protected $registration;
-
-    public function __construct(Registration $registration)
-    {
-        $this->registration = $registration;
+    public function __construct(
+        public readonly Registration $registration,
+        public readonly bool $generated = false,
+    ) {
     }
 
     public function getRegistration(): Registration
