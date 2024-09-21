@@ -5,14 +5,9 @@ namespace Tests\Unit\Repository;
 use App\Entity\Activity\Activity;
 use App\Entity\Group\Group;
 use App\Repository\ActivityRepository;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Group\GroupFixture;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Hautelook\AliceBundle\PhpUnit\RecreateDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -22,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class ActivityRepositoryTest extends KernelTestCase
 {
-    protected AbstractDatabaseTool $databaseTool;
+    use RecreateDatabaseTrait;
 
     protected ObjectManager $em;
 
@@ -30,9 +25,6 @@ class ActivityRepositoryTest extends KernelTestCase
 
     protected ManagerRegistry $registry;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,31 +33,11 @@ class ActivityRepositoryTest extends KernelTestCase
         $this->registry = self::getContainer()->get(ManagerRegistry::class);
         $this->activityRepository = new ActivityRepository($this->registry);
 
-        // Get all database tables
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        $cmf = $em->getMetadataFactory();
-        $classes = $cmf->getAllMetadata();
-
-        // Write all tables to database
-        $schema = new SchemaTool($em);
-        $schema->createSchema($classes);
-
-        // Load database tool
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
-
-        $this->databaseTool->loadFixtures([
-            GroupFixture::class,
-            ActivityFixture::class,
-        ]);
-
         $this->em = static::$kernel->getContainer()
             ->get('doctrine')
             ->getManager();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

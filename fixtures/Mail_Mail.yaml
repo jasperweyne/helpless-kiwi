@@ -1,0 +1,7 @@
+App\Entity\Mail\Mail:
+  Mail_1:
+    id: <uuid()>
+    title: Kiwi - mail title
+    content: '{"html": "\<h1\>Content\</h1\>", "plain": "Content"}'
+    sender: SenderPerson
+    sentAt: <dateTime("now")>

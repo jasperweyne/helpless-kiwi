@@ -6,8 +6,6 @@ use App\Entity\Security\ApiToken;
 use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
-use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Field\FormField;
 
@@ -22,25 +20,14 @@ class TrustedClientControllerTest extends AuthWebTestCase
 
     private string $controllerEndpoint = '/admin/security/client';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            TrustedClientFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -95,8 +82,8 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testClearAction(): void
     {
         // Arrange
-        $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
-        $account = $this->user(LocalAccountFixture::USERNAME);
+        $client = $this->em->getPartialReference(TrustedClient::class, 'client');
+        $account = $this->user('admin@kiwi.nl');
         assert($account instanceof LocalAccount && null !== $client);
         $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
         $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('-1 minutes')));
@@ -115,7 +102,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
 
     public function testTokenActionGet(): void
     {
-        $id = TrustedClientFixture::ID;
+        $id = 'client';
         $this->client->request('GET', $this->controllerEndpoint."/$id/token");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
@@ -127,9 +114,9 @@ class TrustedClientControllerTest extends AuthWebTestCase
     {
         // Arrange
         $originalCount = $this->em->getRepository(ApiToken::class)->count([]);
-        $user = $this->user(LocalAccountFixture::USERNAME);
+        $user = $this->user('admin@kiwi.nl');
         assert($user instanceof LocalAccount);
-        $id = TrustedClientFixture::ID;
+        $id = 'client';
 
         // Act
         $crawler = $this->client->request('GET', $this->controllerEndpoint."/$id/token");
@@ -154,7 +141,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
 
     public function testDeleteActionGet(): void
     {
-        $id = TrustedClientFixture::ID;
+        $id = 'client';
         $this->client->request('GET', $this->controllerEndpoint."/$id/delete");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
@@ -165,7 +152,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testDeleteActionPost(): void
     {
         // Arrange
-        $account = $this->user(LocalAccountFixture::USERNAME);
+        $account = $this->user('admin@kiwi.nl');
         assert($account instanceof LocalAccount);
         $id = 'deleter';
         $this->em->persist($client = new TrustedClient($id, 'secret'));

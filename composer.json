@@ -51,10 +51,8 @@
     "require-dev": {
         "ext-sqlite3": "*",
         "ext-xdebug": "*",
-        "dama/doctrine-test-bundle": "^6.5",
-        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "friendsofphp/php-cs-fixer": "^3.4",
-        "liip/test-fixtures-bundle": "^2.0.0",
+        "hautelook/alice-bundle": "^2.12",
         "overblog/graphiql-bundle": "^0.3.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.4",
@@ -81,7 +79,8 @@
             "symfony/flex": true,
             "phpstan/extension-installer": true,
             "symfony/runtime": true
-        }
+        },
+        "prepend-autoloader": false
     },
     "autoload": {
         "psr-4": {

@@ -4,8 +4,6 @@ namespace Tests\Functional\Command\Token;
 
 use App\Entity\Security\ApiToken;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
-use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -21,23 +19,13 @@ class GenerateApiTokenCommandTest extends AuthWebTestCase
     /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            TrustedClientFixture::class,
-        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -55,8 +43,8 @@ class GenerateApiTokenCommandTest extends AuthWebTestCase
         $command = $application->find('token:generate');
         $commandTester = new CommandTester($command);
         $exit = $commandTester->execute([
-            'username' => LocalAccountFixture::USERNAME,
-            'client' => TrustedClientFixture::ID,
+            'username' => 'admin@kiwi.nl',
+            'client' => 'client',
         ]);
 
         $newCount = $this->em->getRepository(ApiToken::class)->count([]);
@@ -76,7 +64,7 @@ class GenerateApiTokenCommandTest extends AuthWebTestCase
         $commandTester = new CommandTester($command);
         $exit = $commandTester->execute([
             'username' => ($username = 'unknown'),
-            'client' => TrustedClientFixture::ID,
+            'client' => 'client',
         ]);
 
         $output = $commandTester->getDisplay();
@@ -95,7 +83,7 @@ class GenerateApiTokenCommandTest extends AuthWebTestCase
         $command = $application->find('token:generate');
         $commandTester = new CommandTester($command);
         $exit = $commandTester->execute([
-            'username' => LocalAccountFixture::USERNAME,
+            'username' => 'admin@kiwi.nl',
             'client' => ($client = 'unknown'),
         ]);
 

@@ -4,8 +4,6 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Mail\Mail;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Mail\MailFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -19,25 +17,14 @@ class MailControllerTest extends AuthWebTestCase
 
     private string $controllerEndpoint = '/admin/mail';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            MailFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
