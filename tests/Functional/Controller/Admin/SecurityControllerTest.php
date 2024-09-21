@@ -124,7 +124,7 @@ CSV;
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $formFilter = $crawler->filter('body > main > div.container.row > div > div > form');
+        $formFilter = $crawler->filter('body > main form[name="upload_csv"] > div');
         self::assertEquals(
             $formFilter->filter('ul > li:nth-child(1)')->text(),
             'Duplicate email "example@user.kiwi" found 2 times'
