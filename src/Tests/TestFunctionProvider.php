@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Faker\Provider;
+namespace App\Tests;
 
 use Faker\Provider\Base as BaseProvider;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
