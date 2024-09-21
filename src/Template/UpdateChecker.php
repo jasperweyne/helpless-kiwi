@@ -14,19 +14,18 @@ class UpdateChecker
 
     public function __construct(
         KernelInterface $kernel,
-        ?HttpClientInterface $httpClient = null
     ) {
-        if (null === $httpClient) {
-            if ('test' === $kernel->getEnvironment()) {
-                throw new \InvalidArgumentException('An explicit HttpClient must be provided during testing.');
-            }
-            $this->client = new CachingHttpClient(
-                HttpClient::create(),
-                new Store("{$kernel->getCacheDir()}/releases")
-            );
-        } else {
-            $this->client = $httpClient;
-        }
+        $this->client = new CachingHttpClient(
+            HttpClient::create(),
+            new Store("{$kernel->getCacheDir()}/releases")
+        );
+    }
+
+    public function setHttpClient(HttpClientInterface $httpClient): self
+    {
+        $this->client = $httpClient;
+
+        return $this;
     }
 
     public function newestVersion(): string
