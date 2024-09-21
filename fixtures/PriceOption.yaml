@@ -4,6 +4,6 @@ App\Entity\Activity\PriceOption:
     id: <uuid()>
     name: 'price for admission'
     price: <numberBetween(100, 1000)>
-    details: '[the price for admission]'
+    details: '[]'
     confirmation_msg: 'greatest of successes'
     activity: '@Activity_<current()>'

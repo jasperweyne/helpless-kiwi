@@ -7,10 +7,6 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\PriceOptionFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -22,28 +18,14 @@ class ActivityControllerTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Get all database tables
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-            RegistrationFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -77,7 +59,7 @@ class ActivityControllerTest extends AuthWebTestCase
     {
         // Arrange
         /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
         /** @var Registration */
         $reg = $this->em->getRepository(Registration::class)->findBy(['person' => $user])[0];
         self::assertNotNull($reg->getActivity());
@@ -99,15 +81,10 @@ class ActivityControllerTest extends AuthWebTestCase
     {
         // Arrange
         // Unload th Registration Fixture
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-        ]);
 
         // Retrieve data
         /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
         /** @var PriceOption */
         $option = $this->em->getRepository(PriceOption::class)->findAll()[0];
         self::assertNotNull($option->getActivity());

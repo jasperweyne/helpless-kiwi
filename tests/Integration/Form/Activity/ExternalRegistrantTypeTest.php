@@ -4,11 +4,8 @@ namespace Tests\Integration\Form\Activity;
 
 use App\Entity\Activity\ExternalRegistrant;
 use App\Form\Activity\ExternalRegistrantType;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Hautelook\AliceBundle\PhpUnit\RecreateDatabaseTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,46 +17,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ExternalRegistrantTypeTest extends KernelTestCase
 {
-    /**
-     * @var AbstractDatabaseTool
-     */
-    protected $databaseTool;
+    use RecreateDatabaseTrait;
 
     /**
      * @var ExternalRegistrantType
      */
     protected $externalRegistrantType;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
         self::bootKernel();
 
-        // Get all database tables
         $em = self::getContainer()->get(EntityManagerInterface::class);
-        $cmf = $em->getMetadataFactory();
-        $classes = $cmf->getAllMetadata();
-
-        // Write all tables to database
-        $schema = new SchemaTool($em);
-        $schema->createSchema($classes);
-
-        // Load database tool
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
         $this->externalRegistrantType = new ExternalRegistrantType($em);
-
-        // Setup empty data
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -90,7 +63,7 @@ class ExternalRegistrantTypeTest extends KernelTestCase
         $type = new ExternalRegistrant();
         $formData = [
             'name' => 'Chase',
-            'email' => LocalAccountFixture::USERNAME,
+            'email' => 'admin@kiwi.nl',
         ];
 
         $formfactory = self::getContainer()->get('form.factory');

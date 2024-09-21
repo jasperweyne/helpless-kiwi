@@ -5,9 +5,6 @@ namespace Tests\Functional\Controller\Admin;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Group\GroupFixture;
-use App\Tests\Database\Group\RelationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -21,22 +18,14 @@ class GroupControllerTest extends AuthWebTestCase
 
     private string $controllerEndpoint = '/admin/group';
 
-    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            RelationFixture::class,
-            GroupFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();

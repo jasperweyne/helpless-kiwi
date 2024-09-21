@@ -6,8 +6,6 @@ use App\Entity\Security\ApiToken;
 use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
-use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -23,23 +21,13 @@ class RevokeApiTokenCommandTest extends AuthWebTestCase
     /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            TrustedClientFixture::class,
-        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -51,8 +39,8 @@ class RevokeApiTokenCommandTest extends AuthWebTestCase
     {
         // Arrange
         $application = new Application($this->client->getKernel());
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
-        $client = $this->em->getRepository(TrustedClient::class)->find(TrustedClientFixture::ID);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
+        $client = $this->em->getRepository(TrustedClient::class)->find('client');
         assert(null !== $user && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
 

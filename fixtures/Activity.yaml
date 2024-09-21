@@ -5,10 +5,11 @@ App\Entity\Activity\Activity:
     name: <word()>
     archived: false
     description: <realtext(500)>
-    color: <randomElement([ 'Rood', 'Oranje', 'Geel', 'Groen', 'Cyaan', 'Lichtblauw', 'Blauw', 'Paars', 'Roze' ])>
-    start: <dateTimeBetween('-5 days', 'now')>
+    color: <randomElement(['red', 'orange', 'yellow', 'green', 'cyan', 'ltblue', 'blue', 'purple', 'pink'])>
+    start: <dateTimeBetween('+1 day', '+2 days')>
     end: <dateTimeBetween('+2 days', '+1 week')>
-    deadline: <dateTimeBetween('now', '+2 days')>
+    deadline: <dateTimeBetween('+1 hour', '+1 day')>
     imageUpdatedAt: <dateTimeBetween('-5 days', 'now')>
+    visibleAfter: <dateTime('-5 hours')>
     location: '@Location_<current()>'
-
+    author: '@Group_1'

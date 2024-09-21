@@ -4,7 +4,6 @@ namespace Tests\Functional\Command\Token;
 
 use App\Entity\Security\TrustedClient;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -19,22 +18,13 @@ class CreateTrustedClientCommandTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->databaseTool->loadFixtures([
-            TrustedClientFixture::class,
-        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -71,7 +61,7 @@ class CreateTrustedClientCommandTest extends AuthWebTestCase
         // Act
         $command = $application->find('token:client:create');
         $commandTester = new CommandTester($command);
-        $exit = $commandTester->execute(['name' => TrustedClientFixture::ID]);
+        $exit = $commandTester->execute(['name' => 'client']);
         $output = $commandTester->getDisplay();
 
         // Assert
