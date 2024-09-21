@@ -1,0 +1,4 @@
+App\Entity\Group\Relation:
+  Relation_1:
+    group: '@Group_1'
+    person: '@LocalAccount_1'

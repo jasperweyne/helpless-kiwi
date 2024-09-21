@@ -1,0 +1,7 @@
+App\Entity\Security\LocalAccount:
+  LocalAccount_1:
+    id: <uuid()>
+    name: admin
+    email: admin@kiwi.nl
+    password: <hash("root")>
+    roles: ["ROLE_USER", "ROLE_ADMIN"]

@@ -2,18 +2,19 @@
 
 namespace App\Tests;
 
+use App\Entity\Security\LocalAccount;
 use Faker\Provider\Base as BaseProvider;
-use Symfony\Component\PasswordHasher\PasswordHasherInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class TestFunctionProvider extends BaseProvider
 {
     public function __construct(
-        private PasswordHasherInterface $hasher
+        private UserPasswordHasherInterface $hasher
     ) {
     }
 
     public function hash(string $value)
     {
-        return $this->hasher->hash($value);
+        return $this->hasher->hashPassword(new LocalAccount(), $value);
     }
 }

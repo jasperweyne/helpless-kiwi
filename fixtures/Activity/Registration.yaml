@@ -1,0 +1,28 @@
+App\Entity\Activity\Registration:
+  Registration_{1, 2}:
+    id: <uuid()>
+    option: '@PriceOption_*'
+    activity: '@Activity_1'
+    person: '@LocalAccount_1'
+    newdate: <dateTime('+1 hour')>
+
+  Registration_{3, 4}:
+    id: <uuid()>
+    option: '@PriceOption_*'
+    person: '@LocalAccount_1'
+    newdate: <dateTime('+1 hour')>
+
+  Registration_{5, 6}:
+    id: <uuid()>
+    option: '@PriceOption_*'
+    activity: '@Activity_1'
+    person: '@LocalAccount_1'
+    reserve_position: 'a'
+    newdate: <dateTime('+1 hour')>
+
+  Registration_{7, 8}:
+    id: <uuid()>
+    option: '@PriceOption_*'
+    person: '@LocalAccount_1'
+    reserve_position: 'a'
+    newdate: <dateTime('+1 hour')>

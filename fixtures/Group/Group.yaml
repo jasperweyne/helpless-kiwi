@@ -1,0 +1,21 @@
+App\Entity\Group\Group:
+  Group_1:
+    id: <uuid()>
+    name: <realText(50)>
+    description: <realtext(500)>
+    readonly: false
+    relationable: true
+    subgroupable: true
+    active: true
+    register: false
+    
+  Group_2:
+    id: <uuid()>
+    name: <realText(50)>
+    description: <realtext(500)>
+    readonly: false
+    relationable: true
+    subgroupable: true
+    active: true
+    register: false
+    parent: '@Group_1'
