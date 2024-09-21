@@ -8,11 +8,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
+#[UniqueEntity(
+    fields: 'email',
+    message: 'This e-mail address is already in use.'
+)]
+#[UniqueEntity(
+    fields: 'oidc',
+    message: 'This OpenID Connect sub is already in use.'
+)]
 #[GQL\Type]
 #[GQL\Description('A registered user who can log in and register for activities.')]
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface

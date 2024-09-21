@@ -27,7 +27,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
         Security $security,
     ) {
         $user = $security->getUser();
-        assert($user instanceof LocalAccount);
+        assert($user instanceof LocalAccount || is_null($user));
         $this->user = $user;
     }
 
