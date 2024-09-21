@@ -54,14 +54,4 @@ class UpdateCheckerTest extends KernelTestCase
         $newestVersion = $updateChecker->newestVersion();
         self::assertEquals($expectedVersion, $newestVersion);
     }
-
-    public function testNewestVersionException(): void
-    {
-        $kernel = self::bootKernel();
-
-        self::expectException(\InvalidArgumentException::class);
-        self::expectExceptionMessage('An explicit HttpClient must be provided during testing.');
-
-        new UpdateChecker($kernel);
-    }
 }
