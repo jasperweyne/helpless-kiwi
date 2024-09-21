@@ -33,6 +33,32 @@ can download the latest release from the
 upload the folders directly to your server. Note that the same directory
 structure MUST be used as with the installation script.
 
+## Using Docker
+If you aren't using managed webhosting and you're using a VPS or a dedicated
+server instead, you can also use Docker to deploy Helpless Kiwi. A dockerfile
+with a SSL-enabled webserver is present within this repository, as well as a
+docker compose definition to link the application with an SMTP email server and
+a database, both necessary for a fully functioning application.
+
+Download or clone the repository contents to the machine where you'll deploy the
+application. You'll need to build the image locally before starting a container.
+This means that the updater script won't work when using Docker; you'll need to
+build a new image with the latest version when updating to a new version.
+
+Please review the environment variables in the compose.*.yaml files and set
+them in a .env.local file accordingly. Then, to start the application, run:
+
+```sh
+docker compose build --no-cache
+docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
+```
+
+Please note that the application is not configured to run multiple instances in
+parallel for failover purposes, since PHP sessions and uploaded images are
+stored on the local filesystem. If you're planning on running the application
+using container orchestration tools (eg. Kubernetes), make sure only a single
+instance runs!
+
 ## From source
 If you want to deploy a custom version of Helpless Kiwi (eg. with your own
 modifications, or with a different directory structure), you can instead create
