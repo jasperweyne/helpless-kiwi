@@ -11,4 +11,4 @@ App\Entity\Activity\Activity:
     imageUpdatedAt: <dateTimeBetween('-5 days', 'now')>
     visibleAfter: <dateTime('-5 hours')>
     name: <word()>
-    location: '@Location_<current()>'
+    location: '@Location_*'

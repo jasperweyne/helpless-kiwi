@@ -1,15 +1,15 @@
-App\Entity\Group\Group:
+App\Entity\Location\Location:
   Location_1:
     id: <uuid()>
     name: here
-    address: '@localhost'
+    address: '\@localhost'
 
   Location_2:
     id: <uuid()>
     name: here
-    address: '@localhost'
+    address: '\@localhost'
 
   Location_3:
     id: <uuid()>
     name: there
-    address: '@externalhost'
+    address: '\@externalhost'

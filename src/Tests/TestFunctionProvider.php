@@ -13,7 +13,7 @@ class TestFunctionProvider extends BaseProvider
     ) {
     }
 
-    public function hash(string $value)
+    public function hashPassword(string $value)
     {
         return $this->hasher->hashPassword(new LocalAccount(), $value);
     }

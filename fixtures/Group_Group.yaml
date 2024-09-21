@@ -8,6 +8,7 @@ App\Entity\Group\Group:
     subgroupable: true
     active: true
     register: false
+    relations: ['@LocalAccount_1']
     
   Group_2:
     id: <uuid()>
