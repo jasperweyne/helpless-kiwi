@@ -38,7 +38,7 @@ jobs:
       run: php bin/console asset-map:compile
 
     - name: check CSS
-      run: ls public/assets/style/
+      run: ls public/assets/styles/
 
     - name: Run linter
       run: composer lint
