@@ -43,7 +43,7 @@ jobs:
 
     - name: Build CSS dependencies
       working-directory: kiwi
-      run: php bin/console tailwind:build
+      run: php bin/console tailwind:build --minify
 
     - name: Install CSS dependencies
       working-directory: kiwi

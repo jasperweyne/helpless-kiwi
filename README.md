@@ -1,5 +1,5 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=alert_status)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=coverage)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=jasperweyne_helpless-kiwi&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=jasperweyne_helpless-kiwi) 
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/jasperweyne/helpless-kiwi) [![Discord](https://img.shields.io/discord/838843751509393458?label=discord&logo=discord)](https://discord.gg/4HUmvEnXn8)
+[![Discord](https://img.shields.io/discord/838843751509393458?label=discord&logo=discord)](https://discord.gg/4HUmvEnXn8)
 
 | **Service** | **Master** | **Develop** |
 |---|---|---|
@@ -22,11 +22,8 @@
 - [About Helpless Kiwi](#about-helpless-kiwi)
 - [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
-	- [Deployment](#deployment)
-	- [Development](#development)
 - [Contributing](#contributing)
-- [Partners](#partners)
-- [Maintainers](#maintainers)
+- [Proud users of Helpless Kiwi](#proud-users-of-helpless-kiwi)
 - [Contact](#contact)
 - [License](#license)
 
@@ -43,24 +40,19 @@ your members a convenient and central way to view and sign up for them.
 ![admin-activity](assets/image/screen-admin-activity.png)
 
 ## Getting started
-Regardless of if you're going to develop or wanting to deploy. Kiwi has some
-requirements and dependencies. All of which you can find
-[here](PREREQUISITES.md).
+To get started with Helpless Kiwi, you'll usually want to install it on your own
+webserver which allows anyone to access it from the internet. Refer to the
+[deployment manual](DEPLOY.md) on how to do this.
 
-### Deployment
-To get kiwi running on your own server you can do it manually or use our
-install script. Both ways are described in our [installation
-manual](DEPLOY.md).
-
-### Development
-There are currently three ways of running Kiwi
-1. You can [run it using Docker](DOCKER.md)
-2. You can [run a LAMP/WAMP stack](DEV.md)
-3. You can [run it in Gitpod](https://gitpod.io/#https://github.com/jasperweyne/helpless-kiwi)
+If you want to install the code on your own machine for development purposes
+(eg. if you'd like to create your own custom modifications or if you want to
+contribute to the development of the project), refer to the 
+[local installation manual](INSTALL.md).
 
 ## Contributing
-Of course, there are some [contributing guidelines](CONTRIBUTING.md) and a
-[code of conduct](CODE_OF_CONDUCT.md), which we invite you to check out.
+We welcome contributions to the project! Before submitting your contributions, 
+check out our [contributing guidelines](CONTRIBUTING.md) and the 
+[code of conduct](CODE_OF_CONDUCT.md).
 
 We can always use your help [squashing bugs][bug-list-url] or implementing [new
 features][feature-list-url]. [Sonarcloud][sc-project-url] scans and checks the
@@ -71,21 +63,14 @@ appreciated!
 [![sc-bugs-shield]][sc-project-url] [![sc-smells-shield]][sc-project-url]
 [![sc-duplication-shield]][sc-project-url] [![sc-vuln-shield]][sc-project-url] 
 
-## Partners
+## Proud users of Helpless Kiwi
 <p align="center">
 <a href="https://viakunst-utrecht.nl/"><img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/develop/assets/image/readme-viakunst.png" alt="viakunst" height="50x"></a>
 <a href="https://particolarte.nl/"><img src="https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/develop/assets/image/readme-particolarte.png" alt="particolarte" height="100px"></a>
 </p>
 
-## Maintainers
-| **Name** | **Organisation** |
-|---|---|
-| [Jasper Weyne](https://github.com/jasperweyne) | Project Owner |
-| [Peter Sabel (Zabel)](https://github.com/A-Daneel) | Particolarte |
-| [Kim Matthieu](https://github.com/KimJoy2507) | Particolarte |
-| [David Koymans](https://github.com/DavidckPixel) | ViaKunst |
-| [Machiel Kruger](https://github.com/mkrugr) | ViaKunst |
-| [Mattijs Gietman](https://github.com/mattijsgietman) | ViaKunst |
+***
+Contact us to add your organisation here!
 
 ## Contact
 You can either join the [discord](https://discord.gg/4HUmvEnXn8), file a [bug
