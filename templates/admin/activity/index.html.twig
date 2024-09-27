@@ -2,14 +2,17 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Activiteiten' %}
-    {% set resultcount = activities|length %}
-    
-    {% block buttons %}
-        {% if page_title == 'Activiteiten' %}
-            <a href="{{ path("admin_activity_new") }} ">Nieuw</a>
-        {% endif %}
-    {% endblock %}
 {% endif %}
+
+{% set resultcount = activities|length %}
+    
+{% block buttons %}
+    {% if page_title == 'Activiteiten' %}
+        <a href="{{ path("admin_activity_new") }} ">Nieuw</a>
+    {% else %}
+        <a href="{{ path("admin_activity_index") }} ">Terug</a>
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <div class="table">

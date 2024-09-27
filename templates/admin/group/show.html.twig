@@ -2,6 +2,7 @@
 
 {% if page_title is not defined %}
     {% if group is null %}
+        {% set resultcount = groups|length %}
         {% if all_groups is defined %}
             {% set page_title = 'Alle groepen' %}
         {% else %}
