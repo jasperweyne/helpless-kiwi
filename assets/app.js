@@ -6,14 +6,4 @@
  */
 import './styles/app.css'
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉')
-
-// Dependencies
-// const $ = require('jquery');
-
-// require('select2');
-// require('select2/dist/css/select2.css');
-
-// $(document).ready(function() {
-//     $('select[data-select="true"]').select2();
-// });
+// console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉')

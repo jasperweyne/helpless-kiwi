@@ -2,6 +2,18 @@
 
 {% set main_class = 'relative xl:pl-80' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ preload('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css', {as: 'style', integrity: 'sha384-KZO2FRYNmIHerhfYMjCIUaJeGBRXP7CN24SiNSG+wdDzgwvxWbl16wMVtWiJTcMt', crossorigin: 'anonymous'}) }}" integrity="sha384-KZO2FRYNmIHerhfYMjCIUaJeGBRXP7CN24SiNSG+wdDzgwvxWbl16wMVtWiJTcMt" crossorigin="anonymous" rel="stylesheet" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ preload('https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js', {as: 'script', integrity: 'sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs', crossorigin: 'anonymous'}) }}" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+    <script src="{{ preload('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js', {as: 'script', integrity: 'sha384-JnbsSLBmv2/R0fUmF2XYIcAEMPHEAO51Gitn9IjL4l89uFTIgtLF1+jqIqqd9FSk', crossorigin: 'anonymous'}) }}" integrity="sha384-JnbsSLBmv2/R0fUmF2XYIcAEMPHEAO51Gitn9IjL4l89uFTIgtLF1+jqIqqd9FSk" crossorigin="anonymous"></script>
+    <script>$(document).ready(() => $('select[data-select="true"]').select2());</script>
+{% endblock %}
+
 {% block nav %}
     <input type="checkbox" id="nav-state" class="hidden peer" />
     <nav class="bg-gray-800 text-slate-600 h-screen w-80 top-0 left-0 fixed overflow-y-auto z-50 transition -translate-x-80 *:p-5 peer-checked:translate-x-0 xl:translate-x-0">
