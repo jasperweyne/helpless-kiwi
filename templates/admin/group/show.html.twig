@@ -14,12 +14,14 @@
     
     {% block buttons %}
         {% if group %}
+            <a href="{{ path("admin_group_new", { 'id': group.id }) }}">Nieuwe subgroep</a></td>  
             {% if can_edit %}
                 <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
                 <a href="{{ path('admin_group_delete', { 'id': group.id }) }}">Verwijderen</a>
             {% endif %}
             <a href="{{ path('admin_group_show', { 'id': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
         {% else %}
+            <a href="{{ path("admin_group_new") }}">Nieuwe groep</a></td>  
             {% if all_groups %}
                 <a href="{{ path('admin_group_show') }}">Terug</a>
             {% else %}
@@ -76,11 +78,6 @@
                                 {% endif %}
                             </tr>
                         {% endfor %}
-                        {% if can_edit or group %}
-                            <tr>
-                                <td><a href="{{ path("admin_group_new", { 'id': group.id ?? '' }) }}">Nieuwe {{ group ? 'sub' : '' }}groep toevoegen</a></td>  
-                            </tr>
-                        {% endif %}
                         </tbody>
                     </table>
                 </div>
