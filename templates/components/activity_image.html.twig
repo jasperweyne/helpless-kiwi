@@ -13,6 +13,6 @@
         'purple': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(210deg)',
         'pink':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(290deg)',
     }%}
-    <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="{{ image_styles }} absolute inline-block h-full w-full object-cover" style="{{ filters[activity.color] ?? 'filter: contrast(5%) brightness(0.5) grayscale(100%)' }}">
-    <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="{{ image_styles }} absolute inline-block h-full w-full object-cover filter saturate-200" style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.1));">
+    <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="{{ image_styles }} absolute h-full w-full object-cover" style="{{ filters[activity.color] ?? 'filter: contrast(5%) brightness(0.5) grayscale(100%)' }}">
+    <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="{{ image_styles }} absolute h-full w-full object-cover filter saturate-200" style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.1));">
 {% endif %}
