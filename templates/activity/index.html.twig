@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block footer %}
-    <footer class="text-center text-xs text-neutral-700 pb-5 px-5">
+    <footer class="text-center text-xs text-neutral-700 pb-5 px-5 mx-auto max-w-6xl">
         <span>Gebruik <a class="text-blue-500" href="{{ path('ical_public') }}" onclick="navigator.clipboard.writeText(this.href); alert('Link gekopieerd naar je klembord!'); return false;">deze link</a> om alle {{ org }} activiteiten in je agenda te importeren.</span>
         {% if is_granted('ROLE_USER') %}
             <span>Gebruik <a class="text-blue-500" href="{{ path('ical_personal', { 'calendarToken': app.user.calendarToken }) }}" onclick="navigator.clipboard.writeText(this.href); alert('Link gekopieerd naar je klembord!'); return false;">je persoonlijke link</a> om de activiteiten waarvoor jij je hebt aangemeld in je agenda te importeren.</span>

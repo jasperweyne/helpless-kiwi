@@ -8,9 +8,8 @@
     <div class="form">
         {{ form_start(form) }}
             {{ form_widget(form) }}
+            <p><span style="color: red">*</span> Dit veld is verplicht</p>
             {% include 'components/formflow_buttons.html.twig' with {'craue_formflow_button_render_reset': false} %}
         {{ form_end(form) }}
-        <br></br>
-        * Dit veld is verplicht
     </div>
 {% endblock %}

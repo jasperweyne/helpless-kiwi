@@ -6,11 +6,11 @@
     {% block buttons %}
         <a href="{{ path('admin_activity_clone', { 'id': activity.id }) }}">Kopiëren</a>
         {% if not activity.archived %}
-             <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Activiteit bewerken</a> 
+             <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Bewerken</a> 
         {% endif %}
         {% if is_granted("ROLE_ADMIN") %}
             {% if activity.archived %}
-                <a href="{{ path('admin_activity_activate', { 'id': activity.id }) }}">Activiteit her activeren</a>
+                <a href="{{ path('admin_activity_activate', { 'id': activity.id }) }}">Terugzetten</a>
             {% else %}
                  <a href="{{ path('admin_activity_archive', { 'id': activity.id }) }}">Archiveren</a>
             {% endif %}

@@ -16,7 +16,7 @@
 
 {% block nav %}
     <input type="checkbox" id="nav-state" class="hidden peer" />
-    <nav class="bg-gray-800 text-slate-600 h-screen w-80 top-0 left-0 fixed overflow-y-auto z-50 transition -translate-x-80 *:p-5 peer-checked:translate-x-0 xl:translate-x-0">
+    <nav class="bg-[#222533] text-[#8087aa] h-screen w-80 top-0 left-0 fixed overflow-y-auto z-50 transition -translate-x-80 *:p-5 peer-checked:translate-x-0 xl:translate-x-0">
         <h2 class="font-bold hidden xl:block text-white">{{ org }}</h2>
         <label for="nav-state" class="cursor-pointer hover:text-white group font-bold block xl:hidden">
             <b class="bg-slate-600 inline-block h-0.5 w-3 align-baseline relative before:bg-inherit before:block before:absolute before:size-full before:bottom-1 after:bg-inherit after:block after:absolute after:size-full after:bottom-2"></b>
@@ -29,7 +29,7 @@
             {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
                 {% set item_type = (item.path is defined) ? "a"                          : "span" %}
                 {% set item_path = (item.path is defined) ? "href="~(item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)) : "" %}
-                {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "bg-gray-900 text-white" : "" %}
+                {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "bg-[#171922] text-white" : "" %}
                 {% if item.path is defined %}
                 <div class="hover:text-white {{ (item_active ~ " " ~ item.class ?? "")|trim }}">
                 {% endif %}
