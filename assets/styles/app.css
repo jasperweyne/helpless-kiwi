@@ -139,6 +139,7 @@ form {
     width: 100%;
 
     select {
+        min-width: 200px;
         width: initial;
     }
 
@@ -147,7 +148,7 @@ form {
             overflow: hidden;
     
             & > label {
-                padding: 0.5rem;
+                padding: 0.5rem 0.625rem 0.625rem;
                 font-weight: 700;
                 text-align: left;
                 width: 40%;
