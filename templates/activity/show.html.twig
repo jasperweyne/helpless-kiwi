@@ -8,22 +8,8 @@
 
 {% block body_root %}
 {% set prices = activity.options|sort((a, b)=>a.price<=>b.price)|map(p => '%01.2f'|format(p.price / 100)) %}
-<div class="text-white block h-[70vh] lg:h-[60vh] w-full relative -mt-5 {% if prices|length > 0 %} mb-8 {% else %} mb-5 {% endif %} bg-gray-600">
-    {% if activity.image.name %}
-        {% set filters = {
-            'red':    'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(320deg)',
-            'orange': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(350deg)',
-            'yellow': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(10deg)',
-            'green':  'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(80deg)',
-            'cyan':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(120deg)',
-            'ltblue': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(150deg)',
-            'blue':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(180deg)',
-            'purple': 'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(210deg)',
-            'pink':   'filter: contrast(5%) brightness(0.5) sepia(100%) saturate(10) hue-rotate(290deg)',
-        }%}
-        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute inline-block h-full w-full object-cover" style="{{ filters[activity.color] ?? 'filter: contrast(5%) brightness(0.5) grayscale(100%)' }}">
-        <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute inline-block h-full w-full object-cover filter saturate-200" style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.1));">
-    {% endif %}
+<div class="text-white block h-[70vh] lg:h-[60vh] w-full relative -mt-5 {% if prices|length > 0 %} mb-8 {% else %} mb-5 {% endif %} bg-gray-600">    
+    {% include 'components/activity_image.html.twig' %}
     <div class="mx-auto max-w-6xl px-5 mb-5 absolute left-0 right-0 {% if prices|length > 0 %} bottom-5 {% else %} bottom-0 {% endif %}">
         <h2 class="font-extrabold text-3xl">{{ activity.name }}</h2>
         {% if activity.start|date('d-m-Y') == activity.end|date('d-m-Y') %}
