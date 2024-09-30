@@ -19,8 +19,8 @@ class EntityEventListener
 
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
+        /** @var EntityManagerInterface */
         $em = $eventArgs->getObjectManager();
-        assert($em instanceof EntityManagerInterface);
         $uow = $em->getUnitOfWork();
 
         // On create entity
