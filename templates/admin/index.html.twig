@@ -8,7 +8,7 @@
     {% if activities|length > 0 %}
         <div class="grid grid-cols-1 gap-5">
             {% for activity in activities %}
-                <a href="{{ path("admin_activity_show", { 'id': activity.id }) }}" class="text-white block h-32 relative rounded shadow-lg overflow-hidden w-full bg-gray-600 group">
+                <a href="{{ path("admin_activity_show", { 'activity': activity.id }) }}" class="text-white block h-32 relative rounded shadow-lg overflow-hidden w-full bg-gray-600 group">
                     {% if activity.image.name %}
                         <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="absolute h-full w-full object-cover grayscale blur-sm group-hover:scale-125 ease-out duration-[4s]">
                     {% endif %}

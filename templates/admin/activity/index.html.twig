@@ -28,7 +28,7 @@
             <tbody>
             {% for activity in activities %}
                 <tr>
-                    <td><a href="{{ path("admin_activity_show", { 'id': activity.id }) }}">{{ activity.name }}</a></td>
+                    <td><a href="{{ path("admin_activity_show", { 'activity': activity.id }) }}">{{ activity.name }}</a></td>
                     <td>{{ activity.start|date('d-m-Y') }}</td>
                     <td>{{ activity.start|date('H:i') }}</td>
                     <td>{{ activity.author.name ?? '' }}</td>

@@ -34,7 +34,7 @@ class ActivityController extends AbstractController
         private EventService $events,
         private GroupRepository $groupsRepo,
         private ActivityRepository $activitiesRepo,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -83,7 +83,7 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities with a group as author.
      */
-    #[Route('/group/{id}', name: 'group', methods: ['GET'])]
+    #[Route('/group/{group}', name: 'group', methods: ['GET'])]
     public function groupAction(Group $group): Response
     {
         $activities = $this
@@ -135,7 +135,7 @@ class ActivityController extends AbstractController
 
                 return $this->redirectToRoute(
                     'admin_activity_show',
-                    ['id' => $activity->getId()]
+                    ['activity' => $activity->getId()]
                 );
             }
         }
@@ -149,7 +149,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{activity}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -172,7 +172,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      */
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{activity}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -185,7 +185,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -198,7 +198,7 @@ class ActivityController extends AbstractController
     /**
      * Clones an existing a activity into a new activity entity.
      */
-    #[Route('/{id}/clone', name: 'clone', methods: ['GET', 'POST'])]
+    #[Route('/{base}/clone', name: 'clone', methods: ['GET', 'POST'])]
     public function cloneAction(ActivityCreationFlow $flow, Activity $base): Response
     {
         $activity = clone $base;
@@ -239,7 +239,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -253,7 +253,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      */
-    #[Route('/{id}/image', name: 'image', methods: ['GET', 'POST'])]
+    #[Route('/{activity}/image', name: 'image', methods: ['GET', 'POST'])]
     public function imageAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -266,7 +266,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -279,7 +279,7 @@ class ActivityController extends AbstractController
     /**
      * Deletes an activity.
      */
-    #[Route('/{id}/delete', name: 'delete')]
+    #[Route('/{activity}/delete', name: 'delete')]
     public function deleteAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -303,7 +303,7 @@ class ActivityController extends AbstractController
     /**
      * Archives an activity.
      */
-    #[Route('/{id}/archive', name: 'archive')]
+    #[Route('/{activity}/archive', name: 'archive')]
     public function archiveAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -328,7 +328,7 @@ class ActivityController extends AbstractController
     /**
      * Activates an activity.
      */
-    #[Route('/{id}/activate', name: 'activate')]
+    #[Route('/{activity}/activate', name: 'activate')]
     public function activateAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -355,7 +355,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/price/new/{id}', name: 'price_new', methods: ['GET', 'POST'])]
+    #[Route('/price/new/{activity}', name: 'price_new', methods: ['GET', 'POST'])]
     public function priceNewAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -376,7 +376,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -389,7 +389,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/price/{id}', name: 'price_edit', methods: ['GET', 'POST'])]
+    #[Route('/price/{price}', name: 'price_edit', methods: ['GET', 'POST'])]
     public function priceEditAction(Request $request, PriceOption $price): Response
     {
         if (null !== $price->getActivity()) {
@@ -425,7 +425,7 @@ class ActivityController extends AbstractController
             $activityId = $price->getActivity()?->getId();
             assert(null !== $activityId);
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activityId]);
+            return $this->redirectToRoute('admin_activity_show', ['activity' => $activityId]);
         }
 
         return $this->render('admin/activity/price/edit.html.twig', [
@@ -437,7 +437,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to set participent presence.
      */
-    #[Route('/{id}/present/edit', name: 'present_edit')]
+    #[Route('/{activity}/present/edit', name: 'present_edit')]
     public function presentEditAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -459,7 +459,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to set amount participent present.
      */
-    #[Route('/{id}/present/set', name: 'present_set', methods: ['GET', 'POST'])]
+    #[Route('/{activity}/present/set', name: 'present_set', methods: ['GET', 'POST'])]
     public function presentSetAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -473,7 +473,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -486,7 +486,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to reset amount participent present.
      */
-    #[Route('/{id}/present/reset', name: 'present_reset')]
+    #[Route('/{activity}/present/reset', name: 'present_reset')]
     public function presentResetAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -501,7 +501,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -518,7 +518,7 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_delete', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]))
             ->setMethod('DELETE')
             ->getForm();
@@ -528,7 +528,7 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_archive', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]))
             ->setMethod('UPDATE')
             ->getForm();
@@ -538,7 +538,7 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_activate', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]))
             ->setMethod('UPDATE')
             ->getForm();

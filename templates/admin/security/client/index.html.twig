@@ -2,12 +2,14 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'API clients' %}
-    {% set resultcount = clients|length %}
-    {% block buttons %}
-        <a href="{{ path("admin_security_client_new") }} ">Toevoegen</a>
-        <a href="{{ path("admin_security_client_clear") }} ">Tokens opruimen</a>
-    {% endblock %}
 {% endif %}
+
+{% set resultcount = clients|length %}
+
+{% block buttons %}
+    <a href="{{ path("admin_security_client_new") }} ">Toevoegen</a>
+    <a href="{{ path("admin_security_client_clear") }} ">Tokens opruimen</a>
+{% endblock %}
 
 {% block body %}
     <div class="table">
@@ -25,8 +27,8 @@
                     <td>{{ client.id }}</td>
                     <td>{{ client.tokens|filter(t => t.valid)|length }} geldige tokens, {{ client.tokens|length }} totaal</td>
                     <td>
-                        <a href="{{ path("admin_security_client_token", { 'id': client.id }) }}">Token genereren</a> | 
-                        <a href="{{ path("admin_security_client_delete", { 'id': client.id }) }}">Verwijderen</a>
+                        <a href="{{ path("admin_security_client_token", { 'client': client.id }) }}">Token genereren</a> | 
+                        <a href="{{ path("admin_security_client_delete", { 'client': client.id }) }}">Verwijderen</a>
                     </td>
                 </tr>
             {% else %}

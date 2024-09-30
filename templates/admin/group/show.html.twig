@@ -12,25 +12,25 @@
     {% else %}
         {% set page_title = group.name %}
     {% endif %}
-    
-    {% block buttons %}
-        {% if group %}
-            <a href="{{ path("admin_group_new", { 'id': group.id }) }}">Nieuwe subgroep</a></td>  
-            {% if can_edit %}
-                <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
-                <a href="{{ path('admin_group_delete', { 'id': group.id }) }}">Verwijderen</a>
-            {% endif %}
-            <a href="{{ path('admin_group_show', { 'id': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
-        {% else %}
-            <a href="{{ path("admin_group_new") }}">Nieuwe groep</a></td>  
-            {% if all_groups %}
-                <a href="{{ path('admin_group_show') }}">Terug</a>
-            {% else %}
-                <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
-            {% endif %}
-        {% endif %}
-    {% endblock %}
 {% endif %}
+    
+{% block buttons %}
+    {% if group %}
+        <a href="{{ path("admin_group_new", { 'group': group.id }) }}">Nieuwe subgroep</a></td>  
+        {% if can_edit %}
+            <a href="{{ path('admin_group_edit', { 'group': group.id }) }}">Bewerken</a>
+            <a href="{{ path('admin_group_delete', { 'group': group.id }) }}">Verwijderen</a>
+        {% endif %}
+        <a href="{{ path('admin_group_show', { 'group': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
+    {% else %}
+        <a href="{{ path("admin_group_new") }}">Nieuwe groep</a></td>  
+        {% if all_groups %}
+            <a href="{{ path('admin_group_show') }}">Terug</a>
+        {% else %}
+            <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
 
 {% block body_wrap %}
     {% if group %}
@@ -66,7 +66,7 @@
                         <tbody>
                         {% for group in groups ?? group.children %}
                             <tr>
-                                <td><a href="{{ path('admin_group_show', { 'id': group.id }) }}">{{ group.name }}</a></td>
+                                <td><a href="{{ path('admin_group_show', { 'group': group.id }) }}">{{ group.name }}</a></td>
                                 <td>{{ group.relations|length }} {{ group.relations|length == 1 ? 'lid' : 'leden' }}</td>
                                 <td>{{ group.children|length }} subgroep{{ group.children|length != 1 ? 'en' : '' }}</td>
                             </tr>
@@ -105,7 +105,7 @@
                                     <td>{{ person.canonical ?? 'Onbekend' }}</td>
                                     <td>
                                     {% if can_edit %}
-                                        <a href="{{ path('admin_group_relation_delete', { 'id': group.id, 'account_id': person.id }) }}">Verwijderen</a>
+                                        <a href="{{ path('admin_group_relation_delete', { 'relation': group.id, 'account': person.id }) }}">Verwijderen</a>
                                         <a href="mailto:{{ person.email }}" target="_blank">Mailen</a>
                                     {% endif %}
                                     </td>
@@ -117,7 +117,7 @@
                             {% endfor %}
                             {% if can_edit %}
                             <tr>
-                                <td><a href="{{ path('admin_group_relation_new', { 'id': group.id }) }}">Lid toevoegen</a></td>
+                                <td><a href="{{ path('admin_group_relation_new', { 'group': group.id }) }}">Lid toevoegen</a></td>
                                 <td><a href="mailto:?bcc={{ group.relations|map(person => person.email)|join(',') }}" target="_blank">Groepsleden mailen</a></td>
                             </tr>
                             {% endif %}
