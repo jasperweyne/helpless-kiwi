@@ -11,10 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        php-version: ['8.1', '8.2', '8.3']
-
     steps:
     - uses: actions/checkout@v2
       with:
@@ -23,7 +19,7 @@ jobs:
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-version }}
+        php-version: '8.1'
 
     - name: Move public for build
       if: github.ref == 'refs/heads/master'
