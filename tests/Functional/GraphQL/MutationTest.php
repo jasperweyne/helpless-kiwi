@@ -23,9 +23,6 @@ class MutationTest extends AuthWebTestCase
 
     protected PasswordHasherInterface $hasher;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,13 +33,10 @@ class MutationTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->databaseTool->loadFixtures([
             LocalAccountFixture::class,
-            TrustedClientFixture::class
+            TrustedClientFixture::class,
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -131,7 +125,7 @@ class MutationTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->user(LocalAccountFixture::USERNAME);
-        $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
+        $client = $this->em->find(TrustedClient::class, TrustedClientFixture::ID);
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;
@@ -179,7 +173,7 @@ class MutationTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->user(LocalAccountFixture::USERNAME);
-        $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
+        $client = $this->em->find(TrustedClient::class, TrustedClientFixture::ID);
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;

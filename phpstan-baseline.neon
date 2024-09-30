@@ -76,11 +76,6 @@ parameters:
 			path: src/Entity/Security/LocalAccount.php
 
 		-
-			message: "#^Return type \\(string\\|null\\) of method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getUsername\\(\\) should be covariant with return type \\(string\\) of method Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\:\\:getUsername\\(\\)$#"
-			count: 1
-			path: src/Entity/Security/LocalAccount.php
-
-		-
 			message: "#^Offset 'joinTable' does not exist on array\\{cache\\?\\: array, cascade\\: array\\<string\\>, declared\\?\\: class\\-string, fetch\\: mixed, fieldName\\: string, id\\?\\: bool, inherited\\?\\: class\\-string, indexBy\\?\\: string, \\.\\.\\.\\}\\.$#"
 			count: 1
 			path: src/EventListener/DoctrineTablePrefixListener.php
@@ -96,9 +91,29 @@ parameters:
 			path: src/GraphQL/Types/DatetimeScalar.php
 
 		-
-			message: "#^Parameter \\#1 \\$datetime of class DateTime constructor expects string, mixed given\\.$#"
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\DatetimeScalar\\:\\:parseValue\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/GraphQL/Types/DatetimeScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\DatetimeScalar\\:\\:parseValue\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/DatetimeScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\NullScalar\\:\\:parseValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/NullScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\NullScalar\\:\\:parseValue\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/NullScalar.php
+
+		-
+			message: "#^Method App\\\\GraphQL\\\\Types\\\\NullScalar\\:\\:serialize\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: src/GraphQL/Types/NullScalar.php
 
 		-
 			message: "#^Property App\\\\Log\\\\AbstractEvent\\:\\:\\$person is never written, only read\\.$#"
@@ -186,36 +201,6 @@ parameters:
 			path: src/Template/AttributeMenuExtension.php
 
 		-
-			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method invalidate\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method save\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Cannot call method set\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Tests/AuthWebTestCase.php
-
-		-
-			message: "#^Service \"Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\SessionInterface\" is not registered in the container\\.$#"
-			count: 2
-			path: src/Tests/AuthWebTestCase.php
-
-		-
 			message: "#^Parameter \\#1 \\$content of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setContent\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Tests/Database/Mail/MailFixture.php
@@ -271,11 +256,6 @@ parameters:
 			path: src/Tests/TestData.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, mixed given\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
 			message: "#^Parameter \\#1 \\$initial of class App\\\\Tests\\\\TestData constructor expects T of object, array given\\.$#"
 			count: 1
 			path: src/Tests/TestData.php
@@ -287,7 +267,7 @@ parameters:
 
 		-
 			message: "#^Symfony\\\\Component\\\\DomCrawler\\\\Form does not accept Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile\\.$#"
-			count: 2
+			count: 3
 			path: tests/Functional/Controller/Admin/ActivityControllerTest.php
 
 		-
@@ -304,3 +284,8 @@ parameters:
 			message: "#^Method Tests\\\\Functional\\\\GraphQL\\\\QueryTest\\:\\:graphqlQuery\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Functional/GraphQL/QueryTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$fields of class App\\\\Log\\\\Doctrine\\\\EntityNewEvent constructor expects array\\<string, mixed\\>, stdClass given\\.$#"
+			count: 1
+			path: tests/Unit/Log/Doctrine/EntityNewEventTest.php

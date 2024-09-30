@@ -29,7 +29,7 @@ class SecurityController extends AbstractController
 {
     public function __construct(
         private EventService $events,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -101,7 +101,7 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $dispatcher->dispatch(new CreateAccountsEvent([$account]));
 
-            return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
+            return $this->redirectToRoute('admin_security_show', ['account' => $account->getId()]);
         }
 
         return $this->render('admin/security/new.html.twig', [
@@ -113,7 +113,7 @@ class SecurityController extends AbstractController
     /**
      * Show selected LocalAccount.
      */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{account}', name: 'show', methods: ['GET'])]
     public function showAction(LocalAccount $account): Response
     {
         $createdAt = $this->events->findOneBy($account, EntityNewEvent::class);
@@ -129,7 +129,7 @@ class SecurityController extends AbstractController
     /**
      * Edit selected LocalAccount.
      */
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{account}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createForm('App\Form\Security\LocalAccountType', $account);
@@ -138,7 +138,7 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
+            return $this->redirectToRoute('admin_security_show', ['account' => $account->getId()]);
         }
 
         return $this->render('admin/security/edit.html.twig', [
@@ -150,7 +150,7 @@ class SecurityController extends AbstractController
     /**
      * Delete selected LocalAccount.
      */
-    #[Route('/{id}/delete', name: 'delete')]
+    #[Route('/{account}/delete', name: 'delete')]
     public function deleteAction(Request $request, LocalAccount $account, EventDispatcherInterface $dispatcher): Response
     {
         $form = $this->createDeleteForm($account);
@@ -171,7 +171,7 @@ class SecurityController extends AbstractController
     /**
      * Edit roles for selected LocalAccount.
      */
-    #[Route('/{id}/roles', name: 'roles', methods: ['GET', 'POST'])]
+    #[Route('/{account}/roles', name: 'roles', methods: ['GET', 'POST'])]
     public function rolesAction(Request $request, LocalAccount $account): Response
     {
         $form = $this->createRoleForm($account);
@@ -192,7 +192,7 @@ class SecurityController extends AbstractController
 
             $this->addFlash('success', 'Rollen bewerkt');
 
-            return $this->redirectToRoute('admin_security_show', ['id' => $account->getId()]);
+            return $this->redirectToRoute('admin_security_show', ['account' => $account->getId()]);
         }
 
         return $this->render('admin/security/roles.html.twig', [
@@ -204,12 +204,12 @@ class SecurityController extends AbstractController
     /**
      * Creates a form to delete an LocalAccount.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     private function createDeleteForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_security_delete', ['id' => $account->getId()]))
+            ->setAction($this->generateUrl('admin_security_delete', ['account' => $account->getId()]))
             ->setMethod('DELETE')
             ->getForm();
     }
@@ -217,12 +217,12 @@ class SecurityController extends AbstractController
     /**
      * Creates a form to edit a LocalAccounts roles.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     private function createRoleForm(LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_security_roles', ['id' => $account->getId()]))
+            ->setAction($this->generateUrl('admin_security_roles', ['account' => $account->getId()]))
             ->add('admin', CheckboxType::class, [
                 'required' => false,
                 'attr' => in_array('ROLE_ADMIN', $account->getRoles(), true) ? ['checked' => 'checked'] : [],

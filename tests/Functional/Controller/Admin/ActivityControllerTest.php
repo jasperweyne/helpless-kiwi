@@ -23,9 +23,6 @@ class ActivityControllerTest extends AuthWebTestCase
 
     private string $controllerEndpoint = '/admin/activity';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,9 +38,6 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -54,14 +48,14 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testIndexAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
-        self::assertSelectorTextContains('span', 'Activiteiten');
+        self::assertSelectorTextContains('#title', 'Activiteiten');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testIndexArchiveAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/archived');
-        self::assertSelectorTextContains('span', 'Archief');
+        self::assertSelectorTextContains('#title', 'Archief');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -81,7 +75,7 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testNewWithoutPriceAction(): void
+    public function testNewWithoutPriceAndLocationAction(): void
     {
         $local_file = __DIR__.'/../../../assets/Faint.png';
         $activity_name = 'testname';
@@ -90,28 +84,33 @@ class ActivityControllerTest extends AuthWebTestCase
         $crawler = $this->client->request('GET', '/admin/activity/new');
 
         // Act
-        $form = $crawler->selectButton('Toevoegen')->form();
-        $form['activity_new[name]'] = $activity_name;
-        $form['activity_new[description]'] = 'added through testing';
-        $form['activity_new[location][address]'] = 'In php unittest';
-        $form['activity_new[deadline][date]'] = '2013-03-15';
-        $form['activity_new[deadline][time]'] = '23:59';
-        $form['activity_new[start][date]'] = '2013-03-15';
-        $form['activity_new[start][time]'] = '23:59';
-        $form['activity_new[end][date]'] = '2013-03-15';
-        $form['activity_new[end][time]'] = '23:59';
-        $form['activity_new[imageFile][file]'] = new UploadedFile(
+        $form = $crawler->selectButton('verder')->form();
+        $form['activity_new[activity][name]'] = $activity_name;
+        $form['activity_new[activity][description]'] = 'added through testing';
+        $form['activity_new[activity][location]'] = '';
+        $form['activity_new[activity][deadline][date]'] = '2013-03-15';
+        $form['activity_new[activity][deadline][time]'] = '23:59';
+        $form['activity_new[activity][start][date]'] = '2013-03-15';
+        $form['activity_new[activity][start][time]'] = '23:59';
+        $form['activity_new[activity][end][date]'] = '2013-03-15';
+        $form['activity_new[activity][end][time]'] = '23:59';
+        $form['activity_new[activity][imageFile][file]'] = new UploadedFile(
             $local_file,
             'Faint.png',
             'image/png',
             null,
             true
         );
-        $form['activity_new[color]'] = '1';
-
+        $form['activity_new[activity][color]'] = '1';
         $crawler = $this->client->submit($form);
+
+        $form = $crawler->selectButton('afronden')->form();
+        $form['activity_location[newLocation][name]'] = 'local';
+        $form['activity_location[newLocation][address]'] = '127.0.0.1';
+        $crawler = $this->client->submit($form);
+
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'Activiteit '.$activity_name);
+        self::assertSelectorTextContains('.container', 'Activiteit succesvol aangemaakt');
         $activity = $this->em->getRepository(Activity::class)
             ->findBy(['name' => $activity_name])[0];
         $priceOptions = $activity->getOptions();
@@ -128,29 +127,35 @@ class ActivityControllerTest extends AuthWebTestCase
         $crawler = $this->client->request('GET', '/admin/activity/new');
 
         // Act
-        $form = $crawler->selectButton('Toevoegen')->form();
-        $form['activity_new[name]'] = $activity_name;
-        $form['activity_new[description]'] = 'added through testing';
-        $form['activity_new[location][address]'] = 'In php unittest';
-        $form['activity_new[deadline][date]'] = '2013-03-15';
-        $form['activity_new[deadline][time]'] = '23:59';
-        $form['activity_new[start][date]'] = '2013-03-15';
-        $form['activity_new[start][time]'] = '23:59';
-        $form['activity_new[end][date]'] = '2013-03-15';
-        $form['activity_new[end][time]'] = '23:59';
-        $form['activity_new[imageFile][file]'] = new UploadedFile(
+        $form = $crawler->selectButton('verder')->form();
+        $form['activity_new[activity][name]'] = $activity_name;
+        $form['activity_new[activity][description]'] = 'added through testing';
+        $form['activity_new[activity][location]'] = '';
+        $form['activity_new[activity][deadline][date]'] = '2013-03-15';
+        $form['activity_new[activity][deadline][time]'] = '23:59';
+        $form['activity_new[activity][start][date]'] = '2013-03-15';
+        $form['activity_new[activity][start][time]'] = '23:59';
+        $form['activity_new[activity][end][date]'] = '2013-03-15';
+        $form['activity_new[activity][end][time]'] = '23:59';
+        $form['activity_new[activity][imageFile][file]'] = new UploadedFile(
             $local_file,
             'Faint.png',
             'image/png',
             null,
             true
         );
-        $form['activity_new[color]'] = '1';
+        $form['activity_new[activity][color]'] = '1';
         $form['activity_new[price]'] = '10,00';
-
         $crawler = $this->client->submit($form);
+
+        $form = $crawler->selectButton('afronden')->form();
+        $form['activity_location[newLocation][name]'] = 'local';
+        $form['activity_location[newLocation][address]'] = '127.0.0.1';
+        $crawler = $this->client->submit($form);
+
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'Activiteit '.$activity_name);
+        self::assertSelectorTextContains('.container', 'Activiteit succesvol aangemaakt');
+        /** @var Activity $activity */
         $activity = $this->em->getRepository(Activity::class)
             ->findBy(['name' => $activity_name])[0];
         $priceOption = $activity->getOptions()[0];
@@ -168,7 +173,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->request('GET', $this->controllerEndpoint."/{$id}/");
 
         // Assert
-        self::assertSelectorTextContains('span', "Activiteit {$activity->getName()}");
+        self::assertSelectorTextContains('#title', "Activiteit {$activity->getName()}");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -192,6 +197,44 @@ class ActivityControllerTest extends AuthWebTestCase
         }
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertEquals($newName, $newActivity->getName());
+    }
+
+    public function testCloneAction(): void
+    {
+        // Arrange
+        $local_file = __DIR__.'/../../../assets/Faint.png';
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+        $newName = 'copy of '.$activity->getName();
+
+        // Act
+        $crawler = $this->client->request('GET', $this->controllerEndpoint."/{$id}/clone");
+        $form = $crawler->selectButton('verder')->form();
+        $form['activity_new[activity][name]'] = $newName;
+        $form['activity_new[activity][deadline][date]'] = '2016-03-15';
+        $form['activity_new[activity][deadline][time]'] = '22:59';
+        $form['activity_new[activity][start][date]'] = '2016-03-15';
+        $form['activity_new[activity][start][time]'] = '22:59';
+        $form['activity_new[activity][end][date]'] = '2016-03-15';
+        $form['activity_new[activity][end][time]'] = '22:59';
+        $form['activity_new[activity][imageFile][file]'] = new UploadedFile(
+            $local_file,
+            'Faint.png',
+            'image/png',
+            null,
+            true
+        );
+        $crawler = $this->client->submit($form);
+
+        $newActivity = $this->em->getRepository(Activity::class)->findOneBy(['name' => $newName]);
+
+        // Assert
+        if (null == $newActivity) {
+            self::fail();
+        }
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals($newName, $newActivity->getName());
+        self::assertNotSame($id, $newActivity->getId());
     }
 
     public function testImageAction(): void
@@ -225,7 +268,7 @@ class ActivityControllerTest extends AuthWebTestCase
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertNotNull($activityImage);
-        self::assertEquals($newImage->getClientOriginalName(), $activityImage->getName());
+        self::assertEquals($newImage->getMimeType(), $activityImage->getMimeType());
     }
 
     public function testDeleteAction(): void

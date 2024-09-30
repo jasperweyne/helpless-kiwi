@@ -33,7 +33,7 @@ class TestData
      *
      * @return TestData<X> a testdata builder for the given type
      */
-    public static function create(string $type = null): TestData
+    public static function create(?string $type = null): TestData
     {
         if (is_null($type)) {
             return new TestData([]);
@@ -129,11 +129,9 @@ class TestData
     /**
      * Add value options for a given property (or array key) to the data builder.
      *
-     * @param mixed $options
-     *
      * @return TestData<T>
      */
-    public function with(string $property, ...$options): TestData
+    public function with(string $property, mixed ...$options): TestData
     {
         $this->property_options[$property] = array_merge($this->property_options[$property] ?? [], $options);
 
@@ -155,11 +153,9 @@ class TestData
     /**
      * Add an action callables to the data builder with multiple data options.
      *
-     * @param mixed $options
-     *
      * @return TestData<T>
      */
-    public function doWith(string $key, callable $action, ...$options): TestData
+    public function doWith(string $key, callable $action, mixed ...$options): TestData
     {
         $actions = [];
         foreach ($options as $option) {
@@ -240,7 +236,7 @@ class TestData
     }
 
     /**
-     * Test whether all provided conditions return succesful for the given object.
+     * Test whether all provided conditions return successful for the given object.
      *
      * @param T $object
      */

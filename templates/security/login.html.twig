@@ -3,17 +3,15 @@
 {% set page_title = 'Inloggen' %}
 
 {% block body %}
-<div class="container row">
-    <form method="post" class="login">
-        {% if app.user %}
-            <span class="h3 mb-3 font-weight-normal">Log opnieuw in</span>
-        {% else %}
-            <span class="h3 mb-3 font-weight-normal">Inloggen</span>
-        {% endif %}
-        <label for="inputUsername" class="sr-only">E-mailadres</label>
-        <input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-control" placeholder="E-mailadres" required autofocus>
-        <label for="inputPassword" class="sr-only">Wachtwoord</label>
-        <input type="password" name="_password" id="inputPassword" class="form-control" placeholder="Wachtwoord" required>
+<div class="mx-auto max-w-6xl px-5 mb-5">
+    <form method="post" class="items-center bg-gradient-to-b from-zinc-700 to-zinc-900 rounded shadow-2xl text-white flex flex-col h-96 justify-center mx-auto max-w-72 p-5 w-full">
+        <h3 class="font-extrabold text-3xl mb-auto">
+            {% if app.user %}Log opnieuw in{% else %}Inloggen{% endif %}
+        </h3>
+        <label for="inputUsername" class="w-full mt-2">E-mailadres</label>
+        <input type="email" value="{{ last_username }}" name="_username" id="inputUsername" class="w-full text-black" placeholder="E-mailadres" required autofocus>
+        <label for="inputPassword" class="w-full mt-2">Wachtwoord</label>
+        <input type="password" name="_password" id="inputPassword" class="w-full text-black" placeholder="Wachtwoord" required>
 
         <input type="hidden" name="_csrf_token"
             value="{{ csrf_token('authenticate') }}"
@@ -30,7 +28,7 @@
             </div>
         #}
 
-        <button class="btn btn-lg btn-primary" type="submit">
+        <button class="bg-white text-black rounded px-5 py-3 mb-auto mt-5" type="submit">
             Log in
         </button>
         {% if not app.user %}

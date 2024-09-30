@@ -10,8 +10,10 @@ use App\EventSubscriber\RegistrationSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 /**
  * Class RegistrationSubscriberTest.
@@ -40,26 +42,23 @@ final class RegistrationSubscriberTest extends KernelTestCase
      */
     private $user;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->em = $this->createMock(EntityManagerInterface::class);
-        $this->flash = $this->createMock(FlashBagInterface::class);
         $this->user = $this->createMock(LocalAccount::class);
         $this->user->method('getId')->willReturn('a');
 
+        $stack = $this->createMock(RequestStack::class);
+        $stack->method('getSession')->willReturn($session = $this->createMock(FlashBagAwareSessionInterface::class));
+        $session->method('getFlashBag')->willReturn($this->flash = $this->createMock(FlashBagInterface::class));
+
         $security = $this->createMock(Security::class);
         $security->method('getUser')->willReturn($this->user);
-        $this->registrationSubscriber = new RegistrationSubscriber($this->em, $this->flash, $security);
+        $this->registrationSubscriber = new RegistrationSubscriber($this->em, $stack, $security);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -67,7 +66,7 @@ final class RegistrationSubscriberTest extends KernelTestCase
         unset($this->registrationSubscriber);
         unset($this->em);
         unset($this->flash);
-        unset($this->security);
+        unset($this->user);
     }
 
     public function testGetSubscribedEvents(): void

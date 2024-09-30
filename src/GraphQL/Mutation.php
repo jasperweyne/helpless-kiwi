@@ -36,8 +36,8 @@ class Mutation
     ) {
     }
 
-     #[GQL\Field(type: 'String')]
-     #[GQL\Description('Generate an API token based on user credentials')]
+    #[GQL\Field(type: 'String')]
+    #[GQL\Description('Generate an API token based on user credentials')]
     public function login(string $clientId, string $clientSecret, string $username, string $password): string
     {
         // Validate that the provided client secret exists, if provided

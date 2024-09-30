@@ -3,15 +3,16 @@
 namespace App\Controller\Security;
 
 use App\Entity\Security\LocalAccount;
-use App\Mail\MailService;
 use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
@@ -25,14 +26,14 @@ class PasswordController extends AbstractController
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private PasswordResetService $passwordReset,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
     /**
      * Reset password.
      */
-    #[Route('/reset/{id}', name: 'reset', methods: ['GET', 'POST'])]
+    #[Route('/reset/{auth}', name: 'reset', methods: ['GET', 'POST'])]
     public function resetAction(LocalAccount $auth, Request $request): Response
     {
         if (!$this->passwordReset->isPasswordRequestTokenValid(
@@ -57,7 +58,7 @@ class PasswordController extends AbstractController
     /**
      * Register new password for account.
      */
-    #[Route('/register/{id}', name: 'register', methods: ['GET', 'POST'])]
+    #[Route('/register/{auth}', name: 'register', methods: ['GET', 'POST'])]
     public function registerAction(LocalAccount $auth, Request $request): Response
     {
         $token = $request->query->get('token');
@@ -83,7 +84,7 @@ class PasswordController extends AbstractController
      * Request new password mail.
      */
     #[Route('/request', name: 'request', methods: ['GET', 'POST'])]
-    public function requestAction(Request $request, LocalUserProvider $userProvider, MailService $mailer): Response
+    public function requestAction(Request $request, LocalUserProvider $userProvider, MailerInterface $mailer): Response
     {
         $form = $this->createForm('App\Form\Security\PasswordRequestType', []);
         $form->handleRequest($request);
@@ -106,20 +107,25 @@ class PasswordController extends AbstractController
             }
 
             try {
-                $auth = $userProvider->loadUserByUsername($mail);
+                $auth = $userProvider->loadUserByIdentifier($mail);
                 assert($auth instanceof LocalAccount);
                 $token = $this->passwordReset->generatePasswordRequestToken($auth);
 
-                $body = $this->renderView('email/resetpassword.html.twig', [
-                    'auth' => $auth,
-                    'token' => urlencode($token),
-                ]);
-
-                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
+                $mailer->send((new TemplatedEmail())
+                    ->to($mail)
+                    ->subject('Wachtwoord vergeten')
+                    ->htmlTemplate('email/resetpassword.html.twig')
+                    ->context([
+                        'auth' => $auth,
+                        'token' => urlencode($token),
+                    ])
+                );
             } catch (UserNotFoundException) {
-                $body = $this->renderView('email/unknownemail.html.twig');
-
-                $mailer->message([$localAccount], 'Wachtwoord vergeten', $body);
+                $mailer->send((new TemplatedEmail())
+                    ->to($mail)
+                    ->subject('Wachtwoord vergeten')
+                    ->htmlTemplate('email/unknownemail.html.twig')
+                );
             }
 
             $this->addFlash('success', 'Er is een mail met instructies gestuurd naar '.$mail);
@@ -149,7 +155,7 @@ class PasswordController extends AbstractController
     private function handleValidToken(
         FormInterface $form,
         LocalAccount $auth,
-        string $message
+        string $message,
     ): RedirectResponse {
         /** @var array{password: string} $data */
         $data = $form->getData();

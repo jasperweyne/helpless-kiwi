@@ -7,8 +7,8 @@
         {{ form_start(form) }}
             {{ form_widget(form) }}
             <div class="button-group">
-                <button type="submit">Opslaan</button>
-                <a href="{{ path('admin_activity_show', { 'id': activity.id }) }}">Annuleren</a>
+                <button class="rounded px-4 py-3 text-white bg-green-500 inline-block" type="submit">Opslaan</button>
+                <a class="rounded px-4 py-3 text-white bg-gray-500 inline-block" href="{{ path("admin_activity_show", { 'activity': activity.id }) }}">Annuleren</a>
             </div>
         {{ form_end(form) }}
     </div>

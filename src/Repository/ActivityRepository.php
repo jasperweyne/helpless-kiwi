@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Activity\Activity;
+use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
+use App\Entity\Security\LocalAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -123,6 +125,22 @@ class ActivityRepository extends ServiceEntityRepository
             ->andWhere('p.visibleAfter < CURRENT_TIMESTAMP()')
             ->setParameter('groups', $groups)
             ->orderBy('p.start', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Activity[] Returns all activities that a user has been registered for
+     */
+    public function findRegisteredFor(LocalAccount $person)
+    {
+        return $this->createQueryBuilder('act')
+            ->join(Registration::class, 'reg')
+            ->andWhere('reg.person = :person')
+            ->setParameter('person', $person)
+            ->andWhere('act.archived = false')
+            ->andWhere('reg.deletedate IS NULL')
+            ->orderBy('act.start', 'ASC')
             ->getQuery()
             ->getResult();
     }

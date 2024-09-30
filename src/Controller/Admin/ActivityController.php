@@ -7,6 +7,8 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
+use App\Form\Activity\ActivityCreationData;
+use App\Form\Activity\ActivityCreationFlow;
 use App\Log\Doctrine\EntityNewEvent;
 use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
@@ -28,24 +30,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/activity', name: 'admin_activity_')]
 class ActivityController extends AbstractController
 {
-    private EventService $events;
-
-    private ActivityRepository $activitiesRepo;
-
-    private GroupRepository $groupsRepo;
-
-    private EntityManagerInterface $em;
-
     public function __construct(
-        EventService $events,
-        GroupRepository $groups,
-        ActivityRepository $activities,
-        EntityManagerInterface $em
+        private EventService $events,
+        private GroupRepository $groupsRepo,
+        private ActivityRepository $activitiesRepo,
+        private EntityManagerInterface $em,
     ) {
-        $this->events = $events;
-        $this->activitiesRepo = $activities;
-        $this->groupsRepo = $groups;
-        $this->em = $em;
     }
 
     /**
@@ -93,12 +83,12 @@ class ActivityController extends AbstractController
     /**
      * Lists all activities with a group as author.
      */
-    #[Route('/group/{id}', name: 'group', methods: ['GET'])]
+    #[Route('/group/{group}', name: 'group', methods: ['GET'])]
     public function groupAction(Group $group): Response
     {
         $activities = $this
             ->activitiesRepo
-            ->findAuthor($this->groupsRepo->findSubGroupsFor($group));
+            ->findAuthor([$group, ...$this->groupsRepo->findSubGroupsFor($group)]);
 
         return $this->render('admin/activity/index.html.twig', [
             'activities' => $activities,
@@ -109,48 +99,57 @@ class ActivityController extends AbstractController
      * Creates a new activity entity.
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function newAction(Request $request): Response
+    public function newAction(ActivityCreationFlow $flow): Response
     {
         $activity = new Activity();
+        $activityData = new ActivityCreationData();
+        $activityData->activity = $activity;
 
-        $form = $this->createForm('App\Form\Activity\ActivityNewType', $activity);
-        $form->handleRequest($request);
+        $flow->bind($activityData);
+        $form = $flow->createForm();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $location = $activity->getLocation();
-            assert(null !== $location);
-            $this->em->persist($activity);
-            $this->em->persist($location);
+        if ($flow->isValid($form)) {
+            $flow->saveCurrentStepData($form);
+            if ($flow->nextStep()) {
+                $form = $flow->createForm();
+            } else {
+                if (null !== $activityData->price) {
+                    $option = (new PriceOption())
+                        ->setName('standaard')
+                        ->setPrice($activityData->price)
+                        ->setDetails([])
+                        ->setConfirmationMsg('');
+                    $this->em->persist($option);
+                    $activity->addOption($option);
+                }
 
-            if (null !== $price = $form->get('price')->getData()) {
-                assert(is_int($price));
-                $option = new PriceOption();
-                $activity->addOption($option);
-                $option
-                    ->setName('standaard')
-                    ->setPrice($price)
-                    ->setDetails([])
-                    ->setConfirmationMsg('');
-                $this->em->persist($option);
+                if (null !== $newLocation = $activityData->newLocation) {
+                    $this->em->persist($newLocation);
+                    $activity->setLocation($newLocation);
+                }
+
+                $this->em->persist($activity);
+                $this->em->flush();
+                $this->addFlash('success', 'Activiteit succesvol aangemaakt');
+                $flow->reset();
+
+                return $this->redirectToRoute(
+                    'admin_activity_show',
+                    ['activity' => $activity->getId()]
+                );
             }
-            $this->em->flush();
-
-            return $this->redirectToRoute(
-                'admin_activity_show',
-                ['id' => $activity->getId()]
-            );
         }
 
         return $this->render('admin/activity/new.html.twig', [
-            'activity' => $activity,
             'form' => $form->createView(),
+            'flow' => $flow,
         ]);
     }
 
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{activity}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -173,7 +172,7 @@ class ActivityController extends AbstractController
     /**
      * Displays a form to edit an existing activity entity.
      */
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{activity}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -186,7 +185,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -197,9 +196,64 @@ class ActivityController extends AbstractController
     }
 
     /**
+     * Clones an existing a activity into a new activity entity.
+     */
+    #[Route('/{base}/clone', name: 'clone', methods: ['GET', 'POST'])]
+    public function cloneAction(ActivityCreationFlow $flow, Activity $base): Response
+    {
+        $activity = clone $base;
+        $activityData = new ActivityCreationData();
+        $activityData->activity = $activity;
+
+        $flow->bind($activityData);
+        $form = $flow->createForm();
+
+        if ($flow->isValid($form)) {
+            $flow->saveCurrentStepData($form);
+            if ($flow->nextStep()) {
+                $form = $flow->createForm();
+            } else {
+                if (null !== $activityData->price) {
+                    $option = (new PriceOption())
+                        ->setName('standaard')
+                        ->setPrice($activityData->price)
+                        ->setDetails([])
+                        ->setConfirmationMsg('');
+                    $this->em->persist($option);
+                    $activity->addOption($option);
+                }
+
+                if (null !== $newLocation = $activityData->newLocation) {
+                    $this->em->persist($newLocation);
+                    $activity->setLocation($newLocation);
+                }
+                foreach ($activity->getOptions() as $priceOption) {
+                    $this->em->persist($priceOption);
+                }
+
+                $this->em->persist($activity);
+                $this->em->flush();
+                $this->addFlash('success', 'Activiteit succesvol aangemaakt');
+                $flow->reset();
+            }
+
+            return $this->redirectToRoute(
+                'admin_activity_show',
+                ['activity' => $activity->getId()]
+            );
+        }
+
+        return $this->render('admin/activity/new.html.twig', [
+            'form' => $form->createView(),
+            'flow' => $flow,
+            'page_title' => 'Activiteit kopiëren',
+        ]);
+    }
+
+    /**
      * Displays a form to edit an existing activity entity.
      */
-    #[Route('/{id}/image', name: 'image', methods: ['GET', 'POST'])]
+    #[Route('/{activity}/image', name: 'image', methods: ['GET', 'POST'])]
     public function imageAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -212,7 +266,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -225,7 +279,7 @@ class ActivityController extends AbstractController
     /**
      * Deletes an activity.
      */
-    #[Route('/{id}/delete', name: 'delete')]
+    #[Route('/{activity}/delete', name: 'delete')]
     public function deleteAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -249,7 +303,7 @@ class ActivityController extends AbstractController
     /**
      * Archives an activity.
      */
-    #[Route('/{id}/archive', name: 'archive')]
+    #[Route('/{activity}/archive', name: 'archive')]
     public function archiveAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -274,7 +328,7 @@ class ActivityController extends AbstractController
     /**
      * Activates an activity.
      */
-    #[Route('/{id}/activate', name: 'activate')]
+    #[Route('/{activity}/activate', name: 'activate')]
     public function activateAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -301,7 +355,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/price/new/{id}', name: 'price_new', methods: ['GET', 'POST'])]
+    #[Route('/price/new/{activity}', name: 'price_new', methods: ['GET', 'POST'])]
     public function priceNewAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -322,7 +376,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -335,7 +389,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/price/{id}', name: 'price_edit', methods: ['GET', 'POST'])]
+    #[Route('/price/{price}', name: 'price_edit', methods: ['GET', 'POST'])]
     public function priceEditAction(Request $request, PriceOption $price): Response
     {
         if (null !== $price->getActivity()) {
@@ -371,7 +425,7 @@ class ActivityController extends AbstractController
             $activityId = $price->getActivity()?->getId();
             assert(null !== $activityId);
 
-            return $this->redirectToRoute('admin_activity_show', ['id' => $activityId]);
+            return $this->redirectToRoute('admin_activity_show', ['activity' => $activityId]);
         }
 
         return $this->render('admin/activity/price/edit.html.twig', [
@@ -383,7 +437,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to set participent presence.
      */
-    #[Route('/{id}/present/edit', name: 'present_edit')]
+    #[Route('/{activity}/present/edit', name: 'present_edit')]
     public function presentEditAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -405,7 +459,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to set amount participent present.
      */
-    #[Route('/{id}/present/set', name: 'present_set', methods: ['GET', 'POST'])]
+    #[Route('/{activity}/present/set', name: 'present_set', methods: ['GET', 'POST'])]
     public function presentSetAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -419,7 +473,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -432,7 +486,7 @@ class ActivityController extends AbstractController
     /**
      * Creates a form to reset amount participent present.
      */
-    #[Route('/{id}/present/reset', name: 'present_reset')]
+    #[Route('/{activity}/present/reset', name: 'present_reset')]
     public function presentResetAction(Request $request, Activity $activity): Response
     {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
@@ -447,7 +501,7 @@ class ActivityController extends AbstractController
 
             return $this->redirectToRoute(
                 'admin_activity_show',
-                ['id' => $activity->getId()]
+                ['activity' => $activity->getId()]
             );
         }
 
@@ -464,7 +518,7 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_delete', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]))
             ->setMethod('DELETE')
             ->getForm();
@@ -474,7 +528,7 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_archive', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]))
             ->setMethod('UPDATE')
             ->getForm();
@@ -484,7 +538,7 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('admin_activity_activate', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]))
             ->setMethod('UPDATE')
             ->getForm();

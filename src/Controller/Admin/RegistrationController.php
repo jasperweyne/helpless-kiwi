@@ -40,10 +40,10 @@ class RegistrationController extends AbstractController
     /**
      * Add someones registration from an activity.
      */
-    #[Route('/new/{id}/external', name: 'new_external', methods: ['GET', 'POST'])]
+    #[Route('/new/{activity}/external', name: 'new_external', methods: ['GET', 'POST'])]
     public function newExternalAction(
         Request $request,
-        Activity $activity
+        Activity $activity,
     ): Response {
         return $this->newAction($request, $activity, true);
     }
@@ -51,11 +51,11 @@ class RegistrationController extends AbstractController
     /**
      * Add someones registration from an activity.
      */
-    #[Route('/new/{id}', name: 'new', methods: ['GET', 'POST'])]
+    #[Route('/new/{activity}', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(
         Request $request,
         Activity $activity,
-        bool $external = false
+        bool $external = false,
     ): Response {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -72,7 +72,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationAddedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -85,10 +85,10 @@ class RegistrationController extends AbstractController
     /**
      * Edit someones registration from an activity from admin.
      */
-    #[Route('/edit/{id}', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{registration}', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(
         Request $request,
-        Registration $registration
+        Registration $registration,
     ): Response {
         if (null !== $registration->getActivity()) {
             $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
@@ -110,7 +110,7 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Registratie aangepast!');
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -124,10 +124,10 @@ class RegistrationController extends AbstractController
     /**
      * Remove someones registration from an activity.
      */
-    #[Route('/delete/{id}', name: 'delete')]
+    #[Route('/delete/{registration}', name: 'delete')]
     public function deleteAction(
         Request $request,
-        Registration $registration
+        Registration $registration,
     ): Response {
         if (null !== $registration->getActivity()) {
             $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
@@ -145,7 +145,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationRemovedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -158,10 +158,10 @@ class RegistrationController extends AbstractController
     /**
      * Add someone in any acitity reserve list.
      */
-    #[Route('/reserve/new/{id}', name: 'reserve_new', methods: ['GET', 'POST'])]
+    #[Route('/reserve/new/{activity}', name: 'reserve_new', methods: ['GET', 'POST'])]
     public function reserveNewAction(
         Request $request,
-        Activity $activity
+        Activity $activity,
     ): Response {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -180,7 +180,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationAddedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         } else {
             return $this->render('admin/activity/registration/new.html.twig', [
@@ -194,9 +194,9 @@ class RegistrationController extends AbstractController
     /**
      * Promote someone in any acitity reserve list.
      */
-    #[Route('/reserve/move/{id}/up', name: 'reserve_move_up', methods: ['GET', 'POST'])]
+    #[Route('/reserve/move/{registration}/up', name: 'reserve_move_up', methods: ['GET', 'POST'])]
     public function reserveMoveUpAction(
-        Registration $registration
+        Registration $registration,
     ): Response {
         if (null !== $registration->getActivity()) {
             $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
@@ -212,7 +212,7 @@ class RegistrationController extends AbstractController
             $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -227,16 +227,16 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', (null !== $person ? $person->getCanonical() : 'Onbekend').' naar boven verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', [
-            'id' => $activity->getId(),
+            'activity' => $activity->getId(),
         ]);
     }
 
     /**
      * Demote someone in any acitity reserve list.
      */
-    #[Route('/reserve/move/{id}/down', name: 'reserve_move_down', methods: ['GET', 'POST'])]
+    #[Route('/reserve/move/{registration}/down', name: 'reserve_move_down', methods: ['GET', 'POST'])]
     public function reserveMoveDownAction(
-        Registration $registration
+        Registration $registration,
     ): Response {
         if (null !== $registration->getActivity()) {
             $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
@@ -252,7 +252,7 @@ class RegistrationController extends AbstractController
             $this->addFlash('error', 'Een activiteit die niet op de reservelijst staat kan niet verplaatst worden');
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -267,19 +267,19 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', (null !== $person ? $person->getCanonical() : 'Onbekend').' naar beneden verplaatst!');
 
         return $this->redirectToRoute('admin_activity_show', [
-            'id' => $activity->getId(),
+            'activity' => $activity->getId(),
         ]);
     }
 
     /**
      * Creates a form to check out all checked in users.
      *
-     * @return \Symfony\Component\Form\FormInterface The form
+     * @return FormInterface The form
      */
     protected function createRegistrationDeleteForm(Registration $registration): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_registration_delete', ['id' => $registration->getId()]))
+            ->setAction($this->generateUrl('admin_activity_registration_delete', ['registration' => $registration->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

@@ -8,11 +8,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
+#[UniqueEntity(
+    fields: 'email',
+    message: 'This e-mail address is already in use.'
+)]
+#[UniqueEntity(
+    fields: 'oidc',
+    message: 'This OpenID Connect sub is already in use.'
+)]
 #[GQL\Type]
 #[GQL\Description('A registered user who can log in and register for activities.')]
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface
@@ -50,6 +59,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     /** @var string[] */
     #[ORM\Column(type: 'json')]
     private array $roles;
+
+    #[ORM\Column(name: 'calendar_token', type: 'string')]
+    private string $calendarToken;
 
     /** Encrypted string whose value is sent to the user email address in order to (re-)set the password. */
     #[ORM\Column(name: 'password_request_token', type: 'string', nullable: true)]
@@ -173,6 +185,18 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
+    public function getCalendarToken(): ?string
+    {
+        return $this->calendarToken;
+    }
+
+    public function renewCalendarToken(): self
+    {
+        $this->calendarToken = bin2hex(random_bytes(16));
+
+        return $this;
+    }
+
     #[GQL\Field(type: 'Boolean!')]
     #[GQL\Description('Whether this user is an administrator.')]
     #[GQL\Access('isAuthenticated()')]
@@ -225,7 +249,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         return $this;
     }
 
-    public function setPasswordRequestedAt(\DateTime $date = null): self
+    public function setPasswordRequestedAt(?\DateTime $date = null): self
     {
         $this->passwordRequestedAt = $date;
 
@@ -290,6 +314,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
         $this->roles = [];
         $this->registrations = new ArrayCollection();
         $this->relations = new ArrayCollection();
+        $this->renewCalendarToken();
     }
 
     /** @return Collection<int, Registration>|null */

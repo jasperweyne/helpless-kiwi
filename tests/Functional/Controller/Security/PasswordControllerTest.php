@@ -21,35 +21,12 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
  */
 class PasswordControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
-
-    /**
-     * @var PasswordController
-     */
-    protected $passwordController;
-
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    protected $passwordHasher;
-
-    /**
-     * @var PasswordResetService
-     */
-    protected $passwordReset;
-
-    /**
-     * @var LocalUserProvider
-     */
-    protected $userProvider;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
+    protected EntityManagerInterface $em;
+    protected PasswordController $passwordController;
+    protected UserPasswordHasherInterface $passwordHasher;
+    protected PasswordResetService $passwordReset;
+    protected LocalUserProvider $userProvider;
+    protected EventDispatcherInterface $dispatcher;
 
     /**
      * {@inheritdoc}
@@ -92,7 +69,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testResetAction(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
@@ -116,7 +93,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testResetWithNonValidToken(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
@@ -131,7 +108,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testRegisterAction(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
@@ -155,7 +132,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testRegisterWithNonValidToken(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByUsername(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);

@@ -44,7 +44,7 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
     public function testSupports(): void
     {
         // Arrange
-        $request = $this->mockRequestWithAuthHeader("Bearer 1234");
+        $request = $this->mockRequestWithAuthHeader('Bearer 1234');
 
         // Act
         $result = $this->authenticator->supports($request);
@@ -65,7 +65,6 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
         // Assert
         self::assertFalse($result);
     }
-
 
     public function testAuthenticate(): void
     {
@@ -114,6 +113,7 @@ class AbstractBearerTokenAuthenticatorTest extends KernelTestCase
     {
         $request = $this->createMock(Request::class);
         $request->headers = new HeaderBag(['Authorization' => $header]);
+
         return $request;
     }
 }

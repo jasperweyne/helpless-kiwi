@@ -4,25 +4,23 @@ namespace App\Log\Doctrine;
 
 use App\Entity\Log\Event;
 use App\Log\EventService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 
 class EntityEventListener
 {
-    /**
-     * @var EventService
-     */
-    private $eventService;
-
-    public function __construct(EventService $eventService)
-    {
+    public function __construct(
+        private EventService $eventService,
+    ) {
         $this->eventService = $eventService;
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        $em = $eventArgs->getEntityManager();
+        /** @var EntityManagerInterface */
+        $em = $eventArgs->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         // On create entity
@@ -95,13 +93,9 @@ class EntityEventListener
     }
 
     /**
-     * @param mixed         $value
-     * @param string        $field
-     * @param ClassMetadata $metadata
-     *
      * @return array{entity: string, identifier: mixed}|mixed|null
      */
-    private function sanitize($value, $field, $metadata)
+    private function sanitize(mixed $value, string $field, ClassMetadata $metadata)
     {
         if (null === $value) {
             return null;

@@ -13,7 +13,7 @@ class CreateAccountsEvent extends Event
 
     public function __construct(
         /** @var \App\Entity\Security\LocalAccount[] */
-        public readonly array $accounts
+        public readonly array $accounts,
     ) {
     }
 }

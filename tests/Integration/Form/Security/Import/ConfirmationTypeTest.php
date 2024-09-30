@@ -53,7 +53,6 @@ class ConfirmationTypeTest extends KernelTestCase
         $file->method('isValid')->willReturn(true);
         $file->method('getPathname')->willReturn('');
         $file->method('isReadable')->willReturn(true);
-        $file->method('move')->willReturn(true);
         $file->method('openFile')->willReturn(new \SplFileObject('data://text/plain;base64,'.base64_encode($csvContent)));
         $type = new ImportedAccounts([], $file);
 

@@ -8,38 +8,19 @@ use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 class RegistrationSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var FlashBagInterface
-     */
-    private $flash;
-
-    /**
-     * @var LocalAccount
-     */
-    private $user;
-
     public function __construct(
-        EntityManagerInterface $em,
-        FlashBagInterface $flash,
-        Security $security
+        private EntityManagerInterface $em,
+        private RequestStack $stack,
+        private Security $security,
     ) {
-        $this->em = $em;
-        $this->flash = $flash;
-
-        $user = $security->getUser();
-        assert($user instanceof LocalAccount);
-        $this->user = $user;
     }
 
     public static function getSubscribedEvents(): array
@@ -65,12 +46,12 @@ class RegistrationSubscriber implements EventSubscriberInterface
         $name = '';
         $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
-        if ($registrant->getName() !== $this->user->getName()) {
+        if ($registrant->getName() !== $this->getUser()->getName()) {
             $name = ' van '.$registrant->getName();
         }
         $location = $registration->isReserve() ? ' op de reservelijst!' : ' gelukt!';
 
-        $this->flash->add('success', 'Aanmelding'.$name.$location);
+        $this->getFlashbag()->add('success', 'Aanmelding'.$name.$location);
     }
 
     public function persistRegistrationRemoved(RegistrationRemovedEvent $event): void
@@ -88,9 +69,25 @@ class RegistrationSubscriber implements EventSubscriberInterface
         $name = '';
         $registrant = $registration->getPerson();
         assert($registrant instanceof ContactInterface);
-        if ($registrant->getName() !== $this->user->getName()) {
+        if ($registrant->getName() !== $this->getUser()->getName()) {
             $name = ' van '.$registrant->getName();
         }
-        $this->flash->add('success', 'Afmelding'.$name.' gelukt!');
+        $this->getFlashbag()->add('success', 'Afmelding'.$name.' gelukt!');
+    }
+
+    private function getFlashbag(): FlashBagInterface
+    {
+        $session = $this->stack->getSession();
+        assert($session instanceof FlashBagAwareSessionInterface);
+
+        return $session->getFlashBag();
+    }
+
+    private function getUser(): LocalAccount
+    {
+        $user = $this->security->getUser();
+        assert($user instanceof LocalAccount);
+
+        return $user;
     }
 }

@@ -1,0 +1,34 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% if page_title is not defined %}
+    {% set page_title = 'Locaties' %}
+{% endif %}
+
+{% set resultcount = locations|length %}
+
+{% block buttons %}
+    <a href="{{ path("admin_location_new") }} ">Nieuw</a>
+{% endblock %}
+
+{% block body %}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Adres</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for location in locations %}
+                <tr>
+                    <td><a href="{{ path("admin_location_show", { 'location': location.id }) }}">{{ location.address }}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>Geen locaties opgeslagen.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

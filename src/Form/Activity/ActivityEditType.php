@@ -5,7 +5,6 @@ namespace App\Form\Activity;
 use App\Entity\Activity\Activity;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
-use App\Form\Location\LocationType;
 use App\Repository\GroupRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -21,8 +20,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class ActivityEditType extends AbstractType
 {
-    /** @var bool */
-    protected $isAdmin = false;
+    protected bool $isAdmin = false;
 
     /** @var Group[] */
     protected $groups;
@@ -48,17 +46,24 @@ class ActivityEditType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Naam',
-                'attr' => ['placeholder' => 'Leuke activiteit naam'],
+                'attr' => [
+                    'placeholder' => 'Leuke activiteit naam',
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Beschrijving',
                 'attr' => ['placeholder' => 'Beschrijf hier de activiteit'],
             ])
-            ->add('location', LocationType::class, [
-                'label' => 'Locatie',
-                'help' => '  ',
+            ->add('location', EntityType::class, [
+                'label' => 'Adres',
+                'required' => false,
+                'attr' => ['data-select' => 'true'],
+                'placeholder' => 'Voeg een nieuwe locatie toe',
+                'class' => 'App\Entity\Location\Location',
+                'choice_label' => 'name',
             ])
             ->add('author', EntityType::class, [
+                'attr' => ['data-select' => 'true'],
                 'label' => 'Georganiseerd door',
                 'class' => 'App\Entity\Group\Group',
                 'required' => !$this->isAdmin,
@@ -69,6 +74,7 @@ class ActivityEditType extends AbstractType
                 'help' => 'De groep die de activiteit organiseert.',
             ])
             ->add('target', EntityType::class, [
+                'attr' => ['data-select' => 'true'],
                 'label' => 'Activiteit voor',
                 'class' => 'App\Entity\Group\Group',
                 'required' => false,
@@ -129,8 +135,7 @@ class ActivityEditType extends AbstractType
                     'Paars' => 'purple',
                     'Roze' => 'pink',
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

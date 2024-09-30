@@ -22,9 +22,6 @@ class ActivityControllerTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,9 +38,6 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -56,14 +50,12 @@ class ActivityControllerTest extends AuthWebTestCase
         $activities = $this->em->getRepository(Activity::class)->findAll();
 
         // Act
-        $node = $crawler->filter('body > main > div.container > div.cardholder > div.grid-x')
-            ->first()->filter('div.cell')
-            ->first()->filter('h2');
+        $node = $crawler->filter('main .grid a h2')->first();
 
         $exist = false;
         /** @var Activity $activity */
         foreach ($activities as $activity) {
-            if ($activity->getName() == $node->html() && $activity->getVisibleAfter() !== null && $activity->getVisibleAfter() < new \DateTime()) {
+            if ($activity->getName() == $node->html() && null !== $activity->getVisibleAfter() && $activity->getVisibleAfter() < new \DateTime()) {
                 $exist = true;
             }
         }
@@ -71,19 +63,6 @@ class ActivityControllerTest extends AuthWebTestCase
         // Assert
         self::assertTrue($exist);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testCallIcal(): void
-    {
-        $this->client->request('GET', '/ical');
-        $icalReturnPrefix = "BEGIN:VCALENDAR";
-        $icalReturnSuffix = "END:VCALENDAR\r\n";
-        $icalResponse = $this->client->getResponse();
-
-        self::assertNotFalse($icalResponse->getContent());
-        self::assertStringStartsWith($icalReturnPrefix, $icalResponse->getContent());
-        self::assertStringEndsWith($icalReturnSuffix, $icalResponse->getContent());
-        self::assertSame(200, $icalResponse->getStatusCode());
     }
 
     public function testUnregisterAction(): void

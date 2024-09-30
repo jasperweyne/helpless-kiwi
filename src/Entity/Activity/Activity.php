@@ -56,12 +56,12 @@ class Activity
     #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
     private Collection $registrations;
 
-    #[ORM\OneToOne(targetEntity: "App\Entity\Location\Location")]
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Location\Location", inversedBy: 'activities', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'location', referencedColumnName: 'id')]
     #[GQL\Field(type: 'Location!')]
     #[GQL\Description('The (physical) location of the activity.')]
     #[Assert\NotBlank]
-    private ?Location $location;
+    private ?Location $location = null;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
     #[ORM\JoinColumn(name: 'primairy_author', referencedColumnName: 'id', nullable: true)]
@@ -390,7 +390,7 @@ class Activity
         return $this->location;
     }
 
-    public function setLocation(Location $location): self
+    public function setLocation(?Location $location): self
     {
         $this->location = $location;
 
@@ -398,7 +398,7 @@ class Activity
     }
 
     /** @param File|UploadedFile $imageFile */
-    public function setImageFile(File $imageFile = null): self
+    public function setImageFile(?File $imageFile = null): self
     {
         $this->imageFile = $imageFile;
 
@@ -480,8 +480,6 @@ class Activity
 
     /**
      * Get the time after which the activity will be visible for users.
-     *
-     * @return \DateTime
      */
     public function getVisibleAfter(): ?\DateTime
     {
@@ -508,10 +506,10 @@ class Activity
         $in_groups = null === $this->getTarget() || in_array($this->getTarget(), $groups, true);
 
         return
-            $this->getEnd() > new \DateTime() &&
-            $in_groups &&
-            null !== $this->getVisibleAfter() &&
-            $this->getVisibleAfter() < new \DateTime();
+            $this->getEnd() > new \DateTime()
+            && $in_groups
+            && null !== $this->getVisibleAfter()
+            && $this->getVisibleAfter() < new \DateTime();
     }
 
     /**
@@ -526,5 +524,25 @@ class Activity
         }
 
         return $this->isVisible($groups);
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
+        $this->archived = false;
+
+        // Clone or reset nested fields
+        $clonedOptions = $this->options->map(fn (PriceOption $o) => (clone $o)->setActivity($this));
+        $this->options = new ArrayCollection($clonedOptions->toArray());
+
+        // Reset date/time fields
+        $this->start = null;
+        $this->end = null;
+        $this->deadline = null;
+        $this->visibleAfter = null;
+
+        // Reset registration related fields
+        $this->registrations = new ArrayCollection();
+        $this->present = null;
     }
 }
