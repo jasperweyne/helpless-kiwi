@@ -12,7 +12,6 @@ use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -160,7 +159,7 @@ class ActivityController extends AbstractController
         foreach ($targetoptions as $option) {
             $forms[] = [
                 'data' => $option,
-                'form' => $this->singleRegistrationForm($option, $activity->atCapacity())->createView(),
+                'form' => $this->singleRegistrationForm($option)->createView(),
             ];
         }
         $unregister = null;
@@ -192,11 +191,11 @@ class ActivityController extends AbstractController
         return $form;
     }
 
-    public function singleRegistrationForm(PriceOption $option, bool $reserve): FormInterface
+    public function singleRegistrationForm(PriceOption $option): FormInterface
     {
         $activity = $option->getActivity();
         assert(null !== $activity);
-        $form = $this->createRegisterForm($activity, $reserve);
+        $form = $this->createRegisterForm($activity);
         $form->get('single_option')->setData($option->getId());
 
         return $form;
@@ -207,23 +206,15 @@ class ActivityController extends AbstractController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('activity_unregister', ['id' => $activity->getId()]))
             ->add('registration_single', HiddenType::class)
-            ->add('submit', SubmitType::class, [
-                'attr' => ['class' => 'button delete'],
-                'label' => 'Afmelden',
-            ])
             ->getForm()
         ;
     }
 
-    private function createRegisterForm(Activity $activity, bool $reserve = false): FormInterface
+    private function createRegisterForm(Activity $activity): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('activity_register', ['id' => $activity->getId()]))
             ->add('single_option', HiddenType::class)
-            ->add('submit', SubmitType::class, [
-                'attr' => ['class' => 'button '.($reserve ? 'warning' : 'confirm')],
-                'label' => 'Aanmelden'.($reserve ? ' reserve' : ''),
-            ])
             ->getForm()
         ;
     }

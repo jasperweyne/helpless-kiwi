@@ -2,6 +2,7 @@
 
 {% if page_title is not defined %}
     {% if group is null %}
+        {% set resultcount = groups|length %}
         {% if all_groups is defined %}
             {% set page_title = 'Alle groepen' %}
         {% else %}
@@ -14,12 +15,14 @@
     
     {% block buttons %}
         {% if group %}
+            <a href="{{ path("admin_group_new", { 'id': group.id }) }}">Nieuwe subgroep</a></td>  
             {% if can_edit %}
                 <a href="{{ path('admin_group_edit', { 'id': group.id }) }}">Bewerken</a>
                 <a href="{{ path('admin_group_delete', { 'id': group.id }) }}">Verwijderen</a>
             {% endif %}
             <a href="{{ path('admin_group_show', { 'id': group.parent.id ?? null }) }}">Terug naar {{ group.parent.name ?? 'groepen' }}</a>
         {% else %}
+            <a href="{{ path("admin_group_new") }}">Nieuwe groep</a></td>  
             {% if all_groups %}
                 <a href="{{ path('admin_group_show') }}">Terug</a>
             {% else %}
@@ -31,7 +34,7 @@
 
 {% block body_wrap %}
     {% if group %}
-        <div class="tabs">
+        <div class="tabs flex flex-wrap max-w-full">
             {{ block('body_content') }}
         </div
     {% else %}
@@ -49,7 +52,7 @@
                 {% endif %}
             {% endblock %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <thead>
@@ -76,11 +79,6 @@
                                 {% endif %}
                             </tr>
                         {% endfor %}
-                        {% if can_edit or group %}
-                            <tr>
-                                <td><a href="{{ path("admin_group_new", { 'id': group.id ?? '' }) }}">Nieuwe {{ group ? 'sub' : '' }}groep toevoegen</a></td>  
-                            </tr>
-                        {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -92,7 +90,7 @@
         {% if group.relationable %}
             {% embed 'components/tab.html.twig' with {'tab_label': 'Groepsleden','tab_name': 'groupsmembers','tab_default': not group.subgroupable} %}
                 {% block tab %}
-                <div class="card">
+                <div class="bg-neutral-50 rounded shadow">
                     <div class="table">
                         <table>
                             <thead>
@@ -132,7 +130,7 @@
         {% endif %}
         {% embed 'components/tab.html.twig' with {'tab_label': 'Details','tab_default': not (group.relationable or group.subgroupable)} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <tbody>

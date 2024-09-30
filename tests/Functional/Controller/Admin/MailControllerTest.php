@@ -19,9 +19,6 @@ class MailControllerTest extends AuthWebTestCase
 
     private string $controllerEndpoint = '/admin/mail';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,9 +32,6 @@ class MailControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -49,7 +43,7 @@ class MailControllerTest extends AuthWebTestCase
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('span', 'Mails');
+        self::assertSelectorTextContains('#title', 'Mails');
     }
 
     public function testShowAction(): void
@@ -65,6 +59,6 @@ class MailControllerTest extends AuthWebTestCase
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertIsString($title);
-        self::assertSelectorTextContains('span', $title);
+        self::assertSelectorTextContains('#title', $title);
     }
 }

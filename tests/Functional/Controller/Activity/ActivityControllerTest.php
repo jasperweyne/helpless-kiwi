@@ -22,9 +22,6 @@ class ActivityControllerTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,9 +38,6 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -56,9 +50,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $activities = $this->em->getRepository(Activity::class)->findAll();
 
         // Act
-        $node = $crawler->filter('body > main > div.container > div.cardholder > div.grid-x')
-            ->first()->filter('div.cell')
-            ->first()->filter('h2');
+        $node = $crawler->filter('main .grid a h2')->first();
 
         $exist = false;
         /** @var Activity $activity */

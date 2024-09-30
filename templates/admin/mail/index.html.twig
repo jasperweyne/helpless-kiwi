@@ -2,12 +2,7 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Mails' %}
-    
-    {% block top %}
-        {% embed 'admin/listview.html.twig' %}
-            {% set resultcount = mails|length %}
-        {% endembed %}
-    {% endblock %}
+    {% set resultcount = mails|length %}
 {% endif %}
 
 {% block body %}

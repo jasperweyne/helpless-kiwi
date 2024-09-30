@@ -5,114 +5,97 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% if page_title is defined %}{{ page_title }} - {% endif %}{{ org }}</title>
         {% block stylesheets %}
-            {{ encore_entry_link_tags('main') }}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <link rel="icon" href="{{ asset('android-icon.png') }}" sizes="192x192">
         <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     </head>
-	<body>
+	<body class="bg-gray-100">
+        <script>0</script> {# FOUC hack for firefox #}
         {% block nav %}
-        <header class="nav-main row">
-            <input type="checkbox" id="nav-state">
-            <div class="mobile">
-                <span class="title">{{ page_title }}</span>
-                <label for="nav-state" class="nav-toggle"><b></b></label>
+        <header class="w-full bg-white mb-5 h-16 lg:h-24">
+            <div class="flex items-center h-full justify-around px-5 lg:hidden group">
+                <span class="block text-center">{{ page_title }}</span>
+                <label for="nav-state" class="cursor-pointer py-2 absolute right-5 w-6 z-40">
+                    <b class="bg-gray-300 block h-0.5 relative transition group-has-[~.peer:checked]:bg-transparent before:bg-gray-300 before:block before:h-full before:w-full before:absolute before:top-0 before:origin-center before:transition before:-translate-y-2 before:group-has-[~.peer:checked]:rotate-45 before:group-has-[~.peer:checked]:translate-y-0 after:bg-gray-300 after:block after:h-full after:w-full after:absolute after:top-0 after:origin-center after:transition after:translate-y-2 after:group-has-[~.peer:checked]:-rotate-45 after:group-has-[~.peer:checked]:translate-y-0"></b>
+                </label>
             </div>
-            <div class="menu">
-                <a href="/">{{ org }}</a>
-                <nav>
+            <input type="checkbox" id="nav-state" class="hidden peer">
+            <div class="hidden peer-checked:flex items-center justify-between bg-black flex-wrap flex-col text-white bottom-0 left-0 right-0 top-0 mx-auto max-w-6xl p-5 fixed z-30 lg:bg-white lg:text-black lg:flex lg:flex-row lg:h-24 lg:static lg:py-0 lg:mb-5">
+                <a href="/" class="inline-block pr-2 whitespace-nowrap">{{ org }}</a>
+                <nav class="items-center flex flex-col lg:flex-row">
                     {% for item in menu.getItems() %}
                         {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
-                            <a href="{{(item.path ?? '') is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}">{{ item.title }}</a>
+                            <a href="{{(item.path ?? '') is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}" class="inline-block px-2 whitespace-nowrap">{{ item.title }}</a>
                         {% endif %}
                     {% endfor %}
                     {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_AUTHOR") %}
-                        <a href="{{ path('admin_index') }}">Beheer</a>
+                        <a href="{{ path('admin_index') }}" class="inline-block px-2 whitespace-nowrap">Beheer</a>
                     {% endif %}
                 </nav>
                 <span class="personal">
                 {% if app.user %}
                     {% if profile_url %}
-                        <a href="{{ profile_url }}">Mijn profiel</a>
+                        <a href="{{ profile_url }}" class="inline-block px-2 whitespace-nowrap">Mijn profiel</a>
                     {% endif %}
-                    <a href="{{ path('app_logout') }}">Uitloggen</a>
+                    <a href="{{ path('app_logout') }}" class="inline-block pl-2 whitespace-nowrap">Uitloggen</a>
                 {% else %}
-                    <a href="{{ path('app_login') }}">Inloggen</a>
+                    <a href="{{ path('app_login') }}" class="inline-block pl-2 whitespace-nowrap">Inloggen</a>
                 {% endif %}
                 </span>
             </div>
         </header>
         {% endblock %}
-        <main>
+        {% if main_class is not defined %}{% set main_class = 'relative' %}{% endif %}
+        <main class="{{ main_class }}">
             {% block messages %}
-            <div class="messages {{ messages_overlay is defined and messages_overlay ? 'messages_overlay' : '' }}">
+            {% if messages_overlay is defined and messages_overlay %}
+            <div class="messages messages_overlay absolute left-0 right-0 top-6 *:backdrop-blur z-10 px-5">
+            {% else %}
+            <div class="messages px-5">
+            {% endif %}
                 {% for flash_message in app.session.flashbag.get('error') %}
-                    <div class="container row">
+                    <div class="container row mx-auto max-w-6xl p-5 mb-5 relative bg-red-500/65">
                         <div class="flash flash-error">
                             {{ flash_message }}
                         </div>
                     </div>
                 {% endfor %}
                 {% for flash_message in app.session.flashbag.get('success') %}
-                    <div class="container row">
+                    <div class="container row mx-auto max-w-6xl p-5 mb-5 relative bg-green-500/65">
                         <div class="flash flash-success">
                             {{ flash_message }}
                         </div>
                     </div>
                 {% endfor %}
+                {% if is_granted('ROLE_ADMIN') and updater.newestVersion != version %}
+                    <div class="container row mx-auto max-w-6xl p-5 mb-5 relative bg-red-500/65">
+                        <div class="flash flash-error">
+                            Update '{{ updater.newestVersion }}' is beschikbaar, <a class="text-white" href="/update.php">klik hier</a> om nu te updaten vanaf '{{ version }}'.
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             {% endblock %}
             {% block body_root %}{% block body %}{% endblock %}{% endblock %}
         </main>
         {% block footer %}
-        {% if is_granted('ROLE_USER') %}
-            <footer class="bottom">
-                <ul class="bottom-legal">
-                    <li>importeer de feed van alle activiteiten in je agenda via <a href="{{ path('ical_public') }}">deze link</a>. </li>
-                    <br />
-                    <li>importeer je persoonlijke activiteiten feed in je agenda via <a href="{{ path('ical_personal', { 'calendarToken': app.user}) }}">deze link</a>. </li>
-                    <br />
-                    <li>
-                        <form method="post" action="{{ path('ical_renew') }}">
-                            <input type="hidden" name="_csrf_token"
-                                value="{{ csrf_token('authenticate') }}"
-                            >
-                            <button style="background: none; padding: 0; color: #1779ba" type="submit">
-                                klik hier 
-                            </button>
-                            om je persoonlijke activiteiten feed te vernieuwen.
-                        </form>
-                    </li>
-                </ul>
-            </footer>
-        {% endif %}
-        {% if is_granted('ROLE_ADMIN') and updater.newestVersion != version %}
-            <div class="update button grow">
-                <span>!</span>
-                <div class="content">
-                    <h4>Er is een kiwi update beschikbaar</h4>
-                    <p>
-                        huidige versie:  {{ version }}<br>
-                        nieuwste versie: {{ updater.newestVersion}}.<br>
-                        <a href="/update.php">Klik hier om nu te updaten.</a></p>
-                </div>
-            </div>
-        {% endif %}
-        <div class="feedback button grow">
-            <span>i</span>
-            <div class="content">
-                <h4>Feedback</h4>
+        <div class="bg-gray-500/50 rounded-full bottom-8 right-8 size-10 fixed z-20 transition backdrop-blur group">
+            <span class="text-2xl text-white p-4">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512" style="height: .8em;display: inline-block;" fill="currentColor"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M48 80a48 48 0 1 1 96 0A48 48 0 1 1 48 80zM0 224c0-17.7 14.3-32 32-32H96c17.7 0 32 14.3 32 32V448h32c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H64V256H32c-17.7 0-32-14.3-32-32z"/></svg>
+            </span>
+            <div class="transition opacity-0 p-5 invisible group-focus:opacity-100 group-focus:visible group-active:opacity-100 group-active:visible group-hover:opacity-100 group-hover:visible w-[80vw] bg-white right-0 bottom-0 absolute  max-w-lg rounded-lg shadow-xl z-10">
+                <h3 class="text-xl font-extrabold">Feedback</h3>
                 <p>
                     Kiwi is volop in ontwikkeling. Er kunnen dus nog fouten in zitten.<br>
                     Heb jij een fout gevonden? Heb jij een idee om Kiwi te verbeteren? Of wil jij zelf graag mee helpen?<br>
-                    Laat het <a href="https://github.com/jasperweyne/helpless-kiwi/issues">hier</a> weten, dan helpen we je uit de brand!
+                    Laat het <a class="text-blue-500" href="https://github.com/jasperweyne/helpless-kiwi/issues">hier</a> weten, dan helpen we je uit de brand!
                 </p>
             </div>
         </div>
         {% endblock %}
         {% block javascripts %}
-            {{ encore_entry_script_tags('main') }}
         {% endblock %}
 	</body>
 </html>

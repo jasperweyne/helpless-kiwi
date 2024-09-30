@@ -2,16 +2,11 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Accounts' %}
-    
-    {% block top %}
-        {% embed 'admin/listview.html.twig' %}
-            {% set resultcount = accounts|length %}
+    {% set resultcount = accounts|length %}
 
-            {% block buttons %}
-                <a href="{{ path("admin_security_new") }} ">Nieuw</a>
-                <a href="{{ path("admin_security_import") }} ">Importeren</a>
-            {% endblock %}
-        {% endembed %}
+    {% block buttons %}
+        <a href="{{ path("admin_security_new") }} ">Nieuw</a>
+        <a href="{{ path("admin_security_import") }} ">Importeren</a>
     {% endblock %}
 {% endif %}
 

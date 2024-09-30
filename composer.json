@@ -41,8 +41,8 @@
         "symfony/uid": "^6.0",
         "symfony/validator": "^6.0",
         "symfony/web-link": "^6.0",
-        "symfony/webpack-encore-bundle": "^1.8",
         "symfony/yaml": "^6.0",
+        "symfonycasts/tailwind-bundle": "^0.5.0",
         "twig/extra-bundle": "^3.0",
         "twig/intl-extra": "^3.0",
         "twig/twig": "^2.11",
@@ -105,7 +105,8 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "php .hooks/install.php",
@@ -143,7 +144,8 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.4.*"
+            "require": "6.4.*",
+            "docker": true
         },
         "hooks": {
             "pre-commit": [

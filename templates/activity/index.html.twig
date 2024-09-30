@@ -2,35 +2,50 @@
 
 {% set page_title = 'Activiteiten' %}
 
-{% block body_root %}
-<div class="container row">
+{% block body %}
+    <div class="mx-auto max-w-6xl px-5 mb-5">
     {% if activities %}
-        <div class="cardholder">
-            <div class="grid-x large-up-2">
-                {% for activity in activities %}
-                    <div class="cell">
-                        <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="activity {{ activity.color ?? '' }}">
-                            {% if activity.image.name %}
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="filter">
-                                <img src="{{ vich_uploader_asset(activity, 'imageFile') }}" alt="{{ activity.name }}" class="over">
-                            {% endif %}
-                            <div class="container">
-                                <h2>{{ activity.name }}</h2>
-                                <span>{{ activity.start|format_datetime(pattern='E d LLL') }} -
-                                {% if not activity.atCapacity %}
-                                    {{ activity.currentRegistrations|length }}
-                                    {% if activity.hasCapacity %}/ {{ activity.capacity }}{% endif %}
-                                    aanmeldingen
-                                {% else %}VOL!{% endif %}
-                                </span>
-                            </div>
-                        </a>
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {% for activity in activities %}
+                <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="text-white block h-80 relative rounded shadow overflow-hidden transition-shadow w-full bg-gray-600 group">
+                    {% include 'components/activity_image.html.twig' with {'image_styles': 'transition group-hover:scale-125 ease-out duration-[4s]'} %}
+                    <div class="absolute bottom-0 left-0 right-0 p-5">
+                        <h2 class="font-extrabold text-3xl break-words">{{ activity.name }}</h2>
+                        <span>{{ activity.start|format_datetime(pattern='E d LLL') }}
+                        {% if activity.options|length > 0 %}
+                        -
+                        {% if not activity.atCapacity %}
+                            {{ activity.currentRegistrations|length }}
+                            {% if activity.hasCapacity %}/ {{ activity.capacity }}{% endif %}
+                            aanmeldingen
+                        {% else %}VOL!{% endif %}
+                        {% endif %}
+                        </span>
                     </div>
-                {% endfor %}
-            </div>
+                </a>
+            {% endfor %}
         </div>
     {% else %}
         <p>Geen activiteiten, kom later terug!</p>
     {% endif %}
-</div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer class="text-center text-xs text-neutral-700 pb-5 px-5 mx-auto max-w-6xl">
+        <span>Gebruik <a class="text-blue-500" href="{{ path('ical_public') }}" onclick="navigator.clipboard.writeText(this.href); alert('Link gekopieerd naar je klembord!'); return false;">deze link</a> om alle {{ org }} activiteiten in je agenda te importeren.</span>
+        {% if is_granted('ROLE_USER') %}
+            <span>Gebruik <a class="text-blue-500" href="{{ path('ical_personal', { 'calendarToken': app.user.calendarToken }) }}" onclick="navigator.clipboard.writeText(this.href); alert('Link gekopieerd naar je klembord!'); return false;">je persoonlijke link</a> om de activiteiten waarvoor jij je hebt aangemeld in je agenda te importeren.</span>
+            <span>
+                <form method="post" action="{{ path('ical_renew') }}" class="inline">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <button class="text-blue-500" type="submit">
+                        Klik hier 
+                    </button>
+                    om het adres van je persoonlijke link te vernieuwen.
+                </form>
+            </span>
+        {% endif %}
+    </footer>
+    {{ parent() }}
 {% endblock %}
