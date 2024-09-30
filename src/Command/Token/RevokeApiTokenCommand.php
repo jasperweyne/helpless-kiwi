@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class RevokeApiTokenCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
         parent::__construct();
     }

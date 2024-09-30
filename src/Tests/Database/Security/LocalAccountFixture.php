@@ -13,7 +13,7 @@ class LocalAccountFixture extends Fixture
     public const USERNAME = 'admin@test.nl';
 
     public function __construct(
-        private UserPasswordHasherInterface $encoder
+        private UserPasswordHasherInterface $encoder,
     ) {
         $this->encoder = $encoder;
     }

@@ -13,7 +13,7 @@ class RemoveAccountsEvent extends Event
 
     public function __construct(
         /** @var \App\Entity\Security\LocalAccount[] */
-        public array $accounts
+        public array $accounts,
     ) {
     }
 }

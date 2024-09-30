@@ -19,7 +19,7 @@ class TrustedClient implements PasswordAuthenticatedUserInterface
         #[ORM\Column(length: 255)]
         public string $id,
         #[ORM\Column(length: 255)]
-        public string $secret
+        public string $secret,
     ) {
         $this->tokens = new ArrayCollection();
     }

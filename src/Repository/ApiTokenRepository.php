@@ -26,7 +26,7 @@ class ApiTokenRepository extends ServiceEntityRepository
     public function generate(
         LocalAccount $account,
         TrustedClient $client,
-        \DateTimeImmutable $expiresAt = new \DateTimeImmutable('+5 minutes')
+        \DateTimeImmutable $expiresAt = new \DateTimeImmutable('+5 minutes'),
     ): string {
         $em = $this->getEntityManager();
 
