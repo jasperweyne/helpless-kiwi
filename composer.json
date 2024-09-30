@@ -16,7 +16,7 @@
         "drenso/symfony-oidc-bundle": "^2.0",
         "eluceo/ical": "^2.0",
         "nikic/php-parser": "^5.0",
-        "overblog/graphql-bundle": "^0.15",
+        "overblog/graphql-bundle": "^1.0",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpstan/phpdoc-parser": "^1.23",
         "symfony/apache-pack": "^1.0",
