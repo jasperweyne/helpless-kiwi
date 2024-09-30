@@ -9,9 +9,9 @@ use App\Event\RegistrationRemovedEvent;
 use App\Event\Security\CreateAccountsEvent;
 use App\Security\PasswordResetService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Security\Core\Security;
 
 class MailNotificationSubscriber implements EventSubscriberInterface
 {

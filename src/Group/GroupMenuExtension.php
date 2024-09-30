@@ -66,7 +66,7 @@ class GroupMenuExtension implements MenuExtensionInterface
                 $this->menuItems[] = [
                     'title' => $group->getName(),
                     'path' => ['admin_activity_group', [
-                        'id' => $group->getId() ?? '',
+                        'group' => $group->getId() ?? '',
                     ]],
                 ];
             }

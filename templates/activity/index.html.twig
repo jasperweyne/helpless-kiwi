@@ -7,7 +7,7 @@
     {% if activities %}
         <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
             {% for activity in activities %}
-                <a href="{{ path("activity_show", { 'id': activity.id }) }}" class="text-white block h-80 relative rounded shadow overflow-hidden transition-shadow w-full bg-gray-600 group">
+                <a href="{{ path("activity_show", { 'activity': activity.id }) }}" class="text-white block h-80 relative rounded shadow overflow-hidden transition-shadow w-full bg-gray-600 group">
                     {% include 'components/activity_image.html.twig' with {'image_styles': 'transition group-hover:scale-125 ease-out duration-[4s]'} %}
                     <div class="absolute bottom-0 left-0 right-0 p-5">
                         <h2 class="font-extrabold text-3xl break-words">{{ activity.name }}</h2>

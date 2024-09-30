@@ -10,10 +10,10 @@ use App\EventSubscriber\RegistrationSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Class RegistrationSubscriberTest.
@@ -42,9 +42,6 @@ final class RegistrationSubscriberTest extends KernelTestCase
      */
     private $user;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -62,9 +59,6 @@ final class RegistrationSubscriberTest extends KernelTestCase
         $this->registrationSubscriber = new RegistrationSubscriber($this->em, $stack, $security);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

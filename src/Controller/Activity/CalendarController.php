@@ -6,6 +6,7 @@ use App\Calendar\CalendarProvider;
 use App\Entity\Activity\Activity;
 use App\Entity\Security\LocalAccount;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,14 +21,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CalendarController extends AbstractController
 {
     public function __construct(
-        protected EntityManagerInterface $em
+        protected EntityManagerInterface $em,
     ) {
         $this->em = $em;
     }
 
     #[Route('/', methods: ['GET'], name: 'public')]
     public function getCalendar(
-        CalendarProvider $iCalProvider
+        CalendarProvider $iCalProvider,
     ): Response {
         /** @var Activity[] $publicActivities */
         $publicActivities = $this->em->getRepository(Activity::class)->findVisibleUpcomingByGroup([]);
@@ -38,7 +39,8 @@ class CalendarController extends AbstractController
     #[Route('/personal/{calendarToken}', methods: ['GET'], name: 'personal')]
     public function getPersonalCalendar(
         CalendarProvider $iCalProvider,
-        LocalAccount $user
+        #[MapEntity(mapping: ['calendarToken' => 'calendarToken'])]
+        LocalAccount $user,
     ): Response {
         /** @var Activity[] $personalActivities */
         $personalActivities = $this->em->getRepository(Activity::class)->findRegisteredFor($user);

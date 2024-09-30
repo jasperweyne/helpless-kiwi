@@ -2,15 +2,16 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Gebeurtenislog' %}
-    {% block results %}
-        <span class="text-neutral-300">
-        {% if pagination %}
-        Resultaten {{ pagination.index }}{% if pagination.results|length > 1 %}-{{ pagination.index + pagination.results|length - 1 }}{% endif %} -
-        {% endif %}
-        {{ pagination.total ?? log|length }} resultaten gevonden
-        </span>
-    {% endblock %}
 {% endif %}
+
+{% block results %}
+    <span class="text-neutral-300">
+    {% if pagination %}
+    Resultaten {{ pagination.index }}{% if pagination.results|length > 1 %}-{{ pagination.index + pagination.results|length - 1 }}{% endif %} -
+    {% endif %}
+    {{ pagination.total ?? log|length }} resultaten gevonden
+    </span>
+{% endblock %}
 
 {% block body %}
     <div class="table">

@@ -2,11 +2,11 @@
 
 {% if page_title is not defined %}
     {% set page_title = mail.title ?? '(geen titel)' %}
-    
-    {% block buttons %}
-        <a href="{{ path('admin_mail_index') }}"> Terug </a>
-    {% endblock %}
 {% endif %}
+    
+{% block buttons %}
+    <a href="{{ path('admin_mail_index') }}"> Terug </a>
+{% endblock %}
 
 {% block body_wrap %}
     <div class="tabs">

@@ -20,7 +20,7 @@
             <tbody>
             {% for mail in mails %}
                 <tr>
-                    <td><a href="{{ path("admin_mail_show", { 'id': mail.id }) }}"> {{ mail.title }} </a></td>
+                    <td><a href="{{ path("admin_mail_show", { 'mail': mail.id }) }}"> {{ mail.title }} </a></td>
                     <td>{{ mail.person.canonical ?? 'Onbekend' }}</td>
                     <td>{{ mail.sender }}</td>
                     <td>{{ mail.recipients|length }} afzender{{ mail.recipients|length == 1 ? '' : 's' }}</td> 

@@ -28,7 +28,7 @@ class OidcClientFactory
         string $clientId,
         string $clientSecret,
         string $redirectRoute,
-        string $rememberMeParameter
+        string $rememberMeParameter,
     ): OidcClientInterface {
         // True oidc client, for when oidc is enabled.
         // This is the regular oidc client, which should function as advertised.
