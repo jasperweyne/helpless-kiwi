@@ -89,7 +89,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testClearAction(): void
     {
         // Arrange
-        $client = $this->em->getPartialReference(TrustedClient::class, TrustedClientFixture::ID);
+        $client = $this->em->find(TrustedClient::class, TrustedClientFixture::ID);
         $account = $this->user(LocalAccountFixture::USERNAME);
         assert($account instanceof LocalAccount && null !== $client);
         $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
