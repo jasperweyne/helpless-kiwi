@@ -44,7 +44,7 @@ class CalendarControllerTest extends AuthWebTestCase
     public function testGetPersonalCalendar(): void
     {
         /** @var LocalAccount $user */
-        $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => 'admin@kiwi.nl']);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
         $token = $user->getCalendarToken();
 
         $this->client->request('GET', '/ical/personal/'.$token);
@@ -56,7 +56,7 @@ class CalendarControllerTest extends AuthWebTestCase
     public function testPostPersonalCalendarRenew(): void
     {
         /** @var LocalAccount $user */
-        $user = $this->em->getRepository(LocalAccount::class)->findBy(['email' => 'admin@kiwi.nl']);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
         $token = $user->getCalendarToken();
 
         $this->client->request('POST', '/ical/renew');
