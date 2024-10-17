@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class HasLocalAccountCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
         $this->em = $em;
 

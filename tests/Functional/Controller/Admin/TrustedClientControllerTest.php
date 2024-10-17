@@ -38,7 +38,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testIndexAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
-        self::assertSelectorTextContains('span', 'API');
+        self::assertSelectorTextContains('#title', 'API');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -82,7 +82,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
     public function testClearAction(): void
     {
         // Arrange
-        $client = $this->em->getPartialReference(TrustedClient::class, 'client');
+        $client = $this->em->find(TrustedClient::class, 'client');
         $account = $this->user('admin@kiwi.nl');
         assert($account instanceof LocalAccount && null !== $client);
         $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));

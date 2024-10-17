@@ -31,7 +31,7 @@ class ImportedAccounts
     public function __construct(
         /** @var LocalAccount[] */
         private array $currentAccounts,
-        public ?UploadedFile $file = null
+        public ?UploadedFile $file = null,
     ) {
     }
 

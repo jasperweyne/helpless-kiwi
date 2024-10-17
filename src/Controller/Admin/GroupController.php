@@ -9,7 +9,6 @@ use App\Log\EventService;
 use App\Repository\GroupRepository;
 use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,14 +23,14 @@ class GroupController extends AbstractController
 {
     public function __construct(
         private EventService $events,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
     /**
      * Creates a new group entity.
      */
-    #[Route('/new/{id?}', name: 'new', methods: ['GET', 'POST'])]
+    #[Route('/new/{parent?}', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, ?Group $parent): Response
     {
         $this->denyAccessUnlessGranted('in_group', $parent);
@@ -51,7 +50,7 @@ class GroupController extends AbstractController
 
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['group' => $group->getId()]);
         }
 
         return $this->render('admin/group/new.html.twig', [
@@ -64,7 +63,7 @@ class GroupController extends AbstractController
      * Lists all groups.
      */
     #[MenuItem(title: 'Groepen', menu: 'admin')]
-    #[Route('/{id?}', name: 'show', methods: ['GET'])]
+    #[Route('/{group?}', name: 'show', methods: ['GET'])]
     public function showAction(Request $request, ?Group $group, GroupRepository $groupRepo): Response
     {
         /** @var LocalAccount */
@@ -114,7 +113,7 @@ class GroupController extends AbstractController
     /**
      * Displays a form to edit an existing group entity.
      */
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{group}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, Group $group): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
@@ -125,7 +124,7 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['group' => $group->getId()]);
         }
 
         return $this->render('admin/group/edit.html.twig', [
@@ -137,7 +136,7 @@ class GroupController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route('/{id}/delete', name: 'delete')]
+    #[Route('/{group}/delete', name: 'delete')]
     public function deleteAction(Request $request, Group $group): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
@@ -161,7 +160,7 @@ class GroupController extends AbstractController
     /**
      * Displays a form to generate a new relation to a group entity.
      */
-    #[Route('/relation/new/{id}', name: 'relation_new', methods: ['GET', 'POST'])]
+    #[Route('/relation/new/{group}', name: 'relation_new', methods: ['GET', 'POST'])]
     public function relationNewAction(Request $request, Group $group): Response
     {
         $this->denyAccessUnlessGranted('edit_group', $group);
@@ -180,7 +179,7 @@ class GroupController extends AbstractController
             $name = $account->getCanonical();
             $this->addFlash('success', $name.' toegevoegd!');
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $group->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['group' => $group->getId()]);
         }
 
         return $this->render('admin/group/relation/new.html.twig', [
@@ -192,12 +191,11 @@ class GroupController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route('/relation/delete/{id}/{account_id}', name: 'relation_delete')]
+    #[Route('/relation/delete/{relation}/{account}', name: 'relation_delete')]
     public function relationDeleteAction(
         Request $request,
         Group $relation,
-        #[MapEntity(id: 'account_id')]
-        LocalAccount $account
+        LocalAccount $account,
     ): Response {
         $this->denyAccessUnlessGranted('edit_group', $relation);
 
@@ -209,7 +207,7 @@ class GroupController extends AbstractController
 
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_group_show', ['id' => $relation->getId()]);
+            return $this->redirectToRoute('admin_group_show', ['group' => $relation->getId()]);
         }
 
         return $this->render('admin/group/relation/delete.html.twig', [
@@ -227,7 +225,7 @@ class GroupController extends AbstractController
     private function createDeleteForm(Group $group): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_group_delete', ['id' => $group->getId()]))
+            ->setAction($this->generateUrl('admin_group_delete', ['group' => $group->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;
@@ -241,7 +239,7 @@ class GroupController extends AbstractController
     private function createRelationDeleteForm(Group $group, LocalAccount $account): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_group_relation_delete', ['id' => $group->getId(), 'account_id' => $account->getId()]))
+            ->setAction($this->generateUrl('admin_group_relation_delete', ['relation' => $group->getId(), 'account' => $account->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;

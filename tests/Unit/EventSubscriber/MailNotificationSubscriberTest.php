@@ -13,8 +13,8 @@ use App\EventSubscriber\MailNotificationSubscriber;
 use App\Security\PasswordResetService;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Class MailNotificationSubscriberTest.
@@ -30,9 +30,6 @@ final class MailNotificationSubscriberTest extends KernelTestCase
     private Security&MockObject $security;
     private Registration&MockObject $registration;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,9 +48,6 @@ final class MailNotificationSubscriberTest extends KernelTestCase
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

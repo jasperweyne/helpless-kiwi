@@ -2,18 +2,14 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Accounts' %}
-    
-    {% block top %}
-        {% embed 'admin/listview.html.twig' %}
-            {% set resultcount = accounts|length %}
-
-            {% block buttons %}
-                <a href="{{ path("admin_security_new") }} ">Nieuw</a>
-                <a href="{{ path("admin_security_import") }} ">Importeren</a>
-            {% endblock %}
-        {% endembed %}
-    {% endblock %}
 {% endif %}
+
+{% set resultcount = accounts|length %}
+
+{% block buttons %}
+    <a href="{{ path("admin_security_new") }} ">Nieuw</a>
+    <a href="{{ path("admin_security_import") }} ">Importeren</a>
+{% endblock %}
 
 {% block body %}
     <div class="table">
@@ -32,7 +28,7 @@
             <tbody>
             {% for account in accounts|sort((a, b) => (a.canonical ?? '') <=> (b.canonical ?? '')) %}
                 <tr>
-                    <td><a href="{{ path("admin_security_show", { 'id': account.id }) }}">{{ account.canonical ?? '{onbekend}'}}</a></td>
+                    <td><a href="{{ path("admin_security_show", { 'account': account.id }) }}">{{ account.canonical ?? '{onbekend}'}}</a></td>
                     <td>{{ account.email }}</td>
                     <td>{{ 'ROLE_ADMIN' in account.roles ? 'Ja' : 'Nee' }}</td>
                     <td>{{ account.password ? 'Ja' : 'Nee' }}</td>

@@ -38,9 +38,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $activities = $this->em->getRepository(Activity::class)->findAll();
 
         // Act
-        $node = $crawler->filter('body > main > div.container > div.cardholder > div.grid-x')
-            ->first()->filter('div.cell')
-            ->first()->filter('h2');
+        $node = $crawler->filter('main .grid a h2')->first();
 
         $exist = false;
         /** @var Activity $activity */

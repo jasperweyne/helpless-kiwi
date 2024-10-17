@@ -2,17 +2,17 @@
 
 {% if page_title is not defined %}
     {% set page_title = mail.title ?? '(geen titel)' %}
-    
-    {% block buttons %}
-        <a href="{{ path('admin_mail_index') }}"> Terug </a>
-    {% endblock %}
 {% endif %}
+    
+{% block buttons %}
+    <a href="{{ path('admin_mail_index') }}"> Terug </a>
+{% endblock %}
 
 {% block body_wrap %}
     <div class="tabs">
         {% embed 'components/tab.html.twig' with {'tab_label': 'Details', 'tab_default': true} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <tbody>
@@ -37,7 +37,7 @@
         
         {% embed 'components/tab.html.twig' with {'tab_label': 'Bericht', 'tab_name': 'content'} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 {{ content|raw }}
             </div>
             {% endblock %}
@@ -45,7 +45,7 @@
 
         {% embed 'components/tab.html.twig' with {'tab_label': 'Ontvangers', 'tab_name': 'recipients'} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <thead>

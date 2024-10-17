@@ -56,7 +56,6 @@ class Activity
     #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
     private Collection $registrations;
 
-    /** @var ?Location */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Location\Location", inversedBy: 'activities', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'location', referencedColumnName: 'id')]
     #[GQL\Field(type: 'Location!')]

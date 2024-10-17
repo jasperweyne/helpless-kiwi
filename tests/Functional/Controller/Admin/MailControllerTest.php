@@ -36,7 +36,7 @@ class MailControllerTest extends AuthWebTestCase
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('span', 'Mails');
+        self::assertSelectorTextContains('#title', 'Mails');
     }
 
     public function testShowAction(): void
@@ -52,6 +52,6 @@ class MailControllerTest extends AuthWebTestCase
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertIsString($title);
-        self::assertSelectorTextContains('span', $title);
+        self::assertSelectorTextContains('#title', $title);
     }
 }

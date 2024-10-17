@@ -2,27 +2,27 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Activiteit ' ~ activity.name %}
-
-    {% block buttons %}
-        <a href="{{ path('admin_activity_clone', { 'id': activity.id }) }}">Kopiëren</a>
-        {% if not activity.archived %}
-             <a href="{{ path('admin_activity_edit', { 'id': activity.id }) }}">Activiteit bewerken</a> 
-        {% endif %}
-        {% if is_granted("ROLE_ADMIN") %}
-            {% if activity.archived %}
-                <a href="{{ path('admin_activity_activate', { 'id': activity.id }) }}">Activiteit her activeren</a>
-            {% else %}
-                 <a href="{{ path('admin_activity_archive', { 'id': activity.id }) }}">Archiveren</a>
-            {% endif %}
-        {% endif %}
-    {% endblock %}
 {% endif %}
 
+{% block buttons %}
+    <a href="{{ path('admin_activity_clone', { 'base': activity.id }) }}">Kopiëren</a>
+    {% if not activity.archived %}
+            <a href="{{ path('admin_activity_edit', { 'activity': activity.id }) }}">Bewerken</a> 
+    {% endif %}
+    {% if is_granted("ROLE_ADMIN") %}
+        {% if activity.archived %}
+            <a href="{{ path('admin_activity_activate', { 'activity': activity.id }) }}">Terugzetten</a>
+        {% else %}
+                <a href="{{ path('admin_activity_archive', { 'activity': activity.id }) }}">Archiveren</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
 {% block body_wrap %}
-    <div class="tabs">
+    <div class="tabs flex flex-wrap max-w-full">
         {% embed 'components/tab.html.twig' with {'tab_label': 'Details', 'tab_default': true} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <tbody>
@@ -36,7 +36,7 @@
                             </tr>
                             <tr>
                                 <th>Locatie</th>
-                                <td><a href="{{ path('admin_location_show', { 'id': activity.location.id }) }}">{{ activity.location.address }}</a></td>
+                                <td><a href="{{ path('admin_location_show', { 'location': activity.location.id }) }}">{{ activity.location.address }}</a></td>
                             </tr>
                             <tr>
                                 <th>Zichtbaar vanaf</th>
@@ -115,7 +115,7 @@
                             </tr>
                             <tr>
                                 <th></th>
-                                <td> <a href="{{ path('admin_activity_image', { 'id': activity.id }) }}">Afbeelding aanpassen</a> </td>
+                                <td> <a href="{{ path('admin_activity_image', { 'activity': activity.id }) }}">Afbeelding aanpassen</a> </td>
                             </tr>
                             <tr>
                                 <th>Kleur</th>
@@ -139,7 +139,7 @@
                                                 <td>{{ option.name }}</td>
                                                 <td>&euro; {{ '%01.2f'|format(option.price / 100) }}</td>
                                                 <td>{{ option.target.name ?? '' }}{% if not option.target %}<i>Iedereen</i>{% endif %}</td>
-                                                <td><a href="{{ path('admin_activity_price_edit', { 'id': option.id }) }}">Bewerken</a></td>
+                                                <td><a href="{{ path('admin_activity_price_edit', { 'price': option.id }) }}">Bewerken</a></td>
                                             </tr>
                                         {% else %}
                                             <tr>
@@ -147,7 +147,7 @@
                                             </tr>
                                         {% endfor %}
                                             <tr>
-                                                <td><a href="{{ path('admin_activity_price_new', { 'id': activity.id }) }}">Prijs toevoegen</a></td>
+                                                <td><a href="{{ path('admin_activity_price_new', { 'activity': activity.id }) }}">Prijs toevoegen</a></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -187,7 +187,7 @@
 
         {% embed 'components/tab.html.twig' with {'tab_label': 'Deelnemers', 'tab_name': 'participants'} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <thead>
@@ -226,9 +226,9 @@
                                 <td>
                                     <a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a>
                                     |
-                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
+                                    <a href="{{ path('admin_activity_registration_delete', { 'registration': registration.id }) }}">Afmelden</a>
                                     |
-                                    <a href="{{ path('admin_activity_registration_edit', { 'id': registration.id }) }}">Bewerken</a>
+                                    <a href="{{ path('admin_activity_registration_edit', { 'registration': registration.id }) }}">Bewerken</a>
                                 </td>
                             </tr>
                         {% else %}
@@ -237,13 +237,13 @@
                             </tr>
                         {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_activity_registration_new', { 'id': activity.id }) }}">Aanmelding toevoegen</a></td>
+                                <td><a href="{{ path('admin_activity_registration_new', { 'activity': activity.id }) }}">Aanmelding toevoegen</a></td>
                                 <td></td><td></td>
                                 <td>
                                     {% if activity.currentRegistrations|length == 0 or activity.present is not null %}
-                                    <a href="{{ path('admin_activity_present_set', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                    <a href="{{ path('admin_activity_present_set', { 'activity': activity.id }) }}">Aanwezigheid aangeven</td>
                                     {% else %}
-                                    <a href="{{ path('admin_activity_present_edit', { 'id': activity.id }) }}">Aanwezigheid aangeven</td>
+                                    <a href="{{ path('admin_activity_present_edit', { 'activity': activity.id }) }}">Aanwezigheid aangeven</td>
                                     {% endif %}
                                 <td></td>
                                 <td>
@@ -253,7 +253,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><a href="{{ path('admin_activity_registration_new_external', { 'id': activity.id }) }}">Externe aanmelding toevoegen</a></td>
+                                <td><a href="{{ path('admin_activity_registration_new_external', { 'activity': activity.id }) }}">Externe aanmelding toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -264,7 +264,7 @@
 
         {% embed 'components/tab.html.twig' with {'tab_label': 'Reservelijst', 'tab_name': 'reserve'} %}
             {% block tab %}
-            <div class="card">
+            <div class="bg-neutral-50 rounded shadow">
                 <div class="table">
                     <table>
                         <thead>
@@ -282,11 +282,11 @@
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
                                 <td>
-                                    <a href="{{ path('admin_activity_registration_delete', { 'id': registration.id }) }}">Afmelden</a>
+                                    <a href="{{ path('admin_activity_registration_delete', { 'registration': registration.id }) }}">Afmelden</a>
                                     <a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a>
                                 </td>
-                                <td>{% if not loop.first %}<a href="{{ path('admin_activity_registration_reserve_move_up', { 'id': registration.id }) }}">&uarr;</a>{% endif %}</td>
-                                <td>{% if not loop.last %}<a href="{{ path('admin_activity_registration_reserve_move_down', { 'id': registration.id }) }}">&darr;</a>{% endif %}</td>
+                                <td>{% if not loop.first %}<a href="{{ path('admin_activity_registration_reserve_move_up', { 'registration': registration.id }) }}">&uarr;</a>{% endif %}</td>
+                                <td>{% if not loop.last %}<a href="{{ path('admin_activity_registration_reserve_move_down', { 'registration': registration.id }) }}">&darr;</a>{% endif %}</td>
                             </tr>
                         {% else %}
                             <tr>
@@ -294,7 +294,7 @@
                             </tr>
                         {% endfor %}
                             <tr>
-                                <td><a href="{{ path('admin_activity_registration_reserve_new', { 'id': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
+                                <td><a href="{{ path('admin_activity_registration_reserve_new', { 'activity': activity.id }) }}">Aanmelding reservelijst toevoegen</a></td>
                             </tr>
                         </tbody>
                     </table>

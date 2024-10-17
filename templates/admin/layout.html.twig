@@ -1,27 +1,27 @@
 {% extends 'layout.html.twig' %}
 
+{% set main_class = 'relative xl:pl-80' %}
+
 {% block stylesheets %}
-    {{ encore_entry_link_tags('admin') }}
+    {{ parent() }}
+    <link href="{{ preload('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css', {as: 'style', integrity: 'sha384-KZO2FRYNmIHerhfYMjCIUaJeGBRXP7CN24SiNSG+wdDzgwvxWbl16wMVtWiJTcMt', crossorigin: 'anonymous'}) }}" integrity="sha384-KZO2FRYNmIHerhfYMjCIUaJeGBRXP7CN24SiNSG+wdDzgwvxWbl16wMVtWiJTcMt" crossorigin="anonymous" rel="stylesheet" />
 {% endblock %}
 
 {% block javascripts %}
-    {{ encore_entry_script_tags('admin') }}
+    {{ parent() }}
+    <script src="{{ preload('https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js', {as: 'script', integrity: 'sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs', crossorigin: 'anonymous'}) }}" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+    <script src="{{ preload('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js', {as: 'script', integrity: 'sha384-JnbsSLBmv2/R0fUmF2XYIcAEMPHEAO51Gitn9IjL4l89uFTIgtLF1+jqIqqd9FSk', crossorigin: 'anonymous'}) }}" integrity="sha384-JnbsSLBmv2/R0fUmF2XYIcAEMPHEAO51Gitn9IjL4l89uFTIgtLF1+jqIqqd9FSk" crossorigin="anonymous"></script>
+    <script>$(document).ready(() => $('select[data-select="true"]').select2());</script>
 {% endblock %}
 
 {% block nav %}
-    <input type="checkbox" id="nav-state">
-    <header class="topbar">
-        <label for="nav-state" class="nav-toggle"><b></b></label>
-        <h2 class="nav-site">{{ org }}</h2>
-        <div class="nav-profile">
-            {% for item in menu.getItems('admin-profile') %}
-                <a href="{{item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}">{{ item.title }}</a>
-            {% endfor %}
-        </div>
-    </header>
-    <nav>
-        <h2>{{ org }}</h2>
-        <label for="nav-state" class="nav-toggle"><b></b>Sluit</label>
+    <input type="checkbox" id="nav-state" class="hidden peer" />
+    <nav class="bg-[#222533] text-[#8087aa] h-screen w-80 top-0 left-0 fixed overflow-y-auto z-50 transition -translate-x-80 *:p-5 peer-checked:translate-x-0 xl:translate-x-0">
+        <h2 class="font-bold hidden xl:block text-white">{{ org }}</h2>
+        <label for="nav-state" class="cursor-pointer hover:text-white group font-bold block xl:hidden">
+            <b class="bg-slate-600 inline-block h-0.5 w-3 align-baseline relative before:bg-inherit before:block before:absolute before:size-full before:bottom-1 after:bg-inherit after:block after:absolute after:size-full after:bottom-2"></b>
+            Sluit
+        </label>
         {% if activeSection is not defined %}
             {% set activeSection = app.request.get('_route') %}
         {% endif %}
@@ -29,15 +29,15 @@
             {% if (item.role is defined and is_granted(item.role)) or item.role is not defined %}
                 {% set item_type = (item.path is defined) ? "a"                          : "span" %}
                 {% set item_path = (item.path is defined) ? "href="~(item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)) : "" %}
-                {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "active " : "" %}
+                {% set item_active = (item.activeCriteria ?? item.path ?? null in activeSection) ? "bg-[#171922] text-white" : "" %}
                 {% if item.path is defined %}
-                <div class="{{ (item_active ~ " " ~ item.class ?? "")|trim }}">
+                <div class="hover:text-white {{ (item_active ~ " " ~ item.class ?? "")|trim }}">
                 {% endif %}
                     <{{ item_type }} class="{{ item_active }}" {{ item_path }}>{{ item.title }}</{{ item_type }}>
-                    {% if item.sub is defined %}
-                        <div class="sub">
+                    {% if item.sub is defined and item_active %}
+                        <div class="text-sm pl-4 pt-2 text-slate-600">
                         {% for sub in item.sub %}
-                            <a href="{{ sub.param  ? path(sub.path, sub.param) : path(sub.path) }}">{{ sub.title }}</a>
+                            <a href="{{ sub.param  ? path(sub.path, sub.param) : path(sub.path) }}" class="hover:text-white block">{{ sub.title }}</a>
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -47,21 +47,44 @@
             {% endif %}
         {% endfor %}
     </nav>
+    <header class="overflow-hidden p-5 text-slate-600">
+        <label for="nav-state" class="cursor-pointer block float-left pr-5 xl:hidden">
+            <b class="bg-slate-600 inline-block h-0.5 w-3 align-baseline relative before:bg-inherit before:block before:absolute before:size-full before:bottom-1 after:bg-inherit after:block after:absolute after:size-full after:bottom-2"></b>
+        </label>
+        <h2 class="float-left xl:hidden font-bold">{{ org }}</h2>
+        <div class="float-right hidden md:block">
+            {% for item in menu.getItems('admin-profile') %}
+                <a href="{{item.path is iterable ? path(item.path[0], item.path[1]) : path(item.path)}}" class="pl-5 hover:text-black">{{ item.title }}</a>
+            {% endfor %}
+        </div>
+    </header>
 {% endblock %}
 
 {% block body_root %}
-    <div class="container row">
-        <span class="top">
+    <div class="max-w-6xl p-5 pt-0 mx-auto">
+        <div class="relative pb-2">
             {% block top %}
-            <h3>{{ page_title }}</h3>
-            <span class="buttons">
-            {% block buttons %}
+            <h3 id="title" class="text-4xl font-bold">{{ page_title }}</h3>
+            {% block results %}
+            {% if resultcount is defined %}
+            <span class="text-neutral-300">{{ resultcount }} resultaten gevonden</span>
+            {% endif %}
             {% endblock %}
-            </span>
+            {% if not block('buttons')|trim is empty %}
+            <label for="actions-state" class="group cursor-pointer block right-0 top-2 h-7 absolute px-2 bg-white shadow rounded text-center">
+                <span class="hidden md:inline text-sm font-bold">Acties</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512" class="inline h-4 md:hidden"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"/></svg>
+                <div class="absolute right-0 top-7 p-2 z-20 hidden group-has-[~.peer:checked]:block text-blue-500 bg-white shadow rounded *:block *:w-max">
+                {% block buttons %}
+                {% endblock %}
+                </div>
+            </label>
+            <input type="checkbox" id="actions-state" class="hidden peer" />
+            {% endif %}
             {% endblock %}
-        </span>
+        </div>
         {% block body_wrap %}
-        <div class="card">
+        <div class="bg-neutral-50 rounded shadow">
         {% block body %}
         {% endblock %}
         </div>
@@ -72,17 +95,17 @@
 {% endblock %}
 
 {% block footer %}
-    <footer class="bottom">
-        <ul class="bottom-legal">
+    <footer class="text-center text-xs text-neutral-500 pb-5 px-5 xl:pl-80">
+        <ul class="bottom-legal *:inline-block *:after:content-['•'] *:after:pl-1">
             <li>Helpless Kiwi</li>
             {% if app.environment == 'dev' %}
                 <li>Development mode</li>
             {% elseif version != '' %}
                 <li>Version {{ version }}</li>
             {% endif %}
-            <li>Created by Jasper Weyne &amp; developed with the <a href="https://github.com/jasperweyne/helpless-kiwi/graphs/contributors">community</a></li>
+            <li>Created by Jasper Weyne &amp; developed with the <a class="text-blue-500" href="https://github.com/jasperweyne/helpless-kiwi/graphs/contributors">community</a></li>
             <li>Licensed under Apache version 2.0</li>
-            <li>Built with &hearts; and Symfony</li>
+            <li class="after:hidden">Built with &hearts; and Symfony</li>
         </ul>
     </footer>
 {% endblock %}

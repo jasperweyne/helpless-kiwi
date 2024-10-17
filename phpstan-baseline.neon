@@ -81,11 +81,6 @@ parameters:
 			path: src/EventListener/DoctrineTablePrefixListener.php
 
 		-
-			message: "#^While loop condition is always true\\.$#"
-			count: 1
-			path: src/Form/Security/Import/ImportedAccounts.php
-
-		-
 			message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node\\:\\:\\$value\\.$#"
 			count: 1
 			path: src/GraphQL/Types/DatetimeScalar.php
@@ -194,16 +189,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$s of static method App\\\\Entity\\\\Order\\:\\:create\\(\\) expects string, App\\\\Entity\\\\Order\\|null given\\.$#"
 			count: 2
 			path: src/Repository/RegistrationRepository.php
-
-		-
-			message: "#^Asserted type mixed for \\$subject with type mixed does not narrow down the type\\.$#"
-			count: 1
-			path: src/Security/GroupVoter.php
-
-		-
-			message: "#^Asserted type string for \\$attribute with type string does not narrow down the type\\.$#"
-			count: 1
-			path: src/Security/GroupVoter.php
 
 		-
 			message: "#^Only booleans are allowed in a ternary operator condition, string given\\.$#"

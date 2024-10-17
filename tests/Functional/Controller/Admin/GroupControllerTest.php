@@ -55,7 +55,7 @@ class GroupControllerTest extends AuthWebTestCase
     public function testShowAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
-        self::assertSelectorTextContains('span', 'Groepen');
+        self::assertSelectorTextContains('#title', 'Groepen');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

@@ -38,14 +38,14 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testIndexAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
-        self::assertSelectorTextContains('span', 'Activiteiten');
+        self::assertSelectorTextContains('#title', 'Activiteiten');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testIndexArchiveAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/archived');
-        self::assertSelectorTextContains('span', 'Archief');
+        self::assertSelectorTextContains('#title', 'Archief');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -163,7 +163,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->client->request('GET', $this->controllerEndpoint."/{$id}/");
 
         // Assert
-        self::assertSelectorTextContains('span', "Activiteit {$activity->getName()}");
+        self::assertSelectorTextContains('#title', "Activiteit {$activity->getName()}");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

@@ -1,25 +1,68 @@
-# Deploying
+# Deploying Helpless Kiwi on a server
+
+When you're planning on using Helpless Kiwi, you'll want to install it on a
+server. This allows your installation of Helpless Kiwi to be accessed by anyone
+on the internet. Helpless Kiwi is designed to run on common, cheap webhosting,
+which makes running it as easy and as cheap as possible. To make this possible,
+Helpless Kiwi is written in the PHP 8.1 programming language. If you're running
+your website with software like WordPress, Joomla or Drupal, your webhosting
+should be compatible!
 
 ## Using the installer
 For easy installation, the install & update script is now provided. Right click
 [this link to the script](https://raw.githubusercontent.com/jasperweyne/helpless-kiwi/master/public/update.php)
-and download it. Place it on your server, with the filename 'update.php'. Make
-sure its parent directories are /public_html/kiwi. Locate the script in your
-browser by navigating to https://__your.server.com__/update.php. Follow the
-instructions to install Kiwi.
+and download it. Place it on your server, with the filename 'update.php'. The
+instructions will differ from webhosting to webhosting.
+
+> [!IMPORTANT]
+> The update.php script MUST be placed in a directory named `kiwi`, which itself
+> MUST be placed in a directory named `public_html`
+> (eg. `.../public_html/kiwi/update.php`). Moreover, the `kiwi` directory MUST
+> be served as the root directory of the (sub)domain! If your webhosting doesn't
+> allow this, you'll need to manually build kiwi from source using the
+> instructions below.
+
+If everything is configured correctly, start the script in your browser by
+navigating to https://__your.server.com__/update.php. Follow the instructions to
+install Kiwi.
 
 ## Manually installing
-To ease the building process, you can download the latest release from the
+The installer downloads the latest release. If the installer doesn't work, you
+can download the latest release from the
 [releases page](https://github.com/jasperweyne/helpless-kiwi/releases), and
-upload the folders directly to your server. Here, it is assumed your server's
-root directory is 'public_html' and Kiwi is served from a sub-directory within,
-called 'kiwi', usually representing a subdomain.
+upload the folders directly to your server. Note that the same directory
+structure MUST be used as with the installation script.
 
-If these conditions don't apply to you, you can instead download, modify and run
-the build_prod.sh script from this repository to generate a production
-environment. This script is intended to produce the same results as a release.
-If this doesn't work properly for you can deploy manually using these
-instructions.
+## Using Docker
+If you aren't using managed webhosting and you're using a VPS or a dedicated
+server instead, you can also use Docker to deploy Helpless Kiwi. A dockerfile
+with a SSL-enabled webserver is present within this repository, as well as a
+docker compose definition to link the application with an SMTP email server and
+a database, both necessary for a fully functioning application.
+
+Download or clone the repository contents to the machine where you'll deploy the
+application. You'll need to build the image locally before starting a container.
+This means that the updater script won't work when using Docker; you'll need to
+build a new image with the latest version when updating to a new version.
+
+Please review the environment variables in the compose.*.yaml files and set
+them in a .env.local file accordingly. Then, to start the application, run:
+
+```sh
+docker compose build --no-cache
+docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
+```
+
+Please note that the application is not configured to run multiple instances in
+parallel for failover purposes, since PHP sessions and uploaded images are
+stored on the local filesystem. If you're planning on running the application
+using container orchestration tools (eg. Kubernetes), make sure only a single
+instance runs!
+
+## From source
+If you want to deploy a custom version of Helpless Kiwi (eg. with your own
+modifications, or with a different directory structure), you can instead create
+your own version from the source code in this repository.
 
 For clarity purposes, we're assuming you're deploying to another location, for
 example by moving the files over FTP. Locally or through SSH should work fine
@@ -31,18 +74,15 @@ remove the HTTPS disabling flag and set your environment to production. A basic
 configuration could look like:
 
 ```bash
-APP_ENV=prod
 DATABASE_URL=mysql://username:password@127.0.0.1:3306/database
 ```
 
-Typically, the public folder will need to be moved or renamed. To do this,
-you need to start by replacing 'public/' to the new folder, in all files
-in the repository. Notable files are:
+In the releases, the public folder is placed in a different location. To do this,
+you need to start by replacing 'public/' to the new folder, in all files in the
+repository. Notable files are:
 
-* webpack.config.js (this file will most likely require additional configuration)
 * config/packages/assets.yaml
 * config/packages/vich_uploader.yaml
-* config/packages/webpack_encore.yaml
 
 Additionally, add this line to `composer.json`:
 
@@ -65,9 +105,7 @@ this, begin by exporting the corresponding environment variables before running
 the installation, as seen here.
 
 ```bash
-export APP_ENV=prod APP_DEBUG=0
 composer install --no-dev --optimize-autoloader
-yarn install
 ```
 
 > Note: when deploying to production, make sure you keep working in the same
@@ -79,7 +117,8 @@ out-of-date lock file. You can safely ignore this message.
 After that, you can build the assets
 
 ```bash
-yarn build
+php bin/console tailwind:build --minify
+php bin/console asset-mapper:compile
 ```
 
 Now, you should deploy your database table structure. The means to do this

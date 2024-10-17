@@ -120,7 +120,7 @@ class MutationTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->user('admin@kiwi.nl');
-        $client = $this->em->getPartialReference(TrustedClient::class, 'client');
+        $client = $this->em->find(TrustedClient::class, 'client');
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;
@@ -168,7 +168,7 @@ class MutationTest extends AuthWebTestCase
     {
         // Arrange
         $user = $this->user('admin@kiwi.nl');
-        $client = $this->em->getPartialReference(TrustedClient::class, 'client');
+        $client = $this->em->find(TrustedClient::class, 'client');
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;
