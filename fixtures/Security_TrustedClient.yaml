@@ -1,4 +1,4 @@
 App\Entity\Security\TrustedClient:
-  LocalAccount_1:
+  TrustedClient_1:
     id: client
     secret: <hashPassword('secret')>

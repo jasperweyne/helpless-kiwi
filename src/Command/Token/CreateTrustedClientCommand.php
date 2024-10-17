@@ -47,7 +47,7 @@ class CreateTrustedClientCommand extends Command
         // Build the trusted client
         $secret = base64_encode(random_bytes(1024 / 8));
         $hashed = $this->factory->getPasswordHasher(TrustedClient::class)->hash($secret);
-        $client = new TrustedClient($name, $hashed);
+        $client = TrustedClient::create($name, $hashed);
 
         // Flush to database
         $this->em->persist($client);

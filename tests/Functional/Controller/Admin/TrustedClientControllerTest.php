@@ -155,7 +155,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
         $account = $this->user('admin@kiwi.nl');
         assert($account instanceof LocalAccount);
         $id = 'deleter';
-        $this->em->persist($client = new TrustedClient($id, 'secret'));
+        $this->em->persist($client = TrustedClient::create($id, 'secret'));
         $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
         $this->em->flush();
         $originalCountClient = $this->em->getRepository(TrustedClient::class)->count([]);
