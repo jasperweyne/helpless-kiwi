@@ -3,7 +3,6 @@
 namespace Tests\Functional\Controller\Security;
 
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Drenso\OidcBundle\OidcClientInterface;
 
 /**
@@ -17,9 +16,6 @@ class LoginControllerTest extends AuthWebTestCase
     {
         // Arrange
         $this->client->followRedirects(false);
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
         $this->login();
 
         // Act

@@ -4,11 +4,8 @@ namespace Tests\Integration\Form\Security;
 
 use App\Entity\Security\LocalAccount;
 use App\Form\Security\LocalAccountType;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Hautelook\AliceBundle\PhpUnit\RecreateDatabaseTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -21,7 +18,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class LocalAccountTypeTest extends KernelTestCase
 {
-    protected AbstractDatabaseTool $databaseTool;
+    use RecreateDatabaseTrait;
+
     protected EntityManagerInterface $em;
     protected LocalAccountType $localAccountType;
 
@@ -30,23 +28,8 @@ class LocalAccountTypeTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        // Get all database tables
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $cmf = $this->em->getMetadataFactory();
-        $classes = $cmf->getAllMetadata();
-
-        // Write all tables to database
-        $schema = new SchemaTool($this->em);
-        $schema->createSchema($classes);
-
-        // Load database tool
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
         $this->localAccountType = new LocalAccountType();
-
-        // Setup empty data
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
     }
 
     protected function tearDown(): void

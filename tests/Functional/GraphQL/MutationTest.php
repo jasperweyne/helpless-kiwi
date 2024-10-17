@@ -6,7 +6,6 @@ use App\Entity\Security\ApiToken;
 use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
 use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
@@ -31,10 +30,6 @@ class MutationTest extends AuthWebTestCase
         $this->hasher = $factory->getPasswordHasher(TrustedClient::class);
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            TrustedClientFixture::class,
-        ]);
     }
 
     protected function tearDown(): void
@@ -47,9 +42,9 @@ class MutationTest extends AuthWebTestCase
     public function testLogin(): void
     {
         // Arrange
-        $user = LocalAccountFixture::USERNAME;
+        $user = 'admin@kiwi.nl';
         $pass = 'root';
-        $id = TrustedClientFixture::ID;
+        $id = 'client';
         $secret = TrustedClientFixture::SECRET;
 
         $query = <<<GRAPHQL
@@ -74,9 +69,9 @@ class MutationTest extends AuthWebTestCase
     public function testLoginInvalidClient(): void
     {
         // Arrange
-        $user = LocalAccountFixture::USERNAME;
+        $user = 'admin@kiwi.nl';
         $pass = 'root';
-        $id = TrustedClientFixture::ID;
+        $id = 'client';
         $secret = 'unknown';
 
         $query = <<<GRAPHQL
@@ -99,9 +94,9 @@ class MutationTest extends AuthWebTestCase
     public function testLoginWrongPassword(): void
     {
         // Arrange
-        $user = LocalAccountFixture::USERNAME;
+        $user = 'admin@kiwi.nl';
         $pass = 'wrong';
-        $id = TrustedClientFixture::ID;
+        $id = 'client';
         $secret = TrustedClientFixture::SECRET;
 
         $query = <<<GRAPHQL
@@ -124,8 +119,8 @@ class MutationTest extends AuthWebTestCase
     public function testLogout(): void
     {
         // Arrange
-        $user = $this->user(LocalAccountFixture::USERNAME);
-        $client = $this->em->find(TrustedClient::class, TrustedClientFixture::ID);
+        $user = $this->user('admin@kiwi.nl');
+        $client = $this->em->find(TrustedClient::class, 'client');
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;
@@ -149,7 +144,7 @@ class MutationTest extends AuthWebTestCase
     public function testLogoutUnknown(): void
     {
         // Arrange
-        $user = $this->user(LocalAccountFixture::USERNAME);
+        $user = $this->user('admin@kiwi.nl');
         assert($user instanceof LocalAccount);
 
         $query = <<<GRAPHQL
@@ -172,8 +167,8 @@ class MutationTest extends AuthWebTestCase
     public function testLogoutUnauthorized(): void
     {
         // Arrange
-        $user = $this->user(LocalAccountFixture::USERNAME);
-        $client = $this->em->find(TrustedClient::class, TrustedClientFixture::ID);
+        $user = $this->user('admin@kiwi.nl');
+        $client = $this->em->find(TrustedClient::class, 'client');
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
         $tokenString = $token->token;

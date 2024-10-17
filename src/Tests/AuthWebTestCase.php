@@ -3,11 +3,8 @@
 namespace App\Tests;
 
 use App\Entity\Security\LocalAccount;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Hautelook\AliceBundle\PhpUnit\RecreateDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,15 +15,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class AuthWebTestCase extends WebTestCase
 {
+    use RecreateDatabaseTrait;
+
     /**
      * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
      */
     protected $client;
-
-    /**
-     * @var AbstractDatabaseTool
-     */
-    protected $databaseTool;
 
     protected function setUp(): void
     {
@@ -34,18 +28,6 @@ class AuthWebTestCase extends WebTestCase
 
         $this->client = static::createClient();
         $this->client->followRedirects(true);
-
-        // Get all database tables
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        $cmf = $em->getMetadataFactory();
-        $classes = $cmf->getAllMetadata();
-
-        // Write all tables to database
-        $schema = new SchemaTool($em);
-        $schema->createSchema($classes);
-
-        // Load database tool
-        $this->databaseTool = $this->client->getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
     protected function tearDown(): void
@@ -78,7 +60,7 @@ class AuthWebTestCase extends WebTestCase
 
         $user = new LocalAccount();
         $user
-            ->setEmail(LocalAccountFixture::USERNAME)
+            ->setEmail('admin@kiwi.nl')
             ->setRoles($roles)
         ;
 

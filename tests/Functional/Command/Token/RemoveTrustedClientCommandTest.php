@@ -4,7 +4,6 @@ namespace Tests\Functional\Command\Token;
 
 use App\Entity\Security\TrustedClient;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -20,22 +19,13 @@ class RemoveTrustedClientCommandTest extends AuthWebTestCase
     /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->databaseTool->loadFixtures([
-            TrustedClientFixture::class,
-        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

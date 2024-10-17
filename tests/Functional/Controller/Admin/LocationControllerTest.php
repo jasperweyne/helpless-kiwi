@@ -4,8 +4,6 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Location\Location;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Location\LocationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -22,10 +20,6 @@ class LocationControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            LocationFixture::class,
-        ]);
 
         $this->login();
 

@@ -6,7 +6,6 @@ use App\Controller\Admin\SecurityController;
 use App\Entity\Security\LocalAccount;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -28,10 +27,6 @@ class SecurityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
