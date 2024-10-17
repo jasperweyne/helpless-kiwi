@@ -9,7 +9,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class TestFunctionProvider extends BaseProvider
 {
     public function __construct(
-        private UserPasswordHasherInterface $hasher
+        private UserPasswordHasherInterface $hasher,
     ) {
     }
 
