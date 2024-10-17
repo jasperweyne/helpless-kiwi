@@ -51,6 +51,7 @@
     "require-dev": {
         "ext-sqlite3": "*",
         "ext-xdebug": "*",
+        "dama/doctrine-test-bundle": "^8.2",
         "friendsofphp/php-cs-fixer": "^3.4",
         "hautelook/alice-bundle": "^2.12",
         "overblog/graphiql-bundle": "^0.3.0",
