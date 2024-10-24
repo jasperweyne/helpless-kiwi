@@ -6,598 +6,571 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Dotenv\Dotenv;
 
-class Log
+class Updater
 {
-    /**
-     * Write a new message to the log.
-     *
-     * @param string $msg The message written to the log
-     */
-    public static function msg(string $msg)
+    protected string $releaseUrl = 'https://api.github.com/repos/jasperweyne/helpless-kiwi/releases';
+    protected ?array $env = null;
+
+    public function run(): void
     {
-        if (!isset($_SESSION['log'])) {
-            $_SESSION['log'] = '';
+        // Validate that the updater can run
+        $this->checkReqs();
+
+        // Load the environment variables
+        $this->loadEnv();
+
+        // Check if logged in
+        $this->login();
+
+        // Check if default environment parameters are set
+        $this->saveEnvDefaults();
+
+        // Check if database is configured
+        $this->registerDatabase();
+
+        // Check if updater is in progress
+        $this->runUpdaterStep();
+
+        // Check if application is up to date
+        $this->needsUpdate();
+
+        // Check if application name is confirm_update
+        $this->registerName();
+
+        // Check if mailer is configured
+        $this->registerMailer();
+
+        // Check if a security mode has been set
+        $this->registerSecurity();
+
+        // Check if OpenID Connect is configured
+        $adminHelp = '';
+        if ('oidc' === $this->env['SECURITY_MODE']) {
+            $this->registerOidc();
+            $adminHelp = '<br>Om in te loggen bij lokale accounts, <a href="/login?provider=local">klik hier</a>';
         }
 
-        $_SESSION['log'] .= str_replace("\n", '<br>', $msg).'<br>';
-    }
+        // Check if an admin account has been added
+        $this->registerUser();
 
-    /**
-     * Write raw console data to the log, formatted monospace.
-     *
-     * @param string $msg The console message written to the log
-     */
-    public static function console(string $msg)
-    {
-        self::msg("<pre>$msg</pre>");
-    }
-
-    /**
-     * Read console data from the log, formatted as HTML.
-     *
-     * @param bool $clear Whether to clear the log after reading
-     *
-     * @return string The HTML formatted log
-     */
-    public static function read(bool $clear = false)
-    {
-        $log = $_SESSION['log'] ?? null;
-        if ($clear) {
-            unset($_SESSION['log']);
-        }
-
-        return $log;
-    }
-}
-
-class IntegrationTool
-{
-    protected $application;
-    protected $verification;
-
-    public function __construct()
-    {
-        $this->application = null;
-        $this->verification = false;
-    }
-
-    /**
-     * Validate the environment of the updater script.
-     *
-     * @throws \Exception If the project's environment is somehow invalid
-     */
-    public function envIsValid()
-    {
-        // Only run once, to avoid infinite recursion
-        if ($this->verification) {
-            return;
-        }
-
-        // If not ran earlier, run it now and mark it
-        $this->verification = true;
-
-        // Check script file location
-        if (__DIR__ !== $this->getPublicPath()) {
-            throw new \Exception('The script is in the wrong location. Its direct parents should be public_html/kiwi, but it\'s currently placed in '.__DIR__);
-        }
-
-        // Check request URI
-        if ('/update.php' !== $_SERVER['REQUEST_URI']) {
-            throw new \Exception('The server is setup incorrectly. The request URI should be /update.php, but it\'s '.$_SERVER['REQUEST_URI']);
-        }
-
-        // Check whether the path is writable
-        if (!is_writable($this->getCommonPath())) {
-            throw new \Exception($this->getCommonPath().' is not writable by the updater script.');
-        }
-
-        // Check whether the correct extensions are installed
-        $required = ['zip', 'json'];
-        foreach ($required as $requirement) {
-            if (!extension_loaded($requirement)) {
-                throw new \Exception("The $requirement extension is missing. Please install or enable the $requirement extension");
-            }
-        }
-    }
-
-    /**
-     * Get the root path of the Kiwi installation.
-     *
-     * @return string The root path of the Kiwi installation
-     */
-    public function getCommonPath(): string
-    {
-        if (!$this->verification) {
-            $this->envIsValid();
-        }
-
-        return dirname(dirname(__DIR__));
-    }
-
-    /**
-     * Get the path where this installer stores temporary files.
-     *
-     * @return string The path used by the Kiwi installer for temporary files
-     */
-    public function getInstallerPath()
-    {
-        return $this->getCommonPath().DIRECTORY_SEPARATOR.'install';
-    }
-
-    /**
-     * Get the path where Kiwi serves its public, static files from.
-     *
-     * @return string The public path used by Kiwi
-     */
-    public function getPublicPath(string $common = null): string
-    {
-        return ($common ?? $this->getCommonPath()).DIRECTORY_SEPARATOR.'public_html'.DIRECTORY_SEPARATOR.'kiwi';
-    }
-
-    /**
-     * Get the root path where the Kiwi source is stored.
-     *
-     * @return string The root path for the Kiwi source
-     */
-    public function getRootPath(string $common = null)
-    {
-        return ($common ?? $this->getCommonPath()).DIRECTORY_SEPARATOR.'kiwi';
-    }
-
-    /**
-     * Check whether Kiwi was installed.
-     *
-     * @return string The root path for the Kiwi source
-     */
-    public function hasApplication()
-    {
-        return file_exists($this->getAutoloaderPath());
+        // Everything checks out, let the user know
+        self::render('Up-to-date!', "<p>Je draait de laatste versie van Kiwi.$adminHelp</p>");
     }
 
     /**
      * Run a Kiwi command.
      *
      * @param string $command The command to run
-     * @param string $stdout  The string variable where the output will be stored
+     * @param bool   $stdout  Whether to return stdout contents, returns status code if false
      *
-     * @return int The status code of the command
+     * @return ($stdout ? string : int)
      */
-    public function runCommand(string $command, &$stdout = null): int
+    public function cmd(string $command, bool $stdout = true): int|string
     {
-        // loadApplication must be called first, as it loads the autoloader
-        $app = $this->loadApplication();
+        static $app = null;
+        if (null === $app) {
+            require_once self::path('kiwi/vendor/autoload.php');
 
-        // Run the command
-        $input = new StringInput($command);
-        $output = new BufferedOutput();
-        $result = $app->run($input, $output);
-
-        // Extract the output
-        $stdout = $output->fetch();
-
-        return $result;
-    }
-
-    /**
-     * Load the Kiwi application, used for interacting with it.
-     *
-     * @return Application The Kiwi application
-     */
-    public function loadApplication(): Application
-    {
-        if (!$this->application) {
-            if (!$this->hasApplication()) {
-                throw new \Exception('Symfony is not installed.');
-            }
-
-            include_once $this->getAutoloaderPath();
-
-            (new Dotenv())->bootEnv($this->getRootPath() . DIRECTORY_SEPARATOR . '.env');
+            (new Dotenv())->bootEnv(self::path('kiwi/.env'));
 
             $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
-            $this->application = new Application($kernel);
-            $this->application->setAutoExit(false);
+            $app = new Application($kernel);
+            $app->setAutoExit(false);
         }
 
-        return $this->application;
+        // Run the command
+        $result = $app->run(new StringInput($command), $output = new BufferedOutput());
+        if ($stdout && 0 !== $result) {
+            throw new Exception($output->fetch());
+        }
+
+        return $stdout ? $output->fetch() : $result;
     }
 
     /**
-     * Get the path of the Composer autoloader.
+     * Validate the environment of the updater script.
      *
-     * @return string The filesystem path of the Composer autoloader
+     * @throws Exception If the project's environment is somehow invalid
      */
-    protected function getAutoloaderPath(): string
+    public function checkReqs(): void
     {
-        return $this->getRootPath().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
-    }
-}
+        // Check request URI
+        if ('/update.php' !== $_SERVER['REQUEST_URI']) {
+            throw new Exception('The server is setup incorrectly. The request URI should be /update.php, but it\'s '.$_SERVER['REQUEST_URI']);
+        }
 
-class EnvFileTool
-{
-    public const ENV_FILE = '.env.local.php';
-    protected $buffer;
-    protected $path;
+        // Check whether the path is writable
+        if (!is_writable($root = self::path())) {
+            throw new Exception("$root is not writable by the updater script.");
+        }
 
-    public function __construct($path)
-    {
-        $this->path = $path;
-        $this->buffer = null;
-    }
-
-    /**
-     * Check whether the environment settings file exists.
-     *
-     * @return bool Whether the environment settings file exists
-     */
-    public function exists(): bool
-    {
-        return file_exists($this->file());
+        // Check whether the correct extensions are installed
+        $extensions = implode(', ', array_filter(['zip', 'json', 'mysqli', 'session'], fn ($ext) => !extension_loaded($ext)));
+        if (!empty($extensions)) {
+            throw new Exception('The following extensions are missing, please install or enable them: '.$extensions);
+        }
     }
 
     /**
      * Load the environment settings from the filesystem.
      */
-    public function load(bool $forceLoad = false)
+    private function loadEnv(bool $forceLoad = false): void
     {
-        if ($forceLoad || !$this->buffer) {
-            if ($this->exists()) {
-                $this->buffer = require $this->file();
-            } else {
-                $this->buffer = [];
-            }
+        if ($forceLoad || !$this->env) {
+            $path = self::path('kiwi/.env.local.php');
+            $this->env = file_exists($path) ? require $path : [];
         }
     }
 
     /**
      * Save the currently loaded environment settings to the filesystem.
      */
-    public function save()
+    private function saveEnv(): void
     {
-        if (!$this->buffer) {
+        if (!$this->env) {
             return;
         }
 
-        if (!file_exists($this->path)) {
-            mkdir($this->path);
+        // Create export string
+        $keys = array_map(fn ($x) => addslashes($x), array_keys($this->env ?? []));
+        $vals = array_map(fn ($x) => addslashes($x), array_values($this->env ?? []));
+        $export = implode(PHP_EOL, [
+            '<?php',
+            '',
+            'return [',
+            ...array_map(fn ($k, $v) => "    '$k' => '$v',", $keys, $vals),
+            '];',
+            '',
+        ]);
+
+        // Create directory and write export to disk
+        if (!file_exists($dir = self::path('kiwi'))) {
+            mkdir($dir);
         }
 
-        $accessfile = fopen($this->file(), 'w');
-        $written = fwrite($accessfile, $this->export());
-        fclose($accessfile);
-
-        if (false === $written) {
-            throw new \Exception('Problem writing environment variables to disk');
+        if (false === file_put_contents(self::path('kiwi/.env.local.php'), $export)) {
+            throw new Exception('Problem writing environment variables to disk');
         }
-    }
-
-    /**
-     * Check whether an environment variable has been set.
-     */
-    public function hasVar(string $var): bool
-    {
-        if (!$this->buffer) {
-            $this->load();
-        }
-
-        return isset($this->buffer[$var]);
-    }
-
-    /**
-     * Get the value of an environment variable.
-     *
-     * @param string $var The environment variable to retrieve
-     *
-     * @return string The environment variable
-     */
-    public function getVar(string $var)
-    {
-        if (!$this->buffer) {
-            $this->load();
-        }
-
-        return $this->buffer[$var] ?? null;
-    }
-
-    /**
-     * Set the value of an environment variable.
-     *
-     * @param string $var   The environment variable
-     * @param string $value The value of the environment variable
-     *
-     * @return self
-     */
-    public function setVar(string $var, string $value)
-    {
-        if (!$this->buffer) {
-            $this->load();
-        }
-
-        $this->buffer[$var] = $value;
-
-        return $this;
     }
 
     /**
      * Register and save the default environment variables necessary for Kiwi.
      */
-    public function defaults()
+    private function saveEnvDefaults(): void
     {
-        // Application environment
-        $this->setVar('APP_DEBUG', '0');
-        $this->setVar('APP_ENV', 'prod');
-
-        // App secret
-        if (!$this->hasVar('APP_SECRET')) {
+        if (!isset($this->env['APP_SECRET'])) {
             $hexchars = '0123456789abcdef';
             $random_val = '';
             for ($i = 0; $i < 32; ++$i) {
                 $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
             }
-            $this->setVar('APP_SECRET', $random_val);
+            $this->env['APP_SECRET'] = $random_val;
+            $this->env['APP_DEBUG'] = '0';
+            $this->env['APP_ENV'] = 'prod';
+
+            $this->saveEnv();
+        }
+    }
+
+    private function login(): void
+    {
+        session_start();
+
+        // If no password is registered yet, create one
+        if (!isset($this->env['UPDATER_PASSWORD'])) {
+            $result = self::form('Welkom bij de Kiwi installer', '<p>Welkom bij de Kiwi installatie. Registreer een wachtwoord voor de installer.</p>', [
+                'Wachtwoord' => ['type' => 'password', 'required' => true],
+                'Herhaal wachtwoord' => ['type' => 'password', 'required' => true],
+            ], function ($data) {
+                if ($data['Wachtwoord'] !== $data['Herhaal wachtwoord']) {
+                    return ['Wachtwoorden zijn niet gelijk'];
+                }
+            });
+
+            $this->env['UPDATER_PASSWORD'] = password_hash($result['Wachtwoord'], PASSWORD_BCRYPT);
+            $this->saveEnv();
+
+            $_SESSION['secret'] = $result['Wachtwoord'];
         }
 
-        // Userprovider Key
-        if (!$this->hasVar('USERPROVIDER_KEY')) {
-            $hexchars = '0123456789abcdef';
-            $random_val = '';
-            for ($i = 0; $i < 32; ++$i) {
-                $random_val .= $hexchars[random_int(0, strlen($hexchars) - 1)];
+        // Check if logged in
+        if (password_verify($_SESSION['secret'] ?? '', $this->env['UPDATER_PASSWORD'])) {
+            return;
+        }
+
+        // Not logged in, show login screen
+        $result = self::form('Log in', '<p>Welkom bij de Kiwi installatie. Log in om door te gaan.</p>', [
+            'Wachtwoord' => ['type' => 'password', 'required' => true, 'filter' => fn ($pass) => password_verify($pass, $this->env['UPDATER_PASSWORD'])],
+        ]);
+
+        $_SESSION['secret'] = $result['Wachtwoord'];
+    }
+
+    private function registerDatabase()
+    {
+        if (isset($this->env['DATABASE_URL'])) {
+            return;
+        }
+
+        $result = self::form('Database Configuratie', '<p>Geef de verbindingsinstellingen van je MySQL of MariaDB database op. Dit moet een lege database zijn. Als je niet zeker weet wat je instellingen zijn, neem dan contact op met je host.</p>', [
+            'Database Gebruiker' => ['placeholder' => 'username', 'required' => true],
+            'Database Wachtwoord' => ['placeholder' => 'password'],
+            'Database Host' => ['placeholder' => 'localhost', 'required' => true],
+            'Database Naam' => ['placeholder' => 'kiwi', 'required' => true],
+        ], function ($data) {
+            // Check whether a connection can be made
+            [$user, $pass, $host, $name] = array_values($data);
+            $connection = @mysqli_connect($host, $user, $pass);
+            if (!$connection) {
+                return ["Couldn't connect to $host with user $user"];
             }
-            $this->setVar('USERPROVIDER_KEY', $random_val);
-        }
 
-        $this->save();
-    }
-
-    /**
-     * Export the environment variables as a PHP file formatted string.
-     *
-     * @return string The contents of the PHP file
-     */
-    protected function export(): string
-    {
-        $data = PHP_EOL;
-        foreach ($this->buffer ?? [] as $key => $value) {
-            $escKey = addslashes($key);
-            $escVal = addslashes($value);
-            $data .= "    '$escKey' => '$escVal',".PHP_EOL;
-        }
-
-        return '<?php'.PHP_EOL.PHP_EOL."return [$data];".PHP_EOL;
-    }
-
-    /**
-     * Get the environment variable file path.
-     *
-     * @return string The environment variable file path
-     */
-    private function file(): string
-    {
-        return $this->path.DIRECTORY_SEPARATOR.self::ENV_FILE;
-    }
-}
-
-class DatabaseTool
-{
-    protected $integration;
-    protected $user;
-    protected $pass;
-    protected $host;
-    protected $name;
-
-    public function __construct($url, IntegrationTool $integration = null)
-    {
-        $this->integration = $integration;
-
-        // Check if a database connection is configured
-        $matches = [];
-        if (!preg_match('/^\w+:\/\/(\w*):(\w*)@([\w\.]*):\d+\/(\w+)/', $url, $matches)) {
-            throw new \Exception('Invalid database URL');
-        }
-
-        // Extract the database variables
-        $this->user = $matches[1];
-        $this->pass = $matches[2];
-        $this->host = $matches[3];
-        $this->name = $matches[4];
-    }
-
-    /**
-     * Check whether the supplied database exists.
-     *
-     * @param bool $createIfEmpty Create the database if it doesn't exist'
-     *
-     * @return bool Whether the database exists
-     */
-    public function exists($createIfEmpty = false)
-    {
-        // Try connect to the database host
-        $connection = @mysqli_connect($this->host, $this->user, $this->pass);
-        if (!$connection) {
-            return false;
-        }
-
-        $found = false;
-        try {
             // Check whether database exists
             $res = mysqli_query($connection, 'SHOW DATABASES');
-            while ($row = mysqli_fetch_assoc($res)) {
-                if ($row['Database'] == $this->name) {
-                    $found = true;
-                    break;
+            $found = false;
+            try {
+                while ($row = mysqli_fetch_assoc($res)) {
+                    if ($row['Database'] === $name) {
+                        $found = true;
+                        break;
+                    }
                 }
+            } finally {
+                $res->close();
+                $connection->close();
             }
-            $res->close();
-            $connection->next_result();
 
-            // Create database if it doesn't exist
-            if (!$found && $createIfEmpty) {
-                $sql = 'CREATE DATABASE '.$this->name;
-                if (!$connection->query($sql)) {
-                    throw new \Exception('Error creating database: '.$connection->error);
-                }
-
-                Log::msg('Database created successfully.');
-                $found = true;
+            if (!$found) {
+                return ["Credentials are correct, but database '$name' was not found"];
             }
-        } finally {
-            $connection->close();
+        });
+
+        [$user, $pass, $host, $name] = array_values($result);
+        $this->env['DATABASE_URL'] = "mysql://$user:$pass@$host:3306/$name";
+        $this->saveEnv();
+    }
+
+    private function registerName(): void
+    {
+        if (isset($this->env['ORG_NAME'])) {
+            return;
         }
 
-        return $found;
+        $result = self::form('Naam organisatie', '<p>Stel de naam in van je organisatie.</p>', [
+            'Naam Organisatie' => ['required' => 'true'],
+        ]);
+
+        $this->env['ORG_NAME'] = $result['Naam Organisatie'];
+        $this->saveEnv();
     }
 
-    /**
-     * Check whether any unexecuted migrations are available.
-     *
-     * @return bool Whether any unexecuted migrations are available
-     */
-    public function canMigrate()
+    private function registerMailer(): void
     {
-        return 0 !== $this->integration->runCommand('doctrine:migrations:up-to-date');
+        if (isset($this->env['MAILER_URL'])) {
+            return;
+        }
+
+        $result = self::form('E-mail configuratie', '', [
+            'email_type' => [
+                'type' => 'radio',
+                'options' => [
+                    'smtp' => 'SMTP e-mail',
+                    'noemail' => 'Geen e-mail',
+                ],
+            ],
+            'Swiftmailer URL' => ['filter' => fn ($x) => '' === $x || filter_var($x, FILTER_VALIDATE_URL)],
+            'E-mailadres verzender' => ['filter' => fn ($x) => '' === $x || filter_var($x, FILTER_VALIDATE_EMAIL), 'type' => 'email'],
+        ]);
+
+        if ('smtp' === $result['email_type']) {
+            $this->env['MAILER_URL'] = trim($result['Swiftmailer URL']);
+            $this->env['DEFAULT_FROM'] = trim($result['E-mailadres verzender']);
+        } else {
+            $this->env['MAILER_URL'] = 'null://localhost';
+        }
+        $this->saveEnv();
     }
 
-    /**
-     * Run the available database migrations.
-     */
-    public function migrateDb()
+    private function registerSecurity(): void
     {
-        $output = '';
-        $result = $this->integration->runCommand('doctrine:migrations:migrate -n --allow-no-migration --all-or-nothing', $output);
+        if (isset($this->env['SECURITY_MODE'])) {
+            return;
+        }
 
-        if (0 !== $result) {
-            throw new \Exception($output);
+        $result = self::form('Accountbeheer', '<p>Stel in hoe je accounts wilt beheren.</p>', [
+            'security' => [
+                'type' => 'radio',
+                'options' => [
+                    'local' => 'Alleen Kiwi accounts',
+                    'oidc' => 'OpenID Connect accounts',
+                ],
+            ],
+        ]);
+
+        $this->env['SECURITY_MODE'] = $result['security'];
+        $this->saveEnv();
+    }
+
+    private function registerOidc(): void
+    {
+        if (isset($this->env['OIDC_ADDRESS'])) {
+            return;
+        }
+
+        $result = self::form('OpenID Connect configuratie', '<p>Stel de verbindingsinstellingen voor de OpenID Connect accounts in.</p>', [
+            'Client ID' => ['required' => true],
+            'Client Secret' => ['required' => true],
+            'OpenID Connect Issuer URL' => ['required' => true, 'filter' => fn ($x) => filter_var($x, FILTER_VALIDATE_URL)],
+        ]);
+
+        $this->env['OIDC_SECRET'] = $result['Client Secret'];
+        $this->env['OIDC_ID'] = $result['Client ID'];
+        $this->env['OIDC_ADDRESS'] = $result['OpenID Connect Issuer URL'];
+        $this->saveEnv();
+    }
+
+    private function registerUser(): void
+    {
+        if (!empty($this->cmd('app:has-account'))) {
+            return;
+        }
+
+        $result = self::form('Nieuw Account toevoegen', '<p>Voeg een nieuw administrator account toe.</p>', [
+            'Admin Email' => ['required' => true, 'type' => 'email'],
+            'Admin Naam' => ['required' => true],
+            'Admin Wachtwoord' => ['required' => true, 'type' => 'password'],
+        ]);
+
+        $this->cmd("app:create-account '{$result['Admin Email']}' '{$result['Admin Naam']}' '{$result['Admin Wachtwoord']}' --admin");
+    }
+
+    private function needsUpdate(): void
+    {
+        // Check whether an update needs to be installed
+        $latest = $this->latest();
+        if ($latest === ($this->env['INSTALLED_VERSION'] ?? null)) {
+            return;
+        }
+
+        // Setup message
+        $msg = file_exists(self::path('kiwi/vendor/autoload.php')) ? "Versie $latest is uitgebracht." : 'Welkom.';
+
+        // Check if server is compatible with new version
+        if ($reqs = $this->compat($latest)) {
+            $problem = match (true) {
+                is_string($reqs) => "Je draait een verouderde versie van PHP. Update je PHP versie naar $reqs om door te kunnen gaan.",
+                is_array($reqs) => "Je mist de volgende PHP extensies om versie $latest van Kiwi te kunnen installeren:\n\n".implode("\n", $reqs),
+                default => "Er is een onbekend probleem om versie $latest Kiwi te kunnen installeren.",
+            };
+
+            self::render('Installatie', "<p>$msg $problem</p>");
+        }
+
+        // Server configuration checks out, show update screen
+        self::form('Installatie', "<p>$msg Klik hier om de installatie te starten.</p>");
+
+        // Download version
+        $msg = 'install/update.zip bestand al aanwezig';
+        if (!file_exists(self::path('install/update.zip'))) {
+            file_put_contents(self::path('install/update.zip'), $this->asset($latest, 'kiwi.zip'));
+            $msg = "$latest gedownload";
+        }
+
+        // Start update process
+        touch(self::path('update.log'));
+        header('Refresh: 1');
+        self::render('Installatie', "<p>$msg, installatie aan het starten...</p>");
+    }
+
+    private function runUpdaterStep(): void
+    {
+        $this->transition();
+
+        // Check if the updater is running a process
+        if (!file_exists($logFile = self::path('update.log'))) {
+            return;
+        }
+
+        // Lock the install process
+        $log = fopen($logFile, 'a+');
+        if (!flock($log, LOCK_EX | LOCK_NB)) {
+            self::render('Error!', 'Another instance is currently executing the updater');
+        }
+
+        // Let the updater execute a single step and cancel the process if an error occurs
+        try {
+            $update = $this->install($this->latest(), $archive = self::path('install/update.zip'));
+            $status = $update->current();
+        } catch (Throwable $e) {
+            fclose($log);
+            unlink($logFile);
+
+            throw $e;
+        }
+
+        // Write the progress to log and release the lock
+        fwrite($log, $status.PHP_EOL);
+        fclose($log);
+
+        // If the updater is finished, remove the logfile and update archive and continue
+        if (!$update->valid()) {
+            unlink($logFile);
+            unlink($archive);
+
+            return;
+        }
+
+        header('Refresh: 1');
+        $completeLog = file_get_contents($logFile);
+        self::render('Aan het installeren...', "<pre>$completeLog</pre>");
+    }
+
+    private function transition()
+    {
+        $latestSafe = str_replace(['/', '\\', '.'], '_', $this->latest());
+        if (file_exists($unpackedmarker = self::path("install/{$latestSafe}_unpacked"))) {
+            rename(self::path("install/{$latestSafe}.zip"), self::path('install/update.zip'));
+            unlink($unpackedmarker);
+            file_put_contents(self::path('update.log'), $_SESSION['log'] ?? '');
+            unset($_SESSION['log']);
         }
     }
 
-    /**
-     * Check whether a local user account exists.
-     *
-     * @return bool Whether at least one local user account exists
-     */
-    public function hasAccount()
+    private function install(string $version, string $archive)
     {
-        $output = '';
-        $result = $this->integration->runCommand('app:has-account', $output);
-
-        if (0 !== $result) {
-            throw new \Exception($output);
+        $installingFiles = $version !== ($this->env['INSTALLED_VERSION'] ?? null);
+        if ($installingFiles && !file_exists($disabler = self::path('public_html/kiwi/enable-maintenance.txt'))) {
+            touch($disabler);
+            yield 'Put kiwi in maintenance mode';
         }
 
-        return '1' == $output;
-    }
-
-    /**
-     * Create a local user account with administrator rights.
-     */
-    public function createAccount(string $email, string $name, string $password)
-    {
-        $output = '';
-        $result = $this->integration->runCommand("app:create-account '$email' '$name' '$password' --admin", $output);
-
-        if (0 !== $result) {
-            throw new \Exception($output);
-        }
-    }
-
-    /**
-     * Create a backup of the database.
-     *
-     * @param string $path Path to where the backup should be stored
-     */
-    public function createDump(string $path)
-    {
-        $this->integration->loadApplication();
-        $db = new mysqli($this->host, $this->user, $this->pass, $this->name);
-        $dump = new MySQLDump($db);
-        $dump->save($path);
-    }
-
-    /**
-     * Restore a backup of the database.
-     *
-     * @param string $path Path to the backup
-     */
-    public function restoreDump(string $path)
-    {
-        $this->integration->loadApplication();
-        $db = new mysqli($this->host, $this->user, $this->pass, $this->name);
-        $dump = new MySQLImport($db);
-        $dump->load($path);
-    }
-}
-
-class DownloadTool
-{
-    protected $server;
-    protected $user;
-    protected $repository;
-    protected $releases;
-    protected $checksums;
-
-    /**
-     * Init the updater with remote repository information.
-     *
-     * @param string $user       user name
-     * @param string $repository repository name
-     * @param string $server     (optional) server name. Default: Github
-     *                           useful for Github Enterprise using Github API v3
-     */
-    public function __construct(string $user, string $repository, string $server = 'https://api.github.com/')
-    {
-        $this->user = $user;
-        $this->repository = $repository;
-        $this->server = $server;
-        $this->releases = false;
-        $this->checksums = [];
-    }
-
-    /**
-     * Download archive for the given version directly from Github.
-     *
-     * @param string $archive path to the downloaded archive
-     *
-     * @return misc FALSE on failure, path to archive on success
-     */
-    public function downloadVersion(string $version, string $archive)
-    {
-        if (!$this->downloadAndVerifyAsset($version, 'kiwi.zip', $archive)) {
-            throw new \Exception('Download failed.');
+        // Check if utilities folder exist
+        if (!file_exists($backups = self::path('install'))) {
+            mkdir($backups);
         }
 
-        return $archive;
-    }
+        // Create a backup, but only if Kiwi was already installed (at the start of this process)
+        if ($installingFiles && file_exists(self::path('kiwi/vendor/autoload.php'))) {
+            if (!file_exists($backups = self::path('install/backup'))) {
+                mkdir($backups);
+            }
 
-    /**
-     * Return the list of releases from the remote (in the Github API v3 format)
-     * See: http://developer.github.com/v3/repos/releases/.
-     *
-     * @param bool $forceFetch force (re)fetching
-     *
-     * @return array list of releases and their information
-     */
-    protected function getReleases(bool $forceFetch = false)
-    {
-        if ($forceFetch) {
-            $this->releases = false;
-        }
+            // Check if file backup can be/has been made
+            $today = date('Y-m-d');
+            if (!file_exists($filesBackup = self::path("install/backup/$today.zip"))) {
+                $this->backup($filesBackup);
+                yield 'File structure backup created';
+            }
 
-        //load releases only once
-        if (false === $this->releases) {
-            $url = $this->server.'repos/'.$this->user.'/'.$this->repository.'/releases';
-            $releaseData = json_decode($this->downloadContent($url), true);
-
-            $this->releases = [];
-            foreach ($releaseData as $release) {
-                //skip pre-releases
-                if (!$release['prerelease']) {
-                    $this->releases[$release['tag_name']] = $release;
-                }
+            // Check if database backup has been made
+            if (!file_exists($databaseDump = self::path("install/backup/$today.sql"))) {
+                require_once self::path('kiwi/vendor/autoload.php');
+                $dumper = new MySQLDump($this->database($this->env['DATABASE_URL'] ?? ''));
+                $dumper->save($databaseDump);
+                yield 'Database backup created';
             }
         }
 
-        return $this->releases;
+        // Check if uploads exist, if so move them
+        $uploads = self::path('public_html/kiwi/uploads');
+        $uploadsTemp = self::path('install/uploads');
+        if ($installingFiles && file_exists($uploads)) {
+            rename($uploads, $uploadsTemp);
+            yield 'Temporarily moved uploads to update folder';
+        }
+
+        if ($installingFiles && file_exists(self::path('kiwi/vendor/autoload.php'))) {
+            // Remove previous version application contents
+            $this->rmdir(self::path('kiwi'));
+            $this->saveEnv(); // Only file that remains should be kiwi/.env.local.php
+            yield 'Removed previous installation';
+        }
+
+        // Remove previous installation files and replace it with the new the extracted installation
+        if ($installingFiles) {
+            // Remove remaining files from previous version (including this updater, it will still be in PHP memory)
+            $this->rmdir(self::path('public_html'));
+            $this->rmdir(self::path('kiwi'));
+
+            // Install files of the new version
+            $this->extract($archive, self::path());
+            touch($disabler);
+
+            // Reinsert local files
+            $this->env['INSTALLED_VERSION'] = $version;
+            $this->saveEnv();
+            yield 'Kiwi update extracted';
+        }
+
+        if (file_exists($uploadsTemp)) {
+            rename($uploadsTemp, $uploads);
+            yield 'Restored uploads';
+        }
+
+        // Run migrations if present and cleanup
+        if (0 !== $this->cmd('doctrine:migrations:up-to-date', stdout: false)) {
+            $this->cmd('doctrine:migrations:migrate -n --allow-no-migration --all-or-nothing');
+            yield 'New database migrations were applied';
+        }
+
+        unlink($disabler);
+
+        return yield 'Update installation completed';
+    }
+
+    private function backup(string $path): void
+    {
+        $zip = new ZipArchive();
+        if (true !== $error = $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+            throw new Exception("Couldn't create zip $path with error $error");
+        }
+
+        $files = [
+            ...new RecursiveIteratorIterator(new RecursiveDirectoryIterator(self::path('kiwi'))),
+            ...new RecursiveIteratorIterator(new RecursiveDirectoryIterator(self::path('public_html'))),
+        ];
+
+        foreach ($files as $file) {
+            if (!$file->isDir()) {
+                $zip->addFile($file->getRealPath(), str_replace(self::path(), '', $file->getRealPath()));
+            }
+        }
+
+        $zip->close();
+    }
+
+    private function database(string $uri): mysqli
+    {
+        $matches = [];
+        if (!preg_match('/^\w+:\/\/(\w*):(\w*)@([\w\.]*):\d+\/(\w+)/', $uri, $matches)) {
+            throw new Exception("Couln\'t parse database URL from environment variables");
+        }
+        [, $user, $pass, $host, $name] = $matches;
+
+        return new mysqli($host, $user, $pass, $name);
+    }
+
+    public function extract(string $path, string $dest): void
+    {
+        $zip = new ZipArchive();
+        if (!$zip->open($path)) {
+            throw new Exception('Archive extraction failed. The file might be corrupted and you should download it again.');
+        }
+        $zip->extractTo($dest);
+        $zip->close();
+    }
+
+    public function rmdir(string $path): bool
+    {
+        if (!file_exists($path)) {
+            return true;
+        }
+
+        foreach (array_diff(scandir($path), ['.', '..']) as $file) {
+            is_dir("$path/$file") ? $this->rmdir("$path/$file") : unlink("$path/$file");
+        }
+
+        return rmdir($path);
     }
 
     /**
@@ -605,125 +578,52 @@ class DownloadTool
      *
      * @return string version number (or false if no result)
      */
-    public function getLatestVersion()
+    public function latest(): ?string
     {
-        $this->getReleases();
-        $latest = false;
-        if (!empty($this->releases)) {
-            reset($this->releases);
-            $latest = current($this->releases);
-        }
+        static $latest = null;
+        $latest ??= array_keys($this->releases())[0] ?? null;
 
-        return $latest['tag_name'];
+        return $latest;
     }
 
     /**
-     * Get link for a specified asset of a given version.
+     * Return the list of releases from the remote (in the Github API v3 format)
+     * See: http://developer.github.com/v3/repos/releases/.
      *
-     * @param string $version version tag
-     * @param string $name    asset name
-     *
-     * @return string URL to asset
+     * @return array list of releases and their information
      */
-    protected function getAssetUrl(string $version, string $name)
+    public function releases(): array
     {
-        $this->getReleases();
-
-        // Find the asset by name
-        foreach ($this->releases[$version]['assets'] ?? [] as $asset) {
-            if ($asset['name'] == $name) {
-                return $asset['browser_download_url'];
-            }
+        static $releases = null;
+        if (null === $releases) {
+            $releases = json_decode(self::get($this->releaseUrl), true);
+            $releases = array_filter($releases, fn ($r) => is_string($r['tag_name'] ?? null) && empty($r['prerelease']));
+            $releases = array_combine(array_map(fn ($r) => $r['tag_name'], $releases), $releases);
         }
 
-        // version or asset not found
-        return false;
+        return $releases;
     }
 
     /**
-     * Check if given version is up-to-date with the remote
-     * This method assumes the versions are formatted as dates.
-     *
-     * @param string $version version tag
-     *
-     * @return bool true if $version >= latest remote version
-     */
-    public function isUpToDate(?string $version)
-    {
-        // Retrieve latest release
-        $this->getReleases();
-        reset($this->releases);
-        $latest = current($this->releases);
-
-        // Convert version strings to dates
-        $currentVersion = date_create_from_format('Y-m-d', $version ?? '');
-        $latestVersion = date_create_from_format('Y-m-d', $latest['tag_name'] ?? '');
-
-        // If conversion failed and raw strings are not equal, assume out of date
-        if ((!$currentVersion || !$latestVersion) && $latest['tag_name'] !== $version) {
-            return false;
-        }
-
-        return $currentVersion >= $latestVersion;
-    }
-
-    /**
-     * Validate whether the server satisfies the version requirements.
+     * Validate whether this server satisfies the version requirements of a Kiwi version.
      *
      * @param string $version release version number
      *
-     * @return mixed true if compatible, a string of the required PHP version or an array of the missing extensions
+     * @return mixed a string of the required PHP version, an array of the missing extensions or null if compatible
      */
-    public function isCompatible(string $version)
+    public function compat(string $version)
     {
-        $requirements = $this->getServerRequirements($version);
+        $requirements = json_decode($this->asset($version, 'requirements.json'), true);
 
-        // Check PHP version, if specified
-        if (isset($requirements['php'])) {
-            list($major, $minor) = explode('.', $requirements['php']);
-            $php = implode('.', [$major, $minor]);
-            if (version_compare(PHP_VERSION, $php, '<')) {
-                return $php;
-            }
+        $phpReq = $requirements['php'] ?? null;
+        if ($phpReq && version_compare(PHP_VERSION, $phpReq, '<')) {
+            return $phpReq;
         }
 
-        // Check PHP extensions
-        $missing = [];
-        foreach ($requirements['extensions'] as $extension) {
-            if (!extension_loaded($extension)) {
-                $missing[] = $extension;
-            }
-        }
+        $extensionReqs = array_filter(array_keys($requirements), fn ($x) => str_starts_with($x, 'ext-'));
+        $missingExts = array_filter(array_map(fn ($x) => substr($x, strlen('ext-')), $extensionReqs), fn ($x) => !extension_loaded($x));
 
-        if (!empty($missing)) {
-            return $missing;
-        }
-
-        // All checks passed, server is compatible
-        return true;
-    }
-
-    /**
-     * Get the server requirements of a release.
-     *
-     * @param string $version release version number
-     *
-     * @return array php version and extension requirements
-     */
-    protected function getServerRequirements(string $version)
-    {
-        $requirementData = json_decode($this->downloadAndVerifyAsset($version, 'requirements.json'), true);
-
-        $required = ['extensions' => []];
-        foreach ($requirementData as $requirement => $reqVersion) {
-            if ('php' === $requirement) {
-                $required['php'] = $reqVersion;
-            } elseif (preg_match('/ext-([\w-]+)/', $requirement, $matches)) {
-                $required['extensions'][] = $matches[1];
-            }
-        }
-
-        return $required;
+        return $missingExts ?: null;
     }
 
     /**
@@ -731,616 +631,167 @@ class DownloadTool
      *
      * @param string $version release version number
      * @param string $name    asset name
-     * @param string $path    the file destination path
      *
      * @return string asset contents
      */
-    protected function downloadAndVerifyAsset(string $version, string $name, ?string $path = null)
+    public function asset(string $version, string $name): string
     {
-        $url = $this->getAssetUrl($version, $name);
-        $contents = $this->downloadContent($url, $path);
-
-        $chksums = $this->getChecksums($version);
-        if ($path && $chksums[$name] !== hash_file('sha512', $path)) {
-            unlink($path);
-            throw new \Exception('Invalid data downloaded');
+        // Retrieve asset information
+        $assets = array_filter($this->releases()[$version]['assets'] ?? [], fn ($a) => $a['name'] === $name);
+        if (false === $asset = reset($assets)) {
+            throw new Exception("Asset $name for version $version couldn't be found.");
         }
 
-        return $contents;
-    }
+        // Retrieve data
+        $data = self::get($asset['browser_download_url']);
 
-    /**
-     * Get the asset checksums for a version.
-     *
-     * @param string $version release version number
-     *
-     * @return array A key value array of the asset checksums, provided by the server
-     */
-    public function getChecksums(string $version)
-    {
-        if (!array_key_exists($version, $this->checksums)) {
-            $url = $this->getAssetUrl($version, 'hashes.txt');
-            $checksumData = trim($this->downloadContent($url));
-
-            // Read data
-            $this->checksums[$version] = [];
-            foreach (explode("\n", $checksumData) as $rule) {
-                list($asset, $checksum) = preg_split('/\s+/', $rule);
-                $this->checksums[$version][$asset] = $checksum;
-            }
-        }
-
-        return $this->checksums[$version];
-    }
-
-    /**
-     * Perform a request to Github API.
-     *
-     * @param string $url URL to get
-     *
-     * @return string Github's response
-     */
-    protected function downloadContent(string $url, string $path = null)
-    {
-        //use curl if possible
-        if (function_exists('curl_version')) {
-            $file = null;
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'helpless-kiwi');
-            if ($path) {
-                if (!file_exists(dirname($path))) {
-                    mkdir(dirname($path));
-                }
-                touch($path);
-                $file = fopen($path, 'w');
-                curl_setopt($ch, CURLOPT_FILE, $file);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-            }
-            $content = curl_exec($ch);
-            curl_close($ch);
-            if ($path) {
-                fclose($file);
-            }
-        } else {
-            //fallback - might raise issues
-            $content = file_get_contents($url);
-            if ($path) {
-                if (!file_exists(dirname($path))) {
-                    mkdir(dirname($path));
-                }
-                touch($path);
-                file_put_contents($path, $content);
-            }
-        }
-
-        if (empty($content)) {
-            throw new \Exception('Fetch data from Github failed. You might be behind a proxy.');
-        }
-
-        return $content;
-    }
-}
-
-class ArchiveTool
-{
-    /**
-     * Extract the content.
-     *
-     * @param string $path archive path
-     *
-     * @return string name (not path!) of the subdirectory where files where extracted
-     *                should look like <user>-<repository>-<lastCommitHash>
-     */
-    public static function extractArchive($path, $dest)
-    {
-        $directory = '';
-        $zip = new ZipArchive();
-        if (true === $zip->open($path)) {
-            $stat = $zip->statIndex(0);
-            $directory = substr($stat['name'], 0, strlen($stat['name']) - 1);
-            $zip->extractTo($dest);
-            $zip->close();
-        } else {
-            throw new \Exception('Archive extraction failed. The file might be corrupted and you should download it again.');
-        }
-
-        return $directory;
-    }
-
-    public static function compressArchive($path, $dest)
-    {
-        $backup = new ZipArchive();
-        $backup->open($dest, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        $dirit = new RecursiveDirectoryIterator($path);
-        $files = new RecursiveIteratorIterator(
-            $dirit,
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        foreach ($files as $file) {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir()) {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($path) + 1);
-
-                // Add current file to archive
-                $backup->addFile($filePath, $relativePath);
-            }
-        }
-
-        // Zip archive will be created only after closing object
-        $backup->close();
-        unset($dirit);
-        unset($files);
-    }
-
-    /**
-     * Recursively move all files from $source directory into $destination directory.
-     *
-     * @param string $source      source directory from which files and subdirectories will be taken
-     * @param string $destination destination directory where files and subdirectories will be put
-     *
-     * @return bool execution status
-     */
-    public static function moveFilesRecursive($source, $destination)
-    {
-        $result = true;
-
-        if (!is_dir($source)) {
-            return false;
-        }
-
-        if (!file_exists($destination)) {
-            mkdir($destination);
-        }
-
-        $files = scandir($source);
-        foreach ($files as $file) {
-            if (in_array($file, ['.', '..'])) {
-                continue;
+        // Verify data
+        if ('hashes.txt' !== $name) {
+            static $checksums = [];
+            if (!isset($checksums[$version])) {
+                $hashes = trim($this->asset($version, 'hashes.txt'));
+                $parsed = array_map(fn ($line) => preg_split('/\s+/', $line), explode("\n", $hashes));
+                $checksums[$version] = array_combine(array_column($parsed, 0), array_column($parsed, 1));
             }
 
-            if (is_dir($source.DIRECTORY_SEPARATOR.$file)) {
-                $result = self::moveFilesRecursive(
-                    $source.DIRECTORY_SEPARATOR.$file,
-                    $destination.DIRECTORY_SEPARATOR.$file
-                );
-            } else {
-                $result = copy(
-                    $source.DIRECTORY_SEPARATOR.$file,
-                    $destination.DIRECTORY_SEPARATOR.$file
-                );
-                unlink($source.DIRECTORY_SEPARATOR.$file);
+            if (hash('sha512', $data) !== $checksums[$version][$name] ?? '') {
+                throw new Exception('Invalid data downloaded');
             }
-
-            if (!$result) {
-                break;
-            }
-        }
-
-        rmdir($source);
-
-        return $result;
-    }
-
-    public static function removeFolderRecursive($path)
-    {
-        if (!file_exists($path)) {
-            return;
-        }
-
-        $it = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-        foreach ($files as $file) {
-            if ($file->isDir()) {
-                rmdir($file->getRealPath());
-            } else {
-                unlink($file->getRealPath());
-            }
-        }
-        rmdir($path);
-    }
-}
-
-class UpdaterTool
-{
-    public const FILES_BACKUP = 'files.zip';
-    public const DATABASE_BACKUP = 'database.sql';
-
-    protected $integration;
-    protected $database;
-    protected $download;
-    protected $env;
-    protected $break;
-
-    public function __construct(
-        IntegrationTool $integration,
-        DatabaseTool $database,
-        DownloadTool $download,
-        EnvFileTool $env,
-        callable $break = null
-    ) {
-        $this->integration = $integration;
-        $this->database = $database;
-        $this->download = $download;
-        $this->env = $env;
-        $this->break = $break;
-    }
-
-    public function beginProcess(string $process)
-    {
-        $this->lock();
-
-        // cleanup earlier installation data if necessary
-        switch ($process) {
-            case 'update':
-                mkdir($this->integration->getInstallerPath());
-                break;
-            case 'backup':
-                ArchiveTool::removeFolderRecursive($this->getBackupPath());
-                mkdir($this->getBackupPath());
-                break;
-            case 'revert':
-                break;
-            default:
-                throw new \Exception('Unknown process type: '.$process);
-        }
-
-        // set maintanance mode, indicating installation
-        $installationfile = $this->getInstallerFile();
-        if (file_exists($installationfile)) {
-            throw new \Exception('Updater is already running a process');
-        }
-        file_put_contents($installationfile, $process);
-
-        $this->unlock();
-    }
-
-    public function run()
-    {
-        // Check if the updater is running a process
-        $installationfile = $this->getInstallerFile();
-        if (file_exists($installationfile)) {
-            $process = trim(file_get_contents($installationfile));
-            try {
-                // Lock the install process
-                $this->lock();
-
-                // Execute the current process
-                switch ($process) {
-                    case 'backup':
-                        $this->backup();
-                        break;
-                    case 'update':
-                        $this->update();
-                        break;
-                    case 'revert':
-                        $this->revert();
-                        break;
-                    default:
-                        throw new \Exception('Unknown updater process started');
-                }
-            } catch (\Throwable $e) {
-                Log::msg('Stopped, updater is put in revert mode');
-                file_put_contents($installationfile, 'revert');
-                throw $e;
-            } finally {
-                // Always unlock the installation on exceptions and completion
-                // Note: this is not called when exit()/die is called
-                $this->unlock();
-            }
-
-            unlink($installationfile);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public function backupExists()
-    {
-        $filesBackup = $this->getBackupPath(self::FILES_BACKUP);
-        $databaseBackup = $this->getBackupPath(self::DATABASE_BACKUP);
-
-        return file_exists($filesBackup) || file_exists($databaseBackup);
-    }
-
-    protected function backup()
-    {
-        $filesBackup = $this->getBackupPath(self::FILES_BACKUP);
-        $databaseBackup = $this->getBackupPath(self::DATABASE_BACKUP);
-
-        // Check if backup can be made
-        if ($this->integration->hasApplication()) {
-            // Check if file backup can be/has been made
-            if (!file_exists($filesBackup)) {
-                ArchiveTool::compressArchive($this->integration->getCommonPath(), $filesBackup);
-                $this->break('File structure backup created');
-            }
-
-            // Check if database backup has been made
-            if (!file_exists($databaseBackup)) {
-                $this->database->createDump($databaseBackup);
-                $this->break('Database backup created');
-            }
-        }
-    }
-
-    protected function revert()
-    {
-        $filesBackup = $this->getBackupPath(self::FILES_BACKUP);
-        $databaseBackup = $this->getBackupPath(self::DATABASE_BACKUP);
-
-        // Check if database backup has been made
-        if (file_exists($databaseBackup)) {
-            $this->database->restoreDump($databaseBackup);
-            unlink($databaseBackup);
-            $this->break('Restored database backup');
-        }
-
-        // Check if file backup can be/has been made
-        if (file_exists($filesBackup)) {
-            ArchiveTool::extractArchive($filesBackup, $this->integration->getCommonPath());
-            file_put_contents($this->getInstallerFile(), 'revert');
-            unlink($filesBackup);
-            $this->break('Restored file structure backup');
-        }
-    }
-
-    protected function update()
-    {
-        // Download variables
-        $latest = $this->download->getLatestVersion();
-        $latestSafe = str_replace(['/', '\\', '.'], '_', $latest);
-        $downloadfile = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latestSafe.'.zip';
-        $unpackedmarker = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$latestSafe.'_unpacked';
-
-        // Download version files
-        if (!file_exists($downloadfile)) {
-            // Check if version is downloaded
-            $downloadSuccess = $this->download->downloadVersion($latest, $downloadfile);
-            if (!$downloadSuccess) {
-                throw new \Exception("Problem when downloaded version $latest from Github");
-            }
-            $this->break("Downloaded version $latest from Github");
-        }
-
-        // Install version files
-        if (!file_exists($unpackedmarker)) {
-            $this->installVersion($latest, $downloadfile);
-            touch($unpackedmarker);
-            $this->break('Kiwi installation was performed with extraction folder contents');
-        }
-
-        // Run migrations if present and cleanup
-        if ($this->database->canMigrate()) {
-            $this->database->migrateDb();
-            $this->break('New database migrations were applied');
-        }
-
-        // Installation finished succesfully, remove downloaded archive
-        unlink($downloadfile);
-        unlink($unpackedmarker);
-        $this->env->setVar('INSTALLED_VERSION', $latest);
-        $this->env->save();
-    }
-
-    protected function installVersion($version, $file)
-    {
-        $versionSafe = str_replace(['/', '\\', '.'], '_', $version);
-        $extractpath = $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.$versionSafe;
-
-        // Check if download is unpacked
-        if (!file_exists($extractpath)) {
-            ArchiveTool::extractArchive($file, $extractpath);
-            $this->break("Unpacked version $version to extraction folder");
-        }
-
-        // Check if uploads can be moved
-        $uploadspath = $this->integration->getPublicPath().DIRECTORY_SEPARATOR.'uploads';
-        $uploadsextractpath = $this->integration->getPublicPath($extractpath).DIRECTORY_SEPARATOR.'uploads';
-        if (file_exists($uploadspath)) {
-            ArchiveTool::moveFilesRecursive($uploadspath, $uploadsextractpath);
-            $this->break('Moved uploads to extraction folder');
-        }
-
-        // Remove root files (excluding the environment variables)
-        if ($this->integration->hasApplication()) {
-            $this->env->load(true);
-            ArchiveTool::removeFolderRecursive($this->integration->getRootPath());
-            $this->env->save();
-            $this->break('Removed previous installation');
-        }
-
-        // Remove public folder (including this installer) and move in the new version
-        $installerfile = $this->getInstallerFile();
-        $process = trim(file_get_contents($installerfile));
-        ArchiveTool::removeFolderRecursive($this->integration->getPublicPath());
-        ArchiveTool::moveFilesRecursive($extractpath, $this->integration->getCommonPath());
-        file_put_contents($installerfile, $process);
-    }
-
-    protected function break(string $message = null)
-    {
-        if ($message) {
-            Log::msg($message);
-        }
-
-        if ($this->break) {
-            $this->unlock();
-            call_user_func($this->break);
-            exit;
-        }
-    }
-
-    protected function lock()
-    {
-        $lockfile = $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'installer.lock';
-        if (file_exists($lockfile)) {
-            throw new \Exception('Installer already locked.');
-        }
-
-        return touch($lockfile);
-    }
-
-    protected function unlock()
-    {
-        $lockfile = $this->integration->getCommonPath().DIRECTORY_SEPARATOR.'installer.lock';
-        if (!file_exists($lockfile)) {
-            return true;
-        }
-
-        return unlink($lockfile);
-    }
-
-    private function getBackupPath(string $file = null)
-    {
-        return $this->integration->getInstallerPath().DIRECTORY_SEPARATOR.'backup'.($file ? DIRECTORY_SEPARATOR.$file : '');
-    }
-
-    private function getInstallerFile()
-    {
-        return $this->integration->getPublicPath().DIRECTORY_SEPARATOR.'enable-maintenance.txt';
-    }
-}
-
-class Form
-{
-    protected $name;
-    protected $fields;
-
-    public function __construct($name)
-    {
-        $this->name = $name;
-        $this->fields = [];
-    }
-
-    public function add($field, $type, $options = [])
-    {
-        $this->fields[$field] = array_merge([
-            'label' => $field,
-            'type' => $type,
-            'required' => false,
-            'placeholder' => null,
-            'filter' => null,
-        ], $options);
-
-        return $this;
-    }
-
-    public function isSubmitted()
-    {
-        return 'POST' == $_SERVER['REQUEST_METHOD'] && $this->name == $_POST['action'];
-    }
-
-    public function isValid()
-    {
-        return empty($this->getErrors());
-    }
-
-    public function getErrors(): array
-    {
-        if (!$this->isSubmitted()) {
-            return [];
-        }
-
-        $errors = [];
-        foreach ($this->fields as $field => $opts) {
-            if ($opts['required'] && !isset($_POST[$field])) {
-                $errors[$field] = $opts['label'].' is required';
-            }
-
-            if ($_POST[$field] && $opts['filter'] && !filter_var($_POST[$field], $opts['filter'])) {
-                $errors[$field] = $opts['label'].' does not have a valid argument';
-            }
-
-            if ('radio' === $opts['type'] && !in_array($_POST[$field], array_keys($opts['options']))) {
-                $errors[$field] = $opts['label'].' has an invalid value';
-            }
-        }
-
-        return $errors;
-    }
-
-    public function getData($field = null)
-    {
-        if ($field) {
-            return $_POST[$field] ?? null;
-        }
-
-        // Extract data from POST
-        $data = [];
-        foreach ($this->fields as $field => $opts) {
-            $data[$field] = $_POST[$field] ?? null;
         }
 
         return $data;
     }
 
-    public function render()
+    /**
+     * Perform a HTTP GET request.
+     *
+     * @param string $url URL to get
+     *
+     * @return string Raw response data
+     */
+    public static function get(string $url): string
     {
-        // Render fields
-        $rendered = '';
-        $required = false;
-        foreach ($this->fields as $field => $opts) {
-            switch ($opts['type']) {
-                case 'text':
-                case 'email':
-                case 'password':
-                    $rendered .= $this->renderTextual($field, $opts);
-                    $required |= $opts['required'];
-                    break;
-                case 'radio':
-                    $rendered .= $this->renderMultiple($field, $opts);
-                    break;
-                default:
-                    throw new \Exception('Unknown form type');
+        if (function_exists('curl_version')) {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'helpless-kiwi');
+            $content = curl_exec($ch);
+            curl_close($ch);
+        } else {
+            $content = file_get_contents($url);
+        }
+
+        if (false === $content) {
+            throw new Exception("HTTP GET request to $url failed. You might be behind a proxy.");
+        }
+
+        return $content;
+    }
+
+    /**
+     * Get a path, relative to the root path of the Kiwi installation.
+     *
+     * @param string $dest The relative path, without a leading slash
+     *
+     * @return string The full path
+     */
+    public static function path(string $dest = ''): string
+    {
+        assert(DIRECTORY_SEPARATOR === '/');
+        $common = dirname(dirname(__DIR__));
+        if (__DIR__ !== "$common/public_html/kiwi") {
+            throw new Exception('The script is in the wrong location. Its location should end with "/public_html/kiwi/update.php", but it\'s current location is '.__FILE__);
+        }
+
+        return "$common/$dest";
+    }
+
+    public static function form(string $title, string $content, array $fields = [], ?callable $filter = null): array
+    {
+        // Set defaults
+        $fields = array_map(fn ($opts) => array_merge([
+            'type' => 'text',
+            'required' => false,
+            'placeholder' => null,
+            'filter' => null,
+        ], $opts), $fields);
+
+        // Check if this form was submitted
+        $errors = [];
+        if ('POST' === $_SERVER['REQUEST_METHOD'] && $title === $_POST['action']) {
+            // Check if any errors occurred
+            foreach ($fields as $field => $opts) {
+                if ($opts['required'] && !isset($_POST[base64_encode($field)])) {
+                    $errors[] = "$field is required";
+                }
+
+                if (isset($_POST[base64_encode($field)]) && isset($opts['filter']) && !$opts['filter']($_POST[base64_encode($field)])) {
+                    $errors[] = "$field does not have a valid argument";
+                }
+
+                if ('radio' === $opts['type'] && !in_array($_POST[base64_encode($field)], array_keys($opts['options']))) {
+                    $errors[] = "$field has an invalid value";
+                }
+            }
+
+            // If no errors occurred per field, build the input data
+            if (empty($errors)) {
+                $data = array_combine(array_keys($fields), array_map(fn ($f) => $_POST[base64_encode($f)] ?? null, array_keys($fields)));
+
+                // If also no errors occurred for the whole form, success, return data
+                if (null === $filter || empty($errors = $filter($data))) {
+                    return $data;
+                }
             }
         }
 
-        if ($required) {
-            $rendered .= '<p>Velden met een <sup>*</sup> zijn verplicht</p>';
-        }
+        // Render fields
+        $rendered = implode(array_map(fn (string $field, array $opts) => match ($opts['type'] ?? 'text') {
+            'text' => self::textField($field, $opts),
+            'email' => self::textField($field, $opts),
+            'password' => self::textField($field, $opts),
+            'radio' => self::radioField($field, $opts),
+            default => throw new Exception('Unknown form type'),
+        }, array_keys($fields), $fields));
 
-        // Return complete form
-        return '<form role="form" method="post"><input type="hidden" name="action" value="'.$this->name.'" />'.$rendered.'<input type="submit" class="button grow" value="Bevestig" /></form>';
+        // Render complete form
+        $errors = $errors ? '<p class="alert alert-warning">'.join(', ', $errors).'</p>' : '';
+        $required = count(array_filter($fields, fn ($opts) => $opts['required'] ?? false)) ? '<p>Velden met een <span class="text-danger">*</span> zijn verplicht</p>' : '';
+        $form = '<form role="form" method="post"><input type="hidden" name="action" value="'.$title.'" />'.$rendered.$required.'<input type="submit" class="btn btn-success" value="Bevestig" /></form>';
+
+        self::render($title, $errors.$content.$form);
     }
 
-    protected function renderTextual(string $field, array $opts): string
+    private static function textField(string $field, array $opts): string
     {
         $required_label = '';
         $required_tag = '';
 
         // Required field
         if ($opts['required']) {
-            $required_label = '<sup>*</sup>';
+            $required_label = '<sup class="text-danger">*</sup>';
             $required_tag = 'required';
         }
 
         // Render
         return '
         <div class="form-group">
-            <label for="'.$field.'">'.$opts['label'].$required_label.'</label>
+            <label for="'.$field.'">'.$field.$required_label.'</label>
             <input
                 class="form-control"
                 type="'.$opts['type'].'"
                 id="'.$field.'"
-                name="'.$field.'"
+                name="'.base64_encode($field).'"
                 placeholder="'.($opts['placeholder'] ?? '').'"
-                value="'.($_POST[$field] ?? null).'"
+                value="'.($_POST[base64_encode($field)] ?? null).'"
                 '.$required_tag.' />
         </div>
         ';
     }
 
-    protected function renderMultiple(string $field, array $opts): string
+    private static function radioField(string $field, array $opts): string
     {
         $optionsRendered = '';
         foreach ($opts['options'] as $option => $label) {
@@ -1349,7 +800,7 @@ class Form
                 <label class="radio-inline">
                 <input
                     type="'.$opts['type'].'"
-                    name="'.$field.'"
+                    name="'.base64_encode($field).'"
                     value="'.$option.'"
                     '.$prefill.'
                 >'.$label.'</label>
@@ -1358,491 +809,13 @@ class Form
 
         return '<div class="form-group">'.$optionsRendered.'</div>';
     }
-}
 
-class UserInterface
-{
-    protected $integration;
-    protected $env;
-
-    public function __construct()
+    public static function render(string $title, string $content): never
     {
-        // Check if script location is correct
-        $this->integration = new IntegrationTool();
-        $this->integration->envIsValid();
-
-        // Setup base dependencies
-        $this->env = new EnvFileTool($this->integration->getRootPath());
-    }
-
-    public function run()
-    {
-        // Check if login is possible
-        $this->env->hasVar('UPDATER_PASSWORD') || $this->registerPassword();
-
-        // Check if logged in
-        $this->isLoggedIn() || $this->login();
-
-        // Check if default environment parameters are set
-        $this->env->defaults();
-
-        // Check if database is configured
-        $this->env->hasVar('DATABASE_URL') || $this->registerDatabase();
-
-        // Check if database is valid
-        $database = new DatabaseTool($this->env->getVar('DATABASE_URL'), $this->integration);
-        $database->exists(true) || $this->registerDatabase();
-
-        // Check if updater is in progress
-        $download = new DownloadTool('jasperweyne', 'helpless-kiwi');
-        $updater = new UpdaterTool($this->integration, $database, $download, $this->env, function () {
-            header('Refresh: 1');
-            UserInterface::render('Voortgang', Log::read());
-        });
-
-        // Check if updater has finished process
-        if ($updater->run()) {
-            UserInterface::render('Success', Log::read(true).'<a class="button grow" href="./update.php">Doorgaan</a>');
-        }
-
-        // Check if application is up to date
-        $download->isUpToDate($this->env->getVar('INSTALLED_VERSION')) || $this->update($updater, $download);
-
-        // Check if application name is confirm_update
-        $this->env->hasVar('ORG_NAME') || $this->registerName();
-
-        // Check if mailer is configured
-        $this->env->hasVar('MAILER_URL') || $this->registerMailer();
-
-        // Check if a security mode has been set
-        $this->env->hasVar('SECURITY_MODE') || $this->registerSecurity();
-
-        // Check if OpenID Connect is configured
-        $adminHelp = '';
-        if ('oidc' === $this->env->getVar('SECURITY_MODE')) {
-            $this->env->hasVar('OIDC_ADDRESS') || $this->registerOidc();
-            $adminHelp = '<br>Om in te loggen bij lokale accounts, <a href="/login?provider=local">klik hier</a>';
-        }
-
-        // Check if an admin account has been added
-        $database->hasAccount() || $this->registerUser($database);
-
-        // Everything checks out, let the user know
-        $this->render('Up-to-date!', "<p>Je draait de laatste versie van Kiwi.$adminHelp</p>");
-    }
-
-    /**
-     * Check whether the current user (session) is authenticated.
-     */
-    protected function isLoggedIn(): bool
-    {
-        if (!$this->env->hasVar('UPDATER_PASSWORD')) {
-            return false;
-        }
-
-        session_start();
-
-        return password_verify($_SESSION['secret'] ?? '', $this->env->getVar('UPDATER_PASSWORD'));
-    }
-
-    protected function registerPassword()
-    {
-        $form = new Form('register');
-        $form->add('password', 'password', [
-            'label' => 'Wachtwoord',
-            'required' => true,
-        ]);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $password = $form->getData('password');
-            $this->env->setVar('UPDATER_PASSWORD', password_hash($password, PASSWORD_BCRYPT));
-            $this->env->save();
-            $_SESSION['secret'] = $password;
-
-            return;
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('Welkom bij de Kiwi installer', '<p>Welkom bij de Kiwi installatie. Registreer een wachtwoord voor de installer.</p>'.$form->render(), $error);
-    }
-
-    protected function login()
-    {
-        $form = new Form('login');
-        $form->add('password', 'password', [
-            'label' => 'Wachtwoord',
-            'required' => true,
-        ]);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $password = $form->getData('password');
-            if (password_verify($password, $this->env->getVar('UPDATER_PASSWORD'))) {
-                $_SESSION['secret'] = $password;
-
-                return;
-            }
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('Welkom bij de Kiwi installer', '<p>Welkom bij de Kiwi installatie. Log in om door te gaan.</p>'.$form->render(), $error);
-    }
-
-    protected function registerDatabase()
-    {
-        $form = new Form('login');
-        $form
-            ->add('db_type', 'radio', [
-                'options' => [
-                    'mariadb-10.5.8' => 'MariaDB',
-                    '5.7' => 'MySQL',
-                ],
-            ])
-            ->add('db_user', 'text', ['label' => 'Database Gebruiker', 'placeholder' => 'username'])
-            ->add('db_pass', 'text', ['label' => 'Database Wachtwoord', 'placeholder' => 'password'])
-            ->add('db_host', 'text', ['label' => 'Database Host', 'placeholder' => 'localhost'])
-            ->add('db_name', 'text', ['label' => 'Database Naam', 'placeholder' => 'kiwi'])
-        ;
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $db_user = trim($form->getData('db_user'));
-            $db_pass = trim($form->getData('db_pass'));
-            $db_host = trim($form->getData('db_host'));
-            $db_name = trim($form->getData('db_name'));
-            $db_type = $form->getData('db_type');
-
-            $url = "mysql://$db_user:$db_pass@$db_host:3306/$db_name?serverVersion=$db_type";
-            $database = new DatabaseTool($url);
-            if ($database->exists()) {
-                $this->env->setVar('DATABASE_URL', $url);
-                $this->env->save();
-
-                return;
-            }
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('Database Configuratie', '<p>Geef de verbindingsinstellingen van je database op. Dit moet een lege database zijn. Als je niet zeker weet wat je instellingen zijn, neem dan contact op met je host.</p>'.$form->render(), $error);
-    }
-
-    protected function registerName()
-    {
-        $form = new Form('name');
-        $form->add('name', 'text', [
-            'label' => 'Naam Organisatie',
-            'required' => true,
-        ]);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->env->setVar('ORG_NAME', $form->getData('name'));
-            $this->env->save();
-
-            return;
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('Naam organisatie', '<p>Stel de naam in van je organisatie.</p>'.$form->render(), $error);
-    }
-
-    protected function registerMailer()
-    {
-        $form = new Form('email');
-        $form
-            ->add('email_type', 'radio', [
-                'options' => [
-                    'smtp' => 'SMTP e-mail',
-                    'noemail' => 'Geen e-mail',
-                ],
-            ])
-            ->add('mailer_url', 'text', [
-                'label' => 'Swiftmailer URL',
-                'filter' => FILTER_VALIDATE_URL,
-            ])
-            ->add('mailer_email', 'email', [
-                'label' => 'E-mailadres verzender',
-                'filter' => FILTER_VALIDATE_EMAIL,
-            ])
-        ;
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $mailer_url = trim($form->getData('mailer_url'));
-            $mailer_email = trim($form->getData('mailer_email'));
-            $email_type = $form->getData('email_type');
-
-            if ('smtp' === $email_type) {
-                $this->env->setVar('MAILER_URL', $mailer_url);
-                $this->env->setVar('DEFAULT_FROM', $mailer_email);
-            } else {
-                $this->env->setVar('MAILER_URL', 'null://localhost');
-            }
-            $this->env->save();
-
-            return;
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('E-mail configuratie', $form->render(), $error);
-    }
-
-    protected function registerSecurity()
-    {
-        $form = new Form('security');
-        $form
-            ->add('security', 'radio', [
-                'options' => [
-                    'local' => 'Alleen Kiwi accounts',
-                    'oidc' => 'OpenID Connect accounts',
-                ],
-            ])
-        ;
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->env->setVar('SECURITY_MODE', $form->getData('security'));
-            $this->env->save();
-
-            return;
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('Naam organisatie', '<p>Stel in hoe je accounts wilt beheren.</p>'.$form->render(), $error);
-    }
-
-    protected function registerOidc()
-    {
-        $form = new Form('oidc');
-        $form
-            ->add('oidc_id', 'text', [
-                'label' => 'Client ID',
-                'required' => true,
-            ])
-            ->add('oidc_secret', 'text', [
-                'label' => 'Clients Secret',
-                'required' => true,
-            ])
-            ->add('oidc_url', 'text', [
-                'label' => 'OpenID Connect Issuer URL',
-                'required' => true,
-                'filter' => FILTER_VALIDATE_URL,
-            ])
-        ;
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->env->setVar('OIDC_SECRET', $form->getData('oidc_secret'));
-            $this->env->setVar('OIDC_ID', $form->getData('oidc_id'));
-            $this->env->setVar('OIDC_ADDRESS', $form->getData('oidc_url'));
-            $this->env->save();
-
-            return;
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('OpenID Connect configuratie', '<p>Stel de verbindingsinstellingen voor de OpenID Connect accounts in.</p>'.$form->render(), $error);
-    }
-
-    protected function registerUser(DatabaseTool $database)
-    {
-        $form = new Form('user');
-        $form
-            ->add('admin_email', 'email', [
-                'label' => 'Admin Email',
-                'required' => true,
-            ])
-            ->add('admin_name', 'text', [
-                'label' => 'Admin Naam',
-                'required' => true,
-            ])
-            ->add('admin_pass', 'password', [
-                'label' => 'Admin Wachtwoord',
-                'required' => true,
-            ])
-        ;
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $email = $form->getData('admin_email');
-            $name = $form->getData('admin_name');
-            $pass = $form->getData('admin_pass');
-            $database->createAccount($email, $name, $pass);
-
-            return;
-        }
-
-        $error = join(', ', $form->getErrors());
-        $this->render('Nieuw Account toevoegen', '<p>Voeg een nieuw administrator account toe.</p>'.$form->render(), $error);
-    }
-
-    protected function update(UpdaterTool $updater, DownloadTool $download)
-    {
-        // Get latest version
-        $latest = $download->getLatestVersion();
-
-        // Setup base messages
-        $installed = $this->env->hasVar('INSTALLED_VERSION');
-
-        $message = 'Welkom!';
-        $title = 'Installer';
-
-        if ($installed) {
-            $message = "Er is een nieuwe versie van Kiwi beschikbaar, versie $latest.";
-            $title = 'Updater';
-        }
-
-        // Check if server is compatible with new version
-        $compatible = $download->isCompatible($latest);
-        if (true !== $compatible) {
-            $problem = 'Er is een onbekend probleem om deze te kunnen installeren.';
-
-            if (is_array($compatible)) {
-                $problem = "Je mist de volgende PHP extensies om versie $latest van Kiwi te kunnen installeren:\n\n";
-                $problem .= implode("\n", $compatible);
-            } elseif (is_string($compatible)) {
-                $problem = "Je draait een verouderde versie van PHP. Update je PHP versie naar $compatible om door te kunnen gaan.";
-            }
-
-            $this->render($title, "<p>$message $problem</p>");
-        }
-
-        // Backup
-        $actionMsg = 'Klik hier om te installeren.';
-        $process = 'update';
-        if ($updater->backupExists()) {
-            $actionMsg .= "\nEr is een backup aanwezig, controleer zelf of deze recent is of verwijder hem en start de updater opnieuw om een nieuwe backup te maken!.";
-        } elseif ($installed) {
-            $actionMsg = 'Klik hier om eerst een backup te maken.';
-            $process = 'backup';
-        }
-
-        // Server configuration checks out, show update screen
-        $form = new Form('update');
-        if ($form->isSubmitted() && $form->isValid()) {
-            $updater->beginProcess($process);
-            Log::msg("Starting $process process...");
-            header('Refresh: 1');
-            UserInterface::render('Voortgang', Log::read());
-        }
-
-        $this->render($title, "<p>$message $actionMsg</p>".$form->render());
-    }
-
-    public static function render(string $title, string $step, string $error = null)
-    {
-        //region HTML_HEADER?>
+        ?>
 <!DOCTYPE HTML>
 <html lang="nl">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-<style>
-
-    body {
-        background: url('/img/bg.png');
-    }
-
-    #digidecs {
-        border: 1px #ccc solid;
-        background: #fdfdfd;
-        margin: 20px;
-        box-shadow: 0px 0px 15px #999;
-    }
-
-    sup {
-        color: red;
-    }
-
-    main, .bottom {
-        clear: both;
-        position: relative;
-    }
-
-    .bottom, .container {
-        max-width: 750rem;
-        margin-right: auto;
-        margin-left: auto;
-        padding: 0 6;
-    }
-
-    .section {
-        padding-top: 6;
-        padding-bottom: 12;
-    }
-    .row, .bottom {
-        margin-bottom: 12;
-    }
-    .bottom {
-        text-align: center;
-        font-size: 0;
-    }
-    .bottom ul {
-        margin: 0;
-    }
-    .bottom li {
-        list-style: none;
-        display: inline-block;
-        white-space: nowrap;
-        color: #c6538c;
-        font-size: rem-calc(12);
-    }
-    .bottom li:not(:last-child):after {
-        content: '\2022';
-        padding: 0 5px;
-    }
-
-    .button, button {
-    background-color: gray;
-    color: white;
-    display: inline-block !important;
-    padding: 0.5rem 1rem;
-    border-radius: 1;
-    cursor: pointer;
-    line-height: 1.5;
-    }
-    .button.disabled, button.disabled, .button[disabled], button[disabled] {
-        cursor: not-allowed;
-    }
-    .button.confirm, button.confirm, .button.add, button.add, .button[type=submit], button[type=submit] {
-        background-color: #0c0;
-        color: white;
-    }
-    .button.confirm.disabled, button.confirm.disabled, .button.add.disabled, button.add.disabled, .button[type=submit].disabled, button[type=submit].disabled, .button.confirm[disabled], button.confirm[disabled], .button.add[disabled], button.add[disabled], .button[type=submit][disabled], button[type=submit][disabled] {
-        background-color: #beb;
-    }
-    .button.warning, button.warning {
-        background-color: #f80;
-        color: white;
-    }
-    .button.warning.disabled, button.warning.disabled, .button.warning[disabled], button.warning[disabled] {
-        background-color: #beb;
-    }
-    .button.deny, button.deny, .button.delete, button.delete {
-        background-color: #c00;
-        color: white;
-    }
-    .button.deny.disabled, button.deny.disabled, .button.delete.disabled, button.delete.disabled, .button.deny[disabled], button.deny[disabled], .button.delete[disabled], button.delete[disabled] {
-        background-color: #ebb;
-    }
-    .button.grow, button.grow {
-        position: relative;
-    }
-    .button.grow, button.grow, .button.grow span, button.grow span, .button.grow .content, button.grow .content {
-        transition: all 0.5s ease-in-out 0.5s, opacity 0.1s ease-in-out 0.9s;
-    }
-    .button.grow .content, button.grow .content {
-        z-index: 5;
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        clip-path: circle(0% at 0% 100%);
-        border-radius: 1;
-        opacity: 0;
-    }
-    .button.grow:active, button.grow:active, .button.grow:hover, button.grow:hover, .button.grow:focus, button.grow:focus, .button.grow:active span, button.grow:active span, .button.grow:hover span, button.grow:hover span, .button.grow:focus span, button.grow:focus span, .button.grow:active .content, button.grow:active .content, .button.grow:hover .content, button.grow:hover .content, .button.grow:focus .content, button.grow:focus .content {
-        transition: all 0.5s ease-in-out, opacity 0.1s ease-in-out;
-    }
-    .button.grow:active span, button.grow:active span, .button.grow:hover span, button.grow:hover span, .button.grow:focus span, button.grow:focus span {
-        opacity: 0;
-    }
-    .button.grow:active .content, button.grow:active .content, .button.grow:hover .content, button.grow:hover .content, .button.grow:focus .content, button.grow:focus .content {
-        clip-path: circle(75%);
-        opacity: 1;
-    }
-
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     <title>Helpless Kiwi &mdash; <?php echo $title; ?></title>
@@ -1850,40 +823,27 @@ class UserInterface
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div id="digidecs" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Helpless Kiwi &mdash; <?php echo $title; ?></h3>
-                    </div>
-                    <div class="panel-body">
-                        <?php if ($error) {
-                            echo '<p class="alert alert-warning">'.$error.' </p> <br>';
-                        } ?>
-<?php
-        //endregion HTML_HEADER
-        //region HTML_FORMS
-        echo $step;
-        //endregion HTML_FORMS
-//region HTML_FOOTER?>
-                        </div>
-                    </div>
+            <div class="card card-default w-100 mt-4 shadow">
+                <div class="card-header">
+                    <h3 class="panel-title">Helpless Kiwi &mdash; <?php echo $title; ?></h3>
+                </div>
+                <div class="card-body">
+                    <?php echo $content; ?>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>
-<?php
-
-//endregion HTML_FOOTER
-                exit;
+        <?php
+        exit;
     }
 }
 
 set_time_limit(0);
 set_exception_handler(function (Throwable $e) {
-    Log::console($e->getMessage()."\n".$e->getTraceAsString());
-    UserInterface::render('Probleem!', Log::read(true).'<a class="button grow" href="./update.php">Herstart updater</a>');
+    Updater::render('Probleem!', '<pre>'.$e->getMessage()."\n".$e->getTraceAsString().'</pre>');
 });
 
-$application = new UserInterface();
-$application->run();
+$updater = new Updater();
+$updater->run();
