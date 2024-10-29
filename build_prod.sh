@@ -39,6 +39,7 @@ rm -rf kiwi/fixtures
 rm -rf kiwi/frankenphp
 rm -rf kiwi/tests
 rm -rf kiwi/var/{log,cache}
+rm -rf kiwi/var/tailwind/**/*
 
 # Create environment variable file
 cat > kiwi/.env.local.php << EOL
