@@ -69,6 +69,7 @@ jobs:
         rm -rf kiwi/frankenphp
         rm -rf kiwi/tests
         rm -rf kiwi/var/{log,cache}
+        rm -rf kiwi/var/tailwind/**/*
 
     - name: Generate sample environment settings for build
       if: github.ref == 'refs/heads/master'
