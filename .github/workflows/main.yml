@@ -59,15 +59,16 @@ jobs:
     - name: Cleanup build
       if: github.ref == 'refs/heads/master'
       run: |
-        rm kiwi/{,.[!.],..?}* 2> /dev/null || true
+        rm kiwi/@(!(importmap.php)|.*) 2> /dev/null || true
         rm -rf kiwi/.git
         rm -rf kiwi/.github
         rm -rf kiwi/.hooks
-        rm -rf kiwi/assets
+        rm -rf kiwi/assets/image
         rm -rf kiwi/bin
-        rm -rf kiwi/node_modules
+        rm -rf kiwi/fixtures
+        rm -rf kiwi/frankenphp
         rm -rf kiwi/tests
-        rm -rf kiwi/var
+        rm -rf kiwi/var/!(tailwind)
 
     - name: Generate sample environment settings for build
       if: github.ref == 'refs/heads/master'
