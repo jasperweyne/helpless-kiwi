@@ -30,7 +30,7 @@ cd ../
 
 # Remove files redundant for operation 
 echo Removing files redundant for operation, please wait...
-find . -maxdepth 1 ! -name 'importmap.php' -type f -exec rm {} +
+find kiwi -maxdepth 1 ! -name 'importmap.php' -type f -exec rm {} +
 rm -rf kiwi/.github
 rm -rf kiwi/.hooks
 rm -rf kiwi/assets/image
