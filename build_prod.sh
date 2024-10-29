@@ -30,7 +30,7 @@ cd ../
 
 # Remove files redundant for operation 
 echo Removing files redundant for operation, please wait...
-rm kiwi/@\(!\(importmap.php\)\|.*\) 2> /dev/null
+find . -maxdepth 1 ! -name 'importmap.php' -type f -exec rm {} +
 rm -rf kiwi/.github
 rm -rf kiwi/.hooks
 rm -rf kiwi/assets/image
@@ -38,7 +38,7 @@ rm -rf kiwi/bin
 rm -rf kiwi/fixtures
 rm -rf kiwi/frankenphp
 rm -rf kiwi/tests
-rm -rf kiwi/var/!\(tailwind\)
+rm -rf kiwi/var/{log,cache}
 
 # Create environment variable file
 cat > kiwi/.env.local.php << EOL
