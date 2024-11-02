@@ -11,7 +11,8 @@
     {{ parent() }}
     <script src="{{ preload('https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js', {as: 'script', integrity: 'sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs', crossorigin: 'anonymous'}) }}" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
     <script src="{{ preload('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js', {as: 'script', integrity: 'sha384-JnbsSLBmv2/R0fUmF2XYIcAEMPHEAO51Gitn9IjL4l89uFTIgtLF1+jqIqqd9FSk', crossorigin: 'anonymous'}) }}" integrity="sha384-JnbsSLBmv2/R0fUmF2XYIcAEMPHEAO51Gitn9IjL4l89uFTIgtLF1+jqIqqd9FSk" crossorigin="anonymous"></script>
-    <script>$(document).ready(() => $('select[data-select="true"]').select2());</script>
+    <script src="{{ preload('https://cdn.jsdelivr.net/npm/match-sorter@7.0.0/dist/match-sorter.umd.min.js', {as: 'script', integrity: 'sha384-U17LNNqxi9sbssfp9JwvyQp2dGfx/1d3pHgB56wGLkzE6nFcAr9mVF/iasQM/aEP', crossorigin: 'anonymous'}) }}" integrity="sha384-U17LNNqxi9sbssfp9JwvyQp2dGfx/1d3pHgB56wGLkzE6nFcAr9mVF/iasQM/aEP" crossorigin="anonymous"></script>
+    <script>$(document).ready(() => $('select[data-select="true"]').select2({ sorter: (data) => $('.select2-search__field').val() ? window.matchSorter.matchSorter(data, $('.select2-search__field').val(), { keys: ['text'] }) : data }));</script>
 {% endblock %}
 
 {% block nav %}
