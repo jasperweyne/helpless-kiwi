@@ -1,0 +1,14 @@
+App\Entity\Activity\Activity:
+  Activity_1:
+    id: <uuid()>
+    description: <realtext(500)>
+    color: <randomElement(['pink'])>
+    author: '@Group_1'
+    archived: false
+    start: <dateTimeBetween('+1 day', '+2 days')>
+    end: <dateTimeBetween('+2 days', '+1 week')>
+    deadline: <dateTimeBetween('+1 hour', '+1 day')>
+    imageUpdatedAt: <dateTimeBetween('-5 days', 'now')>
+    visibleAfter: <dateTime('-5 hours')>
+    name: <word()>
+    location: '@Location_*'

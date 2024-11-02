@@ -3,10 +3,6 @@
 namespace Tests\Functional\GraphQL;
 
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\PriceOptionFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 /**
@@ -16,21 +12,6 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
  */
 class QueryTest extends AuthWebTestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-            RegistrationFixture::class,
-        ]);
-    }
-
     public function testCurrentAnonymous(): void
     {
         // Arrange

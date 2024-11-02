@@ -3,7 +3,6 @@
 namespace Tests\Functional\Command;
 
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -18,9 +17,6 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
     /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,9 +24,6 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -56,7 +49,7 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
     public function testExecuteWithFixtures(): void
     {
         // Arrange
-        $this->databaseTool->loadFixtures([LocalAccountFixture::class]);
+        self::assertTrue(false);
         $application = new Application($this->client->getKernel());
 
         // Act

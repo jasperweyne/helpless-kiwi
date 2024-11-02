@@ -5,10 +5,6 @@ namespace Tests\Functional\Controller\Admin;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\PriceOptionFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -26,12 +22,6 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-            RegistrationFixture::class,
-        ]);
 
         $this->login();
 
