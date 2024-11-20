@@ -75,6 +75,12 @@ class Group
     #[GQL\Description('Whether the group can be currently used as a target group for activities.')]
     private ?bool $register;
 
+    /** @var ?string[] */
+    #[ORM\Column(type: 'array', nullable: true)]
+    #[GQL\Field(type: '[string!]')]
+    #[GQL\Description('A list of contact methods.')]
+    private ?array $contactFields;
+
     public function __construct()
     {
         $this->relations = new ArrayCollection();
@@ -265,6 +271,24 @@ class Group
     public function setRegister(bool $register): self
     {
         $this->register = $register;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getContactFields(): array
+    {
+        return $this->contactFields ?? [];
+    }
+
+    /**
+     * @param string[] $contactFields
+     */
+    public function setContactFields(array $contactFields): self
+    {
+        $this->contactFields = $contactFields;
 
         return $this;
     }
