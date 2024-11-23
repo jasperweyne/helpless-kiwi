@@ -842,7 +842,7 @@ class Updater
 
 set_time_limit(0);
 set_exception_handler(function (Throwable $e) {
-    Updater::render('Probleem!', '<pre>'.$e->getMessage()."\n".$e->getTraceAsString().'</pre>');
+    Updater::render('Probleem!', '<pre>'.$e->getMessage()."\n".$e->getTraceAsString().'</pre><a href="revert.php">Zet backup terug met backuptool</a>');
 });
 
 $updater = new Updater();
