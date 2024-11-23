@@ -13,14 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class AttributeMenuExtensionTest extends KernelTestCase
 {
-    /**
-     * @var AttributeMenuExtension
-     */
-    protected $attributeMenuExtension;
+    protected AttributeMenuExtension $attributeMenuExtension;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,9 +23,6 @@ class AttributeMenuExtensionTest extends KernelTestCase
         $this->attributeMenuExtension = new AttributeMenuExtension('Tests\Unit\Template', __DIR__, '');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

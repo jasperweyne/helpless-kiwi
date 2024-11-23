@@ -34,7 +34,7 @@ class MailControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
-        $this->client->request('GET', $this->controllerEndpoint.'/');
+        $this->client->request('GET', $this->controllerEndpoint);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('#title', 'Mails');
     }
@@ -47,7 +47,7 @@ class MailControllerTest extends AuthWebTestCase
         $id = $mail->getId();
 
         // Act
-        $this->client->request('GET', "/admin/mail/{$id}");
+        $this->client->request('GET', $this->controllerEndpoint."/{$id}/");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());

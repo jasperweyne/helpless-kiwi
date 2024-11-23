@@ -65,7 +65,7 @@ class CreateTrustedClientCommandTest extends AuthWebTestCase
         $output = $commandTester->getDisplay();
 
         // Assert
-        self::assertEquals($exit, Command::FAILURE);
+        self::assertEquals(Command::FAILURE, $exit);
         self::assertStringContainsString('already exists', $output);
     }
 }

@@ -55,7 +55,7 @@ class TrustedClientController extends AbstractController
             $hashed = $factory->getPasswordHasher(TrustedClient::class)->hash($secret);
             assert(is_string($id));
 
-            $this->em->persist(TrustedClient::create($id, $hashed));
+            $this->em->persist(new TrustedClient($id, $hashed));
             $this->em->flush();
 
             $this->addFlash('success', "Client '$id' gecreeerd met secret '$secret'");

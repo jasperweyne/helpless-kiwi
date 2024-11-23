@@ -1,0 +1,4 @@
+App\Entity\Mail\Recipient:
+  Recipient_1:
+    person: '@LocalAccount_1'
+    mail: '@Mail_1'

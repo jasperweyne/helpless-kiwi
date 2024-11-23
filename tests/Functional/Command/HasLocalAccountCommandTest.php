@@ -2,6 +2,7 @@
 
 namespace Tests\Functional\Command;
 
+use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -14,8 +15,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class HasLocalAccountCommandTest extends AuthWebTestCase
 {
-    /** @var EntityManagerInterface */
-    protected $em;
+    protected EntityManagerInterface $em;
 
     protected function setUp(): void
     {
@@ -35,6 +35,12 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
     {
         // Arrange
         $application = new Application($this->client->getKernel());
+        $repo = $this->em->getRepository(LocalAccount::class);
+        $localAccounts = $repo->findAll();
+        foreach ($localAccounts as $localAccount) {
+            $this->em->remove($localAccount);
+        }
+        $this->em->flush();
 
         // Act
         $command = $application->find('app:has-account');
@@ -49,7 +55,6 @@ class HasLocalAccountCommandTest extends AuthWebTestCase
     public function testExecuteWithFixtures(): void
     {
         // Arrange
-        self::assertTrue(false);
         $application = new Application($this->client->getKernel());
 
         // Act

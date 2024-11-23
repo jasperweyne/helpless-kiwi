@@ -28,8 +28,6 @@ class ActivityController extends AbstractController
         protected EventDispatcherInterface $events,
         protected EntityManagerInterface $em,
     ) {
-        $this->events = $events;
-        $this->em = $em;
     }
 
     /**
@@ -153,6 +151,11 @@ class ActivityController extends AbstractController
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);
             $groups = $user->getRelations()->toArray();
+            if ($activity->getEnd() < new \DateTime() && !in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+                return $this->redirectToRoute(
+                    'activity_index',
+                );
+            }
         }
         $targetoptions = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
         $forms = [];

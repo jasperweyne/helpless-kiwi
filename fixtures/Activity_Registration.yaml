@@ -1,13 +1,44 @@
 App\Entity\Activity\Registration:
-  Registration_{1, 2}:
+  Registration_1:
     id: <uuid()>
-    option: '@PriceOption_*'
+    option: '@PriceOption_1'
+    activity: '@Activity_1'
+    person: '@LocalAccount_2'
+    newdate: <dateTime('-5 mins')>
+    reserve_position: '@Order_1'
+
+  Registration_2:
+    id: <uuid()>
+    option: '@PriceOption_1'
     activity: '@Activity_1'
     person: '@LocalAccount_1'
-    newdate: <dateTime('+1 hour')>
+    newdate: <dateTime('-5 mins')>
 
-  Registration_{3, 4}:
+  Registration_3:
     id: <uuid()>
-    option: '@PriceOption_*'
+    option: '@PriceOption_1'
     person: '@LocalAccount_1'
-    newdate: <dateTime('+1 hour')>
+    newdate: <dateTime('-5 mins')>
+
+  Registration_4:
+    id: <uuid()>
+    option: '@PriceOption_1'
+    activity: '@Activity_3'
+    person: '@LocalAccount_1'
+    newdate: <dateTime('-5 mins')>
+    reserve_position: '@Order_1'
+
+  Registration_5:
+    id: <uuid()>
+    option: '@PriceOption_1'
+    activity: '@Activity_3'
+    person: '@LocalAccount_2'
+    newdate: <dateTime('-5 mins')>
+    reserve_position: '@Order_2'
+
+App\Entity\Order:
+  Order_1:
+    __factory: { create: ['aaaaaaaaaaaaaaab'] }
+  
+  Order_2:
+    __factory: { create: ['aaaaaaaaaaaaaaac'] }

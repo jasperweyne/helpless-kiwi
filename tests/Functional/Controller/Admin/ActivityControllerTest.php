@@ -4,6 +4,8 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
+use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -26,6 +28,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->login();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->em->clear();
     }
 
     protected function tearDown(): void
@@ -375,8 +378,16 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testPresentEditAction(): void
     {
         // Arange
-        $activities = $this->em->getRepository(Activity::class)->findAll();
-        $id = $activities[0]->getId();
+        /** @var LocalAccount $user */
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'aangemeld@kiwi.nl']);
+        $registrations = $user->getRegistrations();
+        self::assertNotNull($registrations);
+
+        /** @var Registration $registration */
+        $registration = $registrations->first();
+        /** @var Activity $activity */
+        $activity = $registration->getActivity();
+        $id = $activity->getId();
 
         // Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/edit");
@@ -386,7 +397,6 @@ class ActivityControllerTest extends AuthWebTestCase
         /** @var \Symfony\Component\DomCrawler\Form $form */
         $this->client->submit($form);
 
-        // Assert
         self::assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
@@ -394,9 +404,10 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testPresentSetAction(): void
     {
         // Arange
-        $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
-        $id = $activitie->getId();
-        $present = $activitie->getPresent();
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+        $present = $activity->getPresent();
 
         // Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/set/");

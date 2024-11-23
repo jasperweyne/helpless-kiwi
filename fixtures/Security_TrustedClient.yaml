@@ -1,4 +1,3 @@
 App\Entity\Security\TrustedClient:
   TrustedClient_1:
-    id: client
-    secret: <hashPassword('secret')>
+    __construct: [client, <hashPassword('secret')>]

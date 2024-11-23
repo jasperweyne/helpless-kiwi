@@ -5,3 +5,27 @@ App\Entity\Security\LocalAccount:
     email: admin@kiwi.nl
     password: <hashPassword("root")>
     roles: ["ROLE_USER", "ROLE_ADMIN"]
+  LocalAccount_2:
+    id: <uuid()>
+    name: <name()>
+    email: aangemeld@kiwi.nl
+    password: <hashPassword("root")>
+    roles: ["ROLE_USER"]
+  LocalAccount_3:
+    id: <uuid()>
+    name: afgemeld@kiwi.nl
+    email: afgemeld@kiwi.nl
+    password: <hashPassword("root")>
+    roles: ["ROLE_USER"]
+  LocalAccount_4:
+    id: <uuid()>
+    name: reserve1@kiwi.nl
+    email: reserve1@kiwi.nl
+    password: <hashPassword("root")>
+    roles: ["ROLE_USER"]
+  LocalAccount_5:
+    id: <uuid()>
+    name: reserve2@kiwi.nl
+    email: reserve2@kiwi.nl
+    password: <hashPassword("root")>
+    roles: ["ROLE_USER"]

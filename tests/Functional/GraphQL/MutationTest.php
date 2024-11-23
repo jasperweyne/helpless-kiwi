@@ -6,7 +6,6 @@ use App\Entity\Security\ApiToken;
 use App\Entity\Security\LocalAccount;
 use App\Entity\Security\TrustedClient;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\TrustedClientFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
@@ -45,7 +44,7 @@ class MutationTest extends AuthWebTestCase
         $user = 'admin@kiwi.nl';
         $pass = 'root';
         $id = 'client';
-        $secret = TrustedClientFixture::SECRET;
+        $secret = 'secret';
 
         $query = <<<GRAPHQL
         mutation {
@@ -97,7 +96,7 @@ class MutationTest extends AuthWebTestCase
         $user = 'admin@kiwi.nl';
         $pass = 'wrong';
         $id = 'client';
-        $secret = TrustedClientFixture::SECRET;
+        $secret = 'secret';
 
         $query = <<<GRAPHQL
         mutation {
@@ -119,7 +118,8 @@ class MutationTest extends AuthWebTestCase
     public function testLogout(): void
     {
         // Arrange
-        $user = $this->user('admin@kiwi.nl');
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
+        $this->login('admin@kiwi.nl');
         $client = $this->em->find(TrustedClient::class, 'client');
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));
@@ -144,7 +144,8 @@ class MutationTest extends AuthWebTestCase
     public function testLogoutUnknown(): void
     {
         // Arrange
-        $user = $this->user('admin@kiwi.nl');
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
+        $this->login('admin@kiwi.nl');
         assert($user instanceof LocalAccount);
 
         $query = <<<GRAPHQL
@@ -154,7 +155,6 @@ class MutationTest extends AuthWebTestCase
         GRAPHQL;
 
         // Act
-        $this->client->loginUser($user);
         $data = QueryTest::graphqlQuery($this->client, $query);
 
         // Assert
@@ -167,7 +167,7 @@ class MutationTest extends AuthWebTestCase
     public function testLogoutUnauthorized(): void
     {
         // Arrange
-        $user = $this->user('admin@kiwi.nl');
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
         $client = $this->em->find(TrustedClient::class, 'client');
         assert($user instanceof LocalAccount && null !== $client);
         $this->em->persist($token = new ApiToken($user, $client, new \DateTimeImmutable('+5 minutes')));

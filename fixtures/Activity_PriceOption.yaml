@@ -1,7 +1,31 @@
 App\Entity\Activity\PriceOption:
-  PriceOption_{1..2}:
+  PriceOption_{1..5}:
     id: <uuid()>
     name: <word()>
+    price: <numberBetween(0, 1000)>
+    details: '[]'
+    confirmation_msg: ''
+    activity: '@Activity_1'
+
+  PriceOption_{6..10}:
+    id: <uuid()>
+    name: <word()>
+    price: <numberBetween(0, 1000)>
+    details: '[]'
+    confirmation_msg: ''
+    activity: '@Activity_2'
+
+  PriceOption_{11}:
+    id: <uuid()>
+    name: <word()>
+    price: <numberBetween(0, 1000)>
+    details: '[]'
+    confirmation_msg: ''
+    activity: '@Activity_3'
+
+  PriceOption_{12}:
+    id: <uuid()>
+    name: reg_test
     price: <numberBetween(0, 1000)>
     details: '[]'
     confirmation_msg: ''

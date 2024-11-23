@@ -1,0 +1,3 @@
+App\Entity\Security\ApiToken:
+  ApiToken_1:
+    __construct: [ '@LocalAccount_1', '@TrustedClient_1', <(new DateTimeImmutable('now'))>]

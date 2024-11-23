@@ -16,15 +16,9 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class RegistrationControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var string
-     */
-    private $controller = '/admin/activity/register';
+    private string $controller = '/admin/activity/register';
 
     protected function setUp(): void
     {
@@ -32,6 +26,7 @@ class RegistrationControllerTest extends AuthWebTestCase
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->em->clear();
     }
 
     protected function tearDown(): void
@@ -85,7 +80,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', $this->controller."/new/{$id}");
+        $this->client->request('GET', $this->controller."/new/{$id}/");
         $this->client->submitForm('Toevoegen');
 
         // Assert
@@ -193,14 +188,17 @@ class RegistrationControllerTest extends AuthWebTestCase
 
     public function testReserveMoveUpAction(): void
     {
+        $this->em->clear();
         // Arrange
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['description' => 'multiple-registrations']);
         $reserves = $activity->getReserveRegistrations();
         self::assertNotNull($reserves[1]);
         $secondReserveId = $reserves[1]->getId();
 
         // Act
         $this->client->request('GET', $this->controller."/reserve/move/{$secondReserveId}/up");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         // Assert
         $updatedReserves = $activity->getReserveRegistrations();
@@ -213,13 +211,15 @@ class RegistrationControllerTest extends AuthWebTestCase
     public function testReserveMoveDownAction(): void
     {
         // Arrange
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['description' => 'multiple-registrations']);
         $reserves = $activity->getReserveRegistrations();
         self::assertNotNull($reserves[0]);
         $firstReserveId = $reserves[0]->getId();
 
         // Act
         $this->client->request('GET', $this->controller."/reserve/move/{$firstReserveId}/down");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         // Assert
         $updatedReserves = $activity->getReserveRegistrations();
@@ -236,7 +236,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // arrange
         /** @var Activity $activity */
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['name' => 'activity_1']);
 
         /** @var Registration $registration */
         $registration = $activity->getRegistrations()[0];

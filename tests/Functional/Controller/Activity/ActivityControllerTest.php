@@ -57,40 +57,43 @@ class ActivityControllerTest extends AuthWebTestCase
     {
         // Arrange
         /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'aangemeld@kiwi.nl']);
+        $this->login('aangemeld@kiwi.nl');
+
         /** @var Registration */
-        $reg = $this->em->getRepository(Registration::class)->findBy(['person' => $user])[0];
+        $reg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user]);
         self::assertNotNull($reg->getActivity());
         $id = $reg->getActivity()->getId();
 
         // Act
-        $this->client->request('GET', "/activity/{$id}");
+        $this->client->request('GET', "/activity/{$id}/");
         $this->client->submitForm('Afmelden');
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'gelukt');
         /** @var Registration */
-        $dereg = $this->em->getRepository(Registration::class)->find($reg->getId());
+        $dereg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user]);
         self::assertNotNull($dereg->getDeleteDate());
     }
 
     public function testRegisterAction(): void
     {
-        // Arrange
-        // Unload th Registration Fixture
-
         // Retrieve data
         /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
         /** @var PriceOption */
-        $option = $this->em->getRepository(PriceOption::class)->findAll()[0];
+        $option = $this->em->getRepository(PriceOption::class)->findOneBy(['name' => 'reg_test']);
         self::assertNotNull($option->getActivity());
         $id = $option->getActivity()->getId();
+        self::assertNotNull($id);
+        $this->em->clear();
 
         // Act
-        $this->client->request('GET', "/activity/{$id}");
-        $this->client->submitForm('Aanmelden');
+        $crawler = $this->client->request('GET', "/activity/{$id}/");
+        $filter = "input[value='{$option->getId()}']";
+        $form = $crawler->filter($filter)->ancestors()->filter('form')->form();
+        $this->client->submit($form);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());

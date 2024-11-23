@@ -20,20 +20,9 @@ class RegistrationRepositoryTest extends KernelTestCase
 {
     use RecreateDatabaseTrait;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $em;
-
-    /**
-     * @var RegistrationRepository
-     */
-    protected $registrationRepository;
-
-    /**
-     * @var ManagerRegistry
-     */
-    protected $registry;
+    protected ObjectManager $em;
+    protected RegistrationRepository $registrationRepository;
+    protected ManagerRegistry $registry;
 
     protected function setUp(): void
     {

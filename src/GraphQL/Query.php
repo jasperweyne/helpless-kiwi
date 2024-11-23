@@ -13,20 +13,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 #[GQL\Description('The root of all query operations.')]
 class Query
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
-    {
-        $this->em = $em;
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(
+        private EntityManagerInterface $em,
+        private TokenStorageInterface $tokenStorage,
+    ) {
     }
 
     /**
