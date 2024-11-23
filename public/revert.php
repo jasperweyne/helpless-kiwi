@@ -122,7 +122,6 @@ class Reverter
             unlink($logFile);
         }
 
-        header('Refresh: 5');
         self::render('Backuptool', "<p>Backup '$version' succesvol terug gezet!</p><a class=\"btn btn-success\">Herstart backuptool</a>");
     }
 
