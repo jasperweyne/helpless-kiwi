@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-intl": "*",
+        "ext-zlib": "*",
         "craue/formflow-bundle": "^3.6",
         "dg/mysql-dump": "^1.5",
         "doctrine/annotations": "^2.0",
