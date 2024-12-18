@@ -46,7 +46,7 @@ class Reverter
         }
 
         // Check whether the correct extensions are installed
-        $extensions = implode(', ', array_filter(['zip', 'json', 'mysqli', 'session'], fn ($ext) => !extension_loaded($ext)));
+        $extensions = implode(', ', array_filter(['zip', 'zlib', 'mysqli', 'session'], fn ($ext) => !extension_loaded($ext)));
         if (!empty($extensions)) {
             throw new Exception('The following extensions are missing, please install or enable them: '.$extensions);
         }
