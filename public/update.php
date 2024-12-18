@@ -463,7 +463,7 @@ class Updater
             }
 
             // Check if database backup has been made
-            if (!file_exists($databaseDump = self::path("install/backup/$today.sql"))) {
+            if (!file_exists($databaseDump = self::path("install/backup/$today.sql.gz"))) {
                 require_once self::path('kiwi/vendor/autoload.php');
                 $dumper = new MySQLDump($this->database($this->env['DATABASE_URL'] ?? ''));
                 $dumper->save($databaseDump);
@@ -515,7 +515,7 @@ class Updater
 
         unlink($disabler);
 
-        return yield 'Update installation completed';
+        return 'Update installation completed';
     }
 
     private function backup(string $path): void

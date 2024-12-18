@@ -104,12 +104,12 @@ class Reverter
         try {
             // Start revert process
             $version = $data['version'];
-            touch(self::path('public_html/kiwi/enable-maintenance.txt'));
+            touch($disabler = self::path('public_html/kiwi/enable-maintenance.txt'));
 
             // Revert database
             require_once self::path('kiwi/vendor/autoload.php');
             $dumper = new MySQLImport($this->database($this->env('DATABASE_URL')));
-            $dumper->load("$backup/$version.sql");
+            $dumper->load("$backup/$version.sql.gz");
 
             // Remove remaining files from previous version (including this updater, it will still be in PHP memory)
             $this->rmdir(self::path('public_html'));
@@ -117,12 +117,13 @@ class Reverter
 
             // Install kiwi and public_html folders of the backup
             $this->extract("$backup/$version.zip", self::path());
+            unlink($disabler);
         } finally {
             fclose($log);
             unlink($logFile);
         }
 
-        self::render('Backuptool', "<p>Backup '$version' succesvol terug gezet!</p><a class=\"btn btn-success\">Herstart backuptool</a>");
+        self::render('Backuptool', "<p>Backup '$version' succesvol terug gezet!</p><a class=\"btn btn-success\" href=\"/revert.php\">Herstart backuptool</a>");
     }
 
     private function database(string $uri): mysqli
