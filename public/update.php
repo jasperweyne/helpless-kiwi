@@ -413,15 +413,16 @@ class Updater
         fclose($log);
 
         // If the updater is finished, remove the logfile and update archive and continue
+        $completeLog = file_get_contents($logFile);
         if (!$update->valid()) {
             unlink($logFile);
             unlink($archive);
 
-            return;
+            header('Refresh: 1');
+            self::render('Installatie voltooid', "<pre>$completeLog</pre><a href=\"update.php\">Doorgaan</a>");
         }
 
         header('Refresh: 1');
-        $completeLog = file_get_contents($logFile);
         self::render('Aan het installeren...', "<pre>$completeLog</pre>");
     }
 
