@@ -24,8 +24,8 @@ class Reverter extends Updater
         // Select all revertable zips from disk
         $files = array_diff(scandir($backup = self::path('install/backup')), ['.', '..']);
         $zips = array_filter($files, fn ($n) => str_ends_with($n, '.zip'));
-        $sqls = array_filter($files, fn ($n) => str_ends_with($n, '.sql'));
-        $removeExt = fn ($filename) => preg_replace('/\.\w+$/', '', $filename);
+        $sqls = array_filter($files, fn ($n) => str_ends_with($n, '.sql.gz'));
+        $removeExt = fn ($filename) => preg_replace('/\.[\.\w]+$/', '', $filename);
         $backups = array_intersect(array_map($removeExt, $zips), array_map($removeExt, $sqls));
 
         if (empty($backups)) {
