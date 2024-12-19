@@ -418,8 +418,7 @@ class Updater
             unlink($logFile);
             unlink($archive);
 
-            header('Refresh: 1');
-            self::render('Installatie voltooid', "<pre>$completeLog</pre><a href=\"update.php\">Doorgaan</a>");
+            self::render('Installatie voltooid', "<pre>$completeLog</pre><a class=\"btn btn-success\" href=\"update.php\">Doorgaan</a>");
         }
 
         header('Refresh: 1');
