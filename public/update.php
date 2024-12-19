@@ -92,11 +92,11 @@ class Updater
      *
      * @throws Exception If the project's environment is somehow invalid
      */
-    public function checkReqs(): void
+    public function checkReqs(string $script = 'update.php'): void
     {
         // Check request URI
-        if ('/update.php' !== $_SERVER['REQUEST_URI']) {
-            throw new Exception('The server is setup incorrectly. The request URI should be /update.php, but it\'s '.$_SERVER['REQUEST_URI']);
+        if ("/$script" !== $_SERVER['REQUEST_URI']) {
+            throw new Exception("The server is setup incorrectly. The request URI should be /$script, but it's ".$_SERVER['REQUEST_URI']);
         }
 
         // Check whether the path is writable
@@ -105,7 +105,7 @@ class Updater
         }
 
         // Check whether the correct extensions are installed
-        $extensions = implode(', ', array_filter(['zip', 'json', 'mysqli', 'session'], fn ($ext) => !extension_loaded($ext)));
+        $extensions = implode(', ', array_filter(['zip', 'zlib', 'json', 'mysqli', 'session'], fn ($ext) => !extension_loaded($ext)));
         if (!empty($extensions)) {
             throw new Exception('The following extensions are missing, please install or enable them: '.$extensions);
         }
@@ -114,7 +114,7 @@ class Updater
     /**
      * Load the environment settings from the filesystem.
      */
-    private function loadEnv(bool $forceLoad = false): void
+    protected function loadEnv(bool $forceLoad = false): void
     {
         if ($forceLoad || !$this->env) {
             $path = self::path('kiwi/.env.local.php');
@@ -172,7 +172,7 @@ class Updater
         }
     }
 
-    private function login(): void
+    public function login(): void
     {
         session_start();
 
@@ -413,15 +413,15 @@ class Updater
         fclose($log);
 
         // If the updater is finished, remove the logfile and update archive and continue
+        $completeLog = file_get_contents($logFile);
         if (!$update->valid()) {
             unlink($logFile);
             unlink($archive);
 
-            return;
+            self::render('Installatie voltooid', "<pre>$completeLog</pre><a class=\"btn btn-success\" href=\"update.php\">Doorgaan</a>");
         }
 
         header('Refresh: 1');
-        $completeLog = file_get_contents($logFile);
         self::render('Aan het installeren...', "<pre>$completeLog</pre>");
     }
 
@@ -463,7 +463,7 @@ class Updater
             }
 
             // Check if database backup has been made
-            if (!file_exists($databaseDump = self::path("install/backup/$today.sql"))) {
+            if (!file_exists($databaseDump = self::path("install/backup/$today.sql.gz"))) {
                 require_once self::path('kiwi/vendor/autoload.php');
                 $dumper = new MySQLDump($this->database($this->env['DATABASE_URL'] ?? ''));
                 $dumper->save($databaseDump);
@@ -515,7 +515,7 @@ class Updater
 
         unlink($disabler);
 
-        return yield 'Update installation completed';
+        return 'Update installation completed';
     }
 
     private function backup(string $path): void
@@ -539,7 +539,7 @@ class Updater
         $zip->close();
     }
 
-    private function database(string $uri): mysqli
+    public function database(string $uri): mysqli
     {
         $matches = [];
         if (!preg_match('/^\w+:\/\/(\w*):(\w*)@([\w\.]*):\d+\/(\w+)/', $uri, $matches)) {
@@ -840,10 +840,12 @@ class Updater
     }
 }
 
-set_time_limit(0);
-set_exception_handler(function (Throwable $e) {
-    Updater::render('Probleem!', '<pre>'.$e->getMessage()."\n".$e->getTraceAsString().'</pre><a href="revert.php">Zet backup terug met backuptool</a>');
-});
+if (basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
+    set_time_limit(0);
+    set_exception_handler(function (Throwable $e) {
+        Updater::render('Probleem!', '<pre>'.$e->getMessage()."\n".$e->getTraceAsString().'</pre><a href="revert.php">Zet backup terug met backuptool</a>');
+    });
 
-$updater = new Updater();
-$updater->run();
+    $updater = new Updater();
+    $updater->run();
+}
