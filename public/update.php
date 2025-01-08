@@ -418,6 +418,7 @@ class Updater
             unlink($logFile);
             unlink($archive);
 
+            $completeLog .= "Update installation completed\n";
             self::render('Installatie voltooid', "<pre>$completeLog</pre><a class=\"btn btn-success\" href=\"update.php\">Doorgaan</a>");
         }
 
@@ -439,7 +440,8 @@ class Updater
     private function install(string $version, string $archive)
     {
         $installingFiles = $version !== ($this->env['INSTALLED_VERSION'] ?? null);
-        if ($installingFiles && !file_exists($disabler = self::path('public_html/kiwi/enable-maintenance.txt'))) {
+        $disabler = self::path('public_html/kiwi/enable-maintenance.txt');
+        if ($installingFiles & !file_exists($disabler)) {
             touch($disabler);
             yield 'Put kiwi in maintenance mode';
         }
@@ -514,8 +516,6 @@ class Updater
         }
 
         unlink($disabler);
-
-        return 'Update installation completed';
     }
 
     private function backup(string $path): void
@@ -843,7 +843,8 @@ class Updater
 if (basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
     set_time_limit(0);
     set_exception_handler(function (Throwable $e) {
-        Updater::render('Probleem!', '<pre>'.$e->getMessage()."\n".$e->getTraceAsString().'</pre><a href="revert.php">Zet backup terug met backuptool</a>');
+        $reverter = file_exists(__DIR__.'/revert.php') ? '<a href="revert.php">Zet backup terug met backuptool</a>' : '';
+        Updater::render('Probleem!', '<pre>'.$e->getMessage()."\n".$e->getTraceAsString().'</pre>'.$reverter);
     });
 
     $updater = new Updater();
