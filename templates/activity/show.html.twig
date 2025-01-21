@@ -81,8 +81,11 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if activity.author.active and activity.author.contactFields.email %}
-                    <a href="{{ activity.author.contactFields.email }}" target="_blank" class="rounded px-4 py-3 bg-white inline-block">Contact</a>
+                {% if is_granted('ROLE_USER') and activity.author and activity.author.contactFields.email %}
+                    <a href="{{ activity.author.contactFields.email }}" target="_blank" class="rounded px-4 py-3 text-white bg-blue-500 inline-block">Contact</a>
+                {% endif %}
+                {% if is_granted('in_group', activity.author) %}
+                    <a href="{{ path("admin_activity_show", { 'activity': activity.id }) }}" target="_blank" class="rounded px-4 py-3 text-black bg-white inline-block">Beheren</a>
                 {% endif %}
             </div>
         {% endif %}
