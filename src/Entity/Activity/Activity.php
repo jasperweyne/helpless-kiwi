@@ -53,6 +53,7 @@ class Activity
     /** @var Collection<int, Registration> */
     #[GQL\Field(type: '[Registration]')]
     #[GQL\Description('All registrations stored for this activity, regardless of option.')]
+    #[GQL\Access("isGranted('ROLE_ADMIN')")]
     #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
     private Collection $registrations;
 

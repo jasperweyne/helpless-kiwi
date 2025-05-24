@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[GQL\Type]
 #[GQL\Description('A representation of a registration from a user for an activity.')]
+#[GQL\Access("isGranted('ROLE_ADMIN')")]
 #[ORM\Entity(repositoryClass: "App\Repository\RegistrationRepository")]
 class Registration
 {
