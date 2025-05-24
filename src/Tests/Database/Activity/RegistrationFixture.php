@@ -19,13 +19,13 @@ class RegistrationFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         /** @var LocalAccount */
-        $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
+        $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE, LocalAccount::class);
         /** @var PriceOption */
-        $priceOption1 = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'0');
+        $priceOption1 = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'0', PriceOption::class);
         /** @var PriceOption */
-        $priceOption2 = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'1');
+        $priceOption2 = $this->getReference(PriceOptionFixture::PRICE_OPTION_REFERENCE.'1', PriceOption::class);
         /** @var Activity */
-        $activity = $this->getReference(ActivityFixture::ACTIVITY_REFERENCE.'0');
+        $activity = $this->getReference(ActivityFixture::ACTIVITY_REFERENCE.'0', Activity::class);
 
         $registrations = self::generate([$priceOption1, $priceOption2], $activity, $person)->return();
         foreach ($registrations as $object) {
