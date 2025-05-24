@@ -52,7 +52,7 @@
                 {% endif %}
             {% endblock %}
             {% block tab %}
-            <div class="bg-neutral-50 rounded shadow">
+            <div class="bg-neutral-50 rounded-sm shadow-sm">
                 <div class="table">
                     <table>
                         <thead>
@@ -90,7 +90,7 @@
         {% if group.relationable %}
             {% embed 'components/tab.html.twig' with {'tab_label': 'Groepsleden','tab_name': 'groupsmembers','tab_default': not group.subgroupable} %}
                 {% block tab %}
-                <div class="bg-neutral-50 rounded shadow">
+                <div class="bg-neutral-50 rounded-sm shadow-sm">
                     <div class="table">
                         <table>
                             <thead>
@@ -130,7 +130,7 @@
         {% endif %}
         {% embed 'components/tab.html.twig' with {'tab_label': 'Details','tab_default': not (group.relationable or group.subgroupable)} %}
             {% block tab %}
-            <div class="bg-neutral-50 rounded shadow">
+            <div class="bg-neutral-50 rounded-sm shadow-sm">
                 <div class="table">
                     <table>
                         <tbody>

@@ -42,7 +42,7 @@ Example usage:
 
 {% block tab_picker %}
     <input type="radio" name="tabs" id="{{ tab_name }}" class="absolute opacity-0" {{ tab_default ? 'checked' : ''}}>
-    <label for="{{ tab_name }}" class="px-8 py-4 cursor-pointer font-bold text-lg transition-colors rounded w-full md:w-auto md:-mb-1 tab {{ tab_default ? 'active' : ''}}">
+    <label for="{{ tab_name }}" class="px-8 py-4 cursor-pointer font-bold text-lg transition-colors rounded-sm w-full md:w-auto md:-mb-1 tab {{ tab_default ? 'active' : ''}}">
         <span>{{ tab_label }}</span>
     </label>
 {% endblock %}
