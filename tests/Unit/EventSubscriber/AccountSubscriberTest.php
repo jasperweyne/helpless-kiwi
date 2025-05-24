@@ -20,9 +20,6 @@ final class AccountSubscriberTest extends KernelTestCase
     private AccountSubscriber $accountSubscriber;
     private EntityManagerInterface&MockObject $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -31,9 +28,6 @@ final class AccountSubscriberTest extends KernelTestCase
         $this->accountSubscriber = new AccountSubscriber($this->em);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -55,7 +49,7 @@ final class AccountSubscriberTest extends KernelTestCase
             } else {
                 foreach ($value as $nested) {
                     assert(is_array($nested));
-                    $handlers[] = (string) $nested[0];
+                    $handlers[] = $nested[0];
                 }
             }
         }

@@ -6,11 +6,6 @@ parameters:
 			path: src/Controller/Admin/EventController.php
 
 		-
-			message: "#^Parameter \\#1 \\$array of function current expects array\\|object, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Admin/EventController.php
-
-		-
 			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$deadline type mapping mismatch\\: property can contain DateTime\\|null but database expects DateTimeInterface\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php

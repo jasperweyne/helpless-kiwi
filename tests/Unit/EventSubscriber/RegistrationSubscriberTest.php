@@ -81,7 +81,7 @@ final class RegistrationSubscriberTest extends KernelTestCase
             } else {
                 foreach ($value as $nested) {
                     assert(is_array($nested));
-                    $handlers[] = (string) $nested[0];
+                    $handlers[] = $nested[0];
                 }
             }
         }
