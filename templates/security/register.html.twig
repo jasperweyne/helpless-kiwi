@@ -5,11 +5,11 @@
 {% block body %}
 <div class="mx-auto max-w-6xl px-5 mb-5">
     {{ form_start(form) }}
-    <div class="bg-gradient-to-b from-zinc-700 to-zinc-900 rounded shadow-2xl text-white flex flex-col h-96 mx-auto max-w-72 p-5 w-full">
+    <div class="bg-linear-to-b from-zinc-700 to-zinc-900 rounded-sm shadow-2xl text-white flex flex-col h-96 mx-auto max-w-72 p-5 w-full">
         <h1>{{ page_title }}</h1>
         <p class="mb-5">Welkom bij jouw {{ org }} account! Om je account te activeren, maak hier je wachtwoord aan en log in.</p>
         {{ form_widget(form) }}
-        <button class="bg-white text-black rounded px-5 py-3 mt-auto mb-5" type="submit">Account activeren</button>
+        <button class="bg-white text-black rounded-sm px-5 py-3 mt-auto mb-5" type="submit">Account activeren</button>
     </div>
     {{ form_end(form) }}
 </div>

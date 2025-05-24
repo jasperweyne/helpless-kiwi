@@ -42,7 +42,7 @@
 
 {% block pagination %}
 <div>
-    <div class="h-7 mx-auto bg-white shadow rounded w-max mb-5 overflow-hidden *:block *:float-left *:px-4 *:w-max *:h-full text-xl">
+    <div class="h-7 mx-auto bg-white shadow-sm rounded-sm w-max mb-5 overflow-hidden *:block *:float-left *:px-4 *:w-max *:h-full text-xl">
         {% if pagination.hasPrev %}
             <a class="cursor-pointer" href="{{ path('admin_event_index', { 'index': pagination.prev }) }}">&larr;</a>
         {% else %}
