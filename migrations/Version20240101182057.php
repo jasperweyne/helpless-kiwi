@@ -23,11 +23,4 @@ final class Version20240101182057 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_local_account CHANGE roles roles JSON NOT NULL');
         $this->addSql('ALTER TABLE kiwi_price_option CHANGE details details JSON NOT NULL');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE kiwi_local_account CHANGE roles roles LONGTEXT NOT NULL');
-        $this->addSql('ALTER TABLE kiwi_price_option CHANGE details details LONGTEXT NOT NULL');
-    }
 }

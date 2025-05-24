@@ -25,13 +25,4 @@ final class Version20210607201444 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_local_account ADD oidc VARCHAR(255) DEFAULT NULL');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_E78FD480D02D56A7 ON kiwi_local_account (oidc)');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql('DROP INDEX UNIQ_E78FD480D02D56A7 ON kiwi_local_account');
-        $this->addSql('ALTER TABLE kiwi_local_account DROP oidc');
-    }
 }

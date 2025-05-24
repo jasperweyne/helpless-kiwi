@@ -28,9 +28,4 @@ final class Version20210521004502 extends AbstractMigration
         $this->addSql('DELETE r FROM kiwi_log r WHERE NOT EXISTS (SELECT * FROM kiwi_local_account a WHERE a.id = r.person_id) AND r.person_id IS NOT NULL');
         $this->addSql('DELETE r FROM kiwi_relation r WHERE NOT EXISTS (SELECT * FROM kiwi_local_account a WHERE a.id = r.person_id)');
     }
-
-    public function down(Schema $schema): void
-    {
-        // not applicable
-    }
 }

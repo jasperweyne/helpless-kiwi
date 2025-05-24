@@ -24,12 +24,4 @@ final class Version20210624181858 extends AbstractMigration
 
         $this->addSql('ALTER TABLE kiwi_registration ADD comment VARCHAR(255) DEFAULT NULL');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql('ALTER TABLE kiwi_registration DROP comment');
-    }
 }

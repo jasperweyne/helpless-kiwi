@@ -46,34 +46,4 @@ final class Version20201005164015 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_relation ADD CONSTRAINT FK_62894749FE54D947 FOREIGN KEY (group_id) REFERENCES kiwi_taxonomy (id) ');
         $this->addSql('ALTER TABLE kiwi_taxonomy ADD CONSTRAINT FK_FD12B83D3D8E604F FOREIGN KEY (parent) REFERENCES kiwi_taxonomy (id) ');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-        
-        $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_AC74095A466F2FFC');
-        $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_AC74095A5E9E89CB');
-        $this->addSql('ALTER TABLE kiwi_activity DROP FOREIGN KEY FK_AC74095AED07F46C');
-        $this->addSql('ALTER TABLE kiwi_price_option DROP FOREIGN KEY FK_171FA8E0466F2FFC');
-        $this->addSql('ALTER TABLE kiwi_price_option DROP FOREIGN KEY FK_171FA8E0AC74095A');
-        $this->addSql('ALTER TABLE kiwi_recipient DROP FOREIGN KEY FK_6804FB495126AC48');
-        $this->addSql('ALTER TABLE kiwi_registration DROP FOREIGN KEY FK_63EB17A3A7C41D6F');
-        $this->addSql('ALTER TABLE kiwi_registration DROP FOREIGN KEY FK_63EB17A3AC74095A');
-        $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_62894749727ACA70');
-        $this->addSql('ALTER TABLE kiwi_relation DROP FOREIGN KEY FK_62894749FE54D947');
-        $this->addSql('ALTER TABLE kiwi_taxonomy DROP FOREIGN KEY FK_FD12B83D3D8E604F');
-
-        $this->addSql('DROP TABLE kiwi_activity');
-        $this->addSql('DROP TABLE kiwi_local_account');
-        $this->addSql('DROP TABLE kiwi_location');
-        $this->addSql('DROP TABLE kiwi_log');
-        $this->addSql('DROP TABLE kiwi_mail');
-        $this->addSql('DROP TABLE kiwi_oauth2access_token');
-        $this->addSql('DROP TABLE kiwi_price_option');
-        $this->addSql('DROP TABLE kiwi_recipient');
-        $this->addSql('DROP TABLE kiwi_registration');
-        $this->addSql('DROP TABLE kiwi_relation');
-        $this->addSql('DROP TABLE kiwi_taxonomy');
-    }
 }
