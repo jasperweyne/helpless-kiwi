@@ -36,7 +36,6 @@ rm -rf kiwi/.hooks
 rm -rf kiwi/assets/image
 rm -rf kiwi/bin
 rm -rf kiwi/fixtures
-rm -rf kiwi/frankenphp
 rm -rf kiwi/tests
 rm -rf kiwi/var/{log,cache}
 rm -rf kiwi/var/tailwind/**/*
