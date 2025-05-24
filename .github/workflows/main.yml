@@ -59,15 +59,16 @@ jobs:
     - name: Cleanup build
       if: github.ref == 'refs/heads/master'
       run: |
-        rm kiwi/{,.[!.],..?}* 2> /dev/null || true
+        find kiwi -maxdepth 1 ! -name 'importmap.php' -type f -exec rm {} +
         rm -rf kiwi/.git
         rm -rf kiwi/.github
         rm -rf kiwi/.hooks
-        rm -rf kiwi/assets
+        rm -rf kiwi/assets/image
         rm -rf kiwi/bin
-        rm -rf kiwi/node_modules
+        rm -rf kiwi/fixtures
         rm -rf kiwi/tests
-        rm -rf kiwi/var
+        rm -rf kiwi/var/{log,cache}
+        rm -rf kiwi/var/tailwind/**/*
 
     - name: Generate sample environment settings for build
       if: github.ref == 'refs/heads/master'
@@ -170,6 +171,6 @@ jobs:
         id: publish_release
         uses: eregon/publish-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.KIWIRELEASETOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}

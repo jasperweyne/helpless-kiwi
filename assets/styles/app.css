@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;800&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@theme {
+  --font-sans:
+    'Raleway', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
 
 input {
     color: black;
@@ -125,7 +129,7 @@ table {
     }
 }
 
-@screen md {
+@media (width >= theme(--breakpoint-md)) {
     .table {
         display: block;
         width: 100%;
@@ -203,7 +207,7 @@ form {
     }
 }
 
-@screen md {
+@media (width >= theme(--breakpoint-md)) {
     .form {
         display: block;
         width: 100%;

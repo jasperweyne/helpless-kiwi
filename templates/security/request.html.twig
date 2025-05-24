@@ -6,10 +6,10 @@
 
 <div class="mx-auto max-w-6xl px-5 mb-5">
     {{ form_start(form) }}
-    <div class="bg-gradient-to-b from-zinc-700 to-zinc-900 rounded shadow-2xl text-white flex flex-col h-96 mx-auto max-w-72 p-5 w-full">
+    <div class="bg-linear-to-b from-zinc-700 to-zinc-900 rounded-sm shadow-2xl text-white flex flex-col h-96 mx-auto max-w-72 p-5 w-full">
         <p class="mb-5">Ben je je wachtwoord vergeten? Vul hier je e-mailadres in waarmee je {{ org }} account is ingeschreven, dan sturen we je een herstelmail.</p>
         {{ form_widget(form) }}
-        <button class="bg-white text-black rounded px-5 py-3 mt-auto mb-5" type="submit">Verzenden</button>
+        <button class="bg-white text-black rounded-sm px-5 py-3 mt-auto mb-5" type="submit">Verzenden</button>
         <a href="{{ path('app_login') }}">Terug naar login</a>
     </div>
     {{ form_end(form) }}
