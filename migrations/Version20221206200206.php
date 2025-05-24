@@ -27,14 +27,4 @@ final class Version20221206200206 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_api_token ADD CONSTRAINT FK_35C7E1F39B6B5FBA FOREIGN KEY (account_id) REFERENCES kiwi_local_account (id)');
         $this->addSql('ALTER TABLE kiwi_api_token ADD CONSTRAINT FK_35C7E1F319EB6921 FOREIGN KEY (client_id) REFERENCES kiwi_trusted_client (id)');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql('ALTER TABLE kiwi_api_token DROP FOREIGN KEY FK_35C7E1F319EB6921');
-        $this->addSql('DROP TABLE kiwi_api_token');
-        $this->addSql('DROP TABLE kiwi_trusted_client');
-    }
 }
