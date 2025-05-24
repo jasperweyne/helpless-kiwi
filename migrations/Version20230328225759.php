@@ -24,12 +24,4 @@ final class Version20230328225759 extends AbstractMigration
 
         $this->addSql('ALTER TABLE kiwi_activity ADD archived TINYINT(1) DEFAULT false NOT NULL');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql('ALTER TABLE kiwi_activity DROP archived');
-    }
 }

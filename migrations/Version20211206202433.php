@@ -24,12 +24,4 @@ final class Version20211206202433 extends AbstractMigration
 
         $this->addSql('ALTER TABLE kiwi_activity ADD visible_after DATETIME DEFAULT \'1970-01-01\'');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql('ALTER TABLE kiwi_activity DROP visible_after');
-    }
 }
