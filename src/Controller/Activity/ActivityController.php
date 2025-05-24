@@ -30,6 +30,7 @@ class ActivityController extends AbstractController
     ) {
         $this->events = $events;
         $this->em = $em;
+        $this->show_list = $_ENV['SHOW_LIST'];
     }
 
     /**
@@ -177,6 +178,7 @@ class ActivityController extends AbstractController
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
             'options' => $forms,
+            'show_list' => $this->show_list,
             'unregister' => $unregister,
         ]);
     }

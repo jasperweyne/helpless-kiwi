@@ -95,6 +95,8 @@
     </div>
     {% if is_granted('ROLE_USER') and prices|length > 0 %}
     <div class="w-full sm:w-4/12 z-10 float-left relative mt-5 sm:mt-0">
+    <p>{{show_list}}</p>
+    {% if show_list == 1 %}
     <table class="bg-white rounded-sm text-left sm:-mt-40 w-full max-h-96 overflow-y-auto">
         <thead class="border-b-2 border-solid border-neutral-300">
             <tr>
@@ -121,6 +123,7 @@
         {% endif %}
         </tbody>
     </table>
+    {% endif %}
     </div>
     {% endif %}
 </div>
