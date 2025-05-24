@@ -16,9 +16,9 @@ class RelationFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         /** @var Group */
-        $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0');
+        $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0', Group::class);
         /** @var LocalAccount */
-        $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
+        $person = $this->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE, LocalAccount::class);
 
         $group->addRelation($person);
 

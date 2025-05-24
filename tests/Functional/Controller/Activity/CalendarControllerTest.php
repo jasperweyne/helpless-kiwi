@@ -18,9 +18,6 @@ class CalendarControllerTest extends AuthWebTestCase
     protected EntityManagerInterface $em;
     protected ReferenceRepository $fixtures;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,9 +31,6 @@ class CalendarControllerTest extends AuthWebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -58,7 +52,7 @@ class CalendarControllerTest extends AuthWebTestCase
     public function testGetPersonalCalendar(): void
     {
         /** @var LocalAccount $user */
-        $user = $this->fixtures->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
+        $user = $this->fixtures->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE, LocalAccount::class);
         $token = $user->getCalendarToken();
 
         $this->client->request('GET', '/ical/personal/'.$token);
@@ -70,7 +64,7 @@ class CalendarControllerTest extends AuthWebTestCase
     public function testPostPersonalCalendarRenew(): void
     {
         /** @var LocalAccount $user */
-        $user = $this->fixtures->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE);
+        $user = $this->fixtures->getReference(LocalAccountFixture::LOCAL_ACCOUNT_REFERENCE, LocalAccount::class);
         $token = $user->getCalendarToken();
 
         $this->client->request('POST', '/ical/renew');

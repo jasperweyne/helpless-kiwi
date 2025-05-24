@@ -19,9 +19,9 @@ class ActivityFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         /** @var Location */
-        $locations = $this->getReference(LocationFixture::LOCATION_REFERENCE);
+        $locations = $this->getReference(LocationFixture::LOCATION_REFERENCE, Location::class);
         /** @var Group */
-        $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0');
+        $group = $this->getReference(GroupFixture::GROUP_REFERENCE.'0', Group::class);
         $activityCount = 0;
 
         $activity = self::generate([$locations], $group)->return();

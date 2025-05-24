@@ -24,9 +24,6 @@ class MailSentSubscriberTest extends KernelTestCase
     private EntityManagerInterface&MockObject $em;
     private TokenStorageInterface&MockObject $tokenStorage;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -39,9 +36,6 @@ class MailSentSubscriberTest extends KernelTestCase
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -63,7 +57,7 @@ class MailSentSubscriberTest extends KernelTestCase
             } else {
                 foreach ($value as $nested) {
                     assert(is_array($nested));
-                    $handlers[] = (string) $nested[0];
+                    $handlers[] = $nested[0];
                 }
             }
         }
