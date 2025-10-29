@@ -94,7 +94,7 @@ class Registration
         if ($this->option !== $option) {
             $this->option?->removeRegistration($this);
             $this->option = $option;
-            $option?->addRegistration($this);
+            $option->addRegistration($this);
         }
 
         return $this;

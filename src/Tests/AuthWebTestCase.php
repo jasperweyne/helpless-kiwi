@@ -68,7 +68,7 @@ class AuthWebTestCase extends WebTestCase
     }
 
     /**
-     * @param string[] $roles
+     * @param string|string[] $roles
      */
     protected function login($roles = ['ROLE_ADMIN']): void
     {
