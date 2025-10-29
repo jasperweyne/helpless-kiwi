@@ -3,6 +3,7 @@
 namespace App\Entity\Mail;
 
 use App\Entity\Security\LocalAccount;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +35,11 @@ class Mail
 
     #[ORM\Column(type: 'datetime')]
     private \DateTime $sentAt;
+
+    public function __construct()
+    {
+        $this->recipients = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {

@@ -46,7 +46,11 @@ class Recipient
 
     public function setMail(?Mail $mail): self
     {
-        $this->mail = $mail;
+        if ($this->mail !== $mail) {
+            $this->mail?->removeRecipient($this);
+            $this->mail = $mail;
+            $mail?->addRecipient($this);
+        }
 
         return $this;
     }

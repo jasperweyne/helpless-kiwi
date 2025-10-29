@@ -355,6 +355,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     {
         if (!$this->relations->contains($relation)) {
             $this->relations->add($relation);
+            $relation->addRelation($this);
         }
 
         return $this;
@@ -362,7 +363,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
 
     public function removeRelation(Group $relation): self
     {
-        $this->relations->removeElement($relation);
+        if ($this->relations->removeElement($relation)) {
+            $relation->removeRelation($this);
+        }
 
         return $this;
     }

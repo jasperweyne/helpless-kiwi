@@ -28,7 +28,6 @@ class ActivityControllerTest extends AuthWebTestCase
         $this->login();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->em->clear();
     }
 
     protected function tearDown(): void

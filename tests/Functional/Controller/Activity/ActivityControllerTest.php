@@ -82,12 +82,13 @@ class ActivityControllerTest extends AuthWebTestCase
         // Retrieve data
         /** @var LocalAccount */
         $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
+        $this->login('afgemeld@kiwi.nl');
+
         /** @var PriceOption */
         $option = $this->em->getRepository(PriceOption::class)->findOneBy(['name' => 'reg_test']);
         self::assertNotNull($option->getActivity());
         $id = $option->getActivity()->getId();
         self::assertNotNull($id);
-        $this->em->clear();
 
         // Act
         $crawler = $this->client->request('GET', "/activity/{$id}/");

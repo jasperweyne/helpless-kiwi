@@ -20,9 +20,7 @@ class QueryTest extends AuthWebTestCase
     current {
         name
         registrations {
-            person {
-                givenName
-            }
+            created
         }
     }
 }
@@ -35,7 +33,7 @@ GRAPHQL;
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayNotHasKey('errors', $data);
         self::assertTrue(isset($data['data']['current']));
-        self::assertEmpty(array_merge(...array_column($data['data']['current'], 'registrations')));
+        self::assertNotEmpty(array_merge(...array_column($data['data']['current'], 'registrations')));
     }
 
     public function testCurrent(): void
