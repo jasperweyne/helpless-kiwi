@@ -18,6 +18,7 @@ class TrustedClient implements PasswordAuthenticatedUserInterface
         #[ORM\Id]
         #[ORM\Column(length: 255)]
         public string $id,
+
         #[ORM\Column(length: 255)]
         public string $secret,
     ) {

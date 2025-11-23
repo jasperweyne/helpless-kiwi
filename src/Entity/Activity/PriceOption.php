@@ -142,7 +142,11 @@ class PriceOption
 
     public function setActivity(?Activity $activity): self
     {
-        $this->activity = $activity;
+        if ($this->activity !== $activity) {
+            $this->activity?->removeOption($this);
+            $this->activity = $activity;
+            $activity?->addOption($this);
+        }
 
         return $this;
     }

@@ -5,10 +5,6 @@ namespace Tests\Functional\Controller\Admin;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\PriceOptionFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -20,37 +16,18 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class RegistrationControllerTest extends AuthWebTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var string
-     */
-    private $controller = '/admin/activity/register';
+    private string $controller = '/admin/activity/register';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-            RegistrationFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -102,7 +79,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $activity->getId();
 
         // Act
-        $this->client->request('GET', $this->controller."/new/{$id}");
+        $this->client->request('GET', $this->controller."/new/{$id}/");
         $this->client->submitForm('Toevoegen');
 
         // Assert
@@ -211,13 +188,15 @@ class RegistrationControllerTest extends AuthWebTestCase
     public function testReserveMoveUpAction(): void
     {
         // Arrange
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['description' => 'multiple-registrations']);
         $reserves = $activity->getReserveRegistrations();
         self::assertNotNull($reserves[1]);
         $secondReserveId = $reserves[1]->getId();
 
         // Act
         $this->client->request('GET', $this->controller."/reserve/move/{$secondReserveId}/up");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         // Assert
         $updatedReserves = $activity->getReserveRegistrations();
@@ -230,13 +209,15 @@ class RegistrationControllerTest extends AuthWebTestCase
     public function testReserveMoveDownAction(): void
     {
         // Arrange
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['description' => 'multiple-registrations']);
         $reserves = $activity->getReserveRegistrations();
         self::assertNotNull($reserves[0]);
         $firstReserveId = $reserves[0]->getId();
 
         // Act
         $this->client->request('GET', $this->controller."/reserve/move/{$firstReserveId}/down");
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         // Assert
         $updatedReserves = $activity->getReserveRegistrations();
@@ -253,7 +234,7 @@ class RegistrationControllerTest extends AuthWebTestCase
     {
         // arrange
         /** @var Activity $activity */
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['name' => 'activity_1']);
 
         /** @var Registration $registration */
         $registration = $activity->getRegistrations()[0];

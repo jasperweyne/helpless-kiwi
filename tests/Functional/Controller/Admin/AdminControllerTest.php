@@ -4,8 +4,6 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\AdminController;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 
 /**
  * Class AdminControllerTest.
@@ -19,23 +17,13 @@ class AdminControllerTest extends AuthWebTestCase
      */
     protected $adminController;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            ActivityFixture::class,
-        ]);
 
         $this->login();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

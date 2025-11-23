@@ -28,8 +28,6 @@ class ActivityController extends AbstractController
         protected EventDispatcherInterface $events,
         protected EntityManagerInterface $em,
     ) {
-        $this->events = $events;
-        $this->em = $em;
     }
 
     /**

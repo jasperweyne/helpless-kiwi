@@ -4,11 +4,9 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
+use App\Entity\Activity\Registration;
+use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\PriceOptionFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -26,12 +24,6 @@ class ActivityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-            RegistrationFixture::class,
-        ]);
 
         $this->login();
 
@@ -385,8 +377,16 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testPresentEditAction(): void
     {
         // Arange
-        $activities = $this->em->getRepository(Activity::class)->findAll();
-        $id = $activities[0]->getId();
+        /** @var LocalAccount $user */
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'aangemeld@kiwi.nl']);
+        $registrations = $user->getRegistrations();
+        self::assertNotNull($registrations);
+
+        /** @var Registration $registration */
+        $registration = $registrations->first();
+        /** @var Activity $activity */
+        $activity = $registration->getActivity();
+        $id = $activity->getId();
 
         // Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/edit");
@@ -396,7 +396,6 @@ class ActivityControllerTest extends AuthWebTestCase
         /** @var \Symfony\Component\DomCrawler\Form $form */
         $this->client->submit($form);
 
-        // Assert
         self::assertSelectorTextContains('.flash', 'Aanwezigheid aangepast');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
@@ -404,9 +403,10 @@ class ActivityControllerTest extends AuthWebTestCase
     public function testPresentSetAction(): void
     {
         // Arange
-        $activitie = $this->em->getRepository(Activity::class)->findAll()[0];
-        $id = $activitie->getId();
-        $present = $activitie->getPresent();
+        /** @var Activity $activity */
+        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
+        $id = $activity->getId();
+        $present = $activity->getPresent();
 
         // Act
         $crawler = $this->client->request('GET', "/admin/activity/{$id}/present/set/");

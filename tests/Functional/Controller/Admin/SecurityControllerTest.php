@@ -6,7 +6,6 @@ use App\Controller\Admin\SecurityController;
 use App\Entity\Security\LocalAccount;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -28,10 +27,6 @@ class SecurityControllerTest extends AuthWebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
@@ -168,7 +163,8 @@ CSV;
     public function testEditAction(): void
     {
         // Setup
-        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
+        self::assertNotNull($localAccount);
         $id = $localAccount->getId();
 
         // Act
@@ -178,15 +174,15 @@ CSV;
         $form->setValues([
             'local_account[givenname]' => 'John',
             'local_account[familyname]' => 'Doeeye',
-            'local_account[email]' => 'john@doe.eyes',
+            'local_account[email]' => 'afgemeld@kiwi.nl',
         ]);
         $crawler = $this->client->submit($form);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        /** @var LocalAccount $localAccount */
-        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        self::assertEquals($localAccount->getFamilyName(), 'Doeeye');
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
+        self::assertNotNull($localAccount);
+        self::assertEquals('Doeeye', $localAccount->getFamilyName());
     }
 
     public function testDeleteAction(): void
@@ -205,7 +201,8 @@ CSV;
     public function testRolesAction(): void
     {
         // Arrange
-        $localAdmin = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        /** @var LocalAccount $localAdmin */
+        $localAdmin = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
         $id = $localAdmin->getId();
 
         // Act
@@ -216,8 +213,11 @@ CSV;
             'form[admin]' => false,
         ]);
         $this->client->submit($form);
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'Rollen bewerkt');
-        $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        self::assertEquals(['ROLE_USER'], $localUser->getRoles());
+        $localUser = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
+        self::assertNotNull($localUser);
+        self::assertContains('ROLE_USER', $localUser->getRoles());
     }
 }

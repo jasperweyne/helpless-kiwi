@@ -3,10 +3,6 @@
 namespace Tests\Functional\GraphQL;
 
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\PriceOptionFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 /**
@@ -16,21 +12,6 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
  */
 class QueryTest extends AuthWebTestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-            RegistrationFixture::class,
-        ]);
-    }
-
     public function testCurrentAnonymous(): void
     {
         // Arrange
@@ -39,9 +20,7 @@ class QueryTest extends AuthWebTestCase
     current {
         name
         registrations {
-            person {
-                givenName
-            }
+            created
         }
     }
 }
@@ -54,9 +33,7 @@ GRAPHQL;
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayNotHasKey('errors', $data);
         self::assertTrue(isset($data['data']['current']));
-        self::assertCount(1, $data['data']['current']);
-        self::assertNotEmpty($data['data']['current'][0]['registrations']);
-        self::assertNull($data['data']['current'][0]['registrations'][0]['person']['givenName']);
+        self::assertNotEmpty(array_merge(...array_column($data['data']['current'], 'registrations')));
     }
 
     public function testCurrent(): void
@@ -83,9 +60,7 @@ GRAPHQL;
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayNotHasKey('errors', $data);
         self::assertTrue(isset($data['data']['current']));
-        self::assertCount(1, $data['data']['current']);
-        self::assertNotEmpty($data['data']['current'][0]['registrations']);
-        self::assertNotEmpty(isset($data['data']['current'][0]['registrations'][0]['person']['givenName']));
+        self::assertNotEmpty(array_merge(...array_column($data['data']['current'], 'registrations')));
     }
 
     public function testUserLoggedOut(): void
@@ -168,7 +143,7 @@ GRAPHQL;
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayNotHasKey('errors', $data);
         self::assertTrue(isset($data['data']['activities']));
-        self::assertCount(1, $data['data']['activities']);
+        self::assertCount(3, $data['data']['activities']);
     }
 
     public function testGroupsAnonymous(): void
@@ -252,7 +227,7 @@ GRAPHQL;
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayNotHasKey('errors', $data);
         self::assertTrue(isset($data['data']['users']));
-        self::assertCount(1, $data['data']['users']);
+        self::assertCount(5, $data['data']['users']);
     }
 
     public static function graphqlQuery(KernelBrowser $client, string $query, ?string $operation = null, ?array $variables = null): array

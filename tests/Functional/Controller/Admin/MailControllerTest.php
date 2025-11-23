@@ -4,8 +4,6 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Mail\Mail;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Mail\MailFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -23,11 +21,6 @@ class MailControllerTest extends AuthWebTestCase
     {
         parent::setUp();
 
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            MailFixture::class,
-        ]);
-
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
@@ -41,7 +34,7 @@ class MailControllerTest extends AuthWebTestCase
 
     public function testIndexAction(): void
     {
-        $this->client->request('GET', $this->controllerEndpoint.'/');
+        $this->client->request('GET', $this->controllerEndpoint);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('#title', 'Mails');
     }
@@ -54,7 +47,7 @@ class MailControllerTest extends AuthWebTestCase
         $id = $mail->getId();
 
         // Act
-        $this->client->request('GET', "/admin/mail/{$id}");
+        $this->client->request('GET', $this->controllerEndpoint."/{$id}/");
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
