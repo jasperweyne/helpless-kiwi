@@ -63,8 +63,9 @@ class ActivityRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = false')
-            ->andWhere('p.end > CURRENT_TIMESTAMP()')
+            ->andWhere('p.end > :now')
             ->orderBy('p.start', 'ASC')
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getResult();
     }
@@ -102,10 +103,11 @@ class ActivityRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = false')
-            ->andWhere('p.end > CURRENT_TIMESTAMP()')
+            ->andWhere('p.end > :now')
             ->andWhere('(p.target IN (:groups)) OR (p.target is NULL)')
             ->setParameter('groups', $groups)
             ->orderBy('p.start', 'ASC')
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getResult();
     }
@@ -119,11 +121,12 @@ class ActivityRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = false')
-            ->andWhere('p.end > CURRENT_TIMESTAMP()')
+            ->andWhere('p.end > :now')
             ->andWhere('(p.target IN (:groups)) OR (p.target is NULL)')
             ->andWhere('p.visibleAfter IS NOT NULL')
-            ->andWhere('p.visibleAfter < CURRENT_TIMESTAMP()')
+            ->andWhere('p.visibleAfter < :now')
             ->setParameter('groups', $groups)
+            ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('p.start', 'ASC')
             ->getQuery()
             ->getResult();
