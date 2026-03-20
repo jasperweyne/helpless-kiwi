@@ -105,12 +105,12 @@ class EntityEventListener
             if ($value instanceof PersistentCollection) {
                 // Is initialized by Doctrine through other entities; skip
                 throw new \LogicException('Values for this field should not be sanitized; skip this field');
-            } else {
-                return [
-                    'entity' => $this->eventService->getClassName($value),
-                    'identifier' => $this->eventService->getIdentifier($value),
-                ];
             }
+
+            return [
+                'entity' => $this->eventService->getClassName($value),
+                'identifier' => $this->eventService->getIdentifier($value),
+            ];
         }
 
         return $value;

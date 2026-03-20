@@ -154,9 +154,9 @@ class Registration
     {
         if (!\is_null($this->reserve_position)) {
             return Order::create($this->reserve_position);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public function setReservePosition(?Order $reserve_position): self

@@ -299,9 +299,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
             return $name;
         } elseif (null !== $mail = $this->getEmail()) {
             return $mail;
-        } else {
-            return sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
         }
+
+        return sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
     }
 
     public function __toString()
