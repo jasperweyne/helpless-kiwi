@@ -1,4 +1,4 @@
-name: Testing
+name: Coverage
 
 on:
   pull_request:
@@ -11,10 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-        php-version: ['8.1', '8.2', '8.3']
-
     steps:
     - uses: actions/checkout@v2
       with:
@@ -23,7 +19,7 @@ jobs:
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-version }}
+        php-version: '8.1'
         extensions: xdebug
       
     - name: Install dependencies
@@ -42,3 +38,21 @@ jobs:
 
     - name: Run unit/functional tests
       run: composer test
+
+    - name: Warmup dev cache
+      run: php bin/console cache:warmup --env=dev
+      
+    - name: Run static code analyser
+      run: composer analyse
+
+    - name: fix code coverage paths
+      working-directory: ./var/reports
+      run: |
+        sed -i 's/\/home\/runner\/work\/helpless-kiwi\/helpless-kiwi\//\/github\/workspace\//g' phpunit.xml
+        sed -i 's/\/home\/runner\/work\/helpless-kiwi\/helpless-kiwi\//\/github\/workspace\//g' phpunit.coverage.xml
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarqube-scan-action@v7.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
