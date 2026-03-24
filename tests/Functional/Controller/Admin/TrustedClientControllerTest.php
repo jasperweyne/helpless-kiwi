@@ -85,8 +85,8 @@ class TrustedClientControllerTest extends AuthWebTestCase
         $client = $this->em->find(TrustedClient::class, 'client');
         $account = $this->user('admin@kiwi.nl');
         assert($account instanceof LocalAccount && null !== $client);
-        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
-        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('-1 minutes')));
+        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+5 minutes')));
+        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('-5 minutes')));
         $this->em->flush();
         $originalCount = $this->em->getRepository(ApiToken::class)->count([]);
 
@@ -156,7 +156,7 @@ class TrustedClientControllerTest extends AuthWebTestCase
         assert($account instanceof LocalAccount);
         $id = 'deleter';
         $this->em->persist($client = new TrustedClient($id, 'secret'));
-        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+1 minutes')));
+        $this->em->persist(new ApiToken($account, $client, new \DateTimeImmutable('+5 minutes')));
         $this->em->flush();
         $originalCountClient = $this->em->getRepository(TrustedClient::class)->count([]);
         $originalCountToken = $this->em->getRepository(ApiToken::class)->count([]);

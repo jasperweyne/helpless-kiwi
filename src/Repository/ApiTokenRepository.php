@@ -43,7 +43,8 @@ class ApiTokenRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->delete()
-            ->where('t.expiresAt < CURRENT_TIMESTAMP()')
+            ->where('t.expiresAt < :now')
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->execute()
         ;
