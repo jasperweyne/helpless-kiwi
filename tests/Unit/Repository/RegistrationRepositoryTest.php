@@ -27,12 +27,12 @@ class RegistrationRepositoryTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
+        $kernel = self::bootKernel();
 
         $this->registry = self::getContainer()->get(ManagerRegistry::class);
         $this->registrationRepository = new RegistrationRepository($this->registry);
 
-        $this->em = static::$kernel->getContainer()
+        $this->em = $kernel->getContainer()
             ->get('doctrine')
             ->getManager();
     }

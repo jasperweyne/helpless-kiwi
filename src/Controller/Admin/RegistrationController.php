@@ -182,13 +182,13 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('admin_activity_show', [
                 'activity' => $activity->getId(),
             ]);
-        } else {
-            return $this->render('admin/activity/registration/new.html.twig', [
-                'activity' => $activity,
-                'form' => $form->createView(),
-                'reserve' => true,
-            ]);
         }
+
+        return $this->render('admin/activity/registration/new.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+            'reserve' => true,
+        ]);
     }
 
     /**
