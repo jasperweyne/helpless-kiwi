@@ -143,6 +143,10 @@
                                 <td>{{ group.description }}</td>
                             </tr>
                             <tr>
+                                <th>Contact E-mail</th>
+                                <td>{{ (group.contactFields.email ?? '')|replace({'mailto:': ''})  }}</td>
+                            </tr>
+                            <tr>
                                 <th>Mag groepsleden bevatten</th>
                                 <td>{{ group.relationable ? "Ja" : "Nee" }}</td>
                             </tr>

@@ -5,6 +5,7 @@
 {% endif %}
 
 {% block buttons %}
+    <a href="{{ path("activity_show", { 'activity': activity.id }) }}" target="_blank">Openen</a>
     <a href="{{ path('admin_activity_clone', { 'base': activity.id }) }}">Kopiëren</a>
     {% if not activity.archived %}
             <a href="{{ path('admin_activity_edit', { 'activity': activity.id }) }}">Bewerken</a> 
