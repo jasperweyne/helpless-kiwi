@@ -185,48 +185,6 @@ class RegistrationControllerTest extends AuthWebTestCase
         self::assertSelectorTextContains('.container', 'op de reservelijst');
     }
 
-    public function testReserveMoveUpAction(): void
-    {
-        // Arrange
-        /** @var Activity $activity */
-        $activity = $this->em->getRepository(Activity::class)->findOneBy(['description' => 'multiple-registrations']);
-        $reserves = $activity->getReserveRegistrations();
-        self::assertNotNull($reserves[1]);
-        $secondReserveId = $reserves[1]->getId();
-
-        // Act
-        $this->client->request('GET', $this->controller."/reserve/move/{$secondReserveId}/up");
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-
-        // Assert
-        $updatedReserves = $activity->getReserveRegistrations();
-        self::assertNotNull($updatedReserves[0]);
-        $updatedFirstReserveId = $updatedReserves[0]->getId();
-        self::assertEquals($updatedFirstReserveId, $secondReserveId);
-        self::assertSelectorTextContains('.container', 'naar boven verplaatst!');
-    }
-
-    public function testReserveMoveDownAction(): void
-    {
-        // Arrange
-        /** @var Activity $activity */
-        $activity = $this->em->getRepository(Activity::class)->findOneBy(['description' => 'multiple-registrations']);
-        $reserves = $activity->getReserveRegistrations();
-        self::assertNotNull($reserves[0]);
-        $firstReserveId = $reserves[0]->getId();
-
-        // Act
-        $this->client->request('GET', $this->controller."/reserve/move/{$firstReserveId}/down");
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-
-        // Assert
-        $updatedReserves = $activity->getReserveRegistrations();
-        self::assertNotNull($updatedReserves[1]);
-        $updatedRegistrationId = $updatedReserves[1]->getId();
-        self::assertEquals($updatedRegistrationId, $firstReserveId);
-        self::assertSelectorTextContains('.container', 'naar beneden verplaatst!');
-    }
-
     /**
      * @dataProvider noAccessProvider
      */

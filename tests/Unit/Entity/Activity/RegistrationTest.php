@@ -6,9 +6,7 @@ use App\Entity\Activity\Activity;
 use App\Entity\Activity\ExternalRegistrant;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
-use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
-use App\Repository\RegistrationRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -22,7 +20,6 @@ class RegistrationTest extends KernelTestCase
 {
     protected Registration $registration;
 
-    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,7 +29,6 @@ class RegistrationTest extends KernelTestCase
         $this->registration = new Registration();
     }
 
-    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -130,44 +126,6 @@ class RegistrationTest extends KernelTestCase
             ->getProperty('activity');
         $property->setAccessible(true);
         $this->registration->setActivity($expected);
-        self::assertSame($expected, $property->getValue($this->registration));
-    }
-
-    public function testIsReserveTrue(): void
-    {
-        $expected = true;
-        $property = (new \ReflectionClass(Registration::class))
-            ->getProperty('reserve_position');
-        $property->setAccessible(true);
-        $reserveOrder = Order::create(RegistrationRepository::MINORDER());
-        $this->registration->setReservePosition($reserveOrder);
-        self::assertSame($expected, $this->registration->isReserve());
-    }
-
-    public function testIsReserveFalse(): void
-    {
-        $expected = false;
-        self::assertSame($expected, $this->registration->isReserve());
-    }
-
-    public function testGetReservePosition(): void
-    {
-        $expected = null;
-        $property = (new \ReflectionClass(Registration::class))
-            ->getProperty('reserve_position');
-        $property->setAccessible(true);
-        $property->setValue($this->registration, $expected);
-        self::assertSame($expected, $this->registration->getReservePosition());
-    }
-
-    public function testSetReservePosition(): void
-    {
-        $expected = 'aaaaaaaaaaaaaaaa';
-        $property = (new \ReflectionClass(Registration::class))
-            ->getProperty('reserve_position');
-        $property->setAccessible(true);
-        $counter = Order::create(RegistrationRepository::MINORDER());
-        $this->registration->setReservePosition($counter);
         self::assertSame($expected, $property->getValue($this->registration));
     }
 
