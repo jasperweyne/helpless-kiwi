@@ -6,11 +6,6 @@ parameters:
 			path: src/Controller/Admin/EventController.php
 
 		-
-			message: "#^Parameter \\#1 \\$array of function current expects array\\|object, mixed given\\.$#"
-			count: 1
-			path: src/Controller/Admin/EventController.php
-
-		-
 			message: "#^Property App\\\\Entity\\\\Activity\\\\Activity\\:\\:\\$deadline type mapping mismatch\\: property can contain DateTime\\|null but database expects DateTimeInterface\\.$#"
 			count: 1
 			path: src/Entity/Activity/Activity.php
@@ -61,6 +56,11 @@ parameters:
 			path: src/Entity/Order.php
 
 		-
+			message: "#^Method App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:getUserIdentifier\\(\\) should return non\\-empty\\-string but returns string\\.$#"
+			count: 1
+			path: src/Entity/Security/LocalAccount.php
+
+		-
 			message: "#^Property App\\\\Entity\\\\Security\\\\LocalAccount\\:\\:\\$email type mapping mismatch\\: property can contain string\\|null but database expects string\\.$#"
 			count: 1
 			path: src/Entity/Security/LocalAccount.php
@@ -79,11 +79,6 @@ parameters:
 			message: "#^Offset 'joinTable' does not exist on array\\{cache\\?\\: array, cascade\\: array\\<string\\>, declared\\?\\: class\\-string, fetch\\: mixed, fieldName\\: string, id\\?\\: bool, inherited\\?\\: class\\-string, indexBy\\?\\: string, \\.\\.\\.\\}\\.$#"
 			count: 1
 			path: src/EventListener/DoctrineTablePrefixListener.php
-
-		-
-			message: "#^While loop condition is always true\\.$#"
-			count: 1
-			path: src/Form/Security/Import/ImportedAccounts.php
 
 		-
 			message: "#^Access to an undefined property GraphQL\\\\Language\\\\AST\\\\Node\\:\\:\\$value\\.$#"
@@ -196,16 +191,6 @@ parameters:
 			path: src/Repository/RegistrationRepository.php
 
 		-
-			message: "#^Asserted type mixed for \\$subject with type mixed does not narrow down the type\\.$#"
-			count: 1
-			path: src/Security/GroupVoter.php
-
-		-
-			message: "#^Asserted type string for \\$attribute with type string does not narrow down the type\\.$#"
-			count: 1
-			path: src/Security/GroupVoter.php
-
-		-
 			message: "#^Only booleans are allowed in a ternary operator condition, string given\\.$#"
 			count: 1
 			path: src/Template/AttributeMenuExtension.php
@@ -214,71 +199,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$objectOrClass of class ReflectionClass constructor expects class\\-string\\<T of object\\>\\|T of object, string given\\.$#"
 			count: 1
 			path: src/Template/AttributeMenuExtension.php
-
-		-
-			message: "#^Parameter \\#1 \\$content of method App\\\\Entity\\\\Mail\\\\Mail\\:\\:setContent\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Tests/Database/Mail/MailFixture.php
-
-		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Call to function in_array\\(\\) requires parameter \\#3 to be set\\.$#"
-			count: 2
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Call to function is_array\\(\\) with \\*NEVER\\* will always evaluate to true\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Call to function is_callable\\(\\) with callable\\(\\)\\: mixed will always evaluate to true\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Call to function is_object\\(\\) with X of object will always evaluate to true\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Cannot clone array\\|T of object\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:buildFromData\\(\\) should return T of object but returns array\\|T of object\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:buildPermutations\\(\\) should return array\\<array\\{properties\\: array, actions\\: array\\<callable\\(\\)\\: mixed\\>\\}\\> but returns array\\<array\\<string, mixed\\>\\>\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Method App\\\\Tests\\\\TestData\\:\\:create\\(\\) should return App\\\\Tests\\\\TestData\\<X of object\\> but returns App\\\\Tests\\\\TestData\\<object\\>\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<TKey of \\(int\\|string\\), mixed\\> given\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Parameter \\#1 \\$initial of class App\\\\Tests\\\\TestData constructor expects T of object, array given\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
-
-		-
-			message: "#^Result of && is always false\\.$#"
-			count: 1
-			path: src/Tests/TestData.php
 
 		-
 			message: "#^Symfony\\\\Component\\\\DomCrawler\\\\Form does not accept Symfony\\\\Component\\\\HttpFoundation\\\\File\\\\UploadedFile\\.$#"

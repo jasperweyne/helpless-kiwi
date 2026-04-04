@@ -10,7 +10,7 @@ class PasswordResetService
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private PasswordHasherFactoryInterface $passwordHasher
+        private PasswordHasherFactoryInterface $passwordHasher,
     ) {
     }
 

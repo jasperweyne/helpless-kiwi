@@ -4,8 +4,6 @@ namespace Tests\Functional\Controller\Admin;
 
 use App\Entity\Location\Location;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Location\LocationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -19,25 +17,15 @@ class LocationControllerTest extends AuthWebTestCase
 
     private string $controllerEndpoint = '/admin/location';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            LocationFixture::class,
-        ]);
 
         $this->login();
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -48,7 +36,7 @@ class LocationControllerTest extends AuthWebTestCase
     public function testIndexAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/');
-        self::assertSelectorTextContains('span', 'Locaties');
+        self::assertSelectorTextContains('#title', 'Locaties');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -75,7 +63,7 @@ class LocationControllerTest extends AuthWebTestCase
 
         $crawler = $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'Locatie '.$address);
+        self::assertSelectorTextContains('#title', 'Locatie '.$address);
     }
 
     public function testShowAction(): void
@@ -88,7 +76,7 @@ class LocationControllerTest extends AuthWebTestCase
         $this->client->request('GET', $this->controllerEndpoint."/{$id}/");
 
         // Assert
-        self::assertSelectorTextContains('span', "Locatie {$location->getAddress()}");
+        self::assertSelectorTextContains('#title', "Locatie {$location->getAddress()}");
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

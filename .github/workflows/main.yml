@@ -9,29 +9,18 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    
-    strategy:
-      matrix:
-        node-version: [16.x]
 
     steps:
     - uses: actions/checkout@v2
       with:
         path: 'kiwi'
-      
+
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-      
+        php-version: '8.3'
+
     - name: Move public for build
       if: github.ref == 'refs/heads/master'
       run: |
@@ -47,21 +36,21 @@ jobs:
       env:
         APP_DEBUG: 0
         APP_ENV: prod
-  
-    - name: Install JS dependencies
-      run: yarn install
+
+    - name: Build CSS dependencies
       working-directory: kiwi
-    
-    - name: Build JS dependencies
-      run: yarn build
+      run: php bin/console tailwind:build --minify
+
+    - name: Install CSS dependencies
       working-directory: kiwi
+      run: php bin/console asset-map:compile
 
     - name: Extract platform requirements composer.lock
       if: github.ref == 'refs/heads/master'
       run: "composer check-platform-reqs --working-dir ./kiwi --lock --no-dev --no-ansi 2>&1 | sed '1,1d' | tr '\n' ',' | sed 's/.$//' | jq -R 'split(\",\") | map(. | gsub(\" +\"; \" \") | split(\" \") | { key: .[0], value: .[1] }) | from_entries' > requirements.json"
      
     - name: Upload requirements file
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       if: github.ref == 'refs/heads/master'
       with:
         name: requirements
@@ -70,15 +59,16 @@ jobs:
     - name: Cleanup build
       if: github.ref == 'refs/heads/master'
       run: |
-        rm kiwi/{,.[!.],..?}* 2> /dev/null || true
+        find kiwi -maxdepth 1 ! -name 'importmap.php' -type f -exec rm {} +
         rm -rf kiwi/.git
         rm -rf kiwi/.github
         rm -rf kiwi/.hooks
-        rm -rf kiwi/assets
+        rm -rf kiwi/assets/image
         rm -rf kiwi/bin
-        rm -rf kiwi/node_modules
+        rm -rf kiwi/fixtures
         rm -rf kiwi/tests
-        rm -rf kiwi/var
+        rm -rf kiwi/var/{log,cache}
+        rm -rf kiwi/var/tailwind/**/*
 
     - name: Generate sample environment settings for build
       if: github.ref == 'refs/heads/master'
@@ -101,7 +91,7 @@ jobs:
       run: zip -qq -r prod.zip kiwi public_html
       
     - name: Upload build
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       if: github.ref == 'refs/heads/master'
       with:
         name: prod
@@ -132,13 +122,13 @@ jobs:
           DATE: ${{ steps.author-date.outputs.result }}
             
       - name: Download build
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: prod
           path: .
           
       - name: Download requirements
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: requirements
           path: .
@@ -181,6 +171,6 @@ jobs:
         id: publish_release
         uses: eregon/publish-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.KIWIRELEASETOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}

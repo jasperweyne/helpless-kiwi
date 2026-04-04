@@ -56,7 +56,6 @@ class Activity
     #[ORM\OneToMany(targetEntity: "App\Entity\Activity\Registration", mappedBy: 'activity')]
     private Collection $registrations;
 
-    /** @var ?Location */
     #[ORM\ManyToOne(targetEntity: "App\Entity\Location\Location", inversedBy: 'activities', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'location', referencedColumnName: 'id')]
     #[GQL\Field(type: 'Location!')]
@@ -74,7 +73,7 @@ class Activity
     #[GQL\Description('The group of all users that can see and register to this activity.')]
     #[ORM\ManyToOne(targetEntity: "App\Entity\Group\Group")]
     #[ORM\JoinColumn(name: 'target', referencedColumnName: 'id', nullable: true)]
-    private ?Group $target;
+    private ?Group $target = null;
 
     #[ORM\Column(type: 'string')]
     #[GQL\Field(type: 'String!')]
@@ -128,7 +127,7 @@ class Activity
     #[GQL\Field(type: 'Int')]
     #[GQL\Description('A stored number of users that were present at this activity.')]
     #[Assert\PositiveOrZero]
-    private ?int $present;
+    private ?int $present = null;
 
     #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => '1970-01-01 00:00:00'])]
     #[GQL\Field(type: 'DateTimeScalar')]
@@ -360,7 +359,11 @@ class Activity
 
     public function setLocation(?Location $location): self
     {
-        $this->location = $location;
+        if ($this->location !== $location) {
+            $this->location?->removeActivity($this);
+            $this->location = $location;
+            $location?->addActivity($this);
+        }
 
         return $this;
     }

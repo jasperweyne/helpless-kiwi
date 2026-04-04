@@ -126,7 +126,11 @@ class Group
 
     public function setParent(?self $parent): self
     {
-        $this->parent = $parent;
+        if ($this->parent !== $parent) {
+            $this->parent?->removeChild($this);
+            $this->parent = $parent;
+            $parent?->addChild($this);
+        }
 
         return $this;
     }

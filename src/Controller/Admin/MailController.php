@@ -32,7 +32,7 @@ class MailController extends AbstractController
     /**
      * Finds and displays a mail entity.
      */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{mail}', name: 'show', methods: ['GET'])]
     public function showAction(Mail $mail): Response
     {
         $jsonContent = $mail->getContent();

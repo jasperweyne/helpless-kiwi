@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="mx-auto max-w-6xl px-5 mb-5">
-    <form method="post" class="items-center bg-gradient-to-b from-zinc-700 to-zinc-900 rounded shadow-2xl text-white flex flex-col h-96 justify-center mx-auto max-w-72 p-5 w-full">
+    <form method="post" class="items-center bg-linear-to-b from-zinc-700 to-zinc-900 rounded-sm shadow-2xl text-white flex flex-col h-96 justify-center mx-auto max-w-72 p-5 w-full">
         <h3 class="font-extrabold text-3xl mb-auto">
             {% if app.user %}Log opnieuw in{% else %}Inloggen{% endif %}
         </h3>
@@ -28,7 +28,7 @@
             </div>
         #}
 
-        <button class="bg-white text-black rounded px-5 py-3 mb-auto mt-5" type="submit">
+        <button class="bg-white text-black rounded-sm px-5 py-3 mb-auto mt-5" type="submit">
             Log in
         </button>
         {% if not app.user %}

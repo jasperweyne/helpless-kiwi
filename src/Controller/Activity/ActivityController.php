@@ -27,10 +27,8 @@ class ActivityController extends AbstractController
 {
     public function __construct(
         protected EventDispatcherInterface $events,
-        protected EntityManagerInterface $em
+        protected EntityManagerInterface $em,
     ) {
-        $this->events = $events;
-        $this->em = $em;
     }
 
     /**
@@ -57,10 +55,10 @@ class ActivityController extends AbstractController
     /**
      * Removes all registrations (including waitlist) for the current user.
      */
-    #[Route('/activity/{id}/unregister', name: 'unregister', methods: ['POST'])]
+    #[Route('/activity/{activity}/unregister', name: 'unregister', methods: ['POST'])]
     public function unregisterAction(
         Request $request,
-        Activity $activity
+        Activity $activity,
     ): Response {
         $form = $this->createUnregisterForm($activity);
         $form->handleRequest($request);
@@ -100,17 +98,17 @@ class ActivityController extends AbstractController
 
         return $this->redirectToRoute(
             'activity_show',
-            ['id' => $activity->getId()]
+            ['activity' => $activity->getId()]
         );
     }
 
     /**
      * Creates registration for the current user.
      */
-    #[Route('/activity/{id}/register', name: 'register', methods: ['POST'])]
+    #[Route('/activity/{activity}/register', name: 'register', methods: ['POST'])]
     public function registerAction(
         Request $request,
-        Activity $activity
+        Activity $activity,
     ): Response {
         $form = $this->engageForm($activity);
 
@@ -124,7 +122,7 @@ class ActivityController extends AbstractController
 
                 return $this->redirectToRoute(
                     'activity_show',
-                    ['id' => $activity->getId()]
+                    ['activity' => $activity->getId()]
                 );
             }
 
@@ -142,7 +140,7 @@ class ActivityController extends AbstractController
 
                 return $this->redirectToRoute(
                     'activity_show',
-                    ['id' => $activity->getId()]
+                    ['activity' => $activity->getId()]
                 );
             }
 
@@ -186,7 +184,7 @@ class ActivityController extends AbstractController
 
         return $this->redirectToRoute(
             'activity_show',
-            ['id' => $activity->getId()]
+            ['activity' => $activity->getId()]
         );
     }
 
@@ -347,7 +345,7 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/activity/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/activity/{activity}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
         $optionData = null;

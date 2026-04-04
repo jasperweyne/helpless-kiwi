@@ -23,22 +23,22 @@ mv kiwi/public public_html/kiwi
 
 # Download/build dependencies
 cd kiwi
-export APP_DEBUG=0 APP_ENV=prod
 composer install --no-dev --optimize-autoloader
-yarn install
-yarn build
+php bin/console tailwind:build --minify
+php bin/console asset-map:compile
 cd ../
 
 # Remove files redundant for operation 
 echo Removing files redundant for operation, please wait...
-rm kiwi/* 2> /dev/null
+find kiwi -maxdepth 1 ! -name 'importmap.php' -type f -exec rm {} +
 rm -rf kiwi/.github
 rm -rf kiwi/.hooks
-rm -rf kiwi/assets
+rm -rf kiwi/assets/image
 rm -rf kiwi/bin
-rm -rf kiwi/node_modules
+rm -rf kiwi/fixtures
 rm -rf kiwi/tests
-rm -rf kiwi/var
+rm -rf kiwi/var/{log,cache}
+rm -rf kiwi/var/tailwind/**/*
 
 # Create environment variable file
 cat > kiwi/.env.local.php << EOL

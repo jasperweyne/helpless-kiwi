@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrustedClientController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -84,7 +84,7 @@ class TrustedClientController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route('/{id}/token', name: 'token')]
+    #[Route('/{client}/token', name: 'token')]
     public function tokenAction(Request $request, TrustedClient $client, ApiTokenRepository $repository): Response
     {
         $form = $this->createForm(GenerateTokenType::class);
@@ -111,7 +111,7 @@ class TrustedClientController extends AbstractController
     /**
      * Deletes a ApiKey entity.
      */
-    #[Route('/{id}/delete', name: 'delete')]
+    #[Route('/{client}/delete', name: 'delete')]
     public function deleteAction(Request $request, TrustedClient $client): Response
     {
         $form = $this->createDeleteForm($client);
@@ -140,7 +140,7 @@ class TrustedClientController extends AbstractController
     private function createDeleteForm(TrustedClient $client): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_security_client_delete', ['id' => $client->id]))
+            ->setAction($this->generateUrl('admin_security_client_delete', ['client' => $client->id]))
             ->setMethod('DELETE')
             ->getForm()
         ;

@@ -7,7 +7,6 @@ use App\Entity\Security\LocalAccount;
 use App\Security\LocalUserProvider;
 use App\Security\PasswordResetService;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -28,9 +27,6 @@ class PasswordControllerTest extends AuthWebTestCase
     protected LocalUserProvider $userProvider;
     protected EventDispatcherInterface $dispatcher;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -42,15 +38,8 @@ class PasswordControllerTest extends AuthWebTestCase
         $this->dispatcher = self::getContainer()->get(EventDispatcherInterface::class);
         $this->passwordController = new PasswordController($this->passwordHasher, $this->passwordReset, $this->em);
         $this->userProvider = new LocalUserProvider($this->em, $this->dispatcher);
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -69,7 +58,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testResetAction(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier('admin@kiwi.nl');
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
@@ -93,7 +82,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testResetWithNonValidToken(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier('admin@kiwi.nl');
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
@@ -108,7 +97,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testRegisterAction(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier('admin@kiwi.nl');
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $token = $this->passwordReset->generatePasswordRequestToken($auth);
@@ -132,7 +121,7 @@ class PasswordControllerTest extends AuthWebTestCase
     public function testRegisterWithNonValidToken(): void
     {
         // Act
-        $auth = $this->userProvider->loadUserByIdentifier(LocalAccountFixture::USERNAME);
+        $auth = $this->userProvider->loadUserByIdentifier('admin@kiwi.nl');
         assert($auth instanceof LocalAccount);
         $auth->setPasswordRequestedAt(new \DateTime());
         $this->passwordReset->generatePasswordRequestToken($auth);
@@ -151,12 +140,12 @@ class PasswordControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Verzenden')->form();
-        $form['password_request[email]'] = LocalAccountFixture::USERNAME;
+        $form['password_request[email]'] = 'admin@kiwi.nl';
         $crawler = $this->client->submit($form);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar '.LocalAccountFixture::USERNAME);
+        self::assertSelectorTextContains('.container', 'Er is een mail met instructies gestuurd naar');
     }
 
     /**

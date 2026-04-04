@@ -9,11 +9,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
+#[UniqueEntity(
+    fields: 'email',
+    message: 'This e-mail address is already in use.'
+)]
+#[UniqueEntity(
+    fields: 'oidc',
+    message: 'This OpenID Connect sub is already in use.'
+)]
 #[GQL\Type]
 #[GQL\Description('A registered user who can log in and register for activities.')]
 class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, ContactInterface
@@ -295,9 +304,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
             return $name;
         } elseif (null !== $mail = $this->getEmail()) {
             return $mail;
-        } else {
-            return sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
         }
+
+        return sprintf('pseudonymized (%s...)', substr($this->getId(), 0, 8));
     }
 
     public function __toString()
@@ -352,6 +361,7 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
     {
         if (!$this->relations->contains($relation)) {
             $this->relations->add($relation);
+            $relation->addRelation($this);
         }
 
         return $this;
@@ -359,7 +369,9 @@ class LocalAccount implements UserInterface, PasswordAuthenticatedUserInterface,
 
     public function removeRelation(Group $relation): self
     {
-        $this->relations->removeElement($relation);
+        if ($this->relations->removeElement($relation)) {
+            $relation->removeRelation($this);
+        }
 
         return $this;
     }

@@ -21,7 +21,7 @@ class OidcTokenAuthenticator extends AbstractBearerTokenAuthenticator
 {
     public function __construct(
         private OidcClientInterface $oidcClient,
-        private LocalUserProvider $provider
+        private LocalUserProvider $provider,
     ) {
     }
 

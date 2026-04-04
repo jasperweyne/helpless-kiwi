@@ -19,7 +19,7 @@ class MenuItem
         public readonly ?string $activeCriteria = null,
         public readonly ?int $order = null,
         public readonly ?array $sub = null,
-        public ?string $path = null
+        public ?string $path = null,
     ) {
     }
 

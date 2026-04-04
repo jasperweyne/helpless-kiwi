@@ -43,10 +43,10 @@ class RegistrationController extends AbstractController
     /**
      * Add someones registration from an activity.
      */
-    #[Route('/new/{id}/external', name: 'new_external', methods: ['GET', 'POST'])]
+    #[Route('/new/{activity}/external', name: 'new_external', methods: ['GET', 'POST'])]
     public function newExternalAction(
         Request $request,
-        Activity $activity
+        Activity $activity,
     ): Response {
         return $this->newAction($request, $activity, true);
     }
@@ -54,11 +54,11 @@ class RegistrationController extends AbstractController
     /**
      * Add someones registration from an activity.
      */
-    #[Route('/new/{id}', name: 'new', methods: ['GET', 'POST'])]
+    #[Route('/new/{activity}', name: 'new', methods: ['GET', 'POST'])]
     public function newAction(
         Request $request,
         Activity $activity,
-        bool $external = false
+        bool $external = false,
     ): Response {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -75,7 +75,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationAddedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -88,10 +88,10 @@ class RegistrationController extends AbstractController
     /**
      * Edit someones registration from an activity from admin.
      */
-    #[Route('/edit/{id}', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{registration}', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(
         Request $request,
-        Registration $registration
+        Registration $registration,
     ): Response {
         if (null !== $registration->getActivity()) {
             $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
@@ -113,7 +113,7 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Registratie aangepast!');
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -127,10 +127,10 @@ class RegistrationController extends AbstractController
     /**
      * Remove someones registration from an activity.
      */
-    #[Route('/delete/{id}', name: 'delete')]
+    #[Route('/delete/{registration}', name: 'delete')]
     public function deleteAction(
         Request $request,
-        Registration $registration
+        Registration $registration,
     ): Response {
         if (null !== $registration->getActivity()) {
             $this->denyAccessUnlessGranted('in_group', $registration->getActivity()->getAuthor());
@@ -148,7 +148,7 @@ class RegistrationController extends AbstractController
             $this->events->dispatch(new RegistrationRemovedEvent($registration));
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 
@@ -164,7 +164,7 @@ class RegistrationController extends AbstractController
     #[Route('/waitlist/new/{id}', name: 'waitlist_add', methods: ['GET', 'POST'])]
     public function waitlistAddAction(
         Request $request,
-        Activity $activity
+        Activity $activity,
     ): Response {
         $this->denyAccessUnlessGranted('in_group', $activity->getAuthor());
 
@@ -183,15 +183,15 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Aangemeld op de wachtlijst!');
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
-            ]);
-        } else {
-            return $this->render('admin/activity/registration/new.html.twig', [
-                'activity' => $activity,
-                'form' => $form->createView(),
-                'waitlist' => true,
+                'activity' => $activity->getId(),
             ]);
         }
+
+        return $this->render('admin/activity/registration/new.html.twig', [
+            'activity' => $activity,
+            'form' => $form->createView(),
+            'waitlist' => true,
+        ]);
     }
 
     /**
@@ -221,7 +221,7 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Afgemeld van de wachtlijst!');
 
             return $this->redirectToRoute('admin_activity_show', [
-                'id' => $activity->getId(),
+                'activity' => $activity->getId(),
             ]);
         }
 

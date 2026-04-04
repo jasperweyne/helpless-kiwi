@@ -1,0 +1,58 @@
+name: Coverage
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+      
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: xdebug
+      
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --optimize-autoloader
+      env:
+        APP_ENV: test
+  
+    - name: Build CSS dependencies
+      run: php bin/console tailwind:build
+
+    - name: Install CSS dependencies
+      run: php bin/console asset-map:compile
+
+    - name: Run linter
+      run: composer lint
+
+    - name: Run unit/functional tests
+      run: composer test
+
+    - name: Warmup dev cache
+      run: php bin/console cache:warmup --env=dev
+      
+    - name: Run static code analyser
+      run: composer analyse
+
+    - name: fix code coverage paths
+      working-directory: ./var/reports
+      run: |
+        sed -i 's/\/home\/runner\/work\/helpless-kiwi\/helpless-kiwi\//\/github\/workspace\//g' phpunit.xml
+        sed -i 's/\/home\/runner\/work\/helpless-kiwi\/helpless-kiwi\//\/github\/workspace\//g' phpunit.coverage.xml
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarqube-scan-action@v7.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

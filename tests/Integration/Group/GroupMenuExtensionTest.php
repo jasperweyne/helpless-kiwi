@@ -4,13 +4,8 @@ namespace Tests\Integration\Group;
 
 use App\Entity\Security\LocalAccount;
 use App\Group\GroupMenuExtension;
-use App\Tests\Database\Group\GroupFixture;
-use App\Tests\Database\Group\RelationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Hautelook\AliceBundle\PhpUnit\RecreateDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\TestBrowserToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -22,10 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class GroupMenuExtensionTest extends KernelTestCase
 {
-    /**
-     * @var AbstractDatabaseTool
-     */
-    protected $databaseTool;
+    use RecreateDatabaseTrait;
 
     /**
      * @var GroupMenuExtension
@@ -37,34 +29,13 @@ class GroupMenuExtensionTest extends KernelTestCase
      */
     protected $user;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
         self::bootKernel();
 
-        // Get all database tables
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        $cmf = $em->getMetadataFactory();
-        $classes = $cmf->getAllMetadata();
-
-        // Write all tables to database
-        $schema = new SchemaTool($em);
-        $schema->createSchema($classes);
-
-        // Load database tool
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
-
-        // load database fixtures
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            GroupFixture::class,
-            RelationFixture::class,
-        ]);
-
         // get user
+        $em = self::getContainer()->get(EntityManagerInterface::class);
         $users = $em->getRepository(LocalAccount::class)->findAll();
         assert(isset($users[0]));
         $this->user = $users[0];
@@ -77,9 +48,6 @@ class GroupMenuExtensionTest extends KernelTestCase
         $this->groupMenuExtension = new GroupMenuExtension($tokenStorage);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

@@ -26,14 +26,4 @@ final class Version20210204213609 extends AbstractMigration
         $this->addSql('ALTER TABLE kiwi_activity ADD present INT DEFAULT NULL');
         $this->addSql('ALTER TABLE kiwi_registration ADD present TINYINT(1) DEFAULT NULL');
     }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql('RENAME TABLE kiwi_oauth2_access_token TO kiwi_oauth2access_token');
-        $this->addSql('ALTER TABLE kiwi_activity DROP present');
-        $this->addSql('ALTER TABLE kiwi_registration DROP present');
-    }
 }

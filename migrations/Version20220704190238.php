@@ -24,7 +24,7 @@ final class Version20220704190238 extends AbstractMigration
 
         $count = (int) $this->connection->fetchOne('SELECT COUNT(*) FROM kiwi_taxonomy');
         if ($count > 0) {
-            $id = $this->connection->fetchOne('SELECT ' . $this->platform->getGuidExpression());
+            $id = $this->connection->fetchOne('SELECT '.$this->platform->getGuidExpression());
             $this->addSql(
                 'INSERT INTO kiwi_taxonomy (id, title, `description`, `readonly`, relationable, subgroupable, active, register) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [$id, 'Archive', 'An archive of historic groups', 1, 0, 1, 0, 0]
@@ -32,11 +32,5 @@ final class Version20220704190238 extends AbstractMigration
             $this->addSql('UPDATE kiwi_taxonomy t SET t.parent = ? WHERE t.parent IS NULL AND t.id <> ?', [$id, $id]);
             $this->addSql('UPDATE kiwi_taxonomy t SET t.active = 0, t.register = 0');
         }
-    }
-
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
     }
 }

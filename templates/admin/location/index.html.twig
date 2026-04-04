@@ -2,17 +2,13 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Locaties' %}
-    
-    {% block top %}
-        {% embed 'admin/listview.html.twig' %}
-            {% set resultcount = locations|length %}
-
-            {% block buttons %}
-                <a href="{{ path("admin_location_new") }} ">Nieuw</a>
-            {% endblock %}
-        {% endembed %}
-    {% endblock %}
 {% endif %}
+
+{% set resultcount = locations|length %}
+
+{% block buttons %}
+    <a href="{{ path("admin_location_new") }} ">Nieuw</a>
+{% endblock %}
 
 {% block body %}
     <div class="table">
@@ -25,7 +21,7 @@
             <tbody>
             {% for location in locations %}
                 <tr>
-                    <td><a href="{{ path("admin_location_show", { 'id': location.id }) }}">{{ location.address }}</a></td>
+                    <td><a href="{{ path("admin_location_show", { 'location': location.id }) }}">{{ location.address }}</a></td>
                 </tr>
             {% else %}
                 <tr>

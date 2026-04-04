@@ -6,7 +6,6 @@ use App\Controller\Admin\SecurityController;
 use App\Entity\Security\LocalAccount;
 use App\Log\EventService;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -25,24 +24,14 @@ class SecurityControllerTest extends AuthWebTestCase
 
     protected string $endpoint = '/admin/security';
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -68,8 +57,10 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testImportAction(): void
     {
         // Mock the CSV file
-        $csvContent = "email,given_name,family_name,admin,oidc\n";
-        $csvPath = sys_get_temp_dir().'/test.csv';
+        $csvContent = 'email,given_name,family_name,admin,oidc
+        john@doe.kiwi,john,doe,User,,false';
+        $csvPath = tempnam(sys_get_temp_dir(), 'csv');
+        self::assertIsString($csvPath);
         file_put_contents($csvPath, $csvContent);
         $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
 
@@ -96,6 +87,52 @@ class SecurityControllerTest extends AuthWebTestCase
         // second Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'Accounts succesvol geimporteerd');
+        unlink($csvPath);
+    }
+
+    public function testDuplicateEmailImportAction(): void
+    {
+        $csvContent = <<<CSV
+email,given_name,family_name,oidc,admin
+example2@user.kiwi,Example,User,,false
+example@user.kiwi,Example,User,,false
+example3@user.kiwi,Example,User,,false
+example4@user.kiwi,Example,User,,false
+example5@user.kiwi,Example,User,,false
+example4@user.kiwi,Example,User,1234,false
+example@user.kiwi,Example,User,1234,false 
+CSV;
+        // Mock the CSV file
+        $csvPath = tempnam(sys_get_temp_dir(), 'csv');
+        self::assertIsString($csvPath);
+        file_put_contents($csvPath, $csvContent);
+        $csvFile = new UploadedFile($csvPath, 'test.csv', 'text/csv', null, true);
+
+        // first Act
+        $crawler = $this->client->request('GET', $this->endpoint.'/import');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $form = $crawler->selectButton('verder')->form();
+        $form->setValues([
+            'upload_csv[file]' => $csvFile->getPathname(),
+        ]);
+        $crawler = $this->client->submit($form);
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $formFilter = $crawler->filter('body > main form[name="upload_csv"] > div');
+        self::assertEquals(
+            $formFilter->filter('ul > li:nth-child(1)')->text(),
+            'Duplicate email "example@user.kiwi" found 2 times'
+        );
+        self::assertEquals(
+            $formFilter->filter('ul > li:nth-child(2)')->text(),
+            'Duplicate email "example4@user.kiwi" found 2 times'
+        );
+        self::assertEquals(
+            $formFilter->filter('ul > li:nth-child(3)')->text(),
+            'Duplicate oidc "1234" found 2 times'
+        );
+        unlink($csvPath);
     }
 
     public function testNewAction(): void
@@ -114,7 +151,7 @@ class SecurityControllerTest extends AuthWebTestCase
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         // TODO: figure our if this is actually the way to test this....
-        self::assertEquals(1, $crawler->filter('.top > h3:nth-child(1)')->count());
+        self::assertSelectorTextContains('table', 'john@doe.eyes');
     }
 
     public function testShowAction(): void
@@ -126,7 +163,8 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testEditAction(): void
     {
         // Setup
-        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
+        self::assertNotNull($localAccount);
         $id = $localAccount->getId();
 
         // Act
@@ -136,15 +174,15 @@ class SecurityControllerTest extends AuthWebTestCase
         $form->setValues([
             'local_account[givenname]' => 'John',
             'local_account[familyname]' => 'Doeeye',
-            'local_account[email]' => 'john@doe.eyes',
+            'local_account[email]' => 'afgemeld@kiwi.nl',
         ]);
         $crawler = $this->client->submit($form);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        /** @var LocalAccount $localAccount */
-        $localAccount = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        self::assertEquals($localAccount->getFamilyName(), 'Doeeye');
+        $localAccount = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
+        self::assertNotNull($localAccount);
+        self::assertEquals('Doeeye', $localAccount->getFamilyName());
     }
 
     public function testDeleteAction(): void
@@ -163,7 +201,8 @@ class SecurityControllerTest extends AuthWebTestCase
     public function testRolesAction(): void
     {
         // Arrange
-        $localAdmin = $this->em->getRepository(LocalAccount::class)->findAll()[0];
+        /** @var LocalAccount $localAdmin */
+        $localAdmin = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
         $id = $localAdmin->getId();
 
         // Act
@@ -174,8 +213,11 @@ class SecurityControllerTest extends AuthWebTestCase
             'form[admin]' => false,
         ]);
         $this->client->submit($form);
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'Rollen bewerkt');
-        $localUser = $this->em->getRepository(LocalAccount::class)->findAll()[0];
-        self::assertEquals(['ROLE_USER'], $localUser->getRoles());
+        $localUser = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'admin@kiwi.nl']);
+        self::assertNotNull($localUser);
+        self::assertContains('ROLE_USER', $localUser->getRoles());
     }
 }

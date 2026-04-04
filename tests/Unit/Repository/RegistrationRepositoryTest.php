@@ -5,18 +5,10 @@ namespace Tests\Unit\Repository;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\Registration;
 use App\Repository\RegistrationRepository;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Group\GroupFixture;
-use App\Tests\Database\Group\RelationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Hautelook\AliceBundle\PhpUnit\RecreateDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -26,66 +18,25 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RegistrationRepositoryTest extends KernelTestCase
 {
-    /**
-     * @var AbstractDatabaseTool
-     */
-    protected $databaseTool;
+    use RecreateDatabaseTrait;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $em;
+    protected ObjectManager $em;
+    protected RegistrationRepository $registrationRepository;
+    protected ManagerRegistry $registry;
 
-    /**
-     * @var RegistrationRepository
-     */
-    protected $registrationRepository;
-
-    /**
-     * @var ManagerRegistry
-     */
-    protected $registry;
-
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
+        $kernel = self::bootKernel();
 
         $this->registry = self::getContainer()->get(ManagerRegistry::class);
         $this->registrationRepository = new RegistrationRepository($this->registry);
 
-        // Get all database tables
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        $cmf = $em->getMetadataFactory();
-        $classes = $cmf->getAllMetadata();
-
-        // Write all tables to database
-        $schema = new SchemaTool($em);
-        $schema->createSchema($classes);
-
-        // Load database tool
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
-
-        $this->databaseTool->loadFixtures([
-            RegistrationFixture::class,
-            GroupFixture::class,
-            ActivityFixture::class,
-            LocalAccountFixture::class,
-            RelationFixture::class,
-        ]);
-
-        $this->em = static::$kernel->getContainer()
+        $this->em = $kernel->getContainer()
             ->get('doctrine')
             ->getManager();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

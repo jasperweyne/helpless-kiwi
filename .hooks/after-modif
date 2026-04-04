@@ -24,23 +24,13 @@ if [[ $(git diff HEAD@{1}..HEAD@{0} -- "composer.lock" "symfony.lock" | wc -l) -
   fi
 fi
 
-if [[ $(git diff HEAD@{1}..HEAD@{0} -- "yarn.lock" | wc -l) -gt 0 ]]; then
-  if [ -x "$(which yarn)" ]; then
-    echo -e "yarn.lock changed! Running yarn install"
+if [[ $(git diff HEAD@{1}..HEAD@{0} -- "tailwind.config.js" "templates\\*" "assets\\*" | wc -l) -gt 0 ]]; then
+  if [ -x "$(which php)" ]; then
+    echo -e "templates changed! Running php bin/console tailwind:build"
     echo 
-    yarn install
+    php bin/console tailwind:build
   else
-    echo -e "yarn.lock changed! Could not find yarn, please run yarn install"
-  fi
-fi
-
-if [[ $(git diff HEAD@{1}..HEAD@{0} -- "assets\\*" "postcss.config.js" "webpack.config.js" | wc -l) -gt 0 ]]; then
-  if [ -x "$(which yarn)" ]; then
-    echo -e "assets changed! Running yarn install"
-    echo 
-    yarn dev
-  else
-    echo -e "assets changed! Could not find yarn, please run yarn dev"
+    echo -e "tailwind changed! Could not find php, please run php bin/console tailwind:build"
   fi
 fi
 

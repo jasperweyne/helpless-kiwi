@@ -4,6 +4,7 @@ namespace App\Log\Doctrine;
 
 use App\Entity\Log\Event;
 use App\Log\EventService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
@@ -11,14 +12,15 @@ use Doctrine\ORM\PersistentCollection;
 class EntityEventListener
 {
     public function __construct(
-        private EventService $eventService
+        private EventService $eventService,
     ) {
         $this->eventService = $eventService;
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        $em = $eventArgs->getEntityManager();
+        /** @var EntityManagerInterface */
+        $em = $eventArgs->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         // On create entity
@@ -103,12 +105,12 @@ class EntityEventListener
             if ($value instanceof PersistentCollection) {
                 // Is initialized by Doctrine through other entities; skip
                 throw new \LogicException('Values for this field should not be sanitized; skip this field');
-            } else {
-                return [
-                    'entity' => $this->eventService->getClassName($value),
-                    'identifier' => $this->eventService->getIdentifier($value),
-                ];
             }
+
+            return [
+                'entity' => $this->eventService->getClassName($value),
+                'identifier' => $this->eventService->getIdentifier($value),
+            ];
         }
 
         return $value;

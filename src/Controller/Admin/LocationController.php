@@ -24,7 +24,7 @@ class LocationController extends AbstractController
 {
     public function __construct(
         private EventService $events,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -57,7 +57,7 @@ class LocationController extends AbstractController
             $this->em->persist($location);
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_location_show', ['id' => $location->getId()]);
+            return $this->redirectToRoute('admin_location_show', ['location' => $location->getId()]);
         }
 
         return $this->render('admin/location/new.html.twig', [
@@ -69,7 +69,7 @@ class LocationController extends AbstractController
     /**
      * Show a location entity.
      */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{location}', name: 'show', methods: ['GET'])]
     public function showAction(Location $location): Response
     {
         $createdAt = $this->events->findOneBy($location, EntityNewEvent::class);
@@ -85,7 +85,7 @@ class LocationController extends AbstractController
     /**
      * Deletes a location entity.
      */
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{location}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, Location $location): Response
     {
         $form = $this->createForm(LocationType::class, $location);
@@ -94,7 +94,7 @@ class LocationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
 
-            return $this->redirectToRoute('admin_location_show', ['id' => $location->getId()]);
+            return $this->redirectToRoute('admin_location_show', ['location' => $location->getId()]);
         }
 
         return $this->render('admin/location/edit.html.twig', [
@@ -106,7 +106,7 @@ class LocationController extends AbstractController
     /**
      * Deletes a location entity.
      */
-    #[Route('/{id}/delete', name: 'delete')]
+    #[Route('/{location}/delete', name: 'delete')]
     public function deleteAction(Request $request, Location $location): Response
     {
         $replace = new LocationDeleteData();

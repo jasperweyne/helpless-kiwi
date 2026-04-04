@@ -7,10 +7,6 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
-use App\Tests\Database\Activity\ActivityFixture;
-use App\Tests\Database\Activity\PriceOptionFixture;
-use App\Tests\Database\Activity\RegistrationFixture;
-use App\Tests\Database\Security\LocalAccountFixture;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -22,28 +18,14 @@ class ActivityControllerTest extends AuthWebTestCase
 {
     protected EntityManagerInterface $em;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Get all database tables
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-            RegistrationFixture::class,
-        ]);
 
         $this->login();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -56,9 +38,7 @@ class ActivityControllerTest extends AuthWebTestCase
         $activities = $this->em->getRepository(Activity::class)->findAll();
 
         // Act
-        $node = $crawler->filter('body > main > div.container > div.cardholder > div.grid-x')
-            ->first()->filter('div.cell')
-            ->first()->filter('h2');
+        $node = $crawler->filter('main .grid a h2')->first();
 
         $exist = false;
         /** @var Activity $activity */
@@ -77,45 +57,44 @@ class ActivityControllerTest extends AuthWebTestCase
     {
         // Arrange
         /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'aangemeld@kiwi.nl']);
+        $this->login('aangemeld@kiwi.nl');
+
         /** @var Registration */
-        $reg = $this->em->getRepository(Registration::class)->findBy(['person' => $user])[0];
+        $reg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user]);
         self::assertNotNull($reg->getActivity());
         $id = $reg->getActivity()->getId();
 
         // Act
-        $this->client->request('GET', "/activity/{$id}");
+        $this->client->request('GET', "/activity/{$id}/");
         $this->client->submitForm('Afmelden');
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertSelectorTextContains('.container', 'gelukt');
         /** @var Registration */
-        $dereg = $this->em->getRepository(Registration::class)->find($reg->getId());
+        $dereg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user]);
         self::assertNotNull($dereg->getDeleteDate());
     }
 
     public function testRegisterAction(): void
     {
-        // Arrange
-        // Unload th Registration Fixture
-        $this->databaseTool->loadFixtures([
-            LocalAccountFixture::class,
-            PriceOptionFixture::class,
-            ActivityFixture::class,
-        ]);
-
         // Retrieve data
         /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => LocalAccountFixture::USERNAME]);
+        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
+        $this->login('afgemeld@kiwi.nl');
+
         /** @var PriceOption */
-        $option = $this->em->getRepository(PriceOption::class)->findAll()[0];
+        $option = $this->em->getRepository(PriceOption::class)->findOneBy(['name' => 'reg_test']);
         self::assertNotNull($option->getActivity());
         $id = $option->getActivity()->getId();
+        self::assertNotNull($id);
 
         // Act
-        $this->client->request('GET', "/activity/{$id}");
-        $this->client->submitForm('Aanmelden');
+        $crawler = $this->client->request('GET', "/activity/{$id}/");
+        $filter = "input[value='{$option->getId()}']";
+        $form = $crawler->filter($filter)->ancestors()->filter('form')->form();
+        $this->client->submit($form);
 
         // Assert
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());

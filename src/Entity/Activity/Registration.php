@@ -31,7 +31,7 @@ class Registration
     #[GQL\Field(type: 'LocalAccount')]
     #[GQL\Description('The user that is registered for the activity. Only accessible if the activity is currently visible, or by admins.')]
     #[GQL\Access("isGranted('ROLE_ADMIN') or value.getActivity().isVisibleBy(getUser())")]
-    private ?LocalAccount $person;
+    private ?LocalAccount $person = null;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\Activity\Activity", inversedBy: 'registrations')]
     #[ORM\JoinColumn(name: 'activity', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -58,7 +58,7 @@ class Registration
     private ?string $comment;
 
     #[ORM\Embedded(class: ExternalRegistrant::class)]
-    private ?ExternalRegistrant $externalPerson;
+    private ?ExternalRegistrant $externalPerson = null;
 
     #[ORM\Column(name: 'transferable', type: 'datetime', nullable: true)]
     #[GQL\Field(type: 'DateTimeScalar')]
@@ -90,7 +90,11 @@ class Registration
 
     public function setOption(PriceOption $option): self
     {
-        $this->option = $option;
+        if ($this->option !== $option) {
+            $this->option?->removeRegistration($this);
+            $this->option = $option;
+            $option->addRegistration($this);
+        }
 
         return $this;
     }
@@ -102,11 +106,16 @@ class Registration
 
     public function setPerson(?ContactInterface $person): self
     {
+        if ($this->getPerson() !== $person) {
+            $this->person?->removeRegistration($this);
+        }
+
         $this->person = null;
         $this->externalPerson = null;
 
         if ($person instanceof LocalAccount) {
             $this->person = $person;
+            $person->addRegistration($this);
         } elseif ($person instanceof ExternalRegistrant) {
             $this->externalPerson = $person;
         }
@@ -126,7 +135,11 @@ class Registration
 
     public function setActivity(?Activity $activity): self
     {
-        $this->activity = $activity;
+        if ($this->activity !== $activity) {
+            $this->activity?->removeRegistration($this);
+            $this->activity = $activity;
+            $activity?->addRegistration($this);
+        }
 
         return $this;
     }

@@ -26,14 +26,14 @@ class PasswordController extends AbstractController
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private PasswordResetService $passwordReset,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
     /**
      * Reset password.
      */
-    #[Route('/reset/{id}', name: 'reset', methods: ['GET', 'POST'])]
+    #[Route('/reset/{auth}', name: 'reset', methods: ['GET', 'POST'])]
     public function resetAction(LocalAccount $auth, Request $request): Response
     {
         if (!$this->passwordReset->isPasswordRequestTokenValid(
@@ -58,7 +58,7 @@ class PasswordController extends AbstractController
     /**
      * Register new password for account.
      */
-    #[Route('/register/{id}', name: 'register', methods: ['GET', 'POST'])]
+    #[Route('/register/{auth}', name: 'register', methods: ['GET', 'POST'])]
     public function registerAction(LocalAccount $auth, Request $request): Response
     {
         $token = $request->query->get('token');
@@ -155,7 +155,7 @@ class PasswordController extends AbstractController
     private function handleValidToken(
         FormInterface $form,
         LocalAccount $auth,
-        string $message
+        string $message,
     ): RedirectResponse {
         /** @var array{password: string} $data */
         $data = $form->getData();

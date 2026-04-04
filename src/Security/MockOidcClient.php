@@ -30,7 +30,7 @@ class MockOidcClient implements OidcClientInterface
         ?string $prompt = null,
         array $scopes = ['openid'],
         bool $forceRememberMe = false,
-        array $additionalQueryParams = []
+        array $additionalQueryParams = [],
     ): RedirectResponse {
         throw new OidcException(self::ERROR_MESSAGE);
     }
