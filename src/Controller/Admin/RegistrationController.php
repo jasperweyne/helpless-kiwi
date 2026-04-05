@@ -239,7 +239,7 @@ class RegistrationController extends AbstractController
     protected function createRegistrationDeleteForm(Registration $registration): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_registration_delete', ['id' => $registration->getId()]))
+            ->setAction($this->generateUrl('admin_activity_registration_delete', ['registration' => $registration->getId()]))
             ->setMethod('DELETE')
             ->getForm()
         ;
@@ -253,7 +253,7 @@ class RegistrationController extends AbstractController
     protected function createWaitlistDeleteForm(WaitlistSpot $spot): FormInterface
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_activity_registration_waitlist_remove', ['id' => $spot->id]))
+            ->setAction($this->generateUrl('admin_activity_registration_waitlist_remove', ['spot' => $spot->id]))
             ->setMethod('DELETE')
             ->getForm()
         ;

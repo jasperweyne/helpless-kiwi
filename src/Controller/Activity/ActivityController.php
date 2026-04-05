@@ -258,7 +258,7 @@ class ActivityController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction(
-                $this->generateUrl('activity_show', [
+                $this->generateUrl('activity_interaction', [
                     'id' => $activity->getId(),
                 ])
             )

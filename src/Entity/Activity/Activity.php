@@ -262,6 +262,20 @@ class Activity
         return new ArrayCollection($current->getValues());
     }
 
+    public function addCurrentRegistration(Registration $registration): self
+    {
+        assert(!$registration->isDeleted());
+
+        return $this->addRegistration($registration);
+    }
+
+    public function removeCurrentRegistration(Registration $registration): self
+    {
+        assert(!$registration->isDeleted());
+
+        return $this->removeRegistration($registration);
+    }
+
     /** @return Collection<int, Registration> */
     public function getDeregistrations(): Collection
     {
