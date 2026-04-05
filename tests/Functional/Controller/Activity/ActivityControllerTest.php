@@ -3,9 +3,6 @@
 namespace Tests\Functional\Controller\Activity;
 
 use App\Entity\Activity\Activity;
-use App\Entity\Activity\PriceOption;
-use App\Entity\Activity\Registration;
-use App\Entity\Security\LocalAccount;
 use App\Tests\AuthWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -51,56 +48,6 @@ class ActivityControllerTest extends AuthWebTestCase
         // Assert
         self::assertTrue($exist);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testUnregisterAction(): void
-    {
-        // Arrange
-        /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'aangemeld@kiwi.nl']);
-        $this->login('aangemeld@kiwi.nl');
-
-        /** @var Registration */
-        $reg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user]);
-        self::assertNotNull($reg->getActivity());
-        $id = $reg->getActivity()->getId();
-
-        // Act
-        $this->client->request('GET', "/activity/{$id}/");
-        $this->client->submitForm('Afmelden');
-
-        // Assert
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'gelukt');
-        /** @var Registration */
-        $dereg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user]);
-        self::assertNotNull($dereg->getDeleteDate());
-    }
-
-    public function testRegisterAction(): void
-    {
-        // Retrieve data
-        /** @var LocalAccount */
-        $user = $this->em->getRepository(LocalAccount::class)->findOneBy(['email' => 'afgemeld@kiwi.nl']);
-        $this->login('afgemeld@kiwi.nl');
-
-        /** @var PriceOption */
-        $option = $this->em->getRepository(PriceOption::class)->findOneBy(['name' => 'reg_test']);
-        self::assertNotNull($option->getActivity());
-        $id = $option->getActivity()->getId();
-        self::assertNotNull($id);
-
-        // Act
-        $crawler = $this->client->request('GET', "/activity/{$id}/");
-        $filter = "input[value='{$option->getId()}']";
-        $form = $crawler->filter($filter)->ancestors()->filter('form')->form();
-        $this->client->submit($form);
-
-        // Assert
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertSelectorTextContains('.container', 'gelukt');
-        $reg = $this->em->getRepository(Registration::class)->findOneBy(['person' => $user, 'option' => $option]);
-        self::assertNotNull($reg);
     }
 
     public function testShowAction(): void

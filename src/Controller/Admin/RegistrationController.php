@@ -200,7 +200,7 @@ class RegistrationController extends AbstractController
     #[Route('/waitlist/remove/{id}', name: 'waitlist_remove')]
     public function waitlistRemoveAction(
         Request $request,
-        WaitlistSpot $spot
+        WaitlistSpot $spot,
     ): Response {
         if (null !== $spot->option->getActivity()) {
             $this->denyAccessUnlessGranted('in_group', $spot->option->getActivity()->getAuthor());

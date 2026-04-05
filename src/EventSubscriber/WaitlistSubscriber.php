@@ -20,7 +20,6 @@ class WaitlistSubscriber implements EventSubscriberInterface
         private EntityManagerInterface $em,
         private EventDispatcherInterface $dispatcher,
         private MailerInterface $mailer,
-        private \Twig\Environment $template,
     ) {
     }
 
@@ -42,7 +41,7 @@ class WaitlistSubscriber implements EventSubscriberInterface
         $registration = $event->getRegistration();
         $person = $registration->getPerson();
 
-        if (!($person instanceof LocalAccount)) {
+        if (!$person instanceof LocalAccount) {
             return;
         }
 

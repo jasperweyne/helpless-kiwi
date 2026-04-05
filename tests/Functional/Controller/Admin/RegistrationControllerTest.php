@@ -149,42 +149,6 @@ class RegistrationControllerTest extends AuthWebTestCase
         self::assertNotNull($registration->getDeleteDate());
     }
 
-    public function testReserveNewActionGet(): void
-    {
-        // Arrange
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
-        $id = $activity->getId();
-
-        // Act
-        $this->client->request('GET', $this->controller."/reserve/new/{$id}");
-
-        // Assert
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-    }
-
-    /**
-     * @depends testReserveNewActionGet
-     */
-    public function testReserveNewActionPost(): void
-    {
-        // Arrange
-        $activity = $this->em->getRepository(Activity::class)->findAll()[0];
-        $originalCount = $activity->getRegistrations()->count();
-        $id = $activity->getId();
-
-        // Act
-        $this->client->request('GET', $this->controller."/reserve/new/{$id}");
-        $this->client->submitForm('Toevoegen');
-
-        // Assert
-        $activity = $this->em->getRepository(Activity::class)->find($id);
-        self::assertNotNull($activity);
-        $newCount = $activity->getRegistrations()->count();
-        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
-        self::assertEquals(1, $newCount - $originalCount, "Registration count of activity didn't correctly change after POST request.");
-        self::assertSelectorTextContains('.container', 'op de reservelijst');
-    }
-
     /**
      * @dataProvider noAccessProvider
      */
@@ -197,13 +161,7 @@ class RegistrationControllerTest extends AuthWebTestCase
         /** @var Registration $registration */
         $registration = $activity->getRegistrations()[0];
         $id = $registration->getId();
-
-        $reserve = $activity->getReserveRegistrations()[0];
-        self::assertNotNull($reserve);
-        $reserveId = $reserve->getId();
-
         $url = str_replace('id', strval($id), $url);
-        $url = str_replace('rid', strval($reserveId), $url);
 
         // act
         $this->logout();
@@ -225,7 +183,6 @@ class RegistrationControllerTest extends AuthWebTestCase
         $id = $registration->getId();
 
         $url = str_replace('id', strval($id), $url);
-        $url = str_replace('rid', strval($id), $url);
 
         // act
         $this->logout();
@@ -244,9 +201,6 @@ class RegistrationControllerTest extends AuthWebTestCase
         return [
             [$this->controller.'/edit/id'],
             [$this->controller.'/delete/id'],
-            [$this->controller.'/reserve/new/id'],
-            [$this->controller.'/reserve/move/rid/up'],
-            [$this->controller.'/reserve/move/rid/down'],
         ];
     }
 }

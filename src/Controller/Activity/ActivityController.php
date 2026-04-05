@@ -52,142 +52,6 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    /**
-     * Removes all registrations (including waitlist) for the current user.
-     */
-    #[Route('/activity/{activity}/unregister', name: 'unregister', methods: ['POST'])]
-    public function unregisterAction(
-        Request $request,
-        Activity $activity,
-    ): Response {
-        $form = $this->createUnregisterForm($activity);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Find waitlist spots for this user
-            $waitlist = $this->em->getRepository(WaitlistSpot::class)->findBy([
-                'option' => $activity->getOptions()->toArray(),
-                'person' => $this->getUser(),
-            ]);
-
-            // Remove user from any waitlist for this activity
-            foreach ($waitlist as $spot) {
-                $this->em->remove($spot);
-                $this->addFlash('success', 'Afgemeld van wachtlijst voor optie '.$spot->option->getName());
-            }
-
-            // Find registrations for this user
-            $registrations = $this->em->getRepository(Registration::class)->findBy([
-                'person' => $this->getUser(),
-                'option' => $activity->getOptions()->toArray(),
-                'deletedate' => null,
-            ]);
-
-            // Remove any registrations from user for this activity
-            foreach ($registrations as $registration) {
-                $this->events->dispatch(new RegistrationRemovedEvent($registration));
-            }
-
-            $this->em->flush();
-
-            // Check if any changes happened
-            if (0 === count($registrations) + count($waitlist)) {
-                $this->addFlash('error', 'Probleem tijdens afmelden');
-            }
-        }
-
-        return $this->redirectToRoute(
-            'activity_show',
-            ['activity' => $activity->getId()]
-        );
-    }
-
-    /**
-     * Creates registration for the current user.
-     */
-    #[Route('/activity/{activity}/register', name: 'register', methods: ['POST'])]
-    public function registerAction(
-        Request $request,
-        Activity $activity,
-    ): Response {
-        $form = $this->engageForm($activity);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var array{single_option: string} $data */
-            $data = $form->getData();
-            $option = $this->em->getRepository(PriceOption::class)->find($data['single_option']);
-            if (null === $option) {
-                $this->addFlash('error', 'Probleem met aanmelding.');
-
-                return $this->redirectToRoute(
-                    'activity_show',
-                    ['activity' => $activity->getId()]
-                );
-            }
-
-            $user = $this->getUser();
-            assert($user instanceof LocalAccount);
-
-            // currently only a single registration per person is allowed, this check enforces that
-            $registrations = $this->em->getRepository(Registration::class)->count([
-                'activity' => $activity,
-                'person' => $user,
-                'deletedate' => null,
-            ]);
-            if ($registrations > 0) {
-                $this->addFlash('error', 'Je bent al aangemeld voor deze prijsoptie.');
-
-                return $this->redirectToRoute(
-                    'activity_show',
-                    ['activity' => $activity->getId()]
-                );
-            }
-
-            // Check if the activity is full
-            if ($activity->atCapacity()) {
-                $waitlist = $this->em->getRepository(WaitlistSpot::class)->count([
-                    'option' => $option,
-                    'person' => $user,
-                ]);
-
-                if ($waitlist > 0) {
-                    $this->addFlash('error', 'Je staat al op de wachtlijst voor deze prijsoptie.');
-                } else {
-                    $this->em->persist(new WaitlistSpot($user, $option));
-                    $this->em->flush();
-
-                    $description = match ($activity->getDeadline() > new \DateTime('now')) {
-                        true => 'Indien iemand zich afmeld, wordt de eerstvolgende op de wachtlijst automatisch aangemeld. Na de aanmelddeadline ontvang je een melding per e-mail als iemand z\'n ticket aanbiedt.',
-                        false => 'Indien iemand z\'n ticket aanbiedt, ontvang je hier een melding van per e-mail.',
-                    };
-
-                    $this->addFlash('success', "Je bent aangemeld op de wachtlijst. $description");
-                }
-
-                return $this->redirectToRoute(
-                    'activity_show',
-                    ['id' => $activity->getId()]
-                );
-            }
-
-            $registration = new Registration();
-            $registration
-                ->setActivity($activity)
-                ->setOption($option)
-                ->setPerson($user)
-            ;
-
-            $event = new RegistrationAddedEvent($registration);
-            $this->events->dispatch($event);
-        }
-
-        return $this->redirectToRoute(
-            'activity_show',
-            ['activity' => $activity->getId()]
-        );
-    }
-
     #[Route('/activity/{id}', name: 'interaction', methods: ['POST'])]
     public function interAction(Request $request, Activity $activity): Response
     {
@@ -360,28 +224,26 @@ class ActivityController extends AbstractController
             // Find current waitlist/registration for user
             $registration = $this->em->getRepository(Registration::class)->findOneBy([
                 'activity' => $activity,
-                'person' => $this->getUser(),
+                'person' => $user,
                 'deletedate' => null,
             ]);
 
             $waitlist = $this->em->getRepository(WaitlistSpot::class)->findBy([
                 'option' => $activity->getOptions()->toArray(),
-                'person' => $this->getUser(),
+                'person' => $user,
             ]);
 
-            $optionData = array_map(fn (PriceOption $option) => [
-                'data' => $option,
-                'engage' => $this->engageForm($option)->createView(),
-                'disengage' => $this->disengageForm($option)->createView(),
-                'waitlist' => 0 < count(array_filter(
-                    $waitlist,
-                    fn (WaitlistSpot $w) => $w->option === $option
-                )),
-            ], $options);
-
             $optionData = array_combine(
-                array_map(fn (PriceOption $option) => $option->getId(), $options),
-                $optionData
+                array_map(fn (PriceOption $option) => strval($option->getId()), $options),
+                array_map(fn (PriceOption $option) => [
+                    'data' => $option,
+                    'engage' => $this->engageForm($option)->createView(),
+                    'disengage' => $this->disengageForm($option)->createView(),
+                    'waitlist' => 0 < count(array_filter(
+                        $waitlist,
+                        fn (WaitlistSpot $w) => $w->option === $option
+                    )),
+                ], $options)
             );
         }
 

@@ -199,28 +199,6 @@ class PriceOption
         return $this->waitlist;
     }
 
-    public function addWaitlistSpot(WaitlistSpot $waitlistSpot): static
-    {
-        if (!$this->waitlist->contains($waitlistSpot)) {
-            $this->waitlist->add($waitlistSpot);
-            $waitlistSpot->setPriceOption($this);
-        }
-
-        return $this;
-    }
-
-    public function removeWaitlistSpot(WaitlistSpot $waitlistSpot): static
-    {
-        if ($this->waitlist->removeElement($waitlistSpot)) {
-            // set the owning side to null (unless already changed)
-            if ($waitlistSpot->getPriceOption() === $this) {
-                $waitlistSpot->setPriceOption(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function __clone()
     {
         $this->id = null;
