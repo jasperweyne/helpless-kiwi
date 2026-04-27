@@ -193,14 +193,19 @@ class Registration
         $this->comment = $comment;
     }
 
-    public function isTransferable(): ?\DateTime
+    public function isTransferable(): bool
+    {
+        return null !== $this->transferable;
+    }
+
+    public function getTransferableSince(): ?\DateTime
     {
         return $this->transferable;
     }
 
-    public function setTransferable(?\DateTime $transferable): self
+    public function setTransferable(bool $transferable): self
     {
-        $this->transferable = $transferable;
+        $this->transferable = $transferable ? $this->transferable ?? new \DateTime('now') : null;
 
         return $this;
     }

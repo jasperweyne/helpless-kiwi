@@ -12,7 +12,12 @@ use App\Event\RegistrationRemovedEvent;
 use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Event\SubmitEvent;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,42 +57,6 @@ class ActivityController extends AbstractController
         ]);
     }
 
-    #[Route('/activity/{id}', name: 'interaction', methods: ['POST'])]
-    public function interAction(Request $request, Activity $activity): Response
-    {
-        $user = $this->getUser();
-        if (!$user instanceof LocalAccount) {
-            throw new \Exception("Current user isn't a user.");
-        }
-
-        $form = $this->createInteractionForm($activity);
-        $form->handleRequest($request);
-
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            $this->addFlash('error', 'Kapot');
-
-            return $this->showAction($activity);
-        }
-
-        $engageId = $form->get('engage_single')->getData();
-        $disengageId = $form->get('disengage_single')->getData();
-
-        if (null !== $engageId && null !== $disengageId) {
-            $this->addFlash('error', 'KAPOT');
-        }
-
-        $optionRepository = $this->em->getRepository(PriceOption::class);
-        if (null === $disengageId && null !== $engageId && null !== $engage = $optionRepository->find($engageId)) {
-            $this->engage($engage, $user);
-        } elseif (null === $engageId && null !== $disengageId && null != $disengage = $optionRepository->find($disengageId)) {
-            $this->disengage($disengage, $user);
-        } else {
-            $this->addFlash('error', 'NEE FUKJOU');
-        }
-
-        return $this->showAction($activity);
-    }
-
     private function disengage(
         PriceOption $priceOption,
         LocalAccount $user,
@@ -119,7 +88,7 @@ class ActivityController extends AbstractController
 
                 return;
             }
-            $registrated->setTransferable(new \DateTime('now'));
+            $registrated->setTransferable(true);
             $this->em->flush();
         } elseif (0 != count($waitListSpots)) {
             $spot = $waitListSpots[0];
@@ -159,7 +128,7 @@ class ActivityController extends AbstractController
                 return;
             }
             $registrated = $registrated[0];
-            $registrated->setTransferable(null);
+            $registrated->setTransferable(false);
             $this->em->flush();
 
             return;
@@ -209,25 +178,44 @@ class ActivityController extends AbstractController
     /**
      * Finds and displays a activity entity.
      */
-    #[Route('/activity/{activity}', name: 'show', methods: ['GET'])]
-    public function showAction(Activity $activity): Response
+    #[Route('/activity/{activity}', name: 'show', methods: ['GET', 'POST'])]
+    public function showAction(Request $request, Activity $activity): Response
     {
-        $optionData = null;
-        $registration = null;
-        if (null !== $user = $this->getUser()) {
-            assert($user instanceof LocalAccount);
+        $user = $this->getUser();
+        assert(null === $user || $user instanceof LocalAccount);
 
+        $form = $this->createInteractionForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            if (!$form->isValid() || null === $user) {
+                $this->addFlash('error', 'Verzoek kon niet verwerkt worden, probeer het opnieuw');
+
+                return $this->redirectToRoute('activity_show', ['activity' => $activity->getId()]);
+            }
+
+            $engage = $form->get('engage_single')->getData();
+            $disengage = $form->get('disengage_single')->getData();
+
+            assert(null === $engage || $engage instanceof PriceOption);
+            assert(null === $disengage || $disengage instanceof PriceOption);
+
+            if (null !== $engage) {
+                $this->engage($engage, $user);
+            } else {
+                assert(null !== $disengage);
+                $this->disengage($disengage, $user);
+            }
+
+            return $this->redirectToRoute('activity_show', ['activity' => $activity->getId()]);
+        }
+
+        $optionData = null;
+        if (null !== $user) {
             // Find all price options for the groups that this user is in
             $groups = $user->getRelations()->toArray();
             $options = $this->em->getRepository(PriceOption::class)->findUpcomingByGroup($activity, $groups);
 
             // Find current waitlist/registration for user
-            $registration = $this->em->getRepository(Registration::class)->findOneBy([
-                'activity' => $activity,
-                'person' => $user,
-                'deletedate' => null,
-            ]);
-
             $waitlist = $this->em->getRepository(WaitlistSpot::class)->findBy([
                 'option' => $activity->getOptions()->toArray(),
                 'person' => $user,
@@ -250,41 +238,49 @@ class ActivityController extends AbstractController
         return $this->render('activity/show.html.twig', [
             'activity' => $activity,
             'options' => $optionData,
-            'registration' => $registration,
         ]);
     }
 
-    public function createInteractionForm(Activity $activity): FormInterface
+    private function createInteractionForm(): FormInterface
     {
-        return $this->createFormBuilder()
-            ->setAction(
-                $this->generateUrl('activity_interaction', [
-                    'id' => $activity->getId(),
-                ])
-            )
-            ->add('engage_single', HiddenType::class)
-            ->add('disengage_single', HiddenType::class)
+        $priceOptionTransformer = new CallbackTransformer(
+            fn (?PriceOption $option) => null !== $option ? $option->getId() : '',
+            fn (?string $id) => null !== $id ? $this->em->getRepository(PriceOption::class)->find($id) ?? throw new TransformationFailedException('Option could not be found') : null
+        );
+
+        $builder = $this->createFormBuilder();
+
+        return $builder
+            ->add($builder->create('engage_single', HiddenType::class)->addModelTransformer($priceOptionTransformer))
+            ->add($builder->create('disengage_single', HiddenType::class)->addModelTransformer($priceOptionTransformer))
+            ->addEventListener(FormEvents::SUBMIT, function (SubmitEvent $event): void {
+                $data = $event->getData();
+                assert(is_array($data));
+                if (is_null($data['engage_single']) === is_null($data['disengage_single'])) {
+                    $event->getForm()->addError(new FormError('Either one of the fields should be empty.'));
+                }
+            })
             ->getForm();
     }
 
-    public function engageForm(PriceOption $priceOption): FormInterface
+    private function engageForm(PriceOption $priceOption): FormInterface
     {
         $activity = $priceOption->getActivity();
         assert(null !== $activity);
 
-        $form = $this->createInteractionForm($activity);
-        $form->get('engage_single')->setData($priceOption->getId());
+        $form = $this->createInteractionForm();
+        $form->get('engage_single')->setData($priceOption);
 
         return $form;
     }
 
-    public function disengageForm(PriceOption $priceOption): FormInterface
+    private function disengageForm(PriceOption $priceOption): FormInterface
     {
         $activity = $priceOption->getActivity();
         assert(null !== $activity);
 
-        $form = $this->createInteractionForm($activity);
-        $form->get('disengage_single')->setData($priceOption->getId());
+        $form = $this->createInteractionForm();
+        $form->get('disengage_single')->setData($priceOption);
 
         return $form;
     }

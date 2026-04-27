@@ -18,7 +18,7 @@ Je wordt verwacht op {{ activity.start|date('d-m-Y') }} om {{ activity.start|dat
 {% endif %}
 {% if generated %}
     Kan je toch niet komen, meld je dan af voor {{ activity.deadline|date('d-m-Y') }}.<br />
-    Dat kan door middel van <a href="{{ url('activity_interaction', { 'id': activity.id }) }}">deze link</a>. <br />
+    Dat kan door middel van <a href="{{ url('activity_show', { 'activity': activity.id }) }}">deze link</a>. <br />
 {% elseif person.id is not defined or person.id != by.id %}
 	Je bent aangemeld door {{ by.canonical }}. Klopt dit niet? Neem dan contact met deze persoon op.<br />
 {% endif %}

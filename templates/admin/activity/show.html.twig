@@ -195,6 +195,7 @@
                                 <th>Aanmelding</th>
                                 <th>Optie</th>
                                 <th>Laatst bewerkt</th>
+                                <th>Aangeboden voor overname</th>
                                 <th>Aanwezigheid</th>
                                 <th>Opmerking</th>
                                 <th>Acties</th>
@@ -208,6 +209,7 @@
                                 <td>{{ registration.deletedate|date('Y-m-d H:i:s')  }} </td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                                 <td><a href="mailto:{{ registration.person.email }}" target="_blank">Mailen</a></td>
                             </tr>
                         {% endfor %}
@@ -216,6 +218,11 @@
                                 <td>{{ registration.person.canonical ?? 'Onbekend' }}{% if registration.external %} <i>(extern)</i>{% endif %}</td>
                                 <td>{{ registration.option.name }}</td>
                                 <td>{{ registration.newdate|date('Y-m-d H:i:s')  }} </td>
+                                <td>
+                                {% if registration.transferable %}Ja, sinds {{ registration.transferableSince|date('Y-m-d H:i:s') }}
+                                {% else %}-
+                                {% endif %}
+                                </td>
                                 <td>
                                 {% if registration.present is null %}Onbekend
                                 {% elseif registration.present == true %}Aanwezig
