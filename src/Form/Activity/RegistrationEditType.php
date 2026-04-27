@@ -3,6 +3,7 @@
 namespace App\Form\Activity;
 
 use App\Entity\Activity\Registration;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,7 +16,13 @@ class RegistrationEditType extends RegistrationType
         $builder
             ->remove('option')
             ->remove('person')
-        ;
+            ->add('transferable', ChoiceType::class, [
+                'label' => 'Aangeboden voor overname',
+                'choices' => [
+                    'Ja' => true,
+                    'Nee' => false,
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -114,7 +114,6 @@
                                 <td>
                                     {% set activity = registration.activity ?? registration.option.activity %}
                                     <a href="{{ path("admin_activity_show", { 'activity': activity.id }) }}">{{ activity.name }}</a>
-                                    {% if registration.reserve %} (reservelijst) {% endif %}
                                     {% if registration.deletedate %} (afgemeld) {% endif %}
                                 </td>
                                 <td>{{ registration.option.name }}</td>

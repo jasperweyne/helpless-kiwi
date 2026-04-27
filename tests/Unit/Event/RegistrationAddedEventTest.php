@@ -5,7 +5,6 @@ namespace Tests\Unit\Event;
 use App\Entity\Activity\Registration;
 use App\Event\RegistrationAddedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -20,9 +19,6 @@ final class RegistrationAddedEventTest extends KernelTestCase
      */
     private $registrationAddedEvent;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,23 +28,10 @@ final class RegistrationAddedEventTest extends KernelTestCase
         $this->registrationAddedEvent = new RegistrationAddedEvent($registration);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
 
         unset($this->registrationAddedEvent);
-    }
-
-    public function testGetRegistration(): void
-    {
-        $expected = $this->createMock(Registration::class);
-        $property = (new ReflectionClass(RegistrationAddedEvent::class))
-            ->getProperty('registration');
-        $property->setAccessible(true);
-        $property->setValue($this->registrationAddedEvent, $expected);
-        self::assertSame($expected, $this->registrationAddedEvent->getRegistration());
     }
 }

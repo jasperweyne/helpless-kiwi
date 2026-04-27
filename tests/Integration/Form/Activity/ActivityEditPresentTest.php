@@ -7,7 +7,6 @@ use App\Entity\Activity\ExternalRegistrant;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Location\Location;
-use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
 use App\Form\Activity\ActivityEditPresent;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -22,18 +21,12 @@ class ActivityEditPresentTest extends KernelTestCase
 {
     protected ActivityEditPresent $activityEditPresent;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
         self::bootKernel();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -54,12 +47,10 @@ class ActivityEditPresentTest extends KernelTestCase
         ;
 
         $rDeleted = (new Registration())->setDeleteDate(new \DateTime());
-        $rReserve = (new Registration())->setReservePosition(Order::create('a'));
         $rCurrent1 = (new Registration())->setPerson((new LocalAccount())->setName('b'));
         $rCurrent2 = (new Registration())->setPerson((new ExternalRegistrant())->setName('a'));
 
         $type->addRegistration($rDeleted);
-        $type->addRegistration($rReserve);
         $type->addRegistration($rCurrent1);
         $type->addRegistration($rCurrent2);
 

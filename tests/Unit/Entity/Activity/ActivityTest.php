@@ -7,7 +7,6 @@ use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Location\Location;
-use App\Entity\Order;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,7 +25,6 @@ class ActivityTest extends KernelTestCase
 {
     protected Activity $activity;
 
-    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,7 +33,6 @@ class ActivityTest extends KernelTestCase
         $this->activity = new Activity();
     }
 
-    /** {@inheritdoc} */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -209,8 +206,7 @@ class ActivityTest extends KernelTestCase
     {
         $rCurrent = new Registration();
         $rDeleted = (new Registration())->setDeleteDate(new \DateTime());
-        $rReserve = (new Registration())->setReservePosition(Order::create('a'));
-        $expected = new ArrayCollection([$rCurrent, $rDeleted, $rReserve]);
+        $expected = new ArrayCollection([$rCurrent, $rDeleted]);
 
         $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
@@ -218,38 +214,14 @@ class ActivityTest extends KernelTestCase
         $property->setValue($this->activity, $expected);
 
         self::assertTrue($this->activity->getCurrentRegistrations()->contains($rCurrent));
-        self::assertFalse($this->activity->getCurrentRegistrations()->contains($rReserve));
         self::assertFalse($this->activity->getCurrentRegistrations()->contains($rDeleted));
-    }
-
-    /**
-     * @depends testGetCurrentRegistrations
-     */
-    public function testAddCurrentRegistration(): void
-    {
-        $registration = new Registration();
-        $this->activity->addCurrentRegistration($registration);
-        self::assertTrue($this->activity->getCurrentRegistrations()->contains($registration));
-    }
-
-    /**
-     * @depends testAddCurrentRegistration
-     */
-    public function testRemoveCurrentRegistration(): void
-    {
-        $registration = new Registration();
-        $this->activity->addCurrentRegistration($registration);
-
-        $this->activity->removeCurrentRegistration($registration);
-        self::assertFalse($this->activity->getCurrentRegistrations()->contains($registration));
     }
 
     public function testGetDeregistrations(): void
     {
         $rCurrent = new Registration();
         $rDeleted = (new Registration())->setDeleteDate(new \DateTime());
-        $rReserve = (new Registration())->setReservePosition(Order::create('a'));
-        $expected = new ArrayCollection([$rCurrent, $rDeleted, $rReserve]);
+        $expected = new ArrayCollection([$rCurrent, $rDeleted]);
 
         $property = (new \ReflectionClass(Activity::class))
             ->getProperty('registrations');
@@ -259,71 +231,7 @@ class ActivityTest extends KernelTestCase
         $result = $this->activity->getDeregistrations();
 
         self::assertTrue($result->contains($rDeleted));
-        self::assertFalse($result->contains($rReserve));
         self::assertFalse($result->contains($rCurrent));
-    }
-
-    /**
-     * @depends testGetDeregistrations
-     */
-    public function testAddDeregistration(): void
-    {
-        $registration = (new Registration())->setDeleteDate(new \DateTime());
-        $this->activity->addDeregistration($registration);
-        self::assertTrue($this->activity->getDeregistrations()->contains($registration));
-    }
-
-    /**
-     * @depends testAddDeregistration
-     */
-    public function testRemoveDeregistration(): void
-    {
-        $registration = (new Registration())->setDeleteDate(new \DateTime());
-        $this->activity->addDeregistration($registration);
-
-        $this->activity->removeDeregistration($registration);
-        self::assertFalse($this->activity->getDeregistrations()->contains($registration));
-    }
-
-    public function testGetReserveRegistrations(): void
-    {
-        $rCurrent = new Registration();
-        $rDeleted = (new Registration())->setDeleteDate(new \DateTime());
-        $rReserve = (new Registration())->setReservePosition(Order::create('a'));
-        $expected = new ArrayCollection([$rCurrent, $rDeleted, $rReserve]);
-
-        $property = (new \ReflectionClass(Activity::class))
-            ->getProperty('registrations');
-        $property->setAccessible(true);
-        $property->setValue($this->activity, $expected);
-
-        $result = $this->activity->getReserveRegistrations();
-
-        self::assertTrue($result->contains($rReserve));
-        self::assertFalse($result->contains($rDeleted));
-        self::assertFalse($result->contains($rCurrent));
-    }
-
-    /**
-     * @depends testGetReserveRegistrations
-     */
-    public function testAddReserveRegistration(): void
-    {
-        $registration = (new Registration())->setReservePosition(Order::create('a'));
-        $this->activity->addReserveRegistration($registration);
-        self::assertTrue($this->activity->getReserveRegistrations()->contains($registration));
-    }
-
-    /**
-     * @depends testAddReserveRegistration
-     */
-    public function testRemoveReserveRegistration(): void
-    {
-        $registration = (new Registration())->setReservePosition(Order::create('a'));
-        $this->activity->addReserveRegistration($registration);
-
-        $this->activity->removeReserveRegistration($registration);
-        self::assertFalse($this->activity->getReserveRegistrations()->contains($registration));
     }
 
     public function testSetAuthor(): void
@@ -663,7 +571,6 @@ class ActivityTest extends KernelTestCase
         self::assertEmpty($copy->getRegistrations());
         self::assertEmpty($copy->getCurrentRegistrations());
         self::assertEmpty($copy->getDeregistrations());
-        self::assertEmpty($copy->getReserveRegistrations());
 
         self::assertFalse($copy->getArchived());
         self::assertNull($copy->getStart());

@@ -118,7 +118,7 @@ class ActivityEditType extends AbstractType
             ->add('capacity', IntegerType::class, [
                 'label' => 'Capaciteit',
                 'attr' => ['placeholder' => '20'],
-                'help' => 'Het maximaal aantal aanmeldingen, hierna word je op de reserve lijst aangemeld.',
+                'help' => 'Het maximaal aantal aanmeldingen, hierna word je op de wachtlijst geplaatst.',
                 'required' => false,
             ])
             ->add('color', ChoiceType::class, [

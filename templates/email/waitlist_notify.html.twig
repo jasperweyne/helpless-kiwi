@@ -1,0 +1,10 @@
+<h1>Er is een ticket beschikbaar voor {{ option.activity.name }}</h1>
+<p>Hallo {{ person.givenName ?? person.name ?? '' }},<br />
+Er is zojuist een ticket beschikbaar gekomen voor {{ option.activity.name }}.
+<a href="{{ url('activity_show', { 'id': option.activity.id }) }}">Klik hier</a>
+om naar Kiwi te gaan en het ticket over te nemen.<br />
+Je ontvangt deze mail omdat je aangemeld bent op de wachtlijst voor deze
+activiteit. Wil je deze mails niet meer ontvangen? Meld je dan af via
+bovenstaande link.<br />
+<br />
+Groetjes van {{ org }}<p>

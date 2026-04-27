@@ -27,71 +27,105 @@
             <div class="-mb-16 mt-4">
                 {% if not is_granted('ROLE_USER') %}
                     <span class="cursor-not-allowed rounded-sm px-4 py-3 bg-red-200 text-white inline-block">Niet ingelogd</span>
-                {% elseif activity.deadline|date('Y-m-d') < "now"|date('Y-m-d') %}
-                    {% if unregister is null %}
-                        <span class="cursor-not-allowed rounded-sm px-4 py-3 bg-green-200 text-white inline-block">Inschrijvingen gesloten</span>
-                    {% else %}
+                {% elseif activity.start < "now"|date %}
+                    {% if app.user in (activity.currentRegistrations|map(reg => reg.person)) %}
                         <span class="cursor-not-allowed rounded-sm px-4 py-3 bg-red-200 text-white inline-block">Uitschrijvingen gesloten</span>
-                    {% endif %}
-                {% elseif unregister is not null %}
-                    {{ form_start(unregister) }}
-                    {{ form_widget(unregister) }}
-                    <button class="rounded-sm px-4 py-3 text-white bg-red-500 inline-block" type="submit">Afmelden</button>
-                    {{ form_end(unregister) }}
-                {% elseif options|length == 1 %}
-                    {{ form_start(options|first.form) }}
-                    {{ form_widget(options|first.form) }}
-                    {% if activity.atCapacity %}
-                        <button class="rounded-sm px-4 py-3 text-white bg-orange-500 inline-block" type="submit">Aanmelden reserve</button>
                     {% else %}
-                        <button class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block" type="submit">Aanmelden</button>
+                        <span class="cursor-not-allowed rounded-sm px-4 py-3 bg-green-200 text-white inline-block">Inschrijvingen gesloten</span>
                     {% endif %}
-                    {{ form_end(options|first.form) }}
                 {% else %}
-                    <input type="checkbox" id="registermodal" class="hidden peer" />
-                    {% if activity.atCapacity %}
-                        <label for="registermodal" class="rounded-sm px-4 py-3 text-white bg-orange-500 inline-block">Aanmelden reserve</label>
+                    {% if app.user in (activity.currentRegistrations|map(reg => reg.person)) %}
+                        {% if "now"|date < activity.deadline %}
+                            {{ form_start(options|first.disengage) }}
+                            {{ form_widget(options|first.disengage) }}
+                            <button class="rounded-sm px-4 py-3 text-white bg-red-500 inline-block" type="submit">Afmelden</button>
+                            {{ form_end(options|first.disengage) }}
+                        {% else %}
+                            {% if app.user in (activity.waitlist|map(spot => spot.person)) %}
+                                {{ form_start(options|first.engage) }}
+                                {{ form_widget(options|first.engage) }}
+                                <button class="rounded-sm px-4 py-3 text-white bg-red-500 inline-block" type="submit">Aanbod intrekken</button>
+                                {{ form_end(options|first.engage) }}
+                            {% else %}
+                                {{ form_start(options|first.disengage) }}
+                                {{ form_widget(options|first.disengage) }}
+                                <button class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block" type="submit">Ticket aanbieden</button>
+                                {{ form_end(options|first.disengage) }}
+                            {% endif %}
+                        {% endif %}
                     {% else %}
-                        <label for="registermodal" class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block">Aanmelden</label>
+                        {% if options|length == 1 %}
+                            {% set option = options|first %}
+                            {{ form_start(option.engage) }}
+                            {{ form_widget(option.engage) }}
+                            {% if "now"|date < activity.deadline and not activity.atCapacity() %}
+                                <button class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block" type="submit">Aanmelden</button>
+                            {% elseif option.data.registrations|filter(r => r.transferable)|length > 0 %}
+                                <button class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block" type="submit">Ticket overnemen</button>
+                            {% else %}
+                                <button class="rounded-sm px-4 py-3 text-white bg-orange-500 inline-block" type="submit">Aanmelden wachtlijst</button>
+                            {% endif %}
+                            {{ form_end(option.engage) }}
+                            {% if option.waitlist %}
+                                {{ form_start(option.disengage) }}
+                                {{ form_widget(option.disengage) }}
+                                    <button class="rounded-sm px-4 py-3 text-white bg-red-500 inline-block" type="submit">Afmelden wachtlijst</button>
+                                {{ form_end(option.disengage) }}
+                            {% endif %}
+                        {% else %}
+                            <input type="checkbox" id="registermodal" class="hidden peer" />
+                            <label for="registermodal" class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block">Aanmelden</label>
+                            <label for="registermodal" class="fixed left-0 top-0 z-50 size-full bg-black/50 hidden peer-checked:block"></label>
+                            <div class="fixed size-fit m-auto max-w-full p-8 left-0 right-0 top-0 bottom-0 z-50 hidden peer-checked:block">
+                                <div class="bg-white rounded-sm text-black">
+                                    <h2 class="text-center text-2xl font-extrabold p-4 pb-0">Selecteer optie</h2>
+                                    <table class="border-spacing-2 border-separate p-2">
+                                        <tbody>
+                                        {% for option in options|sort((a, b)=>a.data.price<=>b.data.price) %}
+                                            <tr>
+                                                <td>{{ option.data.name }}</td>
+                                                <td>&euro; {{ '%01.2f'|format(option.data.price / 100) }}</td>
+                                                <td>
+                                                    {{ form_start(option.engage) }}
+                                                    {{ form_widget(option.engage) }}
+                                                    {% if "now"|date < activity.deadline and not activity.atCapacity() %}
+                                                        <button class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block" type="submit">Aanmelden</button>
+                                                    {% elseif option.data.registrations|filter(r => r.transferable)|length > 0 %}
+                                                        <button class="rounded-sm px-4 py-3 text-white bg-green-500 inline-block" type="submit">Ticket overnemen</button>
+                                                    {% else %}
+                                                        <button class="rounded-sm px-4 py-3 text-white bg-orange-500 inline-block" type="submit">Aanmelden wachtlijst</button>
+                                                    {% endif %}
+                                                    {{ form_end(option.engage) }}
+                                                </td>
+                                                <td>
+                                                    {% if option.waitlist %}
+                                                        {{ form_start(option.disengage) }}
+                                                        {{ form_widget(option.disengage) }}
+                                                            <button class="rounded-sm px-4 py-3 text-white bg-red-500 inline-block" type="submit">Afmelden wachtlijst</button>
+                                                        {{ form_end(option.disengage) }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
-                    <label for="registermodal" class="fixed left-0 top-0 z-50 size-full bg-opacity-50 bg-black hidden peer-checked:block"></label>
-                    <div class="fixed size-fit m-auto max-w-full p-8 left-0 right-0 top-0 bottom-0 z-50 hidden peer-checked:block">
-                        <div class="bg-white rounded-sm text-black">
-                            <h2 class="text-center text-2xl font-extrabold p-4 pb-0">Selecteer optie</h2>
-                            <table class="border-spacing-2 border-separate p-2">
-                                <tbody>
-                                {% for option in options|sort((a, b)=>a.data.price<=>b.data.price) %}
-                                    <tr>
-                                        <td>{{ option.data.name }}</td>
-                                        <td>&euro; {{ '%01.2f'|format(option.data.price / 100) }}</td>
-                                        <td>
-                                            {{ form_start(option.form) }}
-                                            {{ form_widget(option.form) }}
-                                            {% if activity.atCapacity %}
-                                                <button class="rounded-sm px-4 py-3 text-white bg-orange-500" type="submit">Aanmelden reserve</button>
-                                            {% else %}
-                                                <button class="rounded-sm px-4 py-3 text-white bg-green-500" type="submit">Aanmelden</button>
-                                            {% endif %}
-                                            {{ form_end(option.form) }}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 {% endif %}
             </div>
         {% endif %}
     </div>
 </div>
+
 <div class="mx-auto max-w-6xl px-5 mb-5">
     {% if is_granted('ROLE_USER') and prices|length > 0 %}
     <div class="w-full sm:w-8/12 sm:pr-5 float-left">
     {% else %}
     <div class="w-full float-left">
     {% endif %}
-        <p>{{ activity.description | nl2br }}</p>
+        <p>{{ activity.description|nl2br }}</p>
     </div>
     {% if is_granted('ROLE_USER') and prices|length > 0 %}
     <div class="w-full sm:w-4/12 z-10 float-left relative mt-5 sm:mt-0">

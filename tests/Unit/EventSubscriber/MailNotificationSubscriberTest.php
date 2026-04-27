@@ -107,16 +107,6 @@ final class MailNotificationSubscriberTest extends KernelTestCase
         $this->mailNotificationSubscriber->notifyRegistrationAdded($event);
     }
 
-    public function testNotifyRegistrationAddedReserve(): void
-    {
-        $this->registration->method('isReserve')->willReturn(true);
-
-        $this->mailer->expects(self::never())->method('send');
-
-        $event = new RegistrationAddedEvent($this->registration);
-        $this->mailNotificationSubscriber->notifyRegistrationAdded($event);
-    }
-
     public function testNotifyRegistrationRemoved(): void
     {
         $this->registration
@@ -132,16 +122,6 @@ final class MailNotificationSubscriberTest extends KernelTestCase
             ->willReturn($this->localAccount);
 
         $this->mailer->expects(self::once())->method('send');
-
-        $event = new RegistrationRemovedEvent($this->registration);
-        $this->mailNotificationSubscriber->notifyRegistrationRemoved($event);
-    }
-
-    public function testNotifyRegistrationRemovedReserve(): void
-    {
-        $this->registration->method('isReserve')->willReturn(true);
-
-        $this->mailer->expects(self::never())->method('send');
 
         $event = new RegistrationRemovedEvent($this->registration);
         $this->mailNotificationSubscriber->notifyRegistrationRemoved($event);

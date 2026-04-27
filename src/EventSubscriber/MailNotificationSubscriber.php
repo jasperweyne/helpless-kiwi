@@ -49,11 +49,6 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
     public function notifyRegistrationAdded(RegistrationAddedEvent $event): void
     {
-        // no e-mail for reserve registrations
-        if ($event->getRegistration()->isReserve()) {
-            return;
-        }
-
         $activity = $event->getRegistration()->getActivity();
         assert(null !== $activity);
 
@@ -72,6 +67,7 @@ class MailNotificationSubscriber implements EventSubscriberInterface
                 'activity' => $activity,
                 'title' => $title,
                 'by' => $this->user,
+                'generated' => $event->generated,
             ])
             ->attach($this->calendar->calendarItem($activity), $activity->getName().'.ics', 'text/calendar')
         );
@@ -79,11 +75,6 @@ class MailNotificationSubscriber implements EventSubscriberInterface
 
     public function notifyRegistrationRemoved(RegistrationRemovedEvent $event): void
     {
-        // no e-mail for reserve registrations
-        if ($event->getRegistration()->isReserve()) {
-            return;
-        }
-
         $activity = $event->getRegistration()->getActivity();
         assert(null !== $activity);
 
