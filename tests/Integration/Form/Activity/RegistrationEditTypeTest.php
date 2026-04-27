@@ -30,9 +30,6 @@ class RegistrationEditTypeTest extends KernelTestCase
      */
     protected $registrationedittype;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,9 +38,6 @@ class RegistrationEditTypeTest extends KernelTestCase
         $this->registrationedittype = new RegistrationEditType();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -56,6 +50,7 @@ class RegistrationEditTypeTest extends KernelTestCase
         $type = new Registration();
         $formData = [
             'comment' => 'test comment',
+            'transferable' => 'Ja',
         ];
 
         $formfactory = self::getContainer()->get('form.factory');
