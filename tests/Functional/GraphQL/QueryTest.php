@@ -143,7 +143,7 @@ GRAPHQL;
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertArrayNotHasKey('errors', $data);
         self::assertTrue(isset($data['data']['activities']));
-        self::assertCount(3, $data['data']['activities']);
+        self::assertCount(4, $data['data']['activities']);
     }
 
     public function testGroupsAnonymous(): void

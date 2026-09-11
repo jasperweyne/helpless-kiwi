@@ -41,3 +41,17 @@ App\Entity\Activity\Activity:
     name: Activity_3
     location: '@Location_*'
     capacity: 0
+
+  Activity_ended:
+    id: <uuid()>
+    description: "already-ended-activity"
+    color: <randomElement(['ltblue'])>
+    author: '@Group_1'
+    archived: false
+    start: <dateTimeBetween('-2 weeks', '-1 week')>
+    end: <dateTimeBetween('-1 week', '-3 days')>
+    deadline: <dateTimeBetween('-3 weeks', '-2 weeks')>
+    imageUpdatedAt: <dateTimeBetween('-5 days', 'now')>
+    visibleAfter: <dateTime('-5 hours')>
+    name: Activity_ended 
+    location: '@Location_*'

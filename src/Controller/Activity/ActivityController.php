@@ -8,6 +8,7 @@ use App\Entity\Activity\Registration;
 use App\Entity\Security\LocalAccount;
 use App\Event\RegistrationAddedEvent;
 use App\Event\RegistrationRemovedEvent;
+use App\Security\ActivityVoter;
 use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -147,6 +148,7 @@ class ActivityController extends AbstractController
     #[Route('/activity/{activity}', name: 'show', methods: ['GET'])]
     public function showAction(Activity $activity): Response
     {
+        $this->denyAccessUnlessGranted(ActivityVoter::VIEW, $activity);
         $groups = [];
         if (null !== $user = $this->getUser()) {
             assert($user instanceof LocalAccount);

@@ -116,6 +116,34 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testShowActionNotAdmin(): void
+    {
+        // Arrange
+        $this->logout();
+        $this->login('aangemeld@kiwi.nl');
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['name' => 'Activity_ended']);
+        self::assertNotNull($activity);
+
+        // Act
+        $this->client->request('GET', "/activity/{$activity->getId()}");
+
+        // Assert
+        self::assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testShowActionHiddenAsAdmin(): void
+    {
+        // Arrange (setUp() already logs in as ROLE_ADMIN)
+        $activity = $this->em->getRepository(Activity::class)->findOneBy(['name' => 'Activity_ended']);
+        self::assertNotNull($activity);
+
+        // Act
+        $this->client->request('GET', "/activity/{$activity->getId()}");
+
+        // Assert
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testSingleUnregistrationForm(): void
     {
         /* @todo This test is incomplete. */
