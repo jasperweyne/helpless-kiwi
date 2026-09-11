@@ -18,7 +18,7 @@ class ActivityVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-        /* @var Activity $activity */
+        /** @var Activity $activity */
         $activity = $subject;
 
         $user = $token->getUser();
