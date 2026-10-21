@@ -1,0 +1,46 @@
+{% set btn = 'px-0.5 sm:px-1 xl:px-2 text-xl text-[#222533] hover:text-black' %}
+{% if pageCount > 1 %}
+<div class="flex items-center flex-nowrap justify-between xl:justify-center gap-x-0 xl:gap-x-4 w-full">
+    {% if pagination_show_first_last_buttons and first is defined and current != first %}
+        <a class="{{ btn }}" href="{{ path(route, knp_pagination_query(query, first, options)) }}">&laquo;</a>
+    {% endif %}
+    {% if previous is defined %}
+        <a class="{{ btn }}" rel="prev" href="{{ path(route, knp_pagination_query(query, previous, options)) }}">&lsaquo;</a>
+    {% endif %}
+
+    {% if startPage > 1 %}
+        <a class="{{ btn }}" href="{{ path(route, knp_pagination_query(query, 1, options)) }}">1</a>
+        {% if startPage == 3 %}
+            <a class="{{ btn }}" href="{{ path(route, knp_pagination_query(query, 2, options)) }}">2</a>
+        {% elseif startPage > 2 %}
+            <span class="{{ btn }}">&hellip;</span>
+        {% endif %}
+    {% endif %}
+
+    {% for page in pagesInRange %}
+        {% if page != current %}
+            <a class="{{ btn }}" href="{{ path(route, knp_pagination_query(query, page, options)) }}">{{ page }}</a>
+        {% else %}
+            <span class="{{ btn }} underline decoration-2 underline-offset-4">{{ page }}</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if pageCount > endPage %}
+        {% if pageCount > endPage + 1 %}
+            {% if pageCount > endPage + 2 %}
+                <span class="{{ btn }}">&hellip;</span>
+            {% else %}
+                <a class="{{ btn }}" href="{{ path(route, knp_pagination_query(query, pageCount - 1, options)) }}">{{ pageCount - 1 }}</a>
+            {% endif %}
+        {% endif %}
+        <a class="{{ btn }}" href="{{ path(route, knp_pagination_query(query, pageCount, options)) }}">{{ pageCount }}</a>
+    {% endif %}
+
+    {% if next is defined %}
+        <a class="{{ btn }}" rel="next" href="{{ path(route, knp_pagination_query(query, next, options)) }}">&rsaquo;</a>
+    {% endif %}
+    {% if pagination_show_first_last_buttons and last is defined and current != last %}
+        <a class="{{ btn }}" href="{{ path(route, knp_pagination_query(query, last, options)) }}">&raquo;</a>
+    {% endif %}
+</div>
+{% endif %}

@@ -13,6 +13,7 @@ twig:
         oidc: '%env(OIDC_ADDRESS)%'
         profile_url: '%env(PROFILE_URL)%'
         version: '%env(INSTALLED_VERSION)%'
+        pagination_show_first_last_buttons: false
 
 when@test:
     twig:

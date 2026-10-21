@@ -2,6 +2,3 @@ knp_paginator:
   page_range: 3
   template:
     pagination: 'components/pagination_pages.html.twig'
-
-parameters:
-    pagination.show_first_last_buttons: false
