@@ -2,7 +2,7 @@
 
 {% if page_title is not defined %}
     {% if group is null %}
-        {% set resultcount = groups|length %}
+        {% set resultcount = groups.getTotalItemCount() %}
         {% if all_groups is defined %}
             {% set page_title = 'Alle groepen' %}
         {% else %}
@@ -190,4 +190,10 @@
             {% endblock %}
         {% endembed %}
     {% endif %}
+{% endblock %}
+
+{% block pagination %}
+{% if group is null %}
+{{ include('components/pagination.html.twig', {'pagination': groups}) }}
+{% endif %}
 {% endblock %}

@@ -4,7 +4,7 @@
     {% set page_title = 'Accounts' %}
 {% endif %}
 
-{% set resultcount = accounts|length %}
+{% set resultcount = pagination.getTotalItemCount() %}
 
 {% block buttons %}
     <a href="{{ path("admin_security_new") }} ">Nieuw</a>
@@ -26,7 +26,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for account in accounts|sort((a, b) => (a.canonical ?? '') <=> (b.canonical ?? '')) %}
+            {% for account in pagination %}
                 <tr>
                     <td><a href="{{ path("admin_security_show", { 'account': account.id }) }}">{{ account.canonical ?? '{onbekend}'}}</a></td>
                     <td>{{ account.email }}</td>
@@ -44,4 +44,8 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block pagination %}
+{{ include('components/pagination.html.twig', {'pagination': pagination}) }}
 {% endblock %}

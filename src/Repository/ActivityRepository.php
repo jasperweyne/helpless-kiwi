@@ -7,6 +7,7 @@ use App\Entity\Activity\Registration;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -31,11 +32,7 @@ class ActivityRepository extends ServiceEntityRepository
      */
     public function findAuthor($groups)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.archived = false')
-            ->andWhere('(p.author IN (:groups))')
-            ->setParameter('groups', $groups)
-            ->orderBy('p.start', 'DESC')
+        return $this->createAuthorQueryBuilder($groups)
             ->getQuery()
             ->getResult();
     }
@@ -47,13 +44,41 @@ class ActivityRepository extends ServiceEntityRepository
      */
     public function findAuthorArchive($groups)
     {
+        return $this->createAuthorArchiveQueryBuilder($groups)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * QueryBuilder variant of {@see findAuthor()}, for use with pagination (avoids
+     * hydrating the full result set up front).
+     *
+     * @param Group[] $groups
+     */
+    public function createAuthorQueryBuilder($groups): QueryBuilder
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.archived = false')
+            ->andWhere('(p.author IN (:groups))')
+            ->setParameter('groups', $groups)
+            ->orderBy('p.start', 'DESC')
+        ;
+    }
+
+    /**
+     * QueryBuilder variant of {@see findAuthorArchive()}, for use with pagination (avoids
+     * hydrating the full result set up front).
+     *
+     * @param Group[] $groups
+     */
+    public function createAuthorArchiveQueryBuilder($groups): QueryBuilder
+    {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = true')
             ->andWhere('(p.author IN (:groups))')
             ->setParameter('groups', $groups)
             ->orderBy('p.start', 'DESC')
-            ->getQuery()
-            ->getResult();
+        ;
     }
 
     /**
@@ -74,11 +99,21 @@ class ActivityRepository extends ServiceEntityRepository
      */
     public function findActive()
     {
+        return $this->createActiveQueryBuilder()
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * QueryBuilder variant of {@see findActive()}, for use with pagination (avoids
+     * hydrating the full result set up front).
+     */
+    public function createActiveQueryBuilder(): QueryBuilder
+    {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = false')
             ->orderBy('p.start', 'DESC')
-            ->getQuery()
-            ->getResult();
+        ;
     }
 
     /**
@@ -86,11 +121,21 @@ class ActivityRepository extends ServiceEntityRepository
      */
     public function findArchived()
     {
+        return $this->createArchivedQueryBuilder()
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * QueryBuilder variant of {@see findArchived()}, for use with pagination (avoids
+     * hydrating the full result set up front).
+     */
+    public function createArchivedQueryBuilder(): QueryBuilder
+    {
         return $this->createQueryBuilder('p')
             ->andWhere('p.archived = true')
             ->orderBy('p.start', 'DESC')
-            ->getQuery()
-            ->getResult();
+        ;
     }
 
     /**

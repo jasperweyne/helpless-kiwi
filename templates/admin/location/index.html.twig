@@ -4,7 +4,7 @@
     {% set page_title = 'Locaties' %}
 {% endif %}
 
-{% set resultcount = locations|length %}
+{% set resultcount = locations.getTotalItemCount() %}
 
 {% block buttons %}
     <a href="{{ path("admin_location_new") }} ">Nieuw</a>
@@ -31,4 +31,8 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block pagination %}
+{{ include('components/pagination.html.twig', {'pagination': locations}) }}
 {% endblock %}

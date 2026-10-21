@@ -4,7 +4,7 @@
     {% set page_title = 'Activiteiten' %}
 {% endif %}
 
-{% set resultcount = activities|length %}
+{% set resultcount = activities.getTotalItemCount() %}
     
 {% block buttons %}
     {% if page_title == 'Activiteiten' %}
@@ -41,4 +41,8 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block pagination %}
+{{ include('components/pagination.html.twig', {'pagination': activities}) }}
 {% endblock %}

@@ -9,6 +9,8 @@ use App\Log\EventService;
 use App\Repository\GroupRepository;
 use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,7 +66,7 @@ class GroupController extends AbstractController
      */
     #[MenuItem(title: 'Groepen', menu: 'admin')]
     #[Route('/{group?}', name: 'show', methods: ['GET'])]
-    public function showAction(Request $request, ?Group $group, GroupRepository $groupRepo): Response
+    public function showAction(Request $request, ?Group $group, GroupRepository $groupRepo, PaginatorInterface $paginator): Response
     {
         /** @var LocalAccount */
         $user = $this->getUser();
@@ -83,20 +85,39 @@ class GroupController extends AbstractController
                 $params['all_groups'] = true;
 
                 if ($this->isGranted('ROLE_ADMIN')) {
-                    $db = $groupRepo->findAll();
+                    $db = $groupRepo->createQueryBuilder('g')->orderBy('g.name', 'ASC');
                 } else {
+                    // Walking the group tree happens in PHP (recursive lookup), so this
+                    // can't be turned into a single paginated SQL query without a bigger
+                    // rewrite (e.g. a recursive CTE). Paginating in-memory is a pragmatic
+                    // exception here.
                     $db = $groupRepo->findSubGroupsForPerson($user);
                 }
             } else {
                 if ($this->isGranted('ROLE_ADMIN')) {
-                    $db = $groupRepo->findBy(['parent' => null]);
+                    $db = $groupRepo->createQueryBuilder('g')->andWhere('g.parent IS NULL')->orderBy('g.name', 'ASC');
                 } else {
-                    $db = $user->getRelations();
+                    $db = $user->getRelations()->toArray();
+                }
+            }
+
+            $search = trim($request->query->get('search', ''));
+            if ('' !== $search) {
+                if ($db instanceof QueryBuilder) {
+                    $db->andWhere('g.name LIKE :search')->setParameter('search', '%'.$search.'%');
+                } else {
+                    // Non-admin lists are plain PHP arrays (see above), so they're
+                    // filtered here instead of via SQL.
+                    $db = array_values(array_filter($db, fn (Group $group) => false !== stripos($group->getName() ?? '', $search)));
                 }
             }
 
             // render
-            $params['groups'] = $db;
+            $params['groups'] = $paginator->paginate(
+                $db,
+                $request->query->getInt('page', 1),
+                $request->query->getInt('limit', 30)
+            );
 
             return $this->render('admin/group/show.html.twig', $params);
         }

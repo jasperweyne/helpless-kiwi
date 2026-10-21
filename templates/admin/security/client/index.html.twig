@@ -4,7 +4,7 @@
     {% set page_title = 'API clients' %}
 {% endif %}
 
-{% set resultcount = clients|length %}
+{% set resultcount = clients.getTotalItemCount() %}
 
 {% block buttons %}
     <a href="{{ path("admin_security_client_new") }} ">Toevoegen</a>
@@ -39,4 +39,8 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block pagination %}
+{{ include('components/pagination.html.twig', {'pagination': clients}) }}
 {% endblock %}

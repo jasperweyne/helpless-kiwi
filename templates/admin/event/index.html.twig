@@ -6,10 +6,7 @@
 
 {% block results %}
     <span class="text-neutral-300">
-    {% if pagination %}
-    Resultaten {{ pagination.index }}{% if pagination.results|length > 1 %}-{{ pagination.index + pagination.results|length - 1 }}{% endif %} -
-    {% endif %}
-    {{ pagination.total ?? log|length }} resultaten gevonden
+    {{ pagination.getTotalItemCount() ?? log|length }} resultaten gevonden
     </span>
 {% endblock %}
 
@@ -41,19 +38,6 @@
 {% endblock %}
 
 {% block pagination %}
-<div>
-    <div class="h-7 mx-auto bg-white shadow-sm rounded-sm w-max mb-5 overflow-hidden *:block *:float-left *:px-4 *:w-max *:h-full text-xl">
-        {% if pagination.hasPrev %}
-            <a class="cursor-pointer" href="{{ path('admin_event_index', { 'index': pagination.prev }) }}">&larr;</a>
-        {% else %}
-            <span class="cursor-default bg-neutral-300 text-neutral-700">&larr;</span>
-        {% endif %}
-        {% if pagination.hasNext %}
-            <a class="cursor-pointer" href="{{ path('admin_event_index', { 'index': pagination.next }) }}">&rarr;</a>
-        {% else %}
-            <span class="cursor-default bg-neutral-300 text-neutral-700">&rarr;</span>
-        {% endif %}
-    </div>
-</div>
+{{ include('components/pagination.html.twig', {'pagination': pagination}) }}
 {% endblock %}
 
