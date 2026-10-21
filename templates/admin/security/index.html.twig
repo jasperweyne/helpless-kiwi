@@ -11,6 +11,12 @@
     <a href="{{ path("admin_security_import") }} ">Importeren</a>
 {% endblock %}
 
+{% block search %}
+<div class="mb-3">
+{{ include('components/search.html.twig', {'placeholder': 'Naam of e-mail'}) }}
+</div>
+{% endblock %}
+
 {% block body %}
     <div class="table">
         <table>

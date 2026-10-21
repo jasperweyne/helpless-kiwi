@@ -14,6 +14,12 @@
     {% endif %}
 {% endblock %}
 
+{% block search %}
+<div class="mb-3">
+{{ include('components/search.html.twig', {'placeholder': 'Naam of organisator'}) }}
+</div>
+{% endblock %}
+
 {% block body %}
     <div class="table">
         <table>

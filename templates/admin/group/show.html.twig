@@ -32,6 +32,14 @@
     {% endif %}
 {% endblock %}
 
+{% block search %}
+{% if group is null %}
+<div class="mb-3">
+{{ include('components/search.html.twig', {'placeholder': 'Naam van de groep'}) }}
+</div>
+{% endif %}
+{% endblock %}
+
 {% block body_wrap %}
     {% if group %}
         <div class="tabs flex flex-wrap max-w-full">

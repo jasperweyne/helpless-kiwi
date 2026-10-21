@@ -10,6 +10,12 @@
     <a href="{{ path("admin_location_new") }} ">Nieuw</a>
 {% endblock %}
 
+{% block search %}
+<div class="mb-3">
+{{ include('components/search.html.twig', {'placeholder': 'Naam of adres'}) }}
+</div>
+{% endblock %}
+
 {% block body %}
     <div class="table">
         <table>
