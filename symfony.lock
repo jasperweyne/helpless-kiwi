@@ -145,6 +145,9 @@
     "jms/metadata": {
         "version": "2.3.0"
     },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v6.11.0"
+    },
     "laminas/laminas-code": {
         "version": "4.2.1"
     },
@@ -633,6 +636,9 @@
     "symfony/yaml": {
         "version": "v4.4.16"
     },
+    "symfonycasts/tailwind-bundle": {
+        "version": "v0.5.0"
+    },
     "theofidry/alice-data-fixtures": {
         "version": "1.6",
         "recipe": {
@@ -641,9 +647,6 @@
             "version": "1.0",
             "ref": "fe5a50faf580eb58f08ada2abe8afbd2d4941e05"
         }
-    },
-    "symfonycasts/tailwind-bundle": {
-        "version": "v0.5.0"
     },
     "twig/extra-bundle": {
         "version": "v3.1.1"
