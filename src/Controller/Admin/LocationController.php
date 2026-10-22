@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Doctrine\SearchFilter;
 use App\Entity\Location\Location;
 use App\Form\Delete\LocationDeleteData;
 use App\Form\Location\LocationDeleteType;
@@ -44,14 +45,7 @@ class LocationController extends AbstractController
 
         $search = trim($request->query->get('search', ''));
         if ('' !== $search) {
-            // Fields to match against; add to this array to extend what the search box covers.
-            $searchFields = ['l.name', 'l.address'];
-
-            $conditions = $qb->expr()->orX();
-            foreach ($searchFields as $field) {
-                $conditions->add($qb->expr()->like($field, ':search'));
-            }
-            $qb->andWhere($conditions)->setParameter('search', '%'.$search.'%');
+            SearchFilter::apply($qb, $search, ['l.name', 'l.address']);
         }
 
         $pagination = $paginator->paginate(

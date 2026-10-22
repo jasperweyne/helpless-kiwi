@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Doctrine\SearchFilter;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
@@ -71,15 +72,8 @@ class ActivityController extends AbstractController
 
         $search = trim($request->query->get('search', ''));
         if ('' !== $search) {
-            // Fields to match against; add to this array to extend what the search box covers.
-            $searchFields = ['p.name', 'author.name'];
-
             $qb->leftJoin('p.author', 'author');
-            $conditions = $qb->expr()->orX();
-            foreach ($searchFields as $field) {
-                $conditions->add($qb->expr()->like($field, ':search'));
-            }
-            $qb->andWhere($conditions)->setParameter('search', '%'.$search.'%');
+            SearchFilter::apply($qb, $search, ['p.name', 'author.name']);
         }
 
         $pagination = $paginator->paginate(

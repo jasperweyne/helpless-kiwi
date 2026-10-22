@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Doctrine\SearchFilter;
 use App\Entity\Group\Group;
 use App\Entity\Security\LocalAccount;
 use App\Log\Doctrine\EntityUpdateEvent;
@@ -104,7 +105,7 @@ class GroupController extends AbstractController
             $search = trim($request->query->get('search', ''));
             if ('' !== $search) {
                 if ($db instanceof QueryBuilder) {
-                    $db->andWhere('g.name LIKE :search')->setParameter('search', '%'.$search.'%');
+                    SearchFilter::apply($db, $search, ['g.name']);
                 } else {
                     // Non-admin lists are plain PHP arrays (see above), so they're
                     // filtered here instead of via SQL.

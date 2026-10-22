@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Doctrine\SearchFilter;
 use App\Entity\Security\LocalAccount;
 use App\Event\Security\CreateAccountsEvent;
 use App\Event\Security\RemoveAccountsEvent;
@@ -51,9 +52,7 @@ class SecurityController extends AbstractController
 
         $search = trim($request->query->get('search', ''));
         if ('' !== $search) {
-            $qb->andWhere('a.givenName LIKE :search OR a.familyName LIKE :search OR a.email LIKE :search')
-                ->setParameter('search', '%'.$search.'%')
-            ;
+            SearchFilter::apply($qb, $search, ['a.givenName', 'a.familyName', 'a.email']);
         }
 
         $accounts = $qb->getQuery()->getResult();
