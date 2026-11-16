@@ -1,0 +1,36 @@
+{% if pagination.getTotalItemCount() > 0 %}
+<div class="max-w-6xl w-[80%] xl:w-full mx-auto px-5">
+    <div class="relative xl:min-h-[2.25rem] my-5">
+        <div class="flex justify-center">
+            {# Page-number links render via components/pagination_pages.html.twig,
+               configured as the bundle-wide default in knp_paginator.yaml. #}
+            {{ knp_pagination_render(pagination) }}
+        </div>
+        <form method="get" action="{{ app.request.pathInfo }}" class="mt-3 xl:mt-0 xl:absolute xl:right-0 xl:top-0 xl:h-full w-full xl:w-auto flex justify-center xl:justify-start flex-nowrap items-center gap-2 text-sm text-neutral-500">
+            {% for key, value in app.request.query.all() %}
+                {% if key not in ['limit', 'page'] %}
+                    {% if value is iterable %}
+                        {% for item in value %}
+                            <input type="hidden" name="{{ key }}[]" value="{{ item }}">
+                        {% endfor %}
+                    {% else %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            <input type="hidden" name="page" value="1">
+            <label for="pagination-limit" class="whitespace-nowrap">Resultaten per pagina</label>
+            <select
+                id="pagination-limit"
+                name="limit"
+                class="border rounded-sm min-w-[70px] px-2 py-0.5 bg-white shadow-sm leading-tight"
+                onchange="this.form.submit()"
+            >
+                {% for option in [10, 20, 30, 50, 100] %}
+                    <option value="{{ option }}"{{ option == pagination.getItemNumberPerPage() ? ' selected' : '' }}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+{% endif %}

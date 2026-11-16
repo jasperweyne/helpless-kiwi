@@ -1,0 +1,24 @@
+{% set search_param = param|default('search') %}
+<form method="get" action="{{ app.request.pathInfo }}" class="flex flex-nowrap items-center gap-2 text-sm">
+    {% for key, value in app.request.query.all() %}
+        {% if key not in [search_param, 'page'] %}
+            {% if value is iterable %}
+                {% for item in value %}
+                    <input type="hidden" name="{{ key }}[]" value="{{ item }}">
+                {% endfor %}
+            {% else %}
+                <input type="hidden" name="{{ key }}" value="{{ value }}">
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    <label for="{{ search_param }}-input" class="sr-only">{{ placeholder|default('Zoeken') }}</label>
+    <input
+        type="search"
+        id="{{ search_param }}-input"
+        name="{{ search_param }}"
+        value="{{ app.request.query.get(search_param) }}"
+        placeholder="{{ placeholder|default('Zoeken...') }}"
+        class="border rounded-sm px-2 py-0.5 bg-white shadow-sm leading-tight w-full max-w-xs"
+    >
+    <button type="submit" class="px-3 py-0.5 border rounded-sm bg-white shadow-sm hover:bg-neutral-100">Zoeken</button>
+</form>

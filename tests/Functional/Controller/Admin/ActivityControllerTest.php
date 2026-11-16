@@ -44,6 +44,25 @@ class ActivityControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testIndexActionLimitsResultsPerPage(): void
+    {
+        $totalActivities = count($this->em->getRepository(Activity::class)->findActive());
+        self::assertGreaterThan(1, $totalActivities, 'This test needs more than 1 active activity fixture to be meaningful.');
+
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/', ['limit' => 1]);
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertCount(1, $crawler->filter('tbody tr'));
+    }
+
+    public function testIndexActionOutOfRangePageReturnsEmptyResults(): void
+    {
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/', ['page' => 999, 'limit' => 1]);
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertCount(0, $crawler->filter('tbody tr td a'));
+    }
+
     public function testIndexArchiveAction(): void
     {
         $this->client->request('GET', $this->controllerEndpoint.'/archived');

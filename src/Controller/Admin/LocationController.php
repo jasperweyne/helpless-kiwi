@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Doctrine\SearchFilter;
 use App\Entity\Location\Location;
 use App\Form\Delete\LocationDeleteData;
 use App\Form\Location\LocationDeleteType;
@@ -11,6 +12,7 @@ use App\Log\Doctrine\EntityUpdateEvent;
 use App\Log\EventService;
 use App\Template\Attribute\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,12 +35,27 @@ class LocationController extends AbstractController
      */
     #[MenuItem(title: 'Locaties', menu: 'admin', activeCriteria: 'admin_location_')]
     #[Route('/', name: 'index', methods: ['GET', 'POST'])]
-    public function indexAction(): Response
+    public function indexAction(Request $request, PaginatorInterface $paginator): Response
     {
-        $locations = $this->em->getRepository(Location::class)->findBy([], ['address' => 'ASC']);
+        $qb = $this->em->createQueryBuilder()
+            ->select('l')
+            ->from(Location::class, 'l')
+            ->orderBy('l.address', 'ASC')
+        ;
+
+        $search = trim($request->query->get('search', ''));
+        if ('' !== $search) {
+            SearchFilter::apply($qb, $search, ['l.name', 'l.address']);
+        }
+
+        $pagination = $paginator->paginate(
+            $qb,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 30)
+        );
 
         return $this->render('admin/location/index.html.twig', [
-            'locations' => $locations,
+            'locations' => $pagination,
         ]);
     }
 

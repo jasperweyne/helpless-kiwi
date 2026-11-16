@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Doctrine\SearchFilter;
 use App\Entity\Security\LocalAccount;
 use App\Event\Security\CreateAccountsEvent;
 use App\Event\Security\RemoveAccountsEvent;
@@ -13,6 +14,7 @@ use App\Log\EventService;
 use App\Template\Attribute\MenuItem;
 use App\Template\Attribute\SubmenuItem;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -41,12 +43,32 @@ class SecurityController extends AbstractController
         new SubmenuItem(title: 'API', path: 'admin_security_client_index'),
     ])]
     #[Route('/', name: 'index', methods: ['GET', 'POST'])]
-    public function indexAction(): Response
+    public function indexAction(Request $request, PaginatorInterface $paginator): Response
     {
-        $accounts = $this->em->getRepository(LocalAccount::class)->findAll();
+        $qb = $this->em->createQueryBuilder()
+            ->select('a')
+            ->from(LocalAccount::class, 'a')
+        ;
+
+        $search = trim($request->query->get('search', ''));
+        if ('' !== $search) {
+            SearchFilter::apply($qb, $search, ['a.givenName', 'a.familyName', 'a.email']);
+        }
+
+        $accounts = $qb->getQuery()->getResult();
+
+        // Sorted here (rather than in SQL) because getCanonical() falls back
+        // from name to email to a pseudonymized id, which isn't a plain column.
+        usort($accounts, fn (LocalAccount $a, LocalAccount $b) => $a->getCanonical() <=> $b->getCanonical());
+
+        $pagination = $paginator->paginate(
+            $accounts,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 30)
+        );
 
         return $this->render('admin/security/index.html.twig', [
-            'accounts' => $accounts,
+            'pagination' => $pagination,
         ]);
     }
 

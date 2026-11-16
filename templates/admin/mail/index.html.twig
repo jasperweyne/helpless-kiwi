@@ -2,7 +2,7 @@
 
 {% if page_title is not defined %}
     {% set page_title = 'Mails' %}
-    {% set resultcount = mails|length %}
+    {% set resultcount = mails.getTotalItemCount() %}
 {% endif %}
 
 {% block body %}
@@ -34,4 +34,8 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block pagination %}
+{{ include('components/pagination.html.twig', {'pagination': mails}) }}
 {% endblock %}

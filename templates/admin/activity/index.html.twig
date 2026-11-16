@@ -4,7 +4,7 @@
     {% set page_title = 'Activiteiten' %}
 {% endif %}
 
-{% set resultcount = activities|length %}
+{% set resultcount = activities.getTotalItemCount() %}
     
 {% block buttons %}
     {% if page_title == 'Activiteiten' %}
@@ -12,6 +12,12 @@
     {% else %}
         <a href="{{ path("admin_activity_index") }} ">Terug</a>
     {% endif %}
+{% endblock %}
+
+{% block search %}
+<div class="mb-3">
+{{ include('components/search.html.twig', {'placeholder': 'Naam of organisator'}) }}
+</div>
 {% endblock %}
 
 {% block body %}
@@ -41,4 +47,8 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block pagination %}
+{{ include('components/pagination.html.twig', {'pagination': activities}) }}
 {% endblock %}

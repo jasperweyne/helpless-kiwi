@@ -4,10 +4,16 @@
     {% set page_title = 'Locaties' %}
 {% endif %}
 
-{% set resultcount = locations|length %}
+{% set resultcount = locations.getTotalItemCount() %}
 
 {% block buttons %}
     <a href="{{ path("admin_location_new") }} ">Nieuw</a>
+{% endblock %}
+
+{% block search %}
+<div class="mb-3">
+{{ include('components/search.html.twig', {'placeholder': 'Naam of adres'}) }}
+</div>
 {% endblock %}
 
 {% block body %}
@@ -31,4 +37,8 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block pagination %}
+{{ include('components/pagination.html.twig', {'pagination': locations}) }}
 {% endblock %}

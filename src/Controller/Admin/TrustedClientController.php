@@ -7,6 +7,7 @@ use App\Entity\Security\TrustedClient;
 use App\Form\Security\GenerateTokenType;
 use App\Repository\ApiTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,12 +30,22 @@ class TrustedClientController extends AbstractController
      * Lists all local account entities.
      */
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function indexAction(): Response
+    public function indexAction(Request $request, PaginatorInterface $paginator): Response
     {
-        $clients = $this->em->getRepository(TrustedClient::class)->findAll();
+        $qb = $this->em->createQueryBuilder()
+            ->select('c')
+            ->from(TrustedClient::class, 'c')
+            ->orderBy('c.id', 'ASC')
+        ;
+
+        $pagination = $paginator->paginate(
+            $qb,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 30)
+        );
 
         return $this->render('admin/security/client/index.html.twig', [
-            'clients' => $clients,
+            'clients' => $pagination,
         ]);
     }
 

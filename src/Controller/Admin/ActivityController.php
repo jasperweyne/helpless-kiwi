@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Doctrine\SearchFilter;
 use App\Entity\Activity\Activity;
 use App\Entity\Activity\PriceOption;
 use App\Entity\Activity\Registration;
@@ -18,6 +19,7 @@ use App\Repository\RegistrationRepository;
 use App\Template\Attribute\MenuItem;
 use App\Template\Attribute\SubmenuItem;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,24 +51,36 @@ class ActivityController extends AbstractController
     #[Route('/{cat}', name: 'index', methods: ['GET'], requirements: [
         'cat' => 'active|archived',
     ])]
-    public function indexAction(string $cat = 'active'): Response
+    public function indexAction(Request $request, PaginatorInterface $paginator, string $cat = 'active'): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $activities = match ($cat) {
-                'active' => $this->activitiesRepo->findActive(),
-                'archived' => $this->activitiesRepo->findArchived(),
+            $qb = match ($cat) {
+                'active' => $this->activitiesRepo->createActiveQueryBuilder(),
+                'archived' => $this->activitiesRepo->createArchivedQueryBuilder(),
                 default => throw $this->createNotFoundException(),
             };
         } else {
             /** @var LocalAccount $user */
             $user = $this->getUser();
             $groups = $this->groupsRepo->findSubGroupsForPerson($user);
-            $activities = match ($cat) {
-                'active' => $this->activitiesRepo->findAuthor($groups),
-                'archived' => $this->activitiesRepo->findAuthorArchive($groups),
+            $qb = match ($cat) {
+                'active' => $this->activitiesRepo->createAuthorQueryBuilder($groups),
+                'archived' => $this->activitiesRepo->createAuthorArchiveQueryBuilder($groups),
                 default => throw $this->createNotFoundException(),
             };
         }
+
+        $search = trim($request->query->get('search', ''));
+        if ('' !== $search) {
+            $qb->leftJoin('p.author', 'author');
+            SearchFilter::apply($qb, $search, ['p.name', 'author.name']);
+        }
+
+        $pagination = $paginator->paginate(
+            $qb,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 30)
+        );
 
         $page_title = match ($cat) {
             'active' => 'Activiteiten',
@@ -76,7 +90,7 @@ class ActivityController extends AbstractController
 
         return $this->render('admin/activity/index.html.twig', [
             'page_title' => $page_title,
-            'activities' => $activities,
+            'activities' => $pagination,
         ]);
     }
 
@@ -84,14 +98,20 @@ class ActivityController extends AbstractController
      * Lists all activities with a group as author.
      */
     #[Route('/group/{group}', name: 'group', methods: ['GET'])]
-    public function groupAction(Group $group): Response
+    public function groupAction(Request $request, PaginatorInterface $paginator, Group $group): Response
     {
-        $activities = $this
+        $qb = $this
             ->activitiesRepo
-            ->findAuthor([$group, ...$this->groupsRepo->findSubGroupsFor($group)]);
+            ->createAuthorQueryBuilder([$group, ...$this->groupsRepo->findSubGroupsFor($group)]);
+
+        $pagination = $paginator->paginate(
+            $qb,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 30)
+        );
 
         return $this->render('admin/activity/index.html.twig', [
-            'activities' => $activities,
+            'activities' => $pagination,
         ]);
     }
 

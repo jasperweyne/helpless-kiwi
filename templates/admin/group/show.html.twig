@@ -2,7 +2,7 @@
 
 {% if page_title is not defined %}
     {% if group is null %}
-        {% set resultcount = groups|length %}
+        {% set resultcount = groups.getTotalItemCount() %}
         {% if all_groups is defined %}
             {% set page_title = 'Alle groepen' %}
         {% else %}
@@ -30,6 +30,14 @@
             <a href="{{ path('admin_group_show', { 'showall': true }) }}">Alle groepen</a>
         {% endif %}
     {% endif %}
+{% endblock %}
+
+{% block search %}
+{% if group is null %}
+<div class="mb-3">
+{{ include('components/search.html.twig', {'placeholder': 'Naam van de groep'}) }}
+</div>
+{% endif %}
 {% endblock %}
 
 {% block body_wrap %}
@@ -190,4 +198,10 @@
             {% endblock %}
         {% endembed %}
     {% endif %}
+{% endblock %}
+
+{% block pagination %}
+{% if group is null %}
+{{ include('components/pagination.html.twig', {'pagination': groups}) }}
+{% endif %}
 {% endblock %}

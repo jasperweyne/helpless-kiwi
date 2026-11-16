@@ -40,6 +40,25 @@ class LocationControllerTest extends AuthWebTestCase
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testIndexActionLimitsResultsPerPage(): void
+    {
+        $totalLocations = count($this->em->getRepository(Location::class)->findAll());
+        self::assertGreaterThan(1, $totalLocations, 'This test needs more than 1 location fixture to be meaningful.');
+
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/', ['limit' => 1]);
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertCount(1, $crawler->filter('tbody tr'));
+    }
+
+    public function testIndexActionOutOfRangePageReturnsEmptyResults(): void
+    {
+        $crawler = $this->client->request('GET', $this->controllerEndpoint.'/', ['page' => 999, 'limit' => 1]);
+
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertCount(0, $crawler->filter('tbody tr td a'));
+    }
+
     public function testIndexActionNotAdmin(): void
     {
         $this->logout();
