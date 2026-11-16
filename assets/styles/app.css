@@ -8,6 +8,8 @@
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+@layer base {
+
 input {
     color: black;
 }
@@ -213,4 +215,5 @@ form {
         width: 100%;
         overflow-x: auto;
     }
+}
 }
